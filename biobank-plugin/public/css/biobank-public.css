@@ -1,0 +1,36 @@
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+
+.biobank-consent .biobank-description {
+    margin-bottom: 0.5em;
+}
+
+.biobank-consent .biobank-homepage {
+    font-style: italic;
+}
+
+.biobank-form h4 {
+    font-family: "Noto Sans", sans-serif;
+}
+
+.biobank-form input[type="submit"] {
+    display: block;
+    margin: 0 auto;
+}
+
+.biobank-form table,
+.biobank-form table td,
+.biobank-form table th {
+    border: none;
+}
+
+.biobank-form table th {
+    text-align: right;
+    width: 35%;
+}
+
+.biobank-form .error {
+	color: #B2000D;
+}
