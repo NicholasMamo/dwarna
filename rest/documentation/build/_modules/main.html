@@ -1,0 +1,255 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>main &#8212; biobank_backend 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for main</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The server that handles all requests to the backend.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Process</span>
+
+<span class="kn">from</span> <span class="nn">oauth2.grant</span> <span class="k">import</span> <span class="n">RefreshToken</span>
+<span class="kn">from</span> <span class="nn">oauth2.store.memory</span> <span class="k">import</span> <span class="n">ClientStore</span><span class="p">,</span> <span class="n">TokenStore</span>
+<span class="kn">from</span> <span class="nn">oauth2.tokengenerator</span> <span class="k">import</span> <span class="n">Uuid4</span>
+<span class="kn">from</span> <span class="nn">oauth2.web.wsgi</span> <span class="k">import</span> <span class="n">Application</span><span class="p">,</span> <span class="n">Request</span>
+
+<span class="kn">from</span> <span class="nn">wsgiref.simple_server</span> <span class="k">import</span> <span class="n">make_server</span>
+
+<span class="kn">import</span> <span class="nn">signal</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">expanduser</span>
+
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">from</span> <span class="nn">psycopg2.extensions</span> <span class="k">import</span> <span class="n">cursor</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Biobank-specific classes.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">biobank.handlers.blockchain.api.hyperledger</span> <span class="k">import</span> <span class="n">HyperledgerAPI</span>
+
+<span class="kn">from</span> <span class="nn">coauth.grants.grants</span> <span class="k">import</span> <span class="n">CustomClientCredentialsGrant</span>
+<span class="kn">from</span> <span class="nn">coauth.token_store.postgresql_token_store</span> <span class="k">import</span> <span class="n">PostgresqlAccessTokenStore</span><span class="p">,</span> <span class="n">PostgresqlAuthCodeStore</span><span class="p">,</span> <span class="n">PostgresqlClientStore</span>
+<span class="kn">from</span> <span class="nn">coauth.oauth_request_handler</span> <span class="k">import</span> <span class="n">OAuthRequestHandler</span>
+
+<span class="kn">from</span> <span class="nn">server.application</span> <span class="k">import</span> <span class="n">OAuthApplication</span>
+<span class="kn">from</span> <span class="nn">server.resource_server</span> <span class="k">import</span> <span class="n">ResourceServer</span>
+<span class="kn">from</span> <span class="nn">server.authorization_server</span> <span class="k">import</span> <span class="n">AuthorizationServer</span>
+
+<span class="kn">import</span> <span class="nn">config</span>
+
+<div class="viewcode-block" id="start_auth_server"><a class="viewcode-back" href="../server.html#main.start_auth_server">[docs]</a><span class="k">def</span> <span class="nf">start_auth_server</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">token_expiry</span><span class="p">,</span> <span class="n">connection</span><span class="p">,</span> <span class="n">oauth_connection</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Start the authorization server on the given port.</span>
+
+<span class="sd">	:param port: The port on which the server listens.</span>
+<span class="sd">	:type port: int</span>
+<span class="sd">	:param token_expiry: The time taken for an access token delivered by the authorization server to expire.</span>
+<span class="sd">	:type token_expiry: int</span>
+<span class="sd">	:param connection: The database connection to use.</span>
+<span class="sd">	:type connection: :class:`connection.connection.Connection`</span>
+<span class="sd">	:param oauth_connection: The database connection to use for OAuth.</span>
+<span class="sd">	:type oauth_connection: :class:`connection.connection.Connection`</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="k">try</span><span class="p">:</span>
+		<span class="n">client_store</span> <span class="o">=</span> <span class="n">ClientStore</span><span class="p">()</span>
+		<span class="c1"># TODO Where to store client ID and Client Secret? PostgreSQL maybe?</span>
+		<span class="n">client_store</span><span class="o">.</span><span class="n">add_client</span><span class="p">(</span><span class="n">client_id</span><span class="o">=</span><span class="s2">&quot;abc&quot;</span><span class="p">,</span> <span class="n">client_secret</span><span class="o">=</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span>
+								<span class="n">redirect_uris</span><span class="o">=</span><span class="p">[])</span>
+
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Create a token store.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">token_store</span> <span class="o">=</span> <span class="n">PostgresqlAccessTokenStore</span><span class="p">(</span><span class="n">oauth_connection</span><span class="p">)</span>
+
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Create the authentication and resource servers.</span>
+<span class="sd">		The resource server is given the access token store to validate requests.</span>
+<span class="sd">		The routes and their handler are also passed on as arguments.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">blockchain_handler</span> <span class="o">=</span> <span class="n">HyperledgerAPI</span><span class="p">(</span>
+			<span class="n">config</span><span class="o">.</span><span class="n">blockchain_admin_base_url</span><span class="p">,</span>
+			<span class="n">config</span><span class="o">.</span><span class="n">blockchain_multiuser_base_url</span><span class="p">,</span>
+			<span class="n">connection</span>
+		<span class="p">)</span>
+
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		The route handlers are a set of classes that handle different requests.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">route_handlers</span> <span class="o">=</span> <span class="p">{</span> <span class="n">handler_class</span><span class="p">:</span> <span class="n">handler_class</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">blockchain_handler</span><span class="p">)</span>
+							<span class="k">for</span> <span class="n">handler_class</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">handler_classes</span> <span class="p">}</span>
+		<span class="n">route_handlers</span><span class="p">[</span><span class="n">HyperledgerAPI</span><span class="p">]</span> <span class="o">=</span> <span class="n">blockchain_handler</span>
+
+		<span class="n">resource_provider</span> <span class="o">=</span> <span class="n">ResourceServer</span><span class="p">(</span>
+			<span class="n">access_token_store</span><span class="o">=</span><span class="n">token_store</span><span class="p">,</span>
+			<span class="n">auth_code_store</span><span class="o">=</span><span class="n">PostgresqlAuthCodeStore</span><span class="p">(</span><span class="n">oauth_connection</span><span class="p">),</span>
+			<span class="n">client_store</span><span class="o">=</span><span class="n">PostgresqlClientStore</span><span class="p">(</span><span class="n">oauth_connection</span><span class="p">),</span>
+			<span class="n">token_generator</span><span class="o">=</span><span class="n">Uuid4</span><span class="p">(),</span>
+			<span class="n">routes</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">routes</span><span class="p">,</span>
+			<span class="n">route_handlers</span><span class="o">=</span><span class="n">route_handlers</span><span class="p">)</span>
+
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		The authorization server gives out access tokens.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">authorization_server</span> <span class="o">=</span> <span class="n">AuthorizationServer</span><span class="p">(</span>
+			<span class="n">access_token_store</span><span class="o">=</span><span class="n">token_store</span><span class="p">,</span>
+			<span class="n">auth_code_store</span><span class="o">=</span><span class="n">token_store</span><span class="p">,</span>
+			<span class="n">client_store</span><span class="o">=</span><span class="n">client_store</span><span class="p">,</span>
+			<span class="n">token_generator</span><span class="o">=</span><span class="n">Uuid4</span><span class="p">(),</span>
+		<span class="p">)</span>
+
+		<span class="n">client_credentials_grant</span> <span class="o">=</span> <span class="n">CustomClientCredentialsGrant</span><span class="p">(</span>
+			<span class="n">expires_in</span><span class="o">=</span><span class="n">token_expiry</span><span class="p">,</span>
+			<span class="n">scopes</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">scopes</span><span class="p">,</span>
+			<span class="n">default_scope</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">default_scope</span>
+		<span class="p">)</span>
+		<span class="n">authorization_server</span><span class="o">.</span><span class="n">add_grant</span><span class="p">(</span><span class="n">client_credentials_grant</span><span class="p">)</span>
+
+		<span class="n">app</span> <span class="o">=</span> <span class="n">OAuthApplication</span><span class="p">(</span><span class="n">resource_provider</span><span class="o">=</span><span class="n">resource_provider</span><span class="p">,</span> <span class="n">authorization_server</span><span class="o">=</span><span class="n">authorization_server</span><span class="p">)</span>
+
+		<span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">)</span>
+		<span class="n">httpd</span> <span class="o">=</span> <span class="n">make_server</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">app</span><span class="p">,</span> <span class="n">handler_class</span><span class="o">=</span><span class="n">OAuthRequestHandler</span><span class="p">)</span>
+
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting OAuth2 server on http://localhost:</span><span class="si">%d</span><span class="s2">/...&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">port</span><span class="p">))</span>
+		<span class="n">httpd</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">()</span>
+	<span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+		<span class="n">httpd</span><span class="o">.</span><span class="n">server_close</span><span class="p">()</span></div>
+
+<span class="n">pid</span> <span class="o">=</span> <span class="kc">None</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../server.html#main.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">database</span><span class="p">,</span> <span class="n">oauth_database</span><span class="p">,</span> <span class="n">listen_port</span><span class="p">,</span> <span class="n">token_expiry</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">token_expiry</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Establish a connection with PostgreSQL and start the server.</span>
+
+<span class="sd">	:param database: The name of the database to connect to.</span>
+<span class="sd">	:type database: str</span>
+<span class="sd">	:param oauth_database: The name of the database to connect to for OAuth storage.</span>
+<span class="sd">	:type oauth_database: str</span>
+<span class="sd">	:param listen_port: The port on which the server listens.</span>
+<span class="sd">	:type listen_port: int</span>
+<span class="sd">	:param token_expiry: The time taken for an access token delivered by the authorization server to expire.</span>
+<span class="sd">		This should only be provided in testing environments.</span>
+<span class="sd">		Otherwise, the configuration should be updated.</span>
+<span class="sd">	:type token_expiry: int</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">global</span> <span class="n">pid</span>
+
+	<span class="c1"># get the connection details from the .pgpass file</span>
+	<span class="n">home</span> <span class="o">=</span> <span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">)</span>
+	<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">home</span><span class="p">,</span> <span class="s2">&quot;.pgpass&quot;</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+		<span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+
+	<span class="n">connection</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">handler_connector</span><span class="p">(</span><span class="n">database</span><span class="o">=</span><span class="n">database</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">)</span>
+	<span class="n">oauth_connection</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">handler_connector</span><span class="p">(</span><span class="n">database</span><span class="o">=</span><span class="n">oauth_database</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span> <span class="n">cursor_factory</span><span class="o">=</span><span class="n">cursor</span><span class="p">)</span>
+
+	<span class="n">auth_server</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">start_auth_server</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">listen_port</span><span class="p">,</span> <span class="n">token_expiry</span><span class="p">,</span> <span class="n">connection</span><span class="p">,</span> <span class="n">oauth_connection</span><span class="p">))</span>
+	<span class="n">auth_server</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+	<span class="n">pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
+
+	<span class="k">def</span> <span class="nf">sigint_handler</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Terminating servers...&quot;</span><span class="p">)</span>
+		<span class="n">auth_server</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+		<span class="n">auth_server</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+		<span class="n">connection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+	<span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">sigint_handler</span><span class="p">)</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+	<span class="n">main</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">oauth_database</span><span class="p">,</span> <span class="mi">7225</span><span class="p">)</span>
+	<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;To test getting OAuth2 tokens:&quot;</span><span class="p">)</span>
+	<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;curl --ipv4 -v -X POST </span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">)</span>
+	<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">-d &#39;grant_type=client_credentials&amp;client_id=abc&amp;client_secret=xyz&#39; </span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">)</span>
+	<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">-d &#39;scope=create_participant create_researcher&#39; </span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">)</span>
+	<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">http://localhost:8080/token&quot;</span><span class="p">)</span>
+	<span class="nb">print</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../biobank.html">Biobank Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../connection.html">Data Store Connections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coauth.html">OAuth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../server.html">Server</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Nicholas Mamo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

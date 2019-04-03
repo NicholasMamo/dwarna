@@ -1,0 +1,243 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>coauth.grants.grants &#8212; biobank_backend 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for coauth.grants.grants</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">A number of custom grants supported by the authorization server.</span>
+<span class="sd">In practice, these grants are based on existing ones and modify their behavior.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">oauth2.datatype</span> <span class="k">import</span> <span class="n">AccessToken</span>
+<span class="kn">from</span> <span class="nn">oauth2.grant</span> <span class="k">import</span> <span class="n">encode_scopes</span><span class="p">,</span> <span class="n">json_success_response</span><span class="p">,</span> <span class="n">GrantHandlerFactory</span><span class="p">,</span> <span class="n">ClientCredentialsGrant</span><span class="p">,</span> <span class="n">ClientCredentialsHandler</span><span class="p">,</span> <span class="n">ScopeGrant</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+
+<div class="viewcode-block" id="CustomClientCredentialsGrant"><a class="viewcode-back" href="../../../coauth.html#coauth.grants.grants.CustomClientCredentialsGrant">[docs]</a><span class="k">class</span> <span class="nc">CustomClientCredentialsGrant</span><span class="p">(</span><span class="n">GrantHandlerFactory</span><span class="p">,</span> <span class="n">ScopeGrant</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	The custom take on the client credentials grant sends back scopes with access tokens.</span>
+<span class="sd">	In this way, if a scope was rejected, the client would know.</span>
+<span class="sd">	This allows the frontend to ensure that the requested scopes were valid.</span>
+
+<span class="sd">	Furthermore, the custom credentials grant allows the token expiry to be specified in the constructor.</span>
+
+<span class="sd">	:ivar expires_in: The access token&#39;s lifespan, in seconds.</span>
+<span class="sd">	:vartype expires_in: int</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	The base type of the grant.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">grant_type</span> <span class="o">=</span> <span class="s2">&quot;client_credentials&quot;</span>
+
+<div class="viewcode-block" id="CustomClientCredentialsGrant.__init__"><a class="viewcode-back" href="../../../coauth.html#coauth.grants.grants.CustomClientCredentialsGrant.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expires_in</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Create the client credentials grant.</span>
+
+<span class="sd">		:param expires_in: The time (in seconds) for which an access token will remain valid.</span>
+<span class="sd">		:type expires_in: int</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">expires_in</span> <span class="o">=</span> <span class="n">expires_in</span>
+
+		<span class="nb">super</span><span class="p">(</span><span class="n">CustomClientCredentialsGrant</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CustomClientCredentialsGrant.__call__"><a class="viewcode-back" href="../../../coauth.html#coauth.grants.grants.CustomClientCredentialsGrant.__call__">[docs]</a>	<span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">server</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Handles calls to give out access tokens.</span>
+
+<span class="sd">		:param request: The request made to the server.</span>
+<span class="sd">		:type request: :class:`oauth2.web.wsgi.Request`</span>
+<span class="sd">		:param server: The server that received the request.</span>
+
+<span class="sd">		:return: An access token, or none if the request is invalid.</span>
+<span class="sd">		:rtype: dict or None</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Ensure that the request really demands a request.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">path</span> <span class="o">!=</span> <span class="n">server</span><span class="o">.</span><span class="n">token_path</span><span class="p">:</span>
+			<span class="k">return</span> <span class="kc">None</span>
+
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		If the grant type is supported, created a handler and get an access token.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">user_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">post_param</span><span class="p">(</span><span class="s2">&quot;user_id&quot;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">post_param</span><span class="p">(</span><span class="s2">&quot;grant_type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">grant_type</span><span class="p">:</span>
+			<span class="n">scope_handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_scope_handler</span><span class="p">()</span>
+			<span class="n">scope_handler</span><span class="o">.</span><span class="n">send_back</span> <span class="o">=</span> <span class="kc">True</span>
+			<span class="k">return</span> <span class="n">CustomClientCredentialsHandler</span><span class="p">(</span>
+				<span class="n">access_token_store</span><span class="o">=</span><span class="n">server</span><span class="o">.</span><span class="n">access_token_store</span><span class="p">,</span>
+				<span class="n">client_authenticator</span><span class="o">=</span><span class="n">server</span><span class="o">.</span><span class="n">client_authenticator</span><span class="p">,</span>
+				<span class="n">scope_handler</span><span class="o">=</span><span class="n">scope_handler</span><span class="p">,</span>
+				<span class="n">token_generator</span><span class="o">=</span><span class="n">server</span><span class="o">.</span><span class="n">token_generator</span><span class="p">,</span>
+				<span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span>
+		<span class="k">return</span> <span class="kc">None</span></div></div>
+
+<div class="viewcode-block" id="CustomClientCredentialsHandler"><a class="viewcode-back" href="../../../coauth.html#coauth.grants.grants.CustomClientCredentialsHandler">[docs]</a><span class="k">class</span> <span class="nc">CustomClientCredentialsHandler</span><span class="p">(</span><span class="n">ClientCredentialsHandler</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	A custom implementation of the client credentials handler.</span>
+
+<span class="sd">	The implementation adds functionality to store the user ID alongside the access token.</span>
+<span class="sd">	This is the only new addition in the class.</span>
+
+<span class="sd">	:ivar user_id: The owner of the access token.</span>
+<span class="sd">		The client asks for an access token on behalf of its users.</span>
+<span class="sd">	:vartype user_id: str</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CustomClientCredentialsHandler.__init__"><a class="viewcode-back" href="../../../coauth.html#coauth.grants.grants.CustomClientCredentialsHandler.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token_store</span><span class="p">,</span> <span class="n">client_authenticator</span><span class="p">,</span>
+					<span class="n">scope_handler</span><span class="p">,</span> <span class="n">token_generator</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Create a new client credentials handler.</span>
+<span class="sd">		The client credentials handler stores one added attribute - the user&#39;s ID.</span>
+
+<span class="sd">		:param access_token_store: The access token store.</span>
+<span class="sd">		:type access_token_store: :class:`oauth2.store.AccessTokenStore`</span>
+<span class="sd">		:param client_authenticator: The client authenticator.</span>
+<span class="sd">		:type client_authenticator: :class:`oauth2.client_authenticator.ClientAuthenticator`</span>
+<span class="sd">		:param scope_handler: The scope handler, involved in processing scopes.</span>
+<span class="sd">		:type scope_handler: :class:`oauth2.grant.Scope`</span>
+<span class="sd">		:param token_generator: The class that generates access tokens.</span>
+<span class="sd">		:type token_generator: :class:`oauth2.token_generator.TokenGenerator`</span>
+<span class="sd">		:param user_id: The ID of the user for whom the client is generating the access token.</span>
+<span class="sd">		:type user_id: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">access_token_store</span><span class="p">,</span> <span class="n">client_authenticator</span><span class="p">,</span>
+				<span class="n">scope_handler</span><span class="p">,</span> <span class="n">token_generator</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="n">user_id</span></div>
+
+<div class="viewcode-block" id="CustomClientCredentialsHandler.process"><a class="viewcode-back" href="../../../coauth.html#coauth.grants.grants.CustomClientCredentialsHandler.process">[docs]</a>	<span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">environ</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Process a request for an access token.</span>
+
+<span class="sd">		:param request: The request that was received.</span>
+<span class="sd">		:type request: :class:`oauth2.web.wsgi.Request`</span>
+<span class="sd">		:param response: The response that is being constructed.</span>
+<span class="sd">		:type response: :class:`oauth2.web.Response`</span>
+<span class="sd">		:param environ: The request parameters.</span>
+<span class="sd">		:type environ: dict</span>
+
+<span class="sd">		:return: The processed response.</span>
+<span class="sd">		:rtype: :class:`oauth2.web.Response`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">body</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;token_type&quot;</span><span class="p">:</span> <span class="s2">&quot;Bearer&quot;</span><span class="p">}</span>
+
+		<span class="n">token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_generator</span><span class="o">.</span><span class="n">generate</span><span class="p">()</span>
+		<span class="n">expires_in</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_generator</span><span class="o">.</span><span class="n">expires_in</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ClientCredentialsGrant</span><span class="o">.</span><span class="n">grant_type</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">expires_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">expires_at</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">expires_at</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span> <span class="o">+</span> <span class="n">expires_in</span>
+
+		<span class="n">access_token</span> <span class="o">=</span> <span class="n">AccessToken</span><span class="p">(</span>
+			<span class="n">client_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+			<span class="n">grant_type</span><span class="o">=</span><span class="n">ClientCredentialsGrant</span><span class="o">.</span><span class="n">grant_type</span><span class="p">,</span>
+			<span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span>
+			<span class="n">expires_at</span><span class="o">=</span><span class="n">expires_at</span><span class="p">,</span>
+			<span class="n">scopes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scope_handler</span><span class="o">.</span><span class="n">scopes</span><span class="p">,</span>
+			<span class="n">user_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">access_token_store</span><span class="o">.</span><span class="n">save_token</span><span class="p">(</span><span class="n">access_token</span><span class="p">)</span>
+
+		<span class="n">body</span><span class="p">[</span><span class="s2">&quot;access_token&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">token</span>
+
+		<span class="k">if</span> <span class="n">expires_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">body</span><span class="p">[</span><span class="s2">&quot;expires_in&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">expires_in</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scope_handler</span><span class="o">.</span><span class="n">send_back</span><span class="p">:</span>
+			<span class="n">body</span><span class="p">[</span><span class="s2">&quot;scope&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">encode_scopes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scope_handler</span><span class="o">.</span><span class="n">scopes</span><span class="p">)</span>
+
+		<span class="n">json_success_response</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">response</span><span class="o">=</span><span class="n">response</span><span class="p">)</span>
+
+		<span class="k">return</span> <span class="n">response</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../biobank.html">Biobank Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../connection.html">Data Store Connections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../coauth.html">OAuth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../server.html">Server</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../grants.html">coauth.grants</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Nicholas Mamo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

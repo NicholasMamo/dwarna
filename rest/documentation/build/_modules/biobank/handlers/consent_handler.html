@@ -1,0 +1,576 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>biobank.handlers.consent_handler &#8212; biobank_backend 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for biobank.handlers.consent_handler</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The route handler to handle dynamic consent-related requests.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+
+<span class="n">path</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+	<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">oauth2.web</span> <span class="k">import</span> <span class="n">Response</span>
+
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">general_exceptions</span><span class="p">,</span> <span class="n">study_exceptions</span><span class="p">,</span> <span class="n">user_exceptions</span>
+<span class="kn">from</span> <span class="nn">.handler</span> <span class="k">import</span> <span class="n">PostgreSQLRouteHandler</span>
+
+<div class="viewcode-block" id="ConsentHandler"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.consent_handler.ConsentHandler">[docs]</a><span class="k">class</span> <span class="nc">ConsentHandler</span><span class="p">(</span><span class="n">PostgreSQLRouteHandler</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	The dynamic consent handler receives and handles requests that are related to participants giving or withdrawing their consent.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ConsentHandler.get_attributes"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.consent_handler.ConsentHandler.get_attributes">[docs]</a>	<span class="k">def</span> <span class="nf">get_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Get the attribute values of the participant with the given username.</span>
+
+<span class="sd">		:param username: The unique username of the participant.</span>
+<span class="sd">		:type username: str</span>
+<span class="sd">		:param attributes: A list of attribute IDs whose values are sought.</span>
+<span class="sd">		:type attributes: list</span>
+
+<span class="sd">		:return: A response with any errors that may arise.</span>
+<span class="sd">			The data is returned as an associative array.</span>
+<span class="sd">			If an attribute does not have a value, None is returned instead.</span>
+<span class="sd">		:rtype: :class:`oauth2.web.Response`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+			<span class="n">attributes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">attributes</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span> <span class="k">else</span> <span class="n">attributes</span>
+			<span class="n">attribute_values</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">attributes</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_participant_exists</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="n">user_exceptions</span><span class="o">.</span><span class="n">ParticipantDoesNotExistException</span><span class="p">()</span>
+
+			<span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_attribute_id_exists</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">attribute</span><span class="p">))</span> <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="n">study_exceptions</span><span class="o">.</span><span class="n">AttributeDoesNotExistException</span><span class="p">()</span>
+
+			<span class="k">for</span> <span class="n">attribute_id</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
+				<span class="n">attribute_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">select_one</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">					SELECT</span>
+<span class="s2">						value</span>
+<span class="s2">					FROM</span>
+<span class="s2">						participants_attributes</span>
+<span class="s2">					WHERE</span>
+<span class="s2">						participant_id = &#39;</span><span class="si">%s</span><span class="s2">&#39; AND</span>
+<span class="s2">						attribute_id = </span><span class="si">%d</span><span class="s2"></span>
+<span class="s2">				&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">attribute_id</span><span class="p">)))</span>
+				<span class="n">attribute_values</span><span class="p">[</span><span class="n">attribute_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">attribute_value</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">attribute_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">attribute_values</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="p">(</span>
+				<span class="n">study_exceptions</span><span class="o">.</span><span class="n">AttributeDoesNotExistException</span><span class="p">,</span>
+				<span class="n">user_exceptions</span><span class="o">.</span><span class="n">ParticipantDoesNotExistException</span>
+			<span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Internal Server Error: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+
+		<span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="ConsentHandler.give_consent"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.consent_handler.ConsentHandler.give_consent">[docs]</a>	<span class="k">def</span> <span class="nf">give_consent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Set the consent of a participant.</span>
+
+<span class="sd">		:param study_id: The unique ID of the study.</span>
+<span class="sd">		:type study_id: int</span>
+<span class="sd">		:param username: The unique username of the participant.</span>
+<span class="sd">		:type username: str</span>
+
+<span class="sd">		:return: A response with any errors that may arise.</span>
+<span class="sd">		:rtype: :class:`oauth2.web.Response`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">study_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
+			<span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			Consent should be the last thing that is saved.</span>
+<span class="sd">			The others can be saved with no consequence even if the consent fails.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_set_consent</span><span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="p">(</span>
+				<span class="n">study_exceptions</span><span class="o">.</span><span class="n">AttributeNotLinkedException</span><span class="p">,</span>
+				<span class="n">study_exceptions</span><span class="o">.</span><span class="n">MissingAttributesException</span><span class="p">,</span>
+				<span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyDoesNotExistException</span><span class="p">,</span>
+				<span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyExpiredException</span><span class="p">,</span>
+				<span class="n">user_exceptions</span><span class="o">.</span><span class="n">ParticipantDoesNotExistException</span>
+			<span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Internal Server Error: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+
+		<span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="ConsentHandler.withdraw_consent"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.consent_handler.ConsentHandler.withdraw_consent">[docs]</a>	<span class="k">def</span> <span class="nf">withdraw_consent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Withdraw the consent of a participant.</span>
+
+<span class="sd">		:param study_id: The unique ID of the study.</span>
+<span class="sd">		:type study_id: int</span>
+<span class="sd">		:param username: The unique username of the participant.</span>
+<span class="sd">		:type username: str</span>
+
+<span class="sd">		:return: A response with any errors that may arise.</span>
+<span class="sd">		:rtype: :class:`oauth2.web.Response`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">study_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
+			<span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">_set_consent</span><span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="p">(</span>
+			<span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyDoesNotExistException</span><span class="p">,</span>
+			<span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyExpiredException</span><span class="p">,</span>
+			<span class="n">user_exceptions</span><span class="o">.</span><span class="n">ParticipantDoesNotExistException</span>
+			<span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Internal Server Error: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+
+		<span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="ConsentHandler.get_participants_by_study"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.consent_handler.ConsentHandler.get_participants_by_study">[docs]</a>	<span class="k">def</span> <span class="nf">get_participants_by_study</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Get a list of participant which have given their consent to the given study.</span>
+
+<span class="sd">		:param study_id: The unique ID of the study.</span>
+<span class="sd">		:type study_id: int</span>
+
+<span class="sd">		:return: A response with any errors that may arise.</span>
+<span class="sd">			The body contains the studies.</span>
+<span class="sd">		:rtype: :class:`oauth2.web.Response`</span>
+
+<span class="sd">		:raises: :class:`handlers.exceptions.study_exceptions.StudyDoesNotExistException`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+		<span class="n">study_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
+
+		<span class="k">try</span><span class="p">:</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_study_exists</span><span class="p">(</span><span class="n">study_id</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyDoesNotExistException</span><span class="p">()</span>
+
+			<span class="n">study_address</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_study_address</span><span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
+
+			<span class="n">study</span> <span class="o">=</span> <span class="n">Study</span><span class="o">.</span><span class="n">load_study</span><span class="p">(</span><span class="n">study_address</span><span class="p">)</span>
+			<span class="n">participants</span> <span class="o">=</span> <span class="n">study</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">get_consenting_participants</span><span class="p">()</span><span class="o">.</span><span class="n">call</span><span class="p">()</span>
+
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			Get the information of all participants that consented to the use of their sample in the study.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="n">participants</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">				SELECT *</span>
+<span class="s2">				FROM participants</span>
+<span class="s2">				WHERE</span>
+<span class="s2">					address IN (&#39;</span><span class="si">%s</span><span class="s2">&#39;)</span>
+<span class="s2">			&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s2">&quot;&#39;, &#39;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">participants</span><span class="p">)))</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">participants</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="p">(</span>
+			<span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyDoesNotExistException</span><span class="p">,</span>
+		<span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Internal Server Error: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+
+		<span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="ConsentHandler.get_studies_by_participant"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.consent_handler.ConsentHandler.get_studies_by_participant">[docs]</a>	<span class="k">def</span> <span class="nf">get_studies_by_participant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Get a list of studies that the participant has consented to.</span>
+
+<span class="sd">		:param username: The unique username of the participant.</span>
+<span class="sd">		:type username: str</span>
+
+<span class="sd">		:return: A response with any errors that may arise.</span>
+<span class="sd">			The body contains the studies.</span>
+<span class="sd">		:rtype: :class:`oauth2.web.Response`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_participant_exists</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="n">user_exceptions</span><span class="o">.</span><span class="n">ParticipantDoesNotExistException</span><span class="p">()</span>
+
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			The consent status is checked later on.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">				SELECT *</span>
+<span class="s2">				FROM studies</span>
+<span class="s2">				&quot;&quot;&quot;</span>
+
+			<span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			Check the participant&#39;s consent status and only retain the study if they consented.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="n">studies</span> <span class="o">=</span> <span class="p">[]</span>
+			<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+				<span class="n">study_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;study_id&quot;</span><span class="p">])</span>
+
+				<span class="n">consent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blockchain_connector</span><span class="o">.</span><span class="n">has_consent</span><span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+				<span class="k">if</span> <span class="n">consent</span><span class="p">:</span>
+					<span class="n">studies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+				<span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+					<span class="p">{</span>
+						<span class="s2">&quot;study&quot;</span><span class="p">:</span> <span class="n">study</span><span class="p">,</span>
+						<span class="s2">&quot;researchers&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_study_researchers</span><span class="p">(</span><span class="n">study</span><span class="p">[</span><span class="s2">&quot;study_id&quot;</span><span class="p">]),</span>
+					<span class="p">}</span> <span class="k">for</span> <span class="n">study</span> <span class="ow">in</span> <span class="n">studies</span>
+				<span class="p">],</span>
+			<span class="p">})</span>
+		<span class="k">except</span> <span class="p">(</span>
+			<span class="n">user_exceptions</span><span class="o">.</span><span class="n">ParticipantDoesNotExistException</span>
+			<span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Internal Server Error: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+
+		<span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="ConsentHandler.has_consent"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.consent_handler.ConsentHandler.has_consent">[docs]</a>	<span class="k">def</span> <span class="nf">has_consent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="n">username</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Check whether the participant with the given username has consented to the use of his data in the given study.</span>
+
+<span class="sd">		:param study_id: The unique ID of the study.</span>
+<span class="sd">		:type study_id: int</span>
+<span class="sd">		:param username: The unique username of the participant.</span>
+<span class="sd">		:type username: str</span>
+
+<span class="sd">		:return: A response with any errors that may arise.</span>
+<span class="sd">			The body contains the consent status.</span>
+<span class="sd">		:rtype: :class:`oauth2.web.Response`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">study_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
+			<span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_study_exists</span><span class="p">(</span><span class="n">study_id</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyDoesNotExistException</span><span class="p">()</span>
+
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_participant_exists</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="n">user_exceptions</span><span class="o">.</span><span class="n">ParticipantDoesNotExistException</span><span class="p">()</span>
+
+			<span class="n">consent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blockchain_connector</span><span class="o">.</span><span class="n">has_consent</span><span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">consent</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="p">(</span>
+			<span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyDoesNotExistException</span><span class="p">,</span>
+			<span class="n">user_exceptions</span><span class="o">.</span><span class="n">ParticipantDoesNotExistException</span>
+		<span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Internal Server Error: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+
+		<span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="ConsentHandler.get_consent_trail"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.consent_handler.ConsentHandler.get_consent_trail">[docs]</a>	<span class="k">def</span> <span class="nf">get_consent_trail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Get a user&#39;s consent trail.</span>
+<span class="sd">		This trail shows how the participant&#39;s consent for studies changed over time.</span>
+
+<span class="sd">		:param username: The unique username of the participant.</span>
+<span class="sd">		:type username: str</span>
+
+<span class="sd">		:return: A response with any errors that may arise.</span>
+<span class="sd">			The body contains the studies and the timelines.</span>
+<span class="sd">			The two are separated from each other.</span>
+<span class="sd">			The timeline is made up of the timestamp, and a list of consent changes separated by study IDs.</span>
+<span class="sd">			The studies are separated by IDs, and therefore the timeline can use it as a look-up table.</span>
+<span class="sd">		:rtype: :class:`oauth2.web.Response`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+		<span class="n">timeline</span> <span class="o">=</span> <span class="p">{}</span>
+
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_participant_exists</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="n">user_exceptions</span><span class="o">.</span><span class="n">ParticipantDoesNotExistException</span><span class="p">()</span>
+
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			The command must always check for the participant&#39;s consent status.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">				SELECT *</span>
+<span class="s2">				FROM studies</span>
+<span class="s2">				&quot;&quot;&quot;</span>
+
+			<span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+			<span class="n">studies</span> <span class="o">=</span> <span class="p">{</span>
+				<span class="nb">int</span><span class="p">(</span><span class="n">study</span><span class="p">[</span><span class="s2">&quot;study_id&quot;</span><span class="p">]):</span> <span class="n">study</span> <span class="k">for</span> <span class="n">study</span> <span class="ow">in</span> <span class="n">rows</span>
+			<span class="p">}</span>
+
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			For each study get the user&#39;s consent changes, if any.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+				<span class="n">study_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;study_id&quot;</span><span class="p">])</span>
+
+				<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">				Construct the timeline, one timestamp at a time, from the current study.</span>
+<span class="sd">				&quot;&quot;&quot;</span>
+				<span class="n">consent_trail</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blockchain_connector</span><span class="o">.</span><span class="n">get_consent_trail</span><span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+				<span class="k">for</span> <span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">consent</span><span class="p">)</span> <span class="ow">in</span> <span class="n">consent_trail</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+					<span class="n">timeline</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="n">timeline</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="p">{})</span>
+					<span class="n">timeline</span><span class="p">[</span><span class="n">timestamp</span><span class="p">][</span><span class="n">study_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">consent</span>
+
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+				<span class="s2">&quot;data&quot;</span><span class="p">:{</span>
+					<span class="s2">&quot;studies&quot;</span><span class="p">:</span> <span class="n">studies</span><span class="p">,</span>
+					<span class="s2">&quot;timeline&quot;</span><span class="p">:</span> <span class="n">timeline</span>
+				<span class="p">}</span>
+			<span class="p">})</span>
+		<span class="k">except</span> <span class="p">(</span>
+			<span class="n">user_exceptions</span><span class="o">.</span><span class="n">ParticipantDoesNotExistException</span>
+			<span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Internal Server Error: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+
+		<span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="ConsentHandler._set_consent"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.consent_handler.ConsentHandler._set_consent">[docs]</a>	<span class="k">def</span> <span class="nf">_set_consent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">consent</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Set a user&#39;s consent to the given study.</span>
+<span class="sd">		A consent is created if it does not exist.</span>
+<span class="sd">		However, consent cannot be changed for inactive studies.</span>
+
+<span class="sd">		:param study_id: The unique ID of the study.</span>
+<span class="sd">		:type study_id: int</span>
+<span class="sd">		:param username: The unique username of the participant.</span>
+<span class="sd">		:type username: str</span>
+<span class="sd">		:param consent: The consent status.</span>
+<span class="sd">		:type consent: bool</span>
+
+<span class="sd">		:raises: :class:`handlers.exceptions.study_exceptions.StudyDoesNotExistException`</span>
+<span class="sd">		:raises: :class:`handlers.exceptions.user_exceptions.ParticipantDoesNotExistException`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_study_exists</span><span class="p">(</span><span class="n">study_id</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyDoesNotExistException</span><span class="p">()</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_participant_exists</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="n">user_exceptions</span><span class="o">.</span><span class="n">ParticipantDoesNotExistException</span><span class="p">()</span>
+
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Set the consent accordingly.</span>
+<span class="sd">		Do not commit transactions do not change the state of the consent.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">consent</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blockchain_connector</span><span class="o">.</span><span class="n">has_consent</span><span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_blockchain_connector</span><span class="o">.</span><span class="n">set_consent</span><span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">consent</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConsentHandler._set_attribute_value"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.consent_handler.ConsentHandler._set_attribute_value">[docs]</a>	<span class="k">def</span> <span class="nf">_set_attribute_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute_id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Set the participant&#39;s value for the given attribute.</span>
+
+<span class="sd">		:param attribute_id: The unique ID of the attribute.</span>
+<span class="sd">		:type attribute_id: int</span>
+<span class="sd">		:param username: The unique username of the participant.</span>
+<span class="sd">		:type username: str</span>
+<span class="sd">		:param value: The new value of the attribute.</span>
+<span class="sd">		:type value: mixed</span>
+
+<span class="sd">		:raises: :class:`handlers.exceptions.study_exceptions.StudyAttributeDoesNotExistException`</span>
+<span class="sd">		:raises: :class:`handlers.exceptions.user_exceptions.ParticipantDoesNotExistException`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_id_exists</span><span class="p">(</span><span class="n">attribute_id</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="n">study_exceptions</span><span class="o">.</span><span class="n">AttributeDoesNotExistException</span><span class="p">()</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_participant_exists</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="n">user_exceptions</span><span class="o">.</span><span class="n">ParticipantDoesNotExistException</span><span class="p">()</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">			SELECT *</span>
+<span class="s2">			FROM participants_attributes</span>
+<span class="s2">			WHERE</span>
+<span class="s2">				attribute_id = </span><span class="si">%d</span><span class="s2"> AND</span>
+<span class="s2">				participant_id = &#39;</span><span class="si">%s</span><span class="s2">&#39;</span>
+<span class="s2">			&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">attribute_id</span><span class="p">,</span> <span class="n">username</span><span class="p">)):</span>
+
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			If an attribute&#39;s value row does not exist, it has to be created from scratch.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">				INSERT INTO participants_attributes(</span>
+<span class="s2">					attribute_id, participant_id, value</span>
+<span class="s2">				)</span>
+<span class="s2">				VALUES(</span><span class="si">%d</span><span class="s2">, &#39;</span><span class="si">%s</span><span class="s2">&#39;, &#39;</span><span class="si">%s</span><span class="s2">&#39;)</span>
+<span class="s2">			&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">attribute_id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			Otherwise, just update the row for the participant.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">				UPDATE participants_attributes</span>
+<span class="s2">				SET</span>
+<span class="s2">					value = &#39;</span><span class="si">%s</span><span class="s2">&#39;</span>
+<span class="s2">				WHERE</span>
+<span class="s2">					attribute_id = </span><span class="si">%d</span><span class="s2"> AND</span>
+<span class="s2">					participant_id = &#39;</span><span class="si">%s</span><span class="s2">&#39;</span>
+<span class="s2">			&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">attribute_id</span><span class="p">,</span> <span class="n">username</span><span class="p">))</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../biobank.html">Biobank Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../connection.html">Data Store Connections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../coauth.html">OAuth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../server.html">Server</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Nicholas Mamo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

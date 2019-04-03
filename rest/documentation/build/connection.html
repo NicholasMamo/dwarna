@@ -1,0 +1,310 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Data Store Connections &#8212; biobank_backend 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="OAuth" href="coauth.html" />
+    <link rel="prev" title="Biobank Management" href="biobank.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-connection">
+<span id="data-store-connections"></span><h1>Data Store Connections<a class="headerlink" href="#module-connection" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-connection.connection">
+<span id="connections"></span><h2>Connections<a class="headerlink" href="#module-connection.connection" title="Permalink to this headline">¶</a></h2>
+<p>The connection to the PostgreSQL, which also executes commands on behalf of applications.</p>
+<dl class="class">
+<dt id="connection.connection.Connection">
+<em class="property">class </em><code class="descclassname">connection.connection.</code><code class="descname">Connection</code><a class="reference internal" href="_modules/connection/connection.html#Connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connection.connection.Connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>A generic connection class</p>
+</dd></dl>
+
+<div class="section" id="module-connection.db_connection">
+<span id="database-connections"></span><h3>Database Connections<a class="headerlink" href="#module-connection.db_connection" title="Permalink to this headline">¶</a></h3>
+<p>Database interfaces using the base connection class.</p>
+<dl class="class">
+<dt id="connection.db_connection.PostgreSQLConnection">
+<em class="property">class </em><code class="descclassname">connection.db_connection.</code><code class="descname">PostgreSQLConnection</code><span class="sig-paren">(</span><em>database</em>, <em>host</em>, <em>username</em>, <em>password</em>, <em>cursor_factory=&lt;class 'psycopg2.extras.RealDictCursor'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connection/db_connection.html#PostgreSQLConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connection.db_connection.PostgreSQLConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>The connection to the PostgreSQL database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>_database</strong> (<em>str</em>) – The name of the database to which a connection will be established.</li>
+<li><strong>_host</strong> (<em>str</em>) – The hostname where the database resides.</li>
+<li><strong>_username</strong> (<em>str</em>) – The username used to connect to the database.</li>
+<li><strong>_password</strong> (<em>str</em>) – The password used to connect to the database</li>
+<li><strong>_cursor_factory</strong> – The type of cursors to create.
+The RealDictCursor factory is the default one.
+This factory returns associative arrays (<cite>dict</cite> instances) from queries.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="connection.db_connection.PostgreSQLConnection.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>database</em>, <em>host</em>, <em>username</em>, <em>password</em>, <em>cursor_factory=&lt;class 'psycopg2.extras.RealDictCursor'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connection/db_connection.html#PostgreSQLConnection.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connection.db_connection.PostgreSQLConnection.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the credentials used to connect to the database and establish a connection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>database</strong> (<em>str</em>) – The name of the database to which a connection will be established.</li>
+<li><strong>host</strong> (<em>str</em>) – The hostname where the database resides.</li>
+<li><strong>username</strong> (<em>str</em>) – The username used to connect to the database.</li>
+<li><strong>password</strong> (<em>str</em>) – The password used to connect to the database</li>
+<li><strong>cursor_factory</strong> (<code class="xref py py-class docutils literal"><span class="pre">psycopg2.extras.RealDictCursor</span></code>) – The type of cursors to create.
+The RealDictCursor factory is the default one.
+This factory returns associative arrays (<cite>dict</cite> instances) from queries.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="connection.db_connection.PostgreSQLConnection.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#connection.db_connection.PostgreSQLConnection.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="connection.db_connection.PostgreSQLConnection.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connection/db_connection.html#PostgreSQLConnection.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connection.db_connection.PostgreSQLConnection.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the connection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="connection.db_connection.PostgreSQLConnection.commit">
+<code class="descname">commit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connection/db_connection.html#PostgreSQLConnection.commit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connection.db_connection.PostgreSQLConnection.commit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Commit the changes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="connection.db_connection.PostgreSQLConnection.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connection/db_connection.html#PostgreSQLConnection.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connection.db_connection.PostgreSQLConnection.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Duplicate the connection.
+This can be used to create a different session.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The new connection.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#connection.db_connection.PostgreSQLConnection" title="connection.db_connection.PostgreSQLConnection"><code class="xref py py-class docutils literal"><span class="pre">connection.db_connection.PostgreSQLConnection</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="connection.db_connection.PostgreSQLConnection.count">
+<code class="descname">count</code><span class="sig-paren">(</span><em>query</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connection/db_connection.html#PostgreSQLConnection.count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connection.db_connection.PostgreSQLConnection.count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Count the number of rows when executing the given query.
+The COUNT command itself has to be given.
+This function only acts as a wrapper, getting just a number of rows.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> (<em>str</em>) – The query to execute.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The number of rows in the query.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="connection.db_connection.PostgreSQLConnection.cursor">
+<code class="descname">cursor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connection/db_connection.html#PostgreSQLConnection.cursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connection.db_connection.PostgreSQLConnection.cursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch the connection’s cursor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="connection.db_connection.PostgreSQLConnection.execute">
+<code class="descname">execute</code><span class="sig-paren">(</span><em>batch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connection/db_connection.html#PostgreSQLConnection.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connection.db_connection.PostgreSQLConnection.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the given transactions. If one fails, roll back all the changes.
+This function does not return anything, but it may throw exceptions.
+When something does go awry, the connection establishes a new connection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>batch</strong> (<em>list of str</em>) – A batch of queries to execute.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">Exception</span></code>: Any exception that is caught is rethrown.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="connection.db_connection.PostgreSQLConnection.exists">
+<code class="descname">exists</code><span class="sig-paren">(</span><em>query</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connection/db_connection.html#PostgreSQLConnection.exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connection.db_connection.PostgreSQLConnection.exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether the query returns any rows.
+The query should be a <cite>select</cite> statement.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> (<em>str</em>) – The query to execute.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A boolean indicating whether any rows were returned from the query.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="connection.db_connection.PostgreSQLConnection.reconnect">
+<code class="descname">reconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connection/db_connection.html#PostgreSQLConnection.reconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connection.db_connection.PostgreSQLConnection.reconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reconnect to the database.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="connection.db_connection.PostgreSQLConnection.select">
+<code class="descname">select</code><span class="sig-paren">(</span><em>query</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connection/db_connection.html#PostgreSQLConnection.select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connection.db_connection.PostgreSQLConnection.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch all the rows returned from the database using the given query.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> (<em>str</em>) – The <cite>select</cite> query to execute.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">All the rows returned by the query.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="connection.db_connection.PostgreSQLConnection.select_one">
+<code class="descname">select_one</code><span class="sig-paren">(</span><em>query</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connection/db_connection.html#PostgreSQLConnection.select_one"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connection.db_connection.PostgreSQLConnection.select_one" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch one row from the database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> (<em>str</em>) – The <cite>select</cite> query to execute.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A single row.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="biobank.html">Biobank Management</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Store Connections</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-connection.connection">Connections</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="coauth.html">OAuth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">Server</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="biobank.html" title="previous chapter">Biobank Management</a></li>
+      <li>Next: <a href="coauth.html" title="next chapter">OAuth</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/connection.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Nicholas Mamo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="_sources/connection.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

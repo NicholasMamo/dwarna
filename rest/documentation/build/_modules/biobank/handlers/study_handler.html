@@ -1,0 +1,615 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>biobank.handlers.study_handler &#8212; biobank_backend 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for biobank.handlers.study_handler</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The route handler to handle study-related requests.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+
+<span class="n">path</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;../../&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+	<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">oauth2.web</span> <span class="k">import</span> <span class="n">Response</span>
+
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">general_exceptions</span><span class="p">,</span> <span class="n">study_exceptions</span><span class="p">,</span> <span class="n">user_exceptions</span>
+<span class="kn">from</span> <span class="nn">.handler</span> <span class="k">import</span> <span class="n">PostgreSQLRouteHandler</span>
+
+<span class="kn">import</span> <span class="nn">config</span>
+
+<div class="viewcode-block" id="StudyHandler"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler">[docs]</a><span class="k">class</span> <span class="nc">StudyHandler</span><span class="p">(</span><span class="n">PostgreSQLRouteHandler</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	The study handler class receives and handles requests that are related to studies.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="StudyHandler.create_study"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler.create_study">[docs]</a>	<span class="k">def</span> <span class="nf">create_study</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">homepage</span><span class="p">,</span> <span class="n">researchers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Insert a study into the database.</span>
+
+<span class="sd">		:param study_id: The study&#39;s unique ID.</span>
+<span class="sd">		:type study_id: str</span>
+<span class="sd">		:param name: The study&#39;s name.</span>
+<span class="sd">		:type name: str</span>
+<span class="sd">		:param description: A short description of the study.</span>
+<span class="sd">		:type description: str</span>
+<span class="sd">		:param homepage: A link to the study&#39;s homepage.</span>
+<span class="sd">		:type homepage: str</span>
+<span class="sd">		:param researchers: A list of researchers that are participating in the study.</span>
+<span class="sd">		:type researchers: list</span>
+
+<span class="sd">		:return: A response with any errors that may arise.</span>
+<span class="sd">		:rtype: :class:`oauth2.web.Response`</span>
+
+<span class="sd">		:raises: :class:`handlers.exceptions.study_exceptions.StudyExistsException`</span>
+<span class="sd">		:raises: :class:`handlers.exceptions.user_exceptions.ResearcherDoesNotExistException`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+		<span class="k">try</span><span class="p">:</span>
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			Load, parse and sanitize the study arguments.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="n">study_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
+			<span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">homepage</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_list</span><span class="p">([</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">homepage</span> <span class="p">])</span>
+
+			<span class="n">researchers</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">researchers</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">researchers</span>
+			<span class="n">researchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_list</span><span class="p">(</span><span class="n">researchers</span><span class="p">)</span>
+
+			<span class="c1"># TODO: Error-handling.</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_blockchain_connector</span><span class="o">.</span><span class="n">create_study</span><span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
+
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			Validate the data.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_study_exists</span><span class="p">(</span><span class="n">study_id</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyExistsException</span><span class="p">()</span>
+
+			<span class="k">for</span> <span class="n">researcher</span> <span class="ow">in</span> <span class="n">researchers</span><span class="p">:</span>
+				<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_researcher_exists</span><span class="p">(</span><span class="n">researcher</span><span class="p">):</span>
+					<span class="k">raise</span> <span class="n">user_exceptions</span><span class="o">.</span><span class="n">ResearcherDoesNotExistException</span><span class="p">()</span>
+
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			Create the study.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			Add the study.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span>
+				<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">				INSERT INTO studies (</span>
+<span class="sd">					study_id, name, description, homepage)</span>
+<span class="sd">				VALUES (%d, &#39;%s&#39;, &#39;%s&#39;, &#39;%s&#39;);&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">homepage</span><span class="p">),</span>
+			<span class="p">])</span>
+
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			Add the researchers.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_link_researchers</span><span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="n">researchers</span><span class="p">)</span>
+
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="p">(</span><span class="n">general_exceptions</span><span class="o">.</span><span class="n">InputException</span><span class="p">,</span>
+				<span class="n">study_exceptions</span><span class="o">.</span><span class="n">AttributeExistsException</span><span class="p">,</span>
+				<span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyExistsException</span><span class="p">,</span>
+				<span class="n">user_exceptions</span><span class="o">.</span><span class="n">ResearcherDoesNotExistException</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Internal Server Error: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+
+		<span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="StudyHandler.update_study"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler.update_study">[docs]</a>	<span class="k">def</span> <span class="nf">update_study</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">homepage</span><span class="p">,</span> <span class="n">researchers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Update an existing study.</span>
+
+<span class="sd">		:param study_id: The study&#39;s unique ID.</span>
+<span class="sd">		:type study_id: str</span>
+<span class="sd">		:param name: The study&#39;s name.</span>
+<span class="sd">		:type name: str</span>
+<span class="sd">		:param description: A short description of the study.</span>
+<span class="sd">		:type description: str</span>
+<span class="sd">		:param homepage: A link to the study&#39;s homepage.</span>
+<span class="sd">		:type homepage: str</span>
+<span class="sd">		:param researchers: A list of researchers that are participating in the study.</span>
+<span class="sd">		:type researchers: list</span>
+
+<span class="sd">		:return: A response with any errors that may arise.</span>
+<span class="sd">		:rtype: :class:`oauth2.web.Response`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+		<span class="k">try</span><span class="p">:</span>
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			Load, parse and sanitize the study arguments.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="n">study_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
+			<span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">homepage</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_list</span><span class="p">([</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">homepage</span> <span class="p">])</span>
+
+			<span class="n">researchers</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">researchers</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">researchers</span>
+			<span class="n">researchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_list</span><span class="p">(</span><span class="n">researchers</span><span class="p">)</span>
+
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			Validate the data.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_study_exists</span><span class="p">(</span><span class="n">study_id</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyDoesNotExistException</span><span class="p">()</span>
+
+			<span class="k">for</span> <span class="n">researcher</span> <span class="ow">in</span> <span class="n">researchers</span><span class="p">:</span>
+				<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_researcher_exists</span><span class="p">(</span><span class="n">researcher</span><span class="p">):</span>
+					<span class="k">raise</span> <span class="n">user_exceptions</span><span class="o">.</span><span class="n">ResearcherDoesNotExistException</span><span class="p">()</span>
+
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			Update the study.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span>
+				<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">				UPDATE studies</span>
+<span class="sd">				SET</span>
+<span class="sd">					&quot;name&quot; = &#39;%s&#39;,</span>
+<span class="sd">					&quot;description&quot; = &#39;%s&#39;,</span>
+<span class="sd">					&quot;homepage&quot; = &#39;%s&#39;</span>
+<span class="sd">				WHERE</span>
+<span class="sd">					&quot;study_id&quot; = %d;&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">homepage</span><span class="p">,</span> <span class="n">study_id</span><span class="p">),</span>
+			<span class="p">])</span>
+
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			Remove all linked researchers.</span>
+<span class="sd">			Then add the new ones.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_unlink_researchers</span><span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_link_researchers</span><span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="n">researchers</span><span class="p">)</span>
+
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="p">(</span><span class="n">general_exceptions</span><span class="o">.</span><span class="n">InputException</span><span class="p">,</span>
+				<span class="n">study_exceptions</span><span class="o">.</span><span class="n">AttributeExistsException</span><span class="p">,</span>
+				<span class="n">study_exceptions</span><span class="o">.</span><span class="n">AttributeDoesNotExistException</span><span class="p">,</span>
+				<span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyDoesNotExistException</span><span class="p">,</span>
+				<span class="n">user_exceptions</span><span class="o">.</span><span class="n">ResearcherDoesNotExistException</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Internal Server Error: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+
+		<span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="StudyHandler.remove_study"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler.remove_study">[docs]</a>	<span class="k">def</span> <span class="nf">remove_study</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Remove an existing study.</span>
+
+<span class="sd">		:param study_id: The study&#39;s unique ID.</span>
+<span class="sd">		:type study_id: str</span>
+
+<span class="sd">		:return: A response with any errors that may arise.</span>
+<span class="sd">		:rtype: :class:`oauth2.web.Response`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+		<span class="k">try</span><span class="p">:</span>
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			Load, parse and sanitize the study arguments.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="n">study_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
+
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			Validate the data.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_study_exists</span><span class="p">(</span><span class="n">study_id</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyDoesNotExistException</span><span class="p">()</span>
+
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			Remove the study.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span>
+				<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">				DELETE FROM studies</span>
+<span class="sd">				WHERE</span>
+<span class="sd">					&quot;study_id&quot; = %d;&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="p">),</span>
+			<span class="p">])</span>
+
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="p">(</span><span class="n">general_exceptions</span><span class="o">.</span><span class="n">InputException</span><span class="p">,</span>
+				<span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyDoesNotExistException</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Internal Server Error: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+
+		<span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="StudyHandler.get_studies_by_researcher"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler.get_studies_by_researcher">[docs]</a>	<span class="k">def</span> <span class="nf">get_studies_by_researcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">researcher</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">search</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Retrieve a list of studies.</span>
+
+<span class="sd">		:param researcher: The unique ID of the researcher, only used if it is not empty.</span>
+<span class="sd">			The studies are filtered such that only those studies in which the researcher is participating are retrieved.</span>
+<span class="sd">		:type researcher: str</span>
+<span class="sd">		:param number: The number of studies to retrieve.</span>
+<span class="sd">			If a negative number is provided, all matching studies are retrieved.</span>
+<span class="sd">		:type number: str</span>
+<span class="sd">		:param page: The page number, used to aid in pagination.</span>
+<span class="sd">		:type page: str</span>
+<span class="sd">		:param search: A search string used to look up studies using their name and description.</span>
+<span class="sd">		:type search: str</span>
+<span class="sd">		:param case_sensitive: A boolean indicating whether the search should be case sensitive.</span>
+<span class="sd">		:type case_sensitive: str</span>
+
+<span class="sd">		:return: A response containing a list of study objects and any errors that may arise.</span>
+<span class="sd">		:rtype: :class:`oauth2.web.Response`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+			<span class="n">page</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">page</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+			<span class="n">case_sensitive</span> <span class="o">=</span> <span class="n">case_sensitive</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span>
+
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_researcher_exists</span><span class="p">(</span><span class="n">researcher</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="n">user_exceptions</span><span class="o">.</span><span class="n">ResearcherDoesNotExistException</span><span class="p">()</span>
+
+			<span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">				SELECT *</span>
+<span class="s2">				FROM studies, studies_researchers</span>
+<span class="s2">				WHERE</span>
+<span class="s2">					(studies.&quot;name&quot; </span><span class="si">%s</span><span class="s2"> &#39;</span><span class="si">%%%s%%</span><span class="s2">&#39; OR</span>
+<span class="s2">					studies.&quot;description&quot; </span><span class="si">%s</span><span class="s2"> &#39;</span><span class="si">%%%s%%</span><span class="s2">&#39;) AND</span>
+<span class="s2">					studies.study_id = studies_researchers.study_id AND</span>
+<span class="s2">					studies_researchers.researcher_id = &#39;</span><span class="si">%s</span><span class="s2">&#39;</span>
+<span class="s2">			&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+				<span class="s2">&quot;LIKE&quot;</span> <span class="k">if</span> <span class="n">case_sensitive</span> <span class="k">else</span> <span class="s2">&quot;ILIKE&quot;</span><span class="p">,</span> <span class="n">search</span><span class="p">,</span>
+				<span class="s2">&quot;LIKE&quot;</span> <span class="k">if</span> <span class="n">case_sensitive</span> <span class="k">else</span> <span class="s2">&quot;ILIKE&quot;</span><span class="p">,</span> <span class="n">search</span><span class="p">,</span>
+				<span class="n">researcher</span><span class="p">,</span>
+			<span class="p">)</span>
+
+			<span class="k">if</span> <span class="n">number</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="n">query</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">				LIMIT </span><span class="si">%d</span><span class="s2"> OFFSET </span><span class="si">%d</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+					<span class="n">number</span><span class="p">,</span> <span class="n">number</span> <span class="o">*</span> <span class="p">(</span><span class="n">page</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+				<span class="p">)</span>
+
+			<span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+			<span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">				SELECT COUNT(*)</span>
+<span class="s2">				FROM studies, studies_researchers</span>
+<span class="s2">				WHERE</span>
+<span class="s2">					(studies.&quot;name&quot; </span><span class="si">%s</span><span class="s2"> &#39;</span><span class="si">%%%s%%</span><span class="s2">&#39; OR</span>
+<span class="s2">					studies.&quot;description&quot; </span><span class="si">%s</span><span class="s2"> &#39;</span><span class="si">%%%s%%</span><span class="s2">&#39;) AND</span>
+<span class="s2">					studies.study_id = studies_researchers.study_id AND</span>
+<span class="s2">					studies_researchers.researcher_id = &#39;</span><span class="si">%s</span><span class="s2">&#39;</span>
+<span class="s2">			&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+				<span class="s2">&quot;LIKE&quot;</span> <span class="k">if</span> <span class="n">case_sensitive</span> <span class="k">else</span> <span class="s2">&quot;ILIKE&quot;</span><span class="p">,</span> <span class="n">search</span><span class="p">,</span>
+				<span class="s2">&quot;LIKE&quot;</span> <span class="k">if</span> <span class="n">case_sensitive</span> <span class="k">else</span> <span class="s2">&quot;ILIKE&quot;</span><span class="p">,</span> <span class="n">search</span><span class="p">,</span>
+				<span class="n">researcher</span><span class="p">,</span>
+			<span class="p">))</span>
+
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+				<span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+					<span class="p">{</span>
+						<span class="s2">&quot;study&quot;</span><span class="p">:</span> <span class="n">study</span><span class="p">,</span>
+						<span class="s2">&quot;researchers&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_study_researchers</span><span class="p">(</span><span class="n">study</span><span class="p">[</span><span class="s2">&quot;study_id&quot;</span><span class="p">]),</span>
+					<span class="p">}</span> <span class="k">for</span> <span class="n">study</span> <span class="ow">in</span> <span class="n">rows</span>
+				<span class="p">],</span>
+				<span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="n">total</span><span class="p">,</span>
+			<span class="p">})</span>
+		<span class="k">except</span> <span class="p">(</span><span class="n">user_exceptions</span><span class="o">.</span><span class="n">ResearcherDoesNotExistException</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Internal Server Error: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+
+		<span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="StudyHandler.get_studies"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler.get_studies">[docs]</a>	<span class="k">def</span> <span class="nf">get_studies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">search</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">active_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Retrieve a list of studies.</span>
+
+<span class="sd">		:param number: The number of studies to retrieve.</span>
+<span class="sd">			If a negative number is provided, all matching studies are retrieved.</span>
+<span class="sd">		:type number: str</span>
+<span class="sd">		:param page: The page number, used to aid in pagination.</span>
+<span class="sd">		:type page: str</span>
+<span class="sd">		:param search: A search string used to look up studies using their name and description.</span>
+<span class="sd">		:type search: str</span>
+<span class="sd">		:param case_sensitive: A boolean indicating whether the search should be case sensitive.</span>
+<span class="sd">		:type case_sensitive: str</span>
+<span class="sd">		:param active_only: A boolean indicating whether only active studies should be fetched.</span>
+<span class="sd">			By default, all studies are fetched.</span>
+<span class="sd">			In the current implementation, the parameter has no effect.</span>
+<span class="sd">		:type active_only: bool</span>
+
+<span class="sd">		:return: A response containing a list of study objects and any errors that may arise.</span>
+<span class="sd">		:rtype: :class:`oauth2.web.Response`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+			<span class="n">page</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">page</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+			<span class="n">case_sensitive</span> <span class="o">=</span> <span class="n">case_sensitive</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span>
+
+			<span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">				SELECT *</span>
+<span class="s2">				FROM studies</span>
+<span class="s2">				WHERE</span>
+<span class="s2">					(studies.&quot;name&quot; </span><span class="si">%s</span><span class="s2"> &#39;</span><span class="si">%%%s%%</span><span class="s2">&#39; OR</span>
+<span class="s2">					studies.&quot;description&quot; </span><span class="si">%s</span><span class="s2"> &#39;</span><span class="si">%%%s%%</span><span class="s2">&#39;)</span>
+<span class="s2">			&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+				<span class="s2">&quot;LIKE&quot;</span> <span class="k">if</span> <span class="n">case_sensitive</span> <span class="k">else</span> <span class="s2">&quot;ILIKE&quot;</span><span class="p">,</span> <span class="n">search</span><span class="p">,</span>
+				<span class="s2">&quot;LIKE&quot;</span> <span class="k">if</span> <span class="n">case_sensitive</span> <span class="k">else</span> <span class="s2">&quot;ILIKE&quot;</span><span class="p">,</span> <span class="n">search</span><span class="p">,</span>
+			<span class="p">)</span>
+
+			<span class="k">if</span> <span class="n">number</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="n">query</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">				LIMIT </span><span class="si">%d</span><span class="s2"> OFFSET </span><span class="si">%d</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+					<span class="n">number</span><span class="p">,</span> <span class="n">number</span> <span class="o">*</span> <span class="p">(</span><span class="n">page</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+				<span class="p">)</span>
+
+			<span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+			<span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">				SELECT COUNT(*)</span>
+<span class="s2">				FROM studies</span>
+<span class="s2">				WHERE</span>
+<span class="s2">					(studies.&quot;name&quot; </span><span class="si">%s</span><span class="s2"> &#39;</span><span class="si">%%%s%%</span><span class="s2">&#39; OR</span>
+<span class="s2">					studies.&quot;description&quot; </span><span class="si">%s</span><span class="s2"> &#39;</span><span class="si">%%%s%%</span><span class="s2">&#39;)</span>
+<span class="s2">			&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+				<span class="s2">&quot;LIKE&quot;</span> <span class="k">if</span> <span class="n">case_sensitive</span> <span class="k">else</span> <span class="s2">&quot;ILIKE&quot;</span><span class="p">,</span> <span class="n">search</span><span class="p">,</span>
+				<span class="s2">&quot;LIKE&quot;</span> <span class="k">if</span> <span class="n">case_sensitive</span> <span class="k">else</span> <span class="s2">&quot;ILIKE&quot;</span><span class="p">,</span> <span class="n">search</span><span class="p">,</span>
+			<span class="p">))</span>
+
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+				<span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+					<span class="p">{</span>
+						<span class="s2">&quot;study&quot;</span><span class="p">:</span> <span class="n">study</span><span class="p">,</span>
+						<span class="s2">&quot;researchers&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_study_researchers</span><span class="p">(</span><span class="n">study</span><span class="p">[</span><span class="s2">&quot;study_id&quot;</span><span class="p">]),</span>
+					<span class="p">}</span> <span class="k">for</span> <span class="n">study</span> <span class="ow">in</span> <span class="n">rows</span>
+				<span class="p">],</span>
+				<span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="n">total</span><span class="p">,</span>
+			<span class="p">})</span>
+		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Internal Server Error: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+
+		<span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="StudyHandler.get_active_studies"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler.get_active_studies">[docs]</a>	<span class="k">def</span> <span class="nf">get_active_studies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">search</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Retrieve a list of studies that are active.</span>
+<span class="sd">		This function can be used to differentiate between studies that have been retired and active ones.</span>
+<span class="sd">		The function acts only as a wrapper to call the `get_studies` function, filtering specifically by active studies.</span>
+
+<span class="sd">		:param number: The number of studies to retrieve.</span>
+<span class="sd">			If a negative number is given, all matching studies are retrieved.</span>
+<span class="sd">		:type number: str</span>
+<span class="sd">		:param page: The page number, used to aid in pagination.</span>
+<span class="sd">			If a negative number is given, no pagination is applied.</span>
+<span class="sd">		:type page: str</span>
+<span class="sd">		:param search: A search string used to look up studies using their name and description.</span>
+<span class="sd">		:type search: str</span>
+<span class="sd">		:param case_sensitive: A boolean indicating whether the search should be case sensitive.</span>
+<span class="sd">		:type case_sensitive: str</span>
+
+<span class="sd">		:return: A response containing a list of study objects and any errors that may arise.</span>
+<span class="sd">		:rtype: :class:`oauth2.web.Response`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_studies</span><span class="p">(</span><span class="n">number</span><span class="o">=</span><span class="n">number</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="n">page</span><span class="p">,</span> <span class="n">search</span><span class="o">=</span><span class="n">search</span><span class="p">,</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="n">case_sensitive</span><span class="p">,</span> <span class="n">active_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="StudyHandler.get_study_by_id"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler.get_study_by_id">[docs]</a>	<span class="k">def</span> <span class="nf">get_study_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Retrieve a single study and all associated researchers and attributes.</span>
+
+<span class="sd">		:param study_id: The study&#39;s unique ID.</span>
+<span class="sd">		:type study_id: str</span>
+
+<span class="sd">		:return: A response containing a list of study objects and any errors that may arise.</span>
+<span class="sd">		:rtype: :class:`oauth2.web.Response`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">study_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
+
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_study_exists</span><span class="p">(</span><span class="n">study_id</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyDoesNotExistException</span><span class="p">()</span>
+
+			<span class="n">study</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">select_one</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">				SELECT *</span>
+<span class="s2">				FROM studies</span>
+<span class="s2">				WHERE</span>
+<span class="s2">					&quot;study_id&quot; = </span><span class="si">%d</span><span class="s2"></span>
+<span class="s2">			&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">study_id</span><span class="p">))</span>
+
+			<span class="n">researchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_study_researchers</span><span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
+
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+				<span class="s2">&quot;study&quot;</span><span class="p">:</span> <span class="n">study</span><span class="p">,</span>
+				<span class="s2">&quot;researchers&quot;</span><span class="p">:</span> <span class="n">researchers</span><span class="p">,</span>
+			<span class="p">})</span>
+			<span class="k">return</span> <span class="n">response</span>
+		<span class="k">except</span> <span class="p">(</span><span class="n">general_exceptions</span><span class="o">.</span><span class="n">InputException</span><span class="p">,</span>
+				<span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyDoesNotExistException</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Internal Server Error: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
+
+		<span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="StudyHandler._link_researchers"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler._link_researchers">[docs]</a>	<span class="k">def</span> <span class="nf">_link_researchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="n">researchers</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Link the given researchers, identified by their username, with the study.</span>
+
+<span class="sd">		:param study_id: The unique ID of the study.</span>
+<span class="sd">		:type study_id: int</span>
+<span class="sd">		:param researchers: The list of researchers to link with the study.</span>
+<span class="sd">			Each researcher is represented by their username.</span>
+<span class="sd">		:type researchers: list</span>
+
+<span class="sd">		:raises: :class:`handlers.exceptions.study_exceptions.StudyDoesNotExistException`</span>
+<span class="sd">		:raises: :class:`handlers.exceptions.user_exceptions.ResearcherDoesNotExistException`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_study_exists</span><span class="p">(</span><span class="n">study_id</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyDoesNotExistException</span><span class="p">()</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_researcher_exists</span><span class="p">(</span><span class="n">researcher</span><span class="p">)</span> <span class="k">for</span> <span class="n">researcher</span> <span class="ow">in</span> <span class="n">researchers</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="n">user_exceptions</span><span class="o">.</span><span class="n">ResearcherDoesNotExistException</span><span class="p">()</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span>
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			INSERT INTO studies_researchers(</span>
+<span class="sd">				study_id, researcher_id)</span>
+<span class="sd">			VALUES (%d, &#39;%s&#39;);&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="n">researcher</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">researcher</span> <span class="ow">in</span> <span class="n">researchers</span> <span class="p">])</span></div>
+
+<div class="viewcode-block" id="StudyHandler._unlink_researchers"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler._unlink_researchers">[docs]</a>	<span class="k">def</span> <span class="nf">_unlink_researchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Unlink all researchers associated with the study identified by the given ID.</span>
+
+<span class="sd">		:param study_id: The unique ID of the study.</span>
+<span class="sd">		:type study_id: int</span>
+
+<span class="sd">		:raises: :class:`handlers.exceptions.study_exceptions.StudyDoesNotExistException`</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_study_exists</span><span class="p">(</span><span class="n">study_id</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyDoesNotExistException</span><span class="p">()</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span>
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			DELETE FROM studies_researchers</span>
+<span class="sd">			WHERE</span>
+<span class="sd">				&quot;study_id&quot; = %d</span>
+<span class="sd">			&quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">study_id</span><span class="p">,</span> <span class="p">])</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../biobank.html">Biobank Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../connection.html">Data Store Connections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../coauth.html">OAuth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../server.html">Server</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Nicholas Mamo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

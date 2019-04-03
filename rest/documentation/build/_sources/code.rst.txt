@@ -1,0 +1,13 @@
+Documentation for the Code
+**************************
+
+
+.. automodule:: biobank
+
+Handlers
+========
+
+.. automodule:: biobank.handler
+   :members: RouteHandler, PostgreSQLRouteHandler
+   :private-members:
+   :special-members:

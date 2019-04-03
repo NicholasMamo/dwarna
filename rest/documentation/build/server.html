@@ -1,0 +1,684 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Server &#8212; biobank_backend 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="OAuth" href="coauth.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="server">
+<h1>Server<a class="headerlink" href="#server" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-config">
+<span id="configuration"></span><h2>Configuration<a class="headerlink" href="#module-config" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="config.biobanker_handler_class">
+<code class="descclassname">config.</code><code class="descname">biobanker_handler_class</code><a class="headerlink" href="#config.biobanker_handler_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">biobank.handlers.biobanker_handler.BiobankerHandler</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="config.blockchain_admin_base_url">
+<code class="descclassname">config.</code><code class="descname">blockchain_admin_base_url</code><em class="property"> = 'http://localhost:3001/api'</em><a class="headerlink" href="#config.blockchain_admin_base_url" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><strong>blockchain_admin_url</strong> (<em>str</em>) – The URL where the Hyperledger Composer REST API listens to admin requests.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="config.blockchain_handler_class">
+<code class="descclassname">config.</code><code class="descname">blockchain_handler_class</code><a class="headerlink" href="#config.blockchain_handler_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="config.blockchain_multiuser_base_url">
+<code class="descclassname">config.</code><code class="descname">blockchain_multiuser_base_url</code><em class="property"> = 'http://localhost:3000/api'</em><a class="headerlink" href="#config.blockchain_multiuser_base_url" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><a class="reference internal" href="#config.blockchain_multiuser_base_url" title="config.blockchain_multiuser_base_url"><strong>blockchain_multiuser_base_url</strong></a> (<em>str</em>) – The URL where the Hyperledger Composer REST API listens to multi-user requests.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="config.consent_handler_class">
+<code class="descclassname">config.</code><code class="descname">consent_handler_class</code><a class="headerlink" href="#config.consent_handler_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="biobank.html#biobank.handlers.consent_handler.ConsentHandler" title="biobank.handlers.consent_handler.ConsentHandler"><code class="xref py py-class docutils literal"><span class="pre">biobank.handlers.consent_handler.ConsentHandler</span></code></a></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="config.database">
+<code class="descclassname">config.</code><code class="descname">database</code><em class="property"> = 'biobank'</em><a class="headerlink" href="#config.database" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><a class="reference internal" href="#config.database" title="config.database"><strong>database</strong></a> (<em>str</em>) – The database used by default.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="data">
+<dt id="config.default_scope">
+<code class="descclassname">config.</code><code class="descname">default_scope</code><em class="property"> = 'none'</em><a class="headerlink" href="#config.default_scope" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><a class="reference internal" href="#config.default_scope" title="config.default_scope"><strong>default_scope</strong></a> (<em>str</em>) – The default scope of access tokens.
+It should permit no data access whatsoever, except to functions that require no scopes.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="config.generic_handler_class">
+<code class="descclassname">config.</code><code class="descname">generic_handler_class</code><a class="headerlink" href="#config.generic_handler_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="biobank.html#biobank.handlers.handler.PostgreSQLRouteHandler" title="biobank.handlers.handler.PostgreSQLRouteHandler"><code class="xref py py-class docutils literal"><span class="pre">biobank.handlers.handler.PostgreSQLRouteHandler</span></code></a></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="config.handler_classes">
+<code class="descclassname">config.</code><code class="descname">handler_classes</code><em class="property"> = [&lt;class 'biobank.handlers.handler.PostgreSQLRouteHandler'&gt;, &lt;class 'biobank.handlers.biobanker_handler.BiobankerHandler'&gt;, &lt;class 'biobank.handlers.participant_handler.ParticipantHandler'&gt;, &lt;class 'biobank.handlers.researcher_handler.ResearcherHandler'&gt;, &lt;class 'biobank.handlers.study_handler.StudyHandler'&gt;, &lt;class 'biobank.handlers.consent_handler.ConsentHandler'&gt;]</em><a class="headerlink" href="#config.handler_classes" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><a class="reference internal" href="#config.handler_classes" title="config.handler_classes"><strong>handler_classes</strong></a> (<em>list</em>) – The list of handler classes that are in use.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="config.handler_connector">
+<code class="descclassname">config.</code><code class="descname">handler_connector</code><a class="headerlink" href="#config.handler_connector" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="connection.html#connection.db_connection.PostgreSQLConnection" title="connection.db_connection.PostgreSQLConnection"><code class="xref py py-class docutils literal"><span class="pre">connection.db_connection.PostgreSQLConnection</span></code></a></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="config.oauth_database">
+<code class="descclassname">config.</code><code class="descname">oauth_database</code><em class="property"> = 'biobank_oauth'</em><a class="headerlink" href="#config.oauth_database" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><a class="reference internal" href="#config.database" title="config.database"><strong>database</strong></a> (<em>str</em>) – The OAuth database used by default.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="config.participant_handler_class">
+<code class="descclassname">config.</code><code class="descname">participant_handler_class</code><a class="headerlink" href="#config.participant_handler_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="biobank.html#biobank.handlers.participant_handler.ParticipantHandler" title="biobank.handlers.participant_handler.ParticipantHandler"><code class="xref py py-class docutils literal"><span class="pre">biobank.handlers.participant_handler.ParticipantHandler</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="config.researcher_handler_class">
+<code class="descclassname">config.</code><code class="descname">researcher_handler_class</code><a class="headerlink" href="#config.researcher_handler_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="biobank.html#biobank.handlers.researcher_handler.ResearcherHandler" title="biobank.handlers.researcher_handler.ResearcherHandler"><code class="xref py py-class docutils literal"><span class="pre">biobank.handlers.researcher_handler.ResearcherHandler</span></code></a></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="config.routes">
+<code class="descclassname">config.</code><code class="descname">routes</code><em class="property"> = {'/create_biobanker': {'handler': &lt;class 'biobank.handlers.biobanker_handler.BiobankerHandler'&gt;, 'function': &lt;function BiobankerHandler.create_biobanker at 0x7fba0a4f5bf8&gt;, 'scopes': ['create_biobanker'], 'parameters': ['username'], 'method': ['POST']}, '/create_participant': {'handler': &lt;class 'biobank.handlers.participant_handler.ParticipantHandler'&gt;, 'function': &lt;function ParticipantHandler.create_participant at 0x7fba0781c950&gt;, 'scopes': ['create_participant'], 'parameters': ['username', 'password'], 'method': ['POST']}, '/create_researcher': {'handler': &lt;class 'biobank.handlers.researcher_handler.ResearcherHandler'&gt;, 'function': &lt;function ResearcherHandler.create_researcher at 0x7fba0a4d5730&gt;, 'scopes': ['create_researcher'], 'parameters': ['username'], 'method': ['POST']}, '/create_study': {'handler': &lt;class 'biobank.handlers.study_handler.StudyHandler'&gt;, 'function': &lt;function StudyHandler.create_study at 0x7fba06aa4d90&gt;, 'scopes': ['create_study'], 'parameters': ['study_id', 'name', 'description', 'homepage'], 'method': ['POST']}, '/get_active_studies': {'handler': &lt;class 'biobank.handlers.study_handler.StudyHandler'&gt;, 'function': &lt;function StudyHandler.get_active_studies at 0x7fba06e87158&gt;, 'scopes': ['view_study'], 'parameters': [], 'method': ['GET']}, '/get_attributes': {'handler': &lt;class 'biobank.handlers.consent_handler.ConsentHandler'&gt;, 'function': &lt;function ConsentHandler.get_attributes at 0x7fba0a5180d0&gt;, 'scopes': ['view_consent'], 'parameters': ['username', 'attributes'], 'method': ['POST'], 'self_only': True}, '/get_biobankers': {'handler': &lt;class 'biobank.handlers.biobanker_handler.BiobankerHandler'&gt;, 'function': &lt;function BiobankerHandler.get_biobankers at 0x7fba0a482d08&gt;, 'scopes': ['view_biobanker'], 'parameters': [], 'method': ['GET']}, '/get_card': {'handler': &lt;class 'biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI'&gt;, 'function': &lt;function HyperledgerAPI.get_card at 0x7fba06e87bf8&gt;, 'scopes': ['change_card'], 'parameters': ['username', 'temp'], 'method': ['GET']}, '/get_consent_trail': {'handler': &lt;class 'biobank.handlers.consent_handler.ConsentHandler'&gt;, 'function': &lt;function ConsentHandler.get_consent_trail at 0x7fba0a521840&gt;, 'scopes': ['view_consent'], 'parameters': ['username'], 'method': ['GET'], 'self_only': True}, '/get_participants': {'handler': &lt;class 'biobank.handlers.participant_handler.ParticipantHandler'&gt;, 'function': &lt;function ParticipantHandler.get_participants at 0x7fba0781cae8&gt;, 'scopes': ['view_participant'], 'parameters': [], 'method': ['GET']}, '/get_participants_by_study': {'handler': &lt;class 'biobank.handlers.consent_handler.ConsentHandler'&gt;, 'function': &lt;function ConsentHandler.get_participants_by_study at 0x7fba0a510ea0&gt;, 'scopes': ['view_consent'], 'parameters': ['study_id'], 'method': ['GET']}, '/get_researchers': {'handler': &lt;class 'biobank.handlers.researcher_handler.ResearcherHandler'&gt;, 'function': &lt;function ResearcherHandler.get_researchers at 0x7fba0a4d58c8&gt;, 'scopes': ['view_researcher'], 'parameters': [], 'method': ['GET']}, '/get_studies': {'handler': &lt;class 'biobank.handlers.study_handler.StudyHandler'&gt;, 'function': &lt;function StudyHandler.get_studies at 0x7fba06e870d0&gt;, 'scopes': ['view_study'], 'parameters': [], 'method': ['GET']}, '/get_studies_by_participant': {'handler': &lt;class 'biobank.handlers.consent_handler.ConsentHandler'&gt;, 'function': &lt;function ConsentHandler.get_studies_by_participant at 0x7fba0a521bf8&gt;, 'scopes': ['view_consent'], 'parameters': ['username'], 'method': ['GET']}, '/get_studies_by_researcher': {'handler': &lt;class 'biobank.handlers.study_handler.StudyHandler'&gt;, 'function': &lt;function StudyHandler.get_studies_by_researcher at 0x7fba06e87048&gt;, 'scopes': ['view_study'], 'parameters': ['researcher'], 'method': ['GET']}, '/get_study_by_id': {'handler': &lt;class 'biobank.handlers.study_handler.StudyHandler'&gt;, 'function': &lt;function StudyHandler.get_study_by_id at 0x7fba06e871e0&gt;, 'scopes': ['view_study'], 'parameters': ['study_id'], 'method': ['GET']}, '/give_consent': {'handler': &lt;class 'biobank.handlers.consent_handler.ConsentHandler'&gt;, 'function': &lt;function ConsentHandler.give_consent at 0x7fba0a518f28&gt;, 'scopes': ['update_consent'], 'parameters': ['study_id', 'username'], 'method': ['POST'], 'self_only': True}, '/has_card': {'handler': &lt;class 'biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI'&gt;, 'function': &lt;function HyperledgerAPI.has_card at 0x7fba06e87b70&gt;, 'scopes': ['change_card'], 'parameters': ['username', 'temp'], 'method': ['GET']}, '/has_consent': {'handler': &lt;class 'biobank.handlers.consent_handler.ConsentHandler'&gt;, 'function': &lt;function ConsentHandler.has_consent at 0x7fba0a521d90&gt;, 'scopes': ['view_consent'], 'parameters': ['study_id', 'username'], 'method': ['GET'], 'self_only': True}, '/ping': {'handler': &lt;class 'biobank.handlers.handler.PostgreSQLRouteHandler'&gt;, 'function': &lt;function PostgreSQLRouteHandler.ping at 0x7fba0790dd08&gt;, 'scopes': [], 'parameters': [], 'method': ['GET', 'POST']}, '/remove_biobanker_by_username': {'handler': &lt;class 'biobank.handlers.biobanker_handler.BiobankerHandler'&gt;, 'function': &lt;function BiobankerHandler.remove_biobanker_by_username at 0x7fba0a482b70&gt;, 'scopes': ['remove_biobanker'], 'parameters': ['username'], 'method': ['POST']}, '/remove_participant_by_username': {'handler': &lt;class 'biobank.handlers.participant_handler.ParticipantHandler'&gt;, 'function': &lt;function ParticipantHandler.remove_participant_by_username at 0x7fba0781c8c8&gt;, 'scopes': ['remove_participant'], 'parameters': ['username'], 'method': ['POST']}, '/remove_researcher_by_username': {'handler': &lt;class 'biobank.handlers.researcher_handler.ResearcherHandler'&gt;, 'function': &lt;function ResearcherHandler.remove_researcher_by_username at 0x7fba0a4d59d8&gt;, 'scopes': ['remove_researcher'], 'parameters': ['username'], 'method': ['POST']}, '/remove_study': {'handler': &lt;class 'biobank.handlers.study_handler.StudyHandler'&gt;, 'function': &lt;function StudyHandler.remove_study at 0x7fba0a4e6a60&gt;, 'scopes': ['remove_study'], 'parameters': ['study_id'], 'method': ['POST']}, '/save_cred_card': {'handler': &lt;class 'biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI'&gt;, 'function': &lt;function HyperledgerAPI.save_cred_card at 0x7fba06e87c80&gt;, 'scopes': ['change_card'], 'parameters': ['username', 'card'], 'method': ['POST']}, '/update_study': {'handler': &lt;class 'biobank.handlers.study_handler.StudyHandler'&gt;, 'function': &lt;function StudyHandler.update_study at 0x7fba0a4e6378&gt;, 'scopes': ['update_study'], 'parameters': ['study_id', 'name', 'description', 'homepage'], 'method': ['POST']}, '/withdraw_consent': {'handler': &lt;class 'biobank.handlers.consent_handler.ConsentHandler'&gt;, 'function': &lt;function ConsentHandler.withdraw_consent at 0x7fba0a510f28&gt;, 'scopes': ['update_consent'], 'parameters': ['study_id', 'username'], 'method': ['POST'], 'self_only': True}}</em><a class="headerlink" href="#config.routes" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><a class="reference internal" href="#config.routes" title="config.routes"><strong>routes</strong></a> (<em>dict</em>) – A list of routes that are accepted by the REST API.
+Associated with each one is the handler function, a list of scopes and the required parameters.
+Scopes need not be unique. For example, different ways of removing participants may share the same scope.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="data">
+<dt id="config.scopes">
+<code class="descclassname">config.</code><code class="descname">scopes</code><em class="property"> = ['view_researcher', 'create_study', 'create_biobanker', 'none', 'view_participant', 'update_consent', 'remove_study', 'create_participant', 'create_researcher', 'update_study', 'view_biobanker', 'remove_researcher', 'view_study', 'view_consent', 'change_card', 'remove_biobanker', 'remove_participant']</em><a class="headerlink" href="#config.scopes" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><a class="reference internal" href="#config.scopes" title="config.scopes"><strong>scopes</strong></a> (<em>list</em>) – All the possible scopes given by the authoization server.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="config.study_handler_class">
+<code class="descclassname">config.</code><code class="descname">study_handler_class</code><a class="headerlink" href="#config.study_handler_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">biobank.handlers.study_handler.StudyHandler</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="config.token_expiry">
+<code class="descclassname">config.</code><code class="descname">token_expiry</code><em class="property"> = 120</em><a class="headerlink" href="#config.token_expiry" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><a class="reference internal" href="#config.token_expiry" title="config.token_expiry"><strong>token_expiry</strong></a> (<em>int</em>) – How long (in seconds) access tokens should live before being retired.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-server">
+<span id="servers"></span><h2>Servers<a class="headerlink" href="#module-server" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-main"></span><p>The server that handles all requests to the backend.</p>
+<dl class="function">
+<dt id="main.main">
+<code class="descclassname">main.</code><code class="descname">main</code><span class="sig-paren">(</span><em>database</em>, <em>oauth_database</em>, <em>listen_port</em>, <em>token_expiry=120</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#main.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Establish a connection with PostgreSQL and start the server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>database</strong> (<em>str</em>) – The name of the database to connect to.</li>
+<li><strong>oauth_database</strong> (<em>str</em>) – The name of the database to connect to for OAuth storage.</li>
+<li><strong>listen_port</strong> (<em>int</em>) – The port on which the server listens.</li>
+<li><strong>token_expiry</strong> (<em>int</em>) – The time taken for an access token delivered by the authorization server to expire.
+This should only be provided in testing environments.
+Otherwise, the configuration should be updated.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="main.start_auth_server">
+<code class="descclassname">main.</code><code class="descname">start_auth_server</code><span class="sig-paren">(</span><em>port</em>, <em>token_expiry</em>, <em>connection</em>, <em>oauth_connection</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#start_auth_server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#main.start_auth_server" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the authorization server on the given port.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>port</strong> (<em>int</em>) – The port on which the server listens.</li>
+<li><strong>token_expiry</strong> (<em>int</em>) – The time taken for an access token delivered by the authorization server to expire.</li>
+<li><strong>connection</strong> (<a class="reference internal" href="connection.html#connection.connection.Connection" title="connection.connection.Connection"><code class="xref py py-class docutils literal"><span class="pre">connection.connection.Connection</span></code></a>) – The database connection to use.</li>
+<li><strong>oauth_connection</strong> (<a class="reference internal" href="connection.html#connection.connection.Connection" title="connection.connection.Connection"><code class="xref py py-class docutils literal"><span class="pre">connection.connection.Connection</span></code></a>) – The database connection to use for OAuth.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="module-server.resource_server">
+<span id="resource-server"></span><h3>Resource Server<a class="headerlink" href="#module-server.resource_server" title="Permalink to this headline">¶</a></h3>
+<p>The resource server is responsible for validating and processing requests.
+More information, including status codes: <a class="reference external" href="https://www.oauth.com/oauth2-servers/the-resource-server/">https://www.oauth.com/oauth2-servers/the-resource-server/</a></p>
+<dl class="class">
+<dt id="server.resource_server.ResourceServer">
+<em class="property">class </em><code class="descclassname">server.resource_server.</code><code class="descname">ResourceServer</code><span class="sig-paren">(</span><em>access_token_store</em>, <em>auth_code_store</em>, <em>client_store</em>, <em>token_generator</em>, <em>routes</em>, <em>route_handlers</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/resource_server.html#ResourceServer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.resource_server.ResourceServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>The resource server receives requests from an application and services them.
+An important component of the resource server is its validation of requests.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>_routes</strong> (<em>dict of dicts</em>) – A list of routes, associated handles and scopes</li>
+<li><strong>_route_handlers</strong> (<em>dict</em>) – The objects that are used to handle requests for different routes.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="server.resource_server.ResourceServer.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>access_token_store</em>, <em>auth_code_store</em>, <em>client_store</em>, <em>token_generator</em>, <em>routes</em>, <em>route_handlers</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/resource_server.html#ResourceServer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.resource_server.ResourceServer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the resource server based on <code class="xref py py-class docutils literal"><span class="pre">oauth2.Provider</span></code>.
+The first arguments should be the <code class="xref py py-class docutils literal"><span class="pre">oauth2.Provider</span></code>’s.</p>
+<p>The resource server receives a list of routes that it can handle.
+Routes are dictionaries, where the keys are the paths.
+The value is another dictionary of the form:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">{</span>
+     <span class="s2">&quot;/create_participant&quot;</span><span class="p">:</span> <span class="p">{</span>
+             <span class="s2">&quot;handler&quot;</span><span class="p">:</span> <span class="n">handler_class</span><span class="p">,</span>
+             <span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="n">create_participant</span><span class="p">,</span>
+             <span class="s2">&quot;scopes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;create_participant&#39;</span><span class="p">],</span>
+             <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">],</span>
+             <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">],</span>
+             <span class="s2">&quot;self_only&quot;</span><span class="p">:</span> <span class="bp">True</span>
+     <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Associated with each route is the function that handles it.
+Each route also has a list of scopes that restrict access to protected resources.
+Moreover, to protect against erroneous requests, the method is linked with the API endpoint as well.</p>
+<p>The <cite>self_only</cite> attribute is optional.
+When set to <cite>True</cite>, it restricts participants to access only their own data.</p>
+<p>The provided route handler contains the functions that handle each route.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>access_token_store</strong> (<code class="xref py py-class docutils literal"><span class="pre">oauth2.store.AccessTokenStore</span></code>) – Store for all access tokens.</li>
+<li><strong>auth_token_store</strong> (<code class="xref py py-class docutils literal"><span class="pre">oauth2.store.AccessTokenStore</span></code>) – Store for all authorization tokens.</li>
+<li><strong>client_store</strong> (<code class="xref py py-class docutils literal"><span class="pre">oauth2.store.memory.ClientStore</span></code>) – Store for the known clients.</li>
+<li><strong>token_generator</strong> (<code class="xref py py-class docutils literal"><span class="pre">oauth2.tokengenerator.TokenGenerator</span></code>) – Generates new authorization and access tokens.</li>
+<li><strong>routes</strong> (<em>dict of dicts</em>) – A list of routes, associated handles and scopes</li>
+<li><strong>route_handlers</strong> (<em>dict</em>) – The objects that are used to handle requests for different routes.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="server.resource_server.ResourceServer._get_get_parameters">
+<code class="descname">_get_get_parameters</code><span class="sig-paren">(</span><em>env</em>, <em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/resource_server.html#ResourceServer._get_get_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.resource_server.ResourceServer._get_get_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the parameters from a GET request.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>request</strong> (<code class="xref py py-class docutils literal"><span class="pre">oauth2.web.wsgi.Request</span></code>) – The original request. This includes the headers.</li>
+<li><strong>env</strong> (<em>dict</em>) – The request environment.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The parsed query string - containing the parameters - of the GET request.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="server.resource_server.ResourceServer._get_post_parameters">
+<code class="descname">_get_post_parameters</code><span class="sig-paren">(</span><em>env</em>, <em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/resource_server.html#ResourceServer._get_post_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.resource_server.ResourceServer._get_post_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the parameters from a POST (or PUT) request.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>request</strong> (<code class="xref py py-class docutils literal"><span class="pre">oauth2.web.wsgi.Request</span></code>) – The original request. This includes the headers.</li>
+<li><strong>env</strong> (<em>dict</em>) – The request environment.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The parsed body - containing the parameters - of the POST request.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="server.resource_server.ResourceServer._has_required_parameters">
+<code class="descname">_has_required_parameters</code><span class="sig-paren">(</span><em>parameters</em>, <em>required_parameters</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/resource_server.html#ResourceServer._has_required_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.resource_server.ResourceServer._has_required_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether the request has all the required parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>parameters</strong> (<em>dict</em>) – The full list of arguments passed on in the call.</li>
+<li><strong>required_parameters</strong> (<em>list</em>) – The list of required arguments.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A boolean indicating whether all the required parameters are provided in the request.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="server.resource_server.ResourceServer._is_authorized">
+<code class="descname">_is_authorized</code><span class="sig-paren">(</span><em>access_token</em>, <em>scopes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/resource_server.html#ResourceServer._is_authorized"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.resource_server.ResourceServer._is_authorized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether the given access token is authorized to access a protected resource.
+This validation check considers the access token’s expiry and the scopes of the request.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>access_token</strong> (<em>str</em>) – The supplied access token.</li>
+<li><strong>scopes</strong> (<em>str</em>) – The scope of a route, compared with the access token’s scope.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A boolean indicating whether the given access token has enough permissions to access a protected resource.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">bool</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#server.exceptions.request_exceptions.InvalidTokenException" title="server.exceptions.request_exceptions.InvalidTokenException"><code class="xref py py-class docutils literal"><span class="pre">server.exceptions.request_exceptions.InvalidTokenException</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="server.resource_server.ResourceServer._is_personal">
+<code class="descname">_is_personal</code><span class="sig-paren">(</span><em>access_token</em>, <em>parameters</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/resource_server.html#ResourceServer._is_personal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.resource_server.ResourceServer._is_personal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether the given access token is authorized to access a protected resource.
+The validation checks for personal data access.</p>
+<p>If the parameters include a username, the function checks that the access token belongs to that same user.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>access_token</strong> (<em>str</em>) – The supplied access token.</li>
+<li><strong>parameters</strong> (<em>dict</em>) – The provided parameters.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A boolean indicating whether the given access token can access the protected resource.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="server.resource_server.ResourceServer.handle_request">
+<code class="descname">handle_request</code><span class="sig-paren">(</span><em>request</em>, <em>env</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/resource_server.html#ResourceServer.handle_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.resource_server.ResourceServer.handle_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle a request that has been received.
+The request information is stored in the environment variable.</p>
+<p>Error codes from <a class="reference external" href="https://www.oauth.com/oauth2-servers/the-resource-server/">Mozilla</a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>request</strong> (<code class="xref py py-class docutils literal"><span class="pre">oauth2.web.wsgi.Request</span></code>) – The original request. This includes the headers.</li>
+<li><strong>env</strong> (<em>dict</em>) – The request environment.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A response.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-server.authorization_server">
+<span id="authorization-server"></span><h3>Authorization Server<a class="headerlink" href="#module-server.authorization_server" title="Permalink to this headline">¶</a></h3>
+<p>The authorization server is responsible for giving access tokens.</p>
+<dl class="class">
+<dt id="server.authorization_server.AuthorizationServer">
+<em class="property">class </em><code class="descclassname">server.authorization_server.</code><code class="descname">AuthorizationServer</code><span class="sig-paren">(</span><em>access_token_store</em>, <em>auth_code_store</em>, <em>client_store</em>, <em>token_generator</em>, <em>client_authentication_source=&lt;function request_body&gt;</em>, <em>response_class=&lt;class 'oauth2.web.Response'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/authorization_server.html#AuthorizationServer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.authorization_server.AuthorizationServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>The authorization server’s only responsibility is providing access tokens.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-server.exceptions.request_exceptions">
+<span id="exceptions"></span><h3>Exceptions<a class="headerlink" href="#module-server.exceptions.request_exceptions" title="Permalink to this headline">¶</a></h3>
+<p>General request exceptions that may be raised by the server.</p>
+<dl class="exception">
+<dt id="server.exceptions.request_exceptions.InsufficientScopeException">
+<em class="property">exception </em><code class="descclassname">server.exceptions.request_exceptions.</code><code class="descname">InsufficientScopeException</code><span class="sig-paren">(</span><em>message='Insufficient scope'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/exceptions/request_exceptions.html#InsufficientScopeException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.exceptions.request_exceptions.InsufficientScopeException" title="Permalink to this definition">¶</a></dt>
+<dd><p>An exception that indicates that the access token’s scope is insufficient.</p>
+<dl class="attribute">
+<dt id="server.exceptions.request_exceptions.InsufficientScopeException.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#server.exceptions.request_exceptions.InsufficientScopeException.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="server.exceptions.request_exceptions.InvalidTokenException">
+<em class="property">exception </em><code class="descclassname">server.exceptions.request_exceptions.</code><code class="descname">InvalidTokenException</code><span class="sig-paren">(</span><em>message='Invalid token'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/exceptions/request_exceptions.html#InvalidTokenException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.exceptions.request_exceptions.InvalidTokenException" title="Permalink to this definition">¶</a></dt>
+<dd><p>An exception that indicates that the token is invalid.
+This may be caused by a revoked or expired access token.</p>
+<dl class="attribute">
+<dt id="server.exceptions.request_exceptions.InvalidTokenException.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#server.exceptions.request_exceptions.InvalidTokenException.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="server.exceptions.request_exceptions.MethodNotAllowedException">
+<em class="property">exception </em><code class="descclassname">server.exceptions.request_exceptions.</code><code class="descname">MethodNotAllowedException</code><span class="sig-paren">(</span><em>message='Method not allowed'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/exceptions/request_exceptions.html#MethodNotAllowedException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.exceptions.request_exceptions.MethodNotAllowedException" title="Permalink to this definition">¶</a></dt>
+<dd><p>An exception that indicates that the user attempted to use an API call with the incorrect method.</p>
+<dl class="attribute">
+<dt id="server.exceptions.request_exceptions.MethodNotAllowedException.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#server.exceptions.request_exceptions.MethodNotAllowedException.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="server.exceptions.request_exceptions.MissingArgumentException">
+<em class="property">exception </em><code class="descclassname">server.exceptions.request_exceptions.</code><code class="descname">MissingArgumentException</code><span class="sig-paren">(</span><em>message='Missing arguments'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/exceptions/request_exceptions.html#MissingArgumentException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.exceptions.request_exceptions.MissingArgumentException" title="Permalink to this definition">¶</a></dt>
+<dd><p>An exception that indicates that an expected parameter got no argument.</p>
+<dl class="attribute">
+<dt id="server.exceptions.request_exceptions.MissingArgumentException.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#server.exceptions.request_exceptions.MissingArgumentException.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="server.exceptions.request_exceptions.UnauthorizedDataAccessException">
+<em class="property">exception </em><code class="descclassname">server.exceptions.request_exceptions.</code><code class="descname">UnauthorizedDataAccessException</code><span class="sig-paren">(</span><em>message='Unauthorized data access'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/exceptions/request_exceptions.html#UnauthorizedDataAccessException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.exceptions.request_exceptions.UnauthorizedDataAccessException" title="Permalink to this definition">¶</a></dt>
+<dd><p>An exception that indicates that the user is trying to access data that is not theirs.</p>
+<dl class="attribute">
+<dt id="server.exceptions.request_exceptions.UnauthorizedDataAccessException.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#server.exceptions.request_exceptions.UnauthorizedDataAccessException.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-server.application">
+<span id="applications"></span><h2>Applications<a class="headerlink" href="#module-server.application" title="Permalink to this headline">¶</a></h2>
+<p>The application that handles requests</p>
+<dl class="class">
+<dt id="server.application.OAuthApplication">
+<em class="property">class </em><code class="descclassname">server.application.</code><code class="descname">OAuthApplication</code><span class="sig-paren">(</span><em>resource_provider</em>, <em>authorization_server</em>, <em>authorize_uri='/authorize'</em>, <em>env_vars=None</em>, <em>request_class=&lt;class 'oauth2.web.wsgi.Request'&gt;</em>, <em>token_uri='/token'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/application.html#OAuthApplication"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.application.OAuthApplication" title="Permalink to this definition">¶</a></dt>
+<dd><p>The application that handles incoming requests.
+This is built on the default <code class="xref py py-class docutils literal"><span class="pre">oauth2.web.wsgi.Application</span></code></p>
+<dl class="method">
+<dt id="server.application.OAuthApplication.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>env</em>, <em>start_response</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/application.html#OAuthApplication.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.application.OAuthApplication.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>A request that needs to be serviced invokes the application.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>env</strong> (<em>list</em>) – The list of environment variables.</li>
+<li><strong>start_response</strong> (<em>function</em>) – The handler that starts building the response.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A list containing the response body, encoded using UTF-8.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="server.application.OAuthApplication.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>resource_provider</em>, <em>authorization_server</em>, <em>authorize_uri='/authorize'</em>, <em>env_vars=None</em>, <em>request_class=&lt;class 'oauth2.web.wsgi.Request'&gt;</em>, <em>token_uri='/token'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/application.html#OAuthApplication.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.application.OAuthApplication.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the application.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>resource_provider</strong> (<code class="xref py py-class docutils literal"><span class="pre">server.ResourceServer</span></code>) – The resource server.</li>
+<li><strong>authorization_server</strong> (<code class="xref py py-class docutils literal"><span class="pre">server.AuthorizationServer</span></code>) – The authorization server.</li>
+<li><strong>authorize_uri</strong> (<em>str</em>) – The link that is used to authorize users, used only in the classic three-legged authentication grant flow.</li>
+<li><strong>env_vars</strong> (<em>list</em>) – Any known environment variables.</li>
+<li><strong>request_class</strong> (<code class="xref py py-class docutils literal"><span class="pre">oauth2.web.wsgi.Request</span></code>) – The request class.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="server.application.OAuthApplication.authorization_server">
+<code class="descname">authorization_server</code><em class="property"> = None</em><a class="headerlink" href="#server.application.OAuthApplication.authorization_server" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add some status codes that are not included by default.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="biobank.html">Biobank Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="connection.html">Data Store Connections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coauth.html">OAuth</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-config">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-server">Servers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-server.application">Applications</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="coauth.html" title="previous chapter">OAuth</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/server.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Nicholas Mamo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="_sources/server.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
