@@ -1,1 +1,5 @@
-WP/
+__pycache__/
+
+# Hyperledger Fabric backups
+
+fabric/dwarna-blockchain/old-versions
