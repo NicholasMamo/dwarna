@@ -1,0 +1,37 @@
+/**
+ * The dynamic consent model connects research partners with studies using consent.
+ */
+
+namespace org.consent.model
+
+/**
+ * Only the bare basic details about participants are stored on the blockchain.
+ * The participant's unique identifier is their psuedo-anonymized ID.
+ */
+participant ResearchParticipant identified by participantID {
+	o String participantID
+}
+
+/**
+ * The study in the model exists solely to encapsulate the concept of studies.
+ * It can be extended by incorporating more details.
+ */
+asset Study identified by studyID {
+  	o String studyID
+}
+
+/**
+ * The dynamic consent part.
+ * The consent links together participants with studies.
+ *
+ * Participants create their own consent with a unique ID.
+ * Each consent update is accompanied by a timestamp and the consent status.
+ * The consent status is `true` if the participant gave consent, and `false` otherwise.
+ */
+asset Consent identified by consentID {
+	o String consentID
+	o Integer timestamp
+    o Boolean status
+    --> ResearchParticipant participant
+    --> Study study
+}

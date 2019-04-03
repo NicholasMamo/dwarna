@@ -1,0 +1,19 @@
+/**
+ * Dynamic consent queries.
+ */
+
+query studies {
+	description: "Select all studies."
+	statement:
+		SELECT org.consent.model.Study
+		ORDER BY studyID DESC
+}
+
+query has_consent {
+  	description: "Check whether the user with the given ID has consented to the use of their sample in the study having the given ID."
+  	statement:
+  		SELECT org.consent.model.Consent
+  		WHERE (study.studyID == _$study_id
+  			AND participant.participantID == _$username)
+        ORDER BY timestamp DESC
+}
