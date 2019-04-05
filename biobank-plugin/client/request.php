@@ -174,6 +174,7 @@ class Request {
 		return array(
 			"headers" => $this->headers,
 			"body" => json_encode($this->body),
+			"timeout" => 10,
 		);
 	}
 

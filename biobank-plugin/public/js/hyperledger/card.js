@@ -25,7 +25,7 @@ const host = `${window.location.protocol}//${window.location.hostname}`;
 /**
  * The base path where the AJAX scripts reside.
  */
-const ajax_base_path = `${host}/wordpress/wp-content/plugins/biobank/public/ajax/`;
+const ajax_base_path = `${host}/wordpress/wp-content/plugins/biobank-plugin/public/ajax/`;
 
 /**
  * The logged-in user's username.
