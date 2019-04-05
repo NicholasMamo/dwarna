@@ -6,10 +6,11 @@
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
 
-# Start the REST server
-python3.7 "rest/main.py" >/dev/null 2>&1 &
-rest_pid=$!
+# Start Hyperledger Fabric first
+cd fabric
+./start_network.sh
+cd ..
 
-# Clean up - kill the REST server by sending a keyboard interrupt signal
-kill -SIGINT $rest_pid
-exit 0
+# Start the REST server
+trap ' ' INT # keep the sccript running (do nothing to the script) on keyboard interrupt
+python3.7 "rest/main.py"

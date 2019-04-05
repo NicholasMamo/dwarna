@@ -21,13 +21,16 @@ export COMPOSER_PROVIDERS='{
 }'
 
 export PATH=~/.npm-global/bin:$PATH
+export FABRIC_VERSION=hlfv12
 source ~/.nvm/nvm.sh
 nvm use 8.9.4
 
 # Start the peer nodes.
 cd fabric-scripts/hlfv12/composer/
 docker-compose stop
+sleep 15s
 docker-compose start
+sleep 15s
 cd ../../../
 
 # Start the Dwarna network.
@@ -38,17 +41,16 @@ composer card import --file admin.card
 cd ..
 
 # Start the multi-user REST API.
-composer-rest-server -c admin@dwarna-blockchain -m true >/dev/null 2>&1 &
-sleep 5s
+composer-rest-server -c admin@dwarna-blockchain -m true &
+sleep 10s
 multiuser_rest_pid=$!
 echo "Multi-user REST API served on port 3000 ($multiuser_rest_pid)"
 
 # Start the administration REST API.
-composer-rest-server -c admin@dwarna-blockchain -p 3001 >/dev/null 2>&1 &
-sleep 5s
+composer-rest-server -c admin@dwarna-blockchain -p 3001 &
+sleep 10s
 admin_rest_pid=$!
 echo "Admin REST API served on port 3001 ($admin_rest_pid)"
 
-sleep 5s
-kill -SIGINT $multiuser_rest_pid
-kill -SIGINT $admin_rest_pid
+composer-playground >/dev/null 2>&1 &
+echo "Composer Playground served on port 8080"

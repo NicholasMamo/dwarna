@@ -3,6 +3,7 @@
 # Install Hyperledger Composer and set up the blockchain.
 
 export PATH=~/.npm-global/bin:$PATH
+export FABRIC_VERSION=hlfv12
 ./prereqs-ubuntu.sh
 npm install -g grpc --save # avoid g++ errors during the installation
 npm install -g composer-cli@0.20

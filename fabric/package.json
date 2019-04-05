@@ -21,9 +21,9 @@
     "test": "npm run licchk"
   },
   "devDependencies": {
-    "gulp": "^4.0.0",
+    "gulp": "^3.9.1",
     "gulp-gzip": "^1.4.0",
-    "gulp-tar": "^2.1.0",
+    "gulp-tar": "^1.9.0",
     "gulp-zip": "^4.0.0",
     "license-check-and-add": "~2.3.0"
   },
@@ -53,9 +53,5 @@
       }
     },
     "insert_license": false
-  },
-  "dependencies": {
-    "core-js": "^3.0.0",
-    "grpc": "^1.19.0"
   }
 }
