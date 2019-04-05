@@ -18,3 +18,12 @@ The REST API, runnable from `rest/main.py`.
 ### `setup/`
 
 The setup scripts to construct the database schema for the REST API and associated tests.
+
+## REST API
+
+Dependencies:
+
+- psycopg2
+- python-oauth2
+- requests
+- requests-toolbelt
