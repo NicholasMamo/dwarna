@@ -7,7 +7,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-require(realpath(dirname(__FILE__)) . "/../../../../../wp-load.php");
+require(realpath(dirname(__FILE__)) . "/../../../../../wordpress/wp-load.php");
 
 if (isset($_GET["temp"]))	{
 	/*

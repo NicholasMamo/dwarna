@@ -8,9 +8,9 @@ export COMPOSER_PROVIDERS='{
     "local-wordpress": {
         "provider": "local-wordpress",
         "module": "passport-local-wordpress",
-        "authorizationURL": "http://localhost/wordpress/wp-content/plugins/biobank/oauth2/auth.php",
-        "tokenURL": "http://localhost/wordpress/wp-content/plugins/biobank/oauth2/access_token.php",
-        "userProfileURL": "http://localhost/wordpress/wp-content/plugins/biobank/oauth2/user_profile.php",
+        "authorizationURL": "http://localhost/wordpress/wp-content/plugins/biobank-plugin/oauth2/auth.php",
+        "tokenURL": "http://localhost/wordpress/wp-content/plugins/biobank-plugin/oauth2/access_token.php",
+        "userProfileURL": "http://localhost/wordpress/wp-content/plugins/biobank-plugin/oauth2/user_profile.php",
         "clientID": "7815696ecbf1c96e6894b779456d330e",
         "clientSecret": "41e0b81ec1d89ccaf238565b50263251",
         "authPath": "/auth/local-wordpress",
