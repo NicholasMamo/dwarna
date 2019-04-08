@@ -34,7 +34,7 @@ class ParticipantFormHandler extends UserFormHandler {
 	 */
 	public function create_participant() {
 		$error = "";
-		$endpoint = "create_participant"; // the REST API's endpoint
+		$endpoint = "participant"; // the REST API's endpoint
 
 		if(isset($_POST["participant_nonce"]) && wp_verify_nonce($_POST["participant_nonce"], "participant_form")) {
 			/*
@@ -173,7 +173,7 @@ class ParticipantFormHandler extends UserFormHandler {
 	 */
 	public function remove_participant() {
 		$error = "";
-		$endpoint = "remove_participant_by_username"; // the REST API's endpoint
+		$endpoint = "participant"; // the REST API's endpoint
 
 		if(isset($_POST["participant_nonce"]) && wp_verify_nonce($_POST["participant_nonce"], "participant_form")) {
 			/*
@@ -206,7 +206,7 @@ class ParticipantFormHandler extends UserFormHandler {
 					/*
 					 * Process the response
 					 */
-					$response = $request->send_post_request($endpoint);
+					$response = $request->send_post_request($endpoint, "DELETE");
 					if (! is_wp_error($response)) {
 						$body = json_decode($response["body"]);
 						$error = isset($body->error) ? $body->error : "";
@@ -395,7 +395,7 @@ class ResearcherFormHandler extends UserFormHandler {
 	 */
 	public function create_researcher() {
 		$error = "";
-		$endpoint = "create_researcher"; // the REST API's endpoint
+		$endpoint = "researcher"; // the REST API's endpoint
 
 		if(isset($_POST["researcher_nonce"]) && wp_verify_nonce($_POST["researcher_nonce"], "researcher_form")) {
 			/*
@@ -555,7 +555,7 @@ class ResearcherFormHandler extends UserFormHandler {
 	 */
 	public function remove_researcher() {
 		$error = "";
-		$endpoint = "remove_researcher_by_username"; // the REST API's endpoint
+		$endpoint = "researcher"; // the REST API's endpoint
 
 		if(isset($_POST["researcher_nonce"]) && wp_verify_nonce($_POST["researcher_nonce"], "researcher_form")) {
 			/*
@@ -588,7 +588,7 @@ class ResearcherFormHandler extends UserFormHandler {
 					/*
 					 * Process the response
 					 */
-					$response = $request->send_post_request($endpoint);
+					$response = $request->send_post_request($endpoint, "DELETE");
 					if (! is_wp_error($response)) {
 						$body = json_decode($response["body"]);
 						$error = isset($body->error) ? $body->error : "";

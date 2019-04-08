@@ -165,9 +165,12 @@ class Request {
 	 *
 	 * @since	1.0.0
 	 * @access	public
+	 *
+	 * @param	string		$method		The method to use.
+	 *
 	 * @return	array 		The array containing a list of headers and body parameters.
 	 */
-	public function create_request() {
+	public function create_request($method="POST") {
 		if (!isset($this->headers["Content-type"])) {
 			$this->add_header("Content-type", "application/json"); // add the content type; without it, the backend fails to read the request"s body
 		}
@@ -175,6 +178,7 @@ class Request {
 			"headers" => $this->headers,
 			"body" => json_encode($this->body),
 			"timeout" => 10,
+			"method" => $method,
 		);
 	}
 
@@ -294,14 +298,17 @@ class Request {
 	 *
 	 * @since	1.0.0
 	 * @access	public
-	 * @param		string		$endpoint	The endpoint of the REST API.
+	 * @param	string		$endpoint	The endpoint of the REST API.
+	 * @param	string		$method		The method to use.
+	 *
 	 * @return	array		The array containing the response.
 	 */
-	public function send_post_request($endpoint) {
+	public function send_post_request($endpoint, $method="POST") {
 		$url = $this->construct_url($endpoint); // create the URL in advance
 		$token = $this->get_token();
 		$this->add_header("Authorization", $token);
-		$response = wp_remote_post($url, $this->create_request());
+		$method = strtoupper($method);
+		$response = wp_remote_request($url, $this->create_request($method));
 
 		/*
 		 * The response may fail because the token is invalid.
@@ -311,7 +318,7 @@ class Request {
 		if (! is_wp_error($response) && $response["response"]["code"] == 401) {
 			$token = $this->get_token($force_new=true);
 			$this->add_header("Authorization", $token);
-			$response = wp_remote_post($url, $this->create_request());
+			$response = wp_remote_request($url, $this->create_request($method));
 		}
 		return $response;
 	}
