@@ -51,10 +51,8 @@ def start_auth_server(port, token_expiry, connection, oauth_connection):
 	"""
 
 	try:
-		client_store = ClientStore()
-		# TODO Where to store client ID and Client Secret? PostgreSQL maybe?
-		client_store.add_client(client_id="abc", client_secret="xyz",
-								redirect_uris=[])
+		client_store = PostgresqlClientStore(oauth_connection)
+		client_store.add_client(client_id="abc", client_secret="xyz")
 
 		"""
 		Create a token store.

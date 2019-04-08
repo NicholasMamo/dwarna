@@ -11,6 +11,9 @@ class PostgresqlAccessTokenStore(MysqlAccessTokenStore):
 	"""
 	The access token store that uses PostgreSQL.
 	The implementation is based on MySQL since the two languages are similar.
+
+	:ivar connection: The database connection to use to store data.
+	:vartype connection: :class:`connection.connection.Connection`
 	"""
 
 	def __init__(self, connection):
@@ -139,4 +142,65 @@ class PostgresqlClientStore(MysqlClientStore):
 	The implementation is based on MySQL since the two languages are similar.
 	"""
 
-	pass
+	def __init__(self, connection):
+		"""
+		Initialize a new store class.
+		It is assumed that the connection that is given is a database with the schema installed.
+
+		:param connection: The database connection to use to store data.
+		:type connection: :class:`connection.connection.Connection`
+		"""
+		self.connection = connection
+		self.connection.reconnect()
+
+	def add_client(self, client_id, client_secret):
+		"""
+		Add a client with the given client ID and secret.
+
+		:param client_id: The unique identifier of the client.
+		:type client_id: str
+		:param client_secret: The client's secret.
+		:type client_secret: str
+		"""
+
+		self.execute(self.add_client_query, client_id, client_secret)
+
+	add_client_query = """
+		INSERT INTO clients (
+			identifier, secret
+		) VALUES (
+			%s, %s
+		)
+	"""
+
+	fetch_client_query = """
+		SELECT
+		   id,identifier, secret
+		FROM
+			clients
+		WHERE
+			identifier = %s
+	"""
+
+	fetch_grants_query = """
+		SELECT
+			name
+		FROM
+			client_grants
+		WHERE
+			client_id = %s"""
+	fetch_redirect_uris_query = """
+		SELECT
+			redirect_uri
+		FROM
+			client_redirect_uris
+		WHERE
+			client_id = %s"""
+
+	fetch_response_types_query = """
+		SELECT
+			response_type
+		FROM
+			client_response_types
+		WHERE
+			client_id = %s"""
