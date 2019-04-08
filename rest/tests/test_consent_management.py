@@ -55,7 +55,7 @@ class ConsentManagementTest(BiobankTestCase):
 		Create the initial data.
 		"""
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "2320",
 			"name": "ALS",
 			"description": "ALS Study",
@@ -63,7 +63,7 @@ class ConsentManagementTest(BiobankTestCase):
 		}, token)
 		self.assertEqual(response.status_code, 200)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "8190",
 			"name": "Diabetes",
 			"description": "Diabetes study",
@@ -71,7 +71,7 @@ class ConsentManagementTest(BiobankTestCase):
 		}, token)
 		self.assertEqual(response.status_code, 200)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "5442",
 			"name": "Thalassemia",
 			"description": "Thalassemia study",
@@ -79,8 +79,8 @@ class ConsentManagementTest(BiobankTestCase):
 		}, token)
 		self.assertEqual(response.status_code, 200)
 
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 2320 }, token)
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 8190 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 2320 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 8190 }, token)
 
 		"""
 		Create two participants, fetch their cards and start REST servers for them.
@@ -90,7 +90,7 @@ class ConsentManagementTest(BiobankTestCase):
 		"""
 
 		for participant in [2322, 2323]:
-			response = self.send_request("POST", "create_participant", {
+			response = self.send_request("POST", "participant", {
 				"username": f"p{participant}"
 			}, token)
 			self.assertEqual(response.status_code, 200)
@@ -549,7 +549,7 @@ class ConsentManagementTest(BiobankTestCase):
 		"""
 		Check consent of `p2323`.
 		"""
-		response = self.send_request("POST", "has_consent", {
+		response = self.send_request("GET", "has_consent", {
 			"study_id": "2320",
 			"username": "p2323",
 			"access_token": None,

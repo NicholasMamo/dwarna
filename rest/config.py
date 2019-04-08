@@ -249,93 +249,98 @@ routes.update({
 	},
 })
 
-# """
-# Routes related to consent management.
-# """
-# routes.update({
-# 	"/get_participants_by_study": {
-# 		"handler": consent_handler_class,
-# 		"function": consent_handler_class.get_participants_by_study,
-# 		"scopes": ["view_consent"],
-# 		"parameters": ["study_id"],
-# 		"method": ["GET"]
-# 	},
-# 	"/get_studies_by_participant": {
-# 		"handler": consent_handler_class,
-# 		"function": consent_handler_class.get_studies_by_participant,
-# 		"scopes": ["view_consent"],
-# 		"parameters": ["username"],
-# 		"method": ["GET"],
-# 		"self_only": True
-# 	},
-# 	"/give_consent": {
-# 		"handler": consent_handler_class,
-# 		"function": consent_handler_class.give_consent,
-# 		"scopes": ["update_consent"],
-# 		"parameters": ["study_id", "username"],
-# 		"method": ["POST"],
-# 		"self_only": True
-# 	},
-# 	"/withdraw_consent": {
-# 		"handler": consent_handler_class,
-# 		"function": consent_handler_class.withdraw_consent,
-# 		"scopes": ["update_consent"],
-# 		"parameters": ["study_id", "username"],
-# 		"method": ["POST"],
-# 		"self_only": True
-# 	},
-# 	"/has_consent": {
-# 		"handler": consent_handler_class,
-# 		"function": consent_handler_class.has_consent,
-# 		"scopes": ["view_consent"],
-# 		"parameters": ["study_id", "username"],
-# 		"method": ["GET"],
-# 		"self_only": True
-# 	},
-# 	"/get_consent_trail": {
-# 		"handler": consent_handler_class,
-# 		"function": consent_handler_class.get_consent_trail,
-# 		"scopes": ["view_consent"],
-# 		"parameters": ["username"],
-# 		"method": ["GET"],
-# 		"self_only": True
-# 	},
-# 	"/get_attributes": {
-# 		"handler": consent_handler_class,
-# 		"function": consent_handler_class.get_attributes,
-# 		"scopes": ["view_consent"],
-# 		"parameters": ["username", "attributes"],
-# 		"method": ["POST"],
-# 		"self_only": True
-# 	},
-# })
-#
-# """
-# Routes related to the underlying blockchain implementation.
-# """
-# routes.update({
-# 	"/has_card": {
-# 		"handler": blockchain_handler_class,
-# 		"function": blockchain_handler_class.has_card,
-# 		"scopes": ["change_card"],
-# 		"parameters": ["username", "temp"],
-# 		"method": ["GET"]
-# 	},
-# 	"/get_card": {
-# 		"handler": blockchain_handler_class,
-# 		"function": blockchain_handler_class.get_card,
-# 		"scopes": ["change_card"],
-# 		"parameters": ["username", "temp"],
-# 		"method": ["GET"]
-# 	},
-# 	"/save_cred_card": {
-# 		"handler": blockchain_handler_class,
-# 		"function": blockchain_handler_class.save_cred_card,
-# 		"scopes": ["change_card"],
-# 		"parameters": ["username", "card"],
-# 		"method": ["POST"]
-# 	},
-# })
+"""
+Routes related to consent management.
+"""
+routes.update({
+	"/get_participants_by_study": {
+		"GET": {
+			"handler": consent_handler_class,
+			"function": consent_handler_class.get_participants_by_study,
+			"scopes": ["view_consent"],
+			"parameters": ["study_id"],
+			"method": ["GET"]
+		}
+	},
+	"/get_studies_by_participant": {
+		"GET": {
+			"handler": consent_handler_class,
+			"function": consent_handler_class.get_studies_by_participant,
+			"scopes": ["view_consent"],
+			"parameters": ["username"],
+			"self_only": True
+		}
+	},
+	"/get_consent_trail": {
+		"GET": {
+			"handler": consent_handler_class,
+			"function": consent_handler_class.get_consent_trail,
+			"scopes": ["view_consent"],
+			"parameters": ["username"],
+			"self_only": True
+		}
+	},
+})
+
+routes.update({
+	"/give_consent": {
+		"POST": {
+			"handler": consent_handler_class,
+			"function": consent_handler_class.give_consent,
+			"scopes": ["update_consent"],
+			"parameters": ["study_id", "username"],
+			"self_only": True
+		}
+	},
+	"/withdraw_consent": {
+		"POST": {
+			"handler": consent_handler_class,
+			"function": consent_handler_class.withdraw_consent,
+			"scopes": ["update_consent"],
+			"parameters": ["study_id", "username"],
+			"self_only": True
+		}
+	},
+	"/has_consent": {
+		"GET": {
+			"handler": consent_handler_class,
+			"function": consent_handler_class.has_consent,
+			"scopes": ["view_consent"],
+			"parameters": ["study_id", "username"],
+			"self_only": True
+		}
+	},
+})
+
+"""
+Routes related to the underlying blockchain implementation.
+"""
+routes.update({
+	"/has_card": {
+		"GET": {
+			"handler": blockchain_handler_class,
+			"function": blockchain_handler_class.has_card,
+			"scopes": ["change_card"],
+			"parameters": ["username", "temp"],
+		}
+	},
+	"/get_card": {
+		"GET": {
+			"handler": blockchain_handler_class,
+			"function": blockchain_handler_class.get_card,
+			"scopes": ["change_card"],
+			"parameters": ["username", "temp"],
+		}
+	},
+	"/save_cred_card": {
+		"POST": {
+			"handler": blockchain_handler_class,
+			"function": blockchain_handler_class.save_cred_card,
+			"scopes": ["change_card"],
+			"parameters": ["username", "card"],
+		}
+	},
+})
 
 """
 Build the list of possible scopes from the routes.
