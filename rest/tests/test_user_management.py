@@ -31,7 +31,7 @@ class UserManagementTest(BiobankTestCase):
 
 		clear()
 		token = self._get_access_token(["create_biobanker"])["access_token"]
-		response = self.send_request("POST", "create_biobanker", { "username": "nick" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "nick" }, token)
 		self.assertEqual(response.status_code, 200)
 
 	def test_create_duplicate_biobanker(self):
@@ -41,9 +41,9 @@ class UserManagementTest(BiobankTestCase):
 
 		clear()
 		token = self._get_access_token(["create_biobanker"])["access_token"]
-		response = self.send_request("POST", "create_biobanker", { "username": "nick" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "nick" }, token)
 
-		response = self.send_request("POST", "create_biobanker", { "username": "nick" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "nick" }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], user_exceptions.BiobankerExistsException.__name__)
@@ -55,15 +55,15 @@ class UserManagementTest(BiobankTestCase):
 
 		clear()
 		token = self._get_access_token(["create_biobanker", "create_researcher", "create_participant"])["access_token"]
-		response = self.send_request("POST", "create_researcher", { "username": "jack" }, token)
-		response = self.send_request("POST", "create_participant", { "username": "mill", "password": "pwd" }, token)
+		response = self.send_request("POST", "researcher", { "username": "jack" }, token)
+		response = self.send_request("POST", "participant", { "username": "mill", "password": "pwd" }, token)
 
-		response = self.send_request("POST", "create_biobanker", { "username": "jack" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "jack" }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], user_exceptions.UserExistsException.__name__)
 
-		response = self.send_request("POST", "create_biobanker", { "username": "mill" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "mill" }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], user_exceptions.UserExistsException.__name__)
@@ -76,19 +76,19 @@ class UserManagementTest(BiobankTestCase):
 		clear()
 		token = self._get_access_token(["create_biobanker"])["access_token"]
 
-		response = self.send_request("POST", "create_biobanker", { "username": "jesse l'angelle" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "jesse l'angelle" }, token)
 		self.assertEqual(response.status_code, 200)
-		response = self.send_request("POST", "create_biobanker", { "username": "marie l\'angelle" }, token)
-		self.assertEqual(response.status_code, 200)
-
-		response = self.send_request("POST", "create_biobanker", { "username": "jesse \"custer\" l'angelle" }, token)
-		self.assertEqual(response.status_code, 200)
-		response = self.send_request("POST", "create_biobanker", { "username": "theodore \\\"t.c.\\\" charles" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "marie l\'angelle" }, token)
 		self.assertEqual(response.status_code, 200)
 
-		response = self.send_request("POST", "create_biobanker", { "username": "\\_nick" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "jesse \"custer\" l'angelle" }, token)
 		self.assertEqual(response.status_code, 200)
-		response = self.send_request("POST", "create_biobanker", { "username": "\\\\_nick" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "theodore \\\"t.c.\\\" charles" }, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("POST", "biobanker", { "username": "\\_nick" }, token)
+		self.assertEqual(response.status_code, 200)
+		response = self.send_request("POST", "biobanker", { "username": "\\\\_nick" }, token)
 		self.assertEqual(response.status_code, 200)
 
 	def test_get_biobankers(self):
@@ -111,8 +111,8 @@ class UserManagementTest(BiobankTestCase):
 		Create and fetch biobankers.
 		"""
 
-		response = self.send_request("POST", "create_biobanker", { "username": "luke" }, token)
-		response = self.send_request("POST", "create_biobanker", { "username": "tamara" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "luke" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "tamara" }, token)
 
 		response = self.send_request("GET", "get_biobankers", {}, token)
 		body = response.json()
@@ -128,7 +128,7 @@ class UserManagementTest(BiobankTestCase):
 
 		clear()
 		token = self._get_access_token(["create_biobanker", "view_biobanker", "remove_biobanker"])["access_token"]
-		response = self.send_request("POST", "create_biobanker", { "username": "luke" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "luke" }, token)
 
 		response = self.send_request("GET", "get_biobankers", {}, token)
 		body = response.json()
@@ -140,7 +140,7 @@ class UserManagementTest(BiobankTestCase):
 		Remove the biobanker and try fetching them again.
 		"""
 
-		response = self.send_request("POST", "remove_biobanker_by_username", { "username": "luke" }, token)
+		response = self.send_request("DELETE", "biobanker", { "username": "luke" }, token)
 		response = self.send_request("GET", "get_biobankers", {}, token)
 		body = response.json()
 		self.assertTrue({ "user_id": "luke" } not in body["data"])
@@ -152,15 +152,15 @@ class UserManagementTest(BiobankTestCase):
 
 		clear()
 		token = self._get_access_token(["create_biobanker", "view_biobanker", "create_researcher", "create_participant"])["access_token"]
-		response = self.send_request("POST", "create_participant", { "username": "pete", "password": "pwd" }, token)
-		response = self.send_request("POST", "create_researcher", { "username": "mariah", "password": "pwd" }, token)
+		response = self.send_request("POST", "participant", { "username": "pete", "password": "pwd" }, token)
+		response = self.send_request("POST", "researcher", { "username": "mariah", "password": "pwd" }, token)
 
 		response = self.send_request("GET", "get_biobankers", {}, token)
 		body = response.json()
 		self.assertTrue({ "user_id": "mariah" } not in body["data"])
 		self.assertTrue({ "user_id": "pete" } not in body["data"])
 
-	def test_remove_inexistent_biobanker(self):
+	def remove_inexistent_biobanker(self):
 		"""
 		Test deleting an inexistent biobanker.
 		"""
@@ -168,7 +168,7 @@ class UserManagementTest(BiobankTestCase):
 		clear()
 		token = self._get_access_token(["create_biobanker", "remove_biobanker"])["access_token"]
 
-		response = self.send_request("POST", "remove_biobanker_by_username", { "username": "nick" }, token)
+		response = self.send_request("DELETE", "biobanker", { "username": "nick" }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], user_exceptions.BiobankerDoesNotExistException.__name__)
@@ -179,12 +179,12 @@ class UserManagementTest(BiobankTestCase):
 		"""
 		clear()
 		token = self._get_access_token(["create_biobanker", "view_biobanker", "remove_biobanker", "create_researcher", "view_researcher", "create_participant", "view_participant"])["access_token"]
-		self.send_request("POST", "create_biobanker", { "username": "nick" }, token)
-		self.send_request("POST", "create_biobanker", { "username": "matt" }, token)
-		self.send_request("POST", "create_participant", { "username": "pete", "password": "pwd" }, token)
-		self.send_request("POST", "create_researcher", { "username": "tamara" }, token)
+		self.send_request("POST", "biobanker", { "username": "nick" }, token)
+		self.send_request("POST", "biobanker", { "username": "matt" }, token)
+		self.send_request("POST", "participant", { "username": "pete", "password": "pwd" }, token)
+		self.send_request("POST", "researcher", { "username": "tamara" }, token)
 
-		response = self.send_request("POST", "remove_biobanker_by_username", { "username": "nick" }, token)
+		response = self.send_request("DELETE", "biobanker", { "username": "nick" }, token)
 		self.assertEqual(response.status_code, 200)
 
 		"""
@@ -209,24 +209,24 @@ class UserManagementTest(BiobankTestCase):
 
 		clear()
 		token = self._get_access_token(["create_biobanker", "remove_biobanker"])["access_token"]
-		response = self.send_request("POST", "create_biobanker", { "username": "jesse l'angelle" }, token)
-		response = self.send_request("POST", "create_biobanker", { "username": "marie l\'angelle" }, token)
-		response = self.send_request("POST", "create_biobanker", { "username": "jesse \"custer\" l'angelle" }, token)
-		response = self.send_request("POST", "create_biobanker", { "username": "theodore \\\"t.c.\\\" charles" }, token)
-		response = self.send_request("POST", "create_biobanker", { "username": "\\_nick" }, token)
-		response = self.send_request("POST", "create_biobanker", { "username": "\\\\_nick" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "jesse l'angelle" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "marie l\'angelle" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "jesse \"custer\" l'angelle" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "theodore \\\"t.c.\\\" charles" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "\\_nick" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "\\\\_nick" }, token)
 
-		response = self.send_request("POST", "remove_biobanker_by_username", { "username": "jesse l'angelle" }, token)
+		response = self.send_request("DELETE", "biobanker", { "username": "jesse l'angelle" }, token)
 		self.assertEqual(response.status_code, 200)
-		response = self.send_request("POST", "remove_biobanker_by_username", { "username": "marie l\'angelle" }, token)
+		response = self.send_request("DELETE", "biobanker", { "username": "marie l\'angelle" }, token)
 		self.assertEqual(response.status_code, 200)
-		response = self.send_request("POST", "remove_biobanker_by_username", { "username": "jesse \"custer\" l'angelle" }, token)
+		response = self.send_request("DELETE", "biobanker", { "username": "jesse \"custer\" l'angelle" }, token)
 		self.assertEqual(response.status_code, 200)
-		response = self.send_request("POST", "remove_biobanker_by_username", { "username": "theodore \\\"t.c.\\\" charles" }, token)
+		response = self.send_request("DELETE", "biobanker", { "username": "theodore \\\"t.c.\\\" charles" }, token)
 		self.assertEqual(response.status_code, 200)
-		response = self.send_request("POST", "remove_biobanker_by_username", { "username": "\\_nick" }, token)
+		response = self.send_request("DELETE", "biobanker", { "username": "\\_nick" }, token)
 		self.assertEqual(response.status_code, 200)
-		response = self.send_request("POST", "remove_biobanker_by_username", { "username": "\\\\_nick" }, token)
+		response = self.send_request("DELETE", "biobanker", { "username": "\\\\_nick" }, token)
 		self.assertEqual(response.status_code, 200)
 
 	def test_create_participant(self):
@@ -236,7 +236,7 @@ class UserManagementTest(BiobankTestCase):
 
 		clear()
 		token = self._get_access_token(["create_participant"])["access_token"]
-		response = self.send_request("POST", "create_participant", { "username": "nick" }, token)
+		response = self.send_request("POST", "participant", { "username": "nick" }, token)
 		self.assertEqual(response.status_code, 200)
 
 	def test_create_duplicate_participant(self):
@@ -246,9 +246,9 @@ class UserManagementTest(BiobankTestCase):
 
 		clear()
 		token = self._get_access_token(["create_participant"])["access_token"]
-		response = self.send_request("POST", "create_participant", { "username": "nick" }, token)
+		response = self.send_request("POST", "participant", { "username": "nick" }, token)
 
-		response = self.send_request("POST", "create_participant", { "username": "nick" }, token)
+		response = self.send_request("POST", "participant", { "username": "nick" }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], user_exceptions.ParticipantExistsException.__name__)
@@ -260,15 +260,15 @@ class UserManagementTest(BiobankTestCase):
 
 		clear()
 		token = self._get_access_token(["create_biobanker", "create_researcher", "create_participant"])["access_token"]
-		response = self.send_request("POST", "create_researcher", { "username": "jack" }, token)
-		response = self.send_request("POST", "create_biobanker", { "username": "mill", "password": "pwd" }, token)
+		response = self.send_request("POST", "researcher", { "username": "jack" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "mill", "password": "pwd" }, token)
 
-		response = self.send_request("POST", "create_participant", { "username": "jack" }, token)
+		response = self.send_request("POST", "participant", { "username": "jack" }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], user_exceptions.UserExistsException.__name__)
 
-		response = self.send_request("POST", "create_participant", { "username": "mill" }, token)
+		response = self.send_request("POST", "participant", { "username": "mill" }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], user_exceptions.UserExistsException.__name__)
@@ -281,19 +281,19 @@ class UserManagementTest(BiobankTestCase):
 		clear()
 		token = self._get_access_token(["create_participant"])["access_token"]
 
-		response = self.send_request("POST", "create_participant", { "username": "jesse l'angelle" }, token)
+		response = self.send_request("POST", "participant", { "username": "jesse l'angelle" }, token)
 		self.assertEqual(response.status_code, 200)
-		response = self.send_request("POST", "create_participant", { "username": "marie l\'angelle" }, token)
-		self.assertEqual(response.status_code, 200)
-
-		response = self.send_request("POST", "create_participant", { "username": "jesse \"custer\" l'angelle" }, token)
-		self.assertEqual(response.status_code, 200)
-		response = self.send_request("POST", "create_participant", { "username": "theodore \\\"t.c.\\\" charles" }, token)
+		response = self.send_request("POST", "participant", { "username": "marie l\'angelle" }, token)
 		self.assertEqual(response.status_code, 200)
 
-		response = self.send_request("POST", "create_participant", { "username": "\\_nick" }, token)
+		response = self.send_request("POST", "participant", { "username": "jesse \"custer\" l'angelle" }, token)
 		self.assertEqual(response.status_code, 200)
-		response = self.send_request("POST", "create_participant", { "username": "\\\\_nick" }, token)
+		response = self.send_request("POST", "participant", { "username": "theodore \\\"t.c.\\\" charles" }, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("POST", "participant", { "username": "\\_nick" }, token)
+		self.assertEqual(response.status_code, 200)
+		response = self.send_request("POST", "participant", { "username": "\\\\_nick" }, token)
 		self.assertEqual(response.status_code, 200)
 
 	def test_get_participants(self):
@@ -316,8 +316,8 @@ class UserManagementTest(BiobankTestCase):
 		Create and fetch participants.
 		"""
 
-		response = self.send_request("POST", "create_participant", { "username": "luke" }, token)
-		response = self.send_request("POST", "create_participant", { "username": "tamara" }, token)
+		response = self.send_request("POST", "participant", { "username": "luke" }, token)
+		response = self.send_request("POST", "participant", { "username": "tamara" }, token)
 
 		response = self.send_request("GET", "get_participants", {}, token)
 		body = response.json()
@@ -333,7 +333,7 @@ class UserManagementTest(BiobankTestCase):
 
 		clear()
 		token = self._get_access_token(["create_participant", "view_participant", "remove_participant"])["access_token"]
-		response = self.send_request("POST", "create_participant", { "username": "luke" }, token)
+		response = self.send_request("POST", "participant", { "username": "luke" }, token)
 
 		response = self.send_request("GET", "get_participants", {}, token)
 		body = response.json()
@@ -345,7 +345,7 @@ class UserManagementTest(BiobankTestCase):
 		Remove the participant and try fetching them again.
 		"""
 
-		response = self.send_request("POST", "remove_participant_by_username", { "username": "luke" }, token)
+		response = self.send_request("DELETE", "participant", { "username": "luke" }, token)
 		response = self.send_request("GET", "get_participants", {}, token)
 		body = response.json()
 		self.assertTrue({ "user_id": "luke" } not in body["data"])
@@ -357,8 +357,8 @@ class UserManagementTest(BiobankTestCase):
 
 		clear()
 		token = self._get_access_token(["create_biobanker", "create_researcher", "create_participant", "view_participant"])["access_token"]
-		response = self.send_request("POST", "create_biobanker", { "username": "pete", "password": "pwd" }, token)
-		response = self.send_request("POST", "create_researcher", { "username": "mariah", "password": "pwd" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "pete", "password": "pwd" }, token)
+		response = self.send_request("POST", "researcher", { "username": "mariah", "password": "pwd" }, token)
 
 		response = self.send_request("GET", "get_participants", {}, token)
 		body = response.json()
@@ -373,7 +373,7 @@ class UserManagementTest(BiobankTestCase):
 		clear()
 		token = self._get_access_token(["create_participant", "remove_participant"])["access_token"]
 
-		response = self.send_request("POST", "remove_participant_by_username", { "username": "nick" }, token)
+		response = self.send_request("DELETE", "participant", { "username": "nick" }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], user_exceptions.ParticipantDoesNotExistException.__name__)
@@ -384,12 +384,12 @@ class UserManagementTest(BiobankTestCase):
 		"""
 		clear()
 		token = self._get_access_token(["create_biobanker", "view_biobanker", "create_researcher", "view_researcher", "create_participant", "view_participant", "remove_participant"])["access_token"]
-		self.send_request("POST", "create_participant", { "username": "nick" }, token)
-		self.send_request("POST", "create_participant", { "username": "matt" }, token)
-		self.send_request("POST", "create_biobanker", { "username": "pete", "password": "pwd" }, token)
-		self.send_request("POST", "create_researcher", { "username": "tamara" }, token)
+		self.send_request("POST", "participant", { "username": "nick" }, token)
+		self.send_request("POST", "participant", { "username": "matt" }, token)
+		self.send_request("POST", "biobanker", { "username": "pete", "password": "pwd" }, token)
+		self.send_request("POST", "researcher", { "username": "tamara" }, token)
 
-		response = self.send_request("POST", "remove_participant_by_username", { "username": "nick" }, token)
+		response = self.send_request("DELETE", "participant", { "username": "nick" }, token)
 		self.assertEqual(response.status_code, 200)
 
 		"""
@@ -414,7 +414,7 @@ class UserManagementTest(BiobankTestCase):
 
 		clear()
 		token = self._get_access_token(["create_researcher"])["access_token"]
-		response = self.send_request("POST", "create_researcher", { "username": "nick" }, token)
+		response = self.send_request("POST", "researcher", { "username": "nick" }, token)
 		self.assertEqual(response.status_code, 200)
 
 	def test_create_duplicate_researcher(self):
@@ -424,9 +424,9 @@ class UserManagementTest(BiobankTestCase):
 
 		clear()
 		token = self._get_access_token(["create_researcher"])["access_token"]
-		response = self.send_request("POST", "create_researcher", { "username": "nick" }, token)
+		response = self.send_request("POST", "researcher", { "username": "nick" }, token)
 
-		response = self.send_request("POST", "create_researcher", { "username": "nick" }, token)
+		response = self.send_request("POST", "researcher", { "username": "nick" }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], user_exceptions.ResearcherExistsException.__name__)
@@ -438,15 +438,15 @@ class UserManagementTest(BiobankTestCase):
 
 		clear()
 		token = self._get_access_token(["create_biobanker", "create_researcher", "create_participant"])["access_token"]
-		response = self.send_request("POST", "create_participant", { "username": "jack" }, token)
-		response = self.send_request("POST", "create_biobanker", { "username": "mill", "password": "pwd" }, token)
+		response = self.send_request("POST", "participant", { "username": "jack" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "mill", "password": "pwd" }, token)
 
-		response = self.send_request("POST", "create_researcher", { "username": "jack" }, token)
+		response = self.send_request("POST", "researcher", { "username": "jack" }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], user_exceptions.UserExistsException.__name__)
 
-		response = self.send_request("POST", "create_researcher", { "username": "mill" }, token)
+		response = self.send_request("POST", "researcher", { "username": "mill" }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], user_exceptions.UserExistsException.__name__)
@@ -459,19 +459,19 @@ class UserManagementTest(BiobankTestCase):
 		clear()
 		token = self._get_access_token(["create_researcher"])["access_token"]
 
-		response = self.send_request("POST", "create_researcher", { "username": "jesse l'angelle" }, token)
+		response = self.send_request("POST", "researcher", { "username": "jesse l'angelle" }, token)
 		self.assertEqual(response.status_code, 200)
-		response = self.send_request("POST", "create_researcher", { "username": "marie l\'angelle" }, token)
-		self.assertEqual(response.status_code, 200)
-
-		response = self.send_request("POST", "create_researcher", { "username": "jesse \"custer\" l'angelle" }, token)
-		self.assertEqual(response.status_code, 200)
-		response = self.send_request("POST", "create_researcher", { "username": "theodore \\\"t.c.\\\" charles" }, token)
+		response = self.send_request("POST", "researcher", { "username": "marie l\'angelle" }, token)
 		self.assertEqual(response.status_code, 200)
 
-		response = self.send_request("POST", "create_researcher", { "username": "\\_nick" }, token)
+		response = self.send_request("POST", "researcher", { "username": "jesse \"custer\" l'angelle" }, token)
 		self.assertEqual(response.status_code, 200)
-		response = self.send_request("POST", "create_researcher", { "username": "\\\\_nick" }, token)
+		response = self.send_request("POST", "researcher", { "username": "theodore \\\"t.c.\\\" charles" }, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("POST", "researcher", { "username": "\\_nick" }, token)
+		self.assertEqual(response.status_code, 200)
+		response = self.send_request("POST", "researcher", { "username": "\\\\_nick" }, token)
 		self.assertEqual(response.status_code, 200)
 
 	def test_get_researchers(self):
@@ -494,8 +494,8 @@ class UserManagementTest(BiobankTestCase):
 		Create and fetch researchers.
 		"""
 
-		response = self.send_request("POST", "create_researcher", { "username": "luke" }, token)
-		response = self.send_request("POST", "create_researcher", { "username": "tamara" }, token)
+		response = self.send_request("POST", "researcher", { "username": "luke" }, token)
+		response = self.send_request("POST", "researcher", { "username": "tamara" }, token)
 
 		response = self.send_request("GET", "get_researchers", {}, token)
 		body = response.json()
@@ -511,7 +511,7 @@ class UserManagementTest(BiobankTestCase):
 
 		clear()
 		token = self._get_access_token(["create_researcher", "view_researcher", "remove_researcher"])["access_token"]
-		response = self.send_request("POST", "create_researcher", { "username": "luke" }, token)
+		response = self.send_request("POST", "researcher", { "username": "luke" }, token)
 
 		response = self.send_request("GET", "get_researchers", {}, token)
 		body = response.json()
@@ -523,22 +523,65 @@ class UserManagementTest(BiobankTestCase):
 		Remove the researcher and try fetching them again.
 		"""
 
-		response = self.send_request("POST", "remove_researcher_by_username", { "username": "luke" }, token)
+		response = self.send_request("DELETE", "researcher", { "username": "luke" }, token)
 		response = self.send_request("GET", "get_researchers", {}, token)
 		body = response.json()
 		self.assertTrue({ "user_id": "luke" } not in body["data"])
 
-	def test_only_participants_returned(self):
+	def test_only_researchers_returned(self):
 		"""
 		Test that biobankers and participants are not returned with researchers.
 		"""
 
 		clear()
 		token = self._get_access_token(["create_biobanker", "create_researcher", "view_researcher", "create_participant"])["access_token"]
-		response = self.send_request("POST", "create_biobanker", { "username": "pete", "password": "pwd" }, token)
-		response = self.send_request("POST", "create_participant", { "username": "mariah", "password": "pwd" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "pete", "password": "pwd" }, token)
+		response = self.send_request("POST", "participant", { "username": "mariah", "password": "pwd" }, token)
 
 		response = self.send_request("GET", "get_researchers", {}, token)
 		body = response.json()
 		self.assertTrue({ "user_id": "mariah" } not in body["data"])
 		self.assertTrue({ "user_id": "pete" } not in body["data"])
+
+	def test_remove_inexistent_researcher(self):
+		"""
+		Test deleting an inexistent researcher.
+		"""
+
+		clear()
+		token = self._get_access_token(["create_researcher", "remove_researcher"])["access_token"]
+
+		response = self.send_request("DELETE", "researcher", { "username": "nick" }, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 500)
+		self.assertEqual(body["exception"], user_exceptions.ResearcherDoesNotExistException.__name__)
+
+	def test_remove_researcher(self):
+		"""
+		Test removing an existing researcher.
+		"""
+		clear()
+		token = self._get_access_token(["create_biobanker", "view_biobanker", "create_researcher", "view_researcher", "remove_researcher", "create_participant", "view_participant"])["access_token"]
+		self.send_request("POST", "researcher", { "username": "nick" }, token)
+		self.send_request("POST", "researcher", { "username": "matt" }, token)
+		self.send_request("POST", "biobanker", { "username": "pete", "password": "pwd" }, token)
+		self.send_request("POST", "participant", { "username": "tamara" }, token)
+
+		response = self.send_request("DELETE", "researcher", { "username": "nick" }, token)
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		Ensure that the other users were not deleted.
+		"""
+		response = self.send_request("GET", "get_researchers", {}, token)
+		body = response.json()
+		self.assertTrue({ "user_id": "matt" } in body["data"])
+		self.assertFalse({ "user_id": "nick" } in body["data"])
+
+		response = self.send_request("GET", "get_biobankers", {}, token)
+		body = response.json()
+		self.assertTrue(any(user["user_id"] == "pete" for user in body["data"]))
+
+		response = self.send_request("GET", "get_participants", {}, token)
+		body = response.json()
+		self.assertTrue({ "user_id": "tamara" } in body["data"])

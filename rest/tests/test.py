@@ -170,12 +170,13 @@ class BiobankTestCase(unittest.TestCase):
 
 		method_handler = {
 			"POST": requests.post,
-			"GET": requests.get
+			"GET": requests.get,
+			"DELETE": requests.delete,
 		}.get(method.upper())
 
 		headers = { "Authorization": access_token }
 
-		if method.upper() == "POST":
-			return method_handler('http://localhost:%d/%s' % (PORT, endpoint), json=data, headers=headers)
-		elif method.upper() == "GET":
+		if method.upper() == "GET":
 			return method_handler('http://localhost:%d/%s' % (PORT, endpoint), params=data, headers=headers)
+		else:
+			return method_handler('http://localhost:%d/%s' % (PORT, endpoint), json=data, headers=headers)

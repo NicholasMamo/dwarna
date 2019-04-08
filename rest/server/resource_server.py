@@ -104,7 +104,8 @@ class ResourceServer(Provider):
 		"""
 
 		path, method = env.get("PATH_INFO"), env.get("REQUEST_METHOD").upper()
-		route = self._routes.get(path, {}) # Get the route
+		resource = self._routes.get(path, {}) # Get the route
+		route = resource.get(method, {}) # Get the actual route handler according to the method
 
 		api_handler = route.get("handler", list(self._route_handlers.keys())[0])
 		api_function = route.get("function", api_handler._404_page_not_found) # If the route function is not found, return a 404 error
@@ -124,10 +125,10 @@ class ResourceServer(Provider):
 			"""
 			If the request is authorized, check that the method is supported.
 			"""
-			if method == "POST":
-				parameters = self._get_post_parameters(env, request)
-			elif method == "GET":
+			if method == "GET":
 				parameters = self._get_get_parameters(env, request)
+			elif method in ["POST", "DELETE"]:
+				parameters = self._get_post_parameters(env, request)
 			else:
 				response.status_code = 405
 				response.add_header("Allow", "POST, GET")
@@ -139,7 +140,7 @@ class ResourceServer(Provider):
 				"""
 				raise request_exceptions.UnauthorizedDataAccessException()
 
-			if method not in api_method:
+			if len(route) == 0:
 				"""
 				Ensure that the request was made using the correct method.
 				"""
