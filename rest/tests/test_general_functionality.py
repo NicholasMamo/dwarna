@@ -39,7 +39,7 @@ class GeneralFunctionalityTest(BiobankTestCase):
 		"""
 		Test that the access token works.
 		"""
-		response = self.send_request("POST", "create_participant", { "username": "nick" }, token)
+		response = self.send_request("POST", "participant", { "username": "nick" }, token)
 		self.assertEqual(response.status_code, 200)
 
 	def test_invalid_token(self):
@@ -60,7 +60,7 @@ class GeneralFunctionalityTest(BiobankTestCase):
 		"""
 		Test that the access token works.
 		"""
-		response = self.send_request("POST", "create_participant", { "username": "nick" }, token)
+		response = self.send_request("POST", "participant", { "username": "nick" }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 401)
 		self.assertEqual(body["exception"], oauth2.error.AccessTokenNotFound.__name__)
@@ -73,7 +73,7 @@ class GeneralFunctionalityTest(BiobankTestCase):
 		clear()
 		token = self._get_access_token(["create_participant"])["access_token"]
 
-		response = self.send_request("POST", "create_participant", { "name": "nick" }, token)
+		response = self.send_request("POST", "participant", { "name": "nick" }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 400)
 		self.assertEqual(body["exception"], request_exceptions.MissingArgumentException.__name__)
@@ -99,13 +99,13 @@ class GeneralFunctionalityTest(BiobankTestCase):
 		access_token = self._get_access_token(["create_participant", "remove_participant"])
 		token = access_token["access_token"]
 		self.assertEqual(access_token["scope"], "create_participant remove_participant")
-		response = self.send_request("POST", "create_participant", { "username": "matt" }, token)
+		response = self.send_request("POST", "participant", { "username": "matt" }, token)
 		self.assertEqual(response.status_code, 200)
 
 		access_token = self._get_access_token(["remove_participant"])
 		token = access_token["access_token"]
 		self.assertEqual(access_token["scope"], "remove_participant")
-		response = self.send_request("POST", "create_participant", { "username": "chri" }, token)
+		response = self.send_request("POST", "participant", { "username": "chri" }, token)
 		self.assertEqual(response.status_code, 403)
 
 	def test_sanitation(self):
@@ -117,7 +117,7 @@ class GeneralFunctionalityTest(BiobankTestCase):
 
 		token = self._get_access_token(["create_study", "view_study"])["access_token"]
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "2320",
 			"name": "ALS",
 			"description": "¯\_(ツ)_/¯",
@@ -126,7 +126,7 @@ class GeneralFunctionalityTest(BiobankTestCase):
 		body = response.json()
 		self.assertEqual(response.status_code, 200)
 
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 2320 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 2320 }, token)
 		body = response.json()
 		study = body["study"]
 		self.assertEqual(study["description"], "¯\_(ツ)_/¯")
@@ -155,12 +155,12 @@ class GeneralTimedFunctionalityTest(BiobankTestCase):
 		access_token = self._get_access_token(["create_participant"])
 		self.assertEqual(access_token["scope"], "create_participant")
 		token = access_token["access_token"]
-		response = self.send_request("POST", "create_participant", { "username": "nick" }, token)
+		response = self.send_request("POST", "participant", { "username": "nick" }, token)
 		self.assertEqual(response.status_code, 200)
 
 		"""
 		Wait one second for the token to expire.
 		"""
 		time.sleep(2)
-		response = self.send_request("POST", "create_participant", { "username": "matt" }, token)
+		response = self.send_request("POST", "participant", { "username": "matt" }, token)
 		self.assertEqual(response.status_code, 401)
