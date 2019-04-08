@@ -14,7 +14,7 @@ TEST_OAUTH_DATABASE = "biobank_oauth_test"
 """
 The port where the tests will be held.
 """
-PORT = 2321
+PORT = 3198
 
 """
 The client's ID.

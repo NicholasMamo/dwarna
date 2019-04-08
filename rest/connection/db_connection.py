@@ -48,7 +48,6 @@ class PostgreSQLConnection(object):
 		self._username = username
 		self._password = password
 		self._cursor_factory = cursor_factory
-
 		self.reconnect()
 
 	def reconnect(self):
@@ -56,11 +55,19 @@ class PostgreSQLConnection(object):
 		Reconnect to the database.
 		"""
 
-		try:
-			self._con = psycopg2.connect(dbname=self._database, host=self._host, user=self._username, password=self._password)
-			self._cursor = self._con.cursor(cursor_factory=self._cursor_factory)
-		except Exception as e:
-			print(e)
+		self._con = psycopg2.connect(dbname=self._database, host=self._host, user=self._username, password=self._password)
+
+	def cursor(self):
+		"""
+		Fetch the connection's cursor.
+
+		:return: A cursor for the connection.
+		:rtype: :class:`DictCursorBase`
+		"""
+
+		cursor = self._con.cursor(cursor_factory=self._cursor_factory)
+
+		return cursor
 
 	def commit(self):
 		"""
@@ -68,13 +75,6 @@ class PostgreSQLConnection(object):
 		"""
 
 		self._con.commit()
-
-	def cursor(self):
-		"""
-		Fetch the connection's cursor.
-		"""
-
-		return self._con.cursor(cursor_factory=self._cursor_factory)
 
 	def count(self, query):
 		"""
@@ -103,11 +103,13 @@ class PostgreSQLConnection(object):
 		:rtype: bool
 		"""
 
-		self.execute(query)
+		cursor = self.execute(query, with_cursor=True)
 		try:
-			results = self._cursor.fetchall()
+			results = cursor.fetchall()
 		except psycopg2.ProgrammingError:
 			return self.exists(query)
+		finally:
+			cursor.close()
 		return len(results) > 0
 
 	def select_one(self, query):
@@ -121,8 +123,10 @@ class PostgreSQLConnection(object):
 		:rtype: dict
 		"""
 
-		self.execute(query)
-		return self._cursor.fetchone()
+		cursor = self.execute(query, with_cursor=True)
+		row = cursor.fetchone()
+		cursor.close()
+		return row
 
 	def select(self, query):
 		"""
@@ -135,31 +139,46 @@ class PostgreSQLConnection(object):
 		:rtype: list
 		"""
 
-		self.execute(query)
-		return self._cursor.fetchall()
+		cursor = self.execute(query, with_cursor=True)
+		rows = cursor.fetchall()
+		cursor.close()
+		return rows
 
-	def execute(self, batch):
+	def execute(self, batch, with_cursor=False):
 		"""
 		Execute the given transactions. If one fails, roll back all the changes.
 		This function does not return anything, but it may throw exceptions.
 		When something does go awry, the connection establishes a new connection.
 
+		If the execution is supposed to return results, then the `with_cursor` parameter returns the used cursor.
+		Otherwise, the used cursor is closed.
+
 		:param batch: A batch of queries to execute.
 		:type batch: list of str
+
+		:return: A cursor with the results.
+		:rtype: None or :class:`DictCursorBase`
 
 		:raises: :class:`Exception`: Any exception that is caught is rethrown.
 		"""
 
 		try:
+			cursor = self.cursor()
+
 			"""
 			The transactions are only committed if all of them are successful.
 			"""
 			if type(batch) == list:
 				for query in batch:
-					self._cursor.execute(query)
+					cursor.execute(query)
 			else:
-				self._cursor.execute(batch)
+				cursor.execute(batch)
 			self._con.commit()
+
+			if with_cursor:
+				return cursor
+			else:
+				cursor.close()
 		except Exception as e:
 			"""
 			If the transactions failed for some reason, reconnect to the database and raise the exception again.
