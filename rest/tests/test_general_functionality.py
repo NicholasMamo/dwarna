@@ -7,6 +7,8 @@ import os
 import sys
 import time
 
+import oauth2
+
 path = sys.path[0]
 path = os.path.join(path, "../")
 if path not in sys.path:
@@ -39,6 +41,29 @@ class GeneralFunctionalityTest(BiobankTestCase):
 		"""
 		response = self.send_request("POST", "create_participant", { "username": "nick" }, token)
 		self.assertEqual(response.status_code, 200)
+
+	def test_invalid_token(self):
+		"""
+		Make a request with an incorrect access token.
+		"""
+
+		clear()
+
+		"""
+		Get a token and invalidate it by changing a single character.
+		"""
+		token = self._get_access_token(["create_participant"])["access_token"]
+		token = list(token)
+		token[1] = "Z" if token[1] is not "Z" else "A";
+		token = "".join(token)
+
+		"""
+		Test that the access token works.
+		"""
+		response = self.send_request("POST", "create_participant", { "username": "nick" }, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 401)
+		self.assertEqual(body["exception"], oauth2.error.AccessTokenNotFound.__name__)
 
 	def test_argument_checks(self):
 		"""
