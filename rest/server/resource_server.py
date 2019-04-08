@@ -44,18 +44,20 @@ class ResourceServer(Provider):
 
 		The resource server receives a list of routes that it can handle.
 		Routes are dictionaries, where the keys are the paths.
-		The value is another dictionary of the form:
+		The keys themselves are split into the methods that they accept.
+		This method is another dictionary of the form:
 
 		.. code-block:: python
 
 		   {
-		   	"/create_participant": {
-		   		"handler": handler_class,
-				"function": create_participant,
-		   		"scopes": ['create_participant'],
-				"parameters": ['username'],
-				"method": ["POST"],
-				"self_only": True
+		   	"/participant": {
+				"POST": {
+					"handler": handler_class,
+					"function": create_participant,
+			   		"scopes": ['create_participant'],
+					"parameters": ['username'],
+					"self_only": True
+				}
 		   	}
 		   }
 
@@ -64,7 +66,8 @@ class ResourceServer(Provider):
 		Moreover, to protect against erroneous requests, the method is linked with the API endpoint as well.
 
 		The `self_only` attribute is optional.
-		When set to `True`, it restricts participants to access only their own data.
+		When set to `True`, it restricts users to access only their own data.
+		To ensure that the user is accessing their own data, the access token owner is checked with the username in question.
 
 		The provided route handler contains the functions that handle each route.
 
