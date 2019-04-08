@@ -253,7 +253,8 @@ routes.update({
 		"function": consent_handler_class.get_studies_by_participant,
 		"scopes": ["view_consent"],
 		"parameters": ["username"],
-		"method": ["GET"]
+		"method": ["GET"],
+		"self_only": True
 	},
 	"/give_consent": {
 		"handler": consent_handler_class,

@@ -166,7 +166,7 @@ class ResourceServer(Provider):
 				error.AccessTokenNotFound) as e:
 			response.status_code = 401
 			response.add_header("WWW-Authenticate", "Bearer realm=\"biobank\"")
-			response.body = json.dumps({ "error": str(e) })
+			response.body = json.dumps({ "error": str(e), "exception": e.__class__.__name__ })
 			return response
 		except request_exceptions.InsufficientScopeException as e:
 			response.status_code = 403

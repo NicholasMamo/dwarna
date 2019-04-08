@@ -71,24 +71,37 @@ class ConsentManagementTest(BiobankTestCase):
 		}, token)
 		self.assertEqual(response.status_code, 200)
 
+		response = self.send_request("POST", "create_study", {
+			"study_id": "5442",
+			"name": "Thalassemia",
+			"description": "Thalassemia study",
+			"homepage": "http://um.edu.mt",
+		}, token)
+		self.assertEqual(response.status_code, 200)
+
 		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 2320 }, token)
 		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 8190 }, token)
 
-		response = self.send_request("POST", "create_participant", {
-			"username": "p2320"
-		}, token)
-		self.assertEqual(response.status_code, 200)
+		"""
+		Create two participants, fetch their cards and start REST servers for them.
 
+			- Participant `p2322` served on port 2322; and
+			- Participant `p2323` served on port 2323
 		"""
-		Fetch the card and save it as a file.
-		"""
-		response = self.send_request("GET", "get_card", {
-			"username": "p2320",
-			"temp": True
-		}, token)
-		self.assertEqual(response.status_code, 200)
-		self.save_card(response.content, "p2320.card")
-		self.start_rest("p2320.card", 3002)
+
+		for participant in [2322, 2323]:
+			response = self.send_request("POST", "create_participant", {
+				"username": f"p{participant}"
+			}, token)
+			self.assertEqual(response.status_code, 200)
+
+			response = self.send_request("GET", "get_card", {
+				"username": f"p{participant}",
+				"temp": True
+			}, token)
+			self.assertEqual(response.status_code, 200)
+			self.save_card(response.content, f"p{participant}.card")
+			self.start_rest(f"p{participant}.card", participant)
 
 	@classmethod
 	def tearDownClass(self):
@@ -104,7 +117,7 @@ class ConsentManagementTest(BiobankTestCase):
 			out, _ = proc.communicate()
 			proc.wait()
 
-		ports = [3002]
+		ports = [2322, 2323]
 		for port in ports:
 			cmd = f"kill $( lsof -i:{port} -t )"
 			proc = subprocess.check_output(["bash", "-i", "-c", cmd])
@@ -145,106 +158,170 @@ class ConsentManagementTest(BiobankTestCase):
 		pid = proc.pid
 		time.sleep(10)
 
-	def no_test_give_consent(self):
+	def test_give_consent_of_inexistent_participant(self):
+		"""
+		Test giving basic consent when the participant does not exist.
+		"""
+
+		token = self._get_access_token(["update_consent", "view_consent"], "p2321")["access_token"]
+		response = self.send_request("POST", "give_consent", {
+			"study_id": "8190",
+			"username": "p2321",
+			"access_token": None,
+			"port": 2323,
+		}, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 500)
+		self.assertEqual(body["exception"], user_exceptions.ParticipantDoesNotExistException.__name__)
+
+	def test_give_consent_of_inexistent_study(self):
+		"""
+		Test giving basic consent when the study does not exist.
+		"""
+
+		token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
+		response = self.send_request("POST", "give_consent", {
+			"study_id": "8191",
+			"username": "p2323",
+			"access_token": None,
+			"port": 2323,
+		}, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 500)
+		self.assertEqual(body["exception"], study_exceptions.StudyDoesNotExistException.__name__)
+
+	def test_give_consent(self):
 		"""
 		Test giving basic consent.
 		"""
 
-		token = self._get_access_token(["update_consent", "view_consent"], "p2321")["access_token"]
-
-		"""
-		Consent cannot be given if the participant does not exist.
-		"""
+		token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
 		response = self.send_request("POST", "give_consent", {
 			"study_id": "8190",
-			"username": "p2321",
+			"username": "p2323",
 			"access_token": None,
-			"port": 3002,
-		}, token)
-		body = response.json()
-		self.assertEqual(response.status_code, 500)
-		self.assertEqual(body["exception"], user_exceptions.ParticipantDoesNotExistException.__name__)
-
-		"""
-		Consent cannot be given if the study does not exist.
-		"""
-		token = self._get_access_token(["update_consent", "view_consent"], "p2320")["access_token"]
-		response = self.send_request("POST", "give_consent", {
-			"study_id": "8191",
-			"username": "p2320",
-			"access_token": None,
-			"port": 3002,
-		}, token)
-		body = response.json()
-		self.assertEqual(response.status_code, 500)
-		self.assertEqual(body["exception"], study_exceptions.StudyDoesNotExistException.__name__)
-
-		"""
-		Test basic consent.
-		"""
-
-		response = self.send_request("POST", "give_consent", {
-			"study_id": "8190",
-			"username": "p2320",
-			"access_token": None,
-			"port": 3002,
+			"port": 2323,
 		}, token)
 		self.assertEqual(response.status_code, 200)
 
 		response = self.send_volatile_request("GET", "has_consent", {
 			"study_id": "8190",
-			"username": "p2320",
+			"username": "p2323",
 			"access_token": "None",
-			"port": 3002,
+			"port": 2323,
 		}, token, value=True)
 		body = response.json()
 		self.assertEqual(response.status_code, 200)
 		self.assertTrue(body["data"])
 
-	def no_test_withdraw_consent(self):
+	def test_withdraw_consent_if_participant_does_not_exist(self):
+		"""
+		Test withdrawing basic consent when the participant does not exist.
+		"""
+
+		token = self._get_access_token(["update_consent", "view_consent"], "p2321")["access_token"]
+		response = self.send_request("POST", "withdraw_consent", {
+			"study_id": "8190",
+			"username": "p2321",
+			"access_token": None,
+			"port": 2323,
+		}, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 500)
+		self.assertEqual(body["exception"], user_exceptions.ParticipantDoesNotExistException.__name__)
+
+	def test_withdraw_consent_if_study_does_not_exist(self):
+		"""
+		Test withdrawing basic consent when the study does not exist.
+		"""
+
+		token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
+		response = self.send_request("POST", "withdraw_consent", {
+			"study_id": "8191",
+			"username": "p2323",
+			"access_token": None,
+			"port": 2323,
+		}, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 500)
+		self.assertEqual(body["exception"], study_exceptions.StudyDoesNotExistException.__name__)
+
+	def test_withdraw_consent(self):
 		"""
 		Test withdrawing consent.
 		"""
 
-		token = self._get_access_token(["update_consent", "view_consent"], "p2320")["access_token"]
-
-		"""
-		Test that the basic withdrawal works.
-		"""
+		token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
 		response = self.send_request("POST", "withdraw_consent", {
 			"study_id": "8190",
-			"username": "p2320",
+			"username": "p2323",
 			"access_token": None,
-			"port": 3002,
+			"port": 2323,
 		}, token)
 		self.assertEqual(response.status_code, 200)
 
 		response = self.send_volatile_request("GET", "has_consent", {
 			"study_id": "8190",
-			"username": "p2320",
+			"username": "p2323",
 			"access_token": "None",
-			"port": 3002,
+			"port": 2323,
 		}, token, value=False)
 		body = response.json()
 		self.assertEqual(response.status_code, 200)
 		self.assertFalse(body["data"])
 
+	def test_give_and_withdraw_consent(self):
 		"""
 		Test withdrawing consent after giving it.
 		"""
+
+		token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
+		response = self.send_request("GET", "has_consent", {
+			"study_id": "8190",
+			"username": "p2323",
+			"access_token": "None",
+			"port": 2323,
+		}, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+
+		if body["data"]:
+			"""
+			If the participant has already given consent, withdraw it first.
+			"""
+
+			response = self.send_request("POST", "withdraw_consent", {
+				"study_id": "8190",
+				"username": "p2323",
+				"access_token": None,
+				"port": 2323,
+			}, token)
+			body = response.json()
+			self.assertEqual(response.status_code, 200)
+
+			response = self.send_volatile_request("GET", "has_consent", {
+				"study_id": "8190",
+				"username": "p2323",
+				"access_token": "None",
+				"port": 2323,
+			}, token, value=False)
+			body = response.json()
+			self.assertEqual(response.status_code, 200)
+			self.assertFalse(body["data"])
+
 		response = self.send_request("POST", "give_consent", {
 			"study_id": "8190",
-			"username": "p2320",
+			"username": "p2323",
 			"access_token": None,
-			"port": 3002,
+			"port": 2323,
 		}, token)
 		self.assertEqual(response.status_code, 200)
 
 		response = self.send_volatile_request("GET", "has_consent", {
 			"study_id": "8190",
-			"username": "p2320",
+			"username": "p2323",
 			"access_token": "None",
-			"port": 3002,
+			"port": 2323,
 		}, token, value=True)
 		body = response.json()
 		self.assertEqual(response.status_code, 200)
@@ -252,204 +329,168 @@ class ConsentManagementTest(BiobankTestCase):
 
 		response = self.send_request("POST", "withdraw_consent", {
 			"study_id": "8190",
-			"username": "p2320",
+			"username": "p2323",
 			"access_token": None,
-			"port": 3002,
+			"port": 2323,
 		}, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 200)
 
 		response = self.send_volatile_request("GET", "has_consent", {
 			"study_id": "8190",
-			"username": "p2320",
+			"username": "p2323",
 			"access_token": "None",
-			"port": 3002,
+			"port": 2323,
 		}, token, value=False)
 		body = response.json()
 		self.assertEqual(response.status_code, 200)
 		self.assertFalse(body["data"])
 
-	def test_check_consent(self):
-		"""
-		Test consent checking.
-		"""
-
+	def test_check_consent_of_inexistent_participant(self):
 		"""
 		Consent cannot be checked if the participant does not exist.
 		"""
-		token = self._get_access_token(["update_consent", "view_consent"], "p2321")["access_token"]
 
+		token = self._get_access_token(["update_consent", "view_consent"], "p2321")["access_token"]
 		response = self.send_request("GET", "has_consent", {
 			"study_id": "8190",
 			"username": "p2321",
 			"access_token": None,
-			"port": 3002,
+			"port": 2323,
 		}, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], user_exceptions.ParticipantDoesNotExistException.__name__)
 
-		"""
-		By default, there should be no consent.
-		"""
-
-		token = self._get_access_token(["update_consent", "view_consent"], "p2320")["access_token"]
-		response = self.send_volatile_request("GET", "has_consent", {
-			"study_id": "8190",
-			"username": "p2320",
-			"access_token": "None",
-			"port": 3002,
-		}, token, value=False)
-		body = response.json()
-		self.assertEqual(response.status_code, 200)
-		self.assertFalse(body["data"])
-
-		"""
-		There should be consent if it is given.
-		"""
-		response = self.send_request("POST", "give_consent", {
-			"study_id": "8190",
-			"username": "p2320",
-			"access_token": None,
-			"port": 3002,
-		}, token)
-		self.assertEqual(response.status_code, 200)
-
-		response = self.send_volatile_request("GET", "has_consent", {
-			"study_id": "8190",
-			"username": "p2320",
-			"access_token": "None",
-			"port": 3002,
-		}, token, value=True)
-		body = response.json()
-		self.assertEqual(response.status_code, 200)
-		self.assertTrue(body["data"])
-
-		"""
-		When withdrawn, the consent should be revoked.
-		"""
-
-		response = self.send_request("POST", "withdraw_consent", {
-			"study_id": "8190",
-			"username": "p2320",
-			"access_token": None,
-			"port": 3002,
-		}, token)
-		body = response.json()
-		self.assertEqual(response.status_code, 200)
-
-		response = self.send_volatile_request("GET", "has_consent", {
-			"study_id": "8190",
-			"username": "p2320",
-			"access_token": "None",
-			"port": 3002,
-		}, token, value=False)
-		body = response.json()
-		self.assertEqual(response.status_code, 200)
-		self.assertFalse(body["data"])
-
+	def test_check_consent_of_inexistent_study(self):
 		"""
 		Consent cannot be checked if the study does not exist.
 		"""
+
+		token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
 		response = self.send_request("GET", "has_consent", {
 			"study_id": "8191",
-			"username": "p2320",
+			"username": "p2323",
 			"access_token": None,
-			"port": 3002,
+			"port": 2323,
 		}, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], study_exceptions.StudyDoesNotExistException.__name__)
 
+	def test_default_consent(self):
+		"""
+		By default, there should be no consent.
+		"""
+
+		token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
+		response = self.send_volatile_request("GET", "has_consent", {
+			"study_id": "5442",
+			"username": "p2323",
+			"access_token": "None",
+			"port": 2323,
+		}, token, value=False)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertFalse(body["data"])
+
+	def test_get_participants_consented_studies(self):
+		"""
+		Test getting the studies that the participant consented to.
+		"""
+
+		token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
+
+		"""
+		Give consent to one study.
+		"""
+
 		response = self.send_request("POST", "give_consent", {
 			"study_id": "8190",
-			"username": "p2320",
+			"username": "p2323",
 			"access_token": None,
-			"port": 3002,
+			"port": 2323,
 		}, token)
 		self.assertEqual(response.status_code, 200)
 
 		response = self.send_volatile_request("GET", "has_consent", {
 			"study_id": "8190",
-			"username": "p2320",
+			"username": "p2323",
 			"access_token": "None",
-			"port": 3002,
+			"port": 2323,
 		}, token, value=True)
 		body = response.json()
 		self.assertEqual(response.status_code, 200)
 		self.assertTrue(body["data"])
 
-		response = self.send_request("GET", "get_studies_by_participant", {
-		"username": "p2320",
+		response = self.send_request("POST", "withdraw_consent", {
+			"study_id": "2320",
+			"username": "p2323",
+			"access_token": None,
+			"port": 2323,
+		}, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_volatile_request("GET", "has_consent", {
+			"study_id": "2320",
+			"username": "p2323",
 			"access_token": "None",
-			"port": 3002,
+			"port": 2323,
+		}, token, value=False)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertFalse(body["data"])
+
+		"""
+		Get the user's studies.
+		"""
+
+		response = self.send_request("GET", "get_studies_by_participant", {
+		"username": "p2323",
+			"access_token": "None",
+			"port": 2323,
 		}, token)
 		self.assertEqual(response.status_code, 200)
 		body = response.json()["data"]
 		self.assertEqual(len(body), 1)
 
+		"""
+		Give consent to another study.
+		"""
+
 		response = self.send_request("POST", "give_consent", {
 			"study_id": "2320",
-			"username": "p2320",
+			"username": "p2323",
 			"access_token": None,
-			"port": 3002,
+			"port": 2323,
 		}, token)
 		self.assertEqual(response.status_code, 200)
 
 		response = self.send_volatile_request("GET", "has_consent", {
 			"study_id": "2320",
-			"username": "p2320",
+			"username": "p2323",
 			"access_token": "None",
-			"port": 3002,
+			"port": 2323,
 		}, token, value=True)
 		body = response.json()
 		self.assertEqual(response.status_code, 200)
 		self.assertTrue(body["data"])
 
 		response = self.send_request("GET", "get_studies_by_participant", {
-			"username": "p2320",
+			"username": "p2323",
 			"access_token": "None",
-			"port": 3002,
+			"port": 2323,
 		}, token)
 		body = response.json()["data"]
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(len(body), 2)
 
-		return
-
+	def test_get_participants_from_inexistent_study(self):
 		"""
-		Test the participant listing for studies.
+		Test getting the participants from an inexistent study.
 		"""
 
-		response = self.send_request("POST", "give_consent", {
-			"study_id": "8190",
-			"username": "matt",
-			"password": "pwd",
-		}, token)
-		self.assertEqual(response.status_code, 200)
-
-		response = self.send_volatile_request("GET", "has_consent", {
-			"study_id": "8190",
-			"username": "matt",
-		}, token, value=True)
-		body = response.json()
-		self.assertEqual(response.status_code, 200)
-		self.assertTrue(body["data"])
-
-		response = self.send_request("GET", "get_participants_by_study", {
-			"study_id": "8190",
-		}, token)
-		body = response.json()
-		self.assertEqual(response.status_code, 200)
-		self.assertTrue(any(user["user_id"] == "nick" for user in body["data"]))
-		self.assertTrue(any(user["user_id"] == "matt" for user in body["data"]))
-
-		response = self.send_request("GET", "get_participants_by_study", {
-			"study_id": "2320",
-		}, token)
-		body = response.json()
-		self.assertEqual(response.status_code, 200)
-		self.assertTrue(any(user["user_id"] == "nick" for user in body["data"]))
+		token = self._get_access_token(["update_consent", "view_consent"], "admin")["access_token"]
 
 		response = self.send_request("GET", "get_participants_by_study", {
 			"study_id": "2321",
@@ -457,3 +498,192 @@ class ConsentManagementTest(BiobankTestCase):
 		body = response.json()
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], study_exceptions.StudyDoesNotExistException.__name__)
+
+	def test_give_consent_on_behalf(self):
+		"""
+		Test that giving consent on behalf of someone fails.
+		"""
+
+		p2322_token = self._get_access_token(["update_consent", "view_consent"], "p2322")["access_token"]
+
+		"""
+		Give consent for `p2323`.
+		"""
+		response = self.send_request("POST", "give_consent", {
+			"study_id": "2320",
+			"username": "p2323",
+			"access_token": None,
+			"port": 2323,
+		}, p2322_token)
+		body = response.json()
+		self.assertEqual(response.status_code, 401)
+		self.assertEqual(body["exception"], request_exceptions.UnauthorizedDataAccessException.__name__)
+
+	def test_withdraw_consent_on_behalf(self):
+		"""
+		Test that withdrawing consent on behalf of someone fails.
+		"""
+
+		p2322_token = self._get_access_token(["update_consent", "view_consent"], "p2322")["access_token"]
+
+		"""
+		Withdraw consent for `p2323`.
+		"""
+		response = self.send_request("POST", "withdraw_consent", {
+			"study_id": "2320",
+			"username": "p2323",
+			"access_token": None,
+			"port": 2323,
+		}, p2322_token)
+		body = response.json()
+		self.assertEqual(response.status_code, 401)
+		self.assertEqual(body["exception"], request_exceptions.UnauthorizedDataAccessException.__name__)
+
+	def test_check_consent_on_behalf(self):
+		"""
+		Test that checking consent on behalf of someone fails.
+		"""
+
+		p2322_token = self._get_access_token(["update_consent", "view_consent"], "p2322")["access_token"]
+
+		"""
+		Check consent of `p2323`.
+		"""
+		response = self.send_request("POST", "has_consent", {
+			"study_id": "2320",
+			"username": "p2323",
+			"access_token": None,
+			"port": 2323,
+		}, p2322_token)
+		body = response.json()
+		self.assertEqual(response.status_code, 401)
+		self.assertEqual(body["exception"], request_exceptions.UnauthorizedDataAccessException.__name__)
+
+	def test_get_participants_consented_studies_on_behalf(self):
+		"""
+		Test that getting the studies that another participant consented to fails.
+		"""
+
+		token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
+
+		response = self.send_request("GET", "get_studies_by_participant", {
+			"username": "p2322",
+			"access_token": "None",
+			"port": 2322,
+		}, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 401)
+		self.assertEqual(body["exception"], request_exceptions.UnauthorizedDataAccessException.__name__)
+
+	def no_test_get_study_participants(self):
+		"""
+		Test getting the participants that have consented to the use of their samples in a study.
+		"""
+
+		token = self._get_access_token(["update_consent", "view_consent"], "admin")["access_token"]
+		p2322_token = self._get_access_token(["update_consent", "view_consent"], "p2322")["access_token"]
+		p2323_token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
+
+		"""
+		Give consent from `p2322`.
+		"""
+
+		response = self.send_request("POST", "give_consent", {
+			"study_id": "2320",
+			"username": "p2322",
+			"access_token": None,
+			"port": 2322,
+		}, p2322_token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_volatile_request("GET", "has_consent", {
+			"study_id": "2320",
+			"username": "p2322",
+			"access_token": "None",
+			"port": 2322,
+		}, p2322_token, value=True)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertTrue(body["data"])
+
+		"""
+		Withdraw consent from `p2323`.
+		"""
+
+		response = self.send_request("POST", "withdraw_consent", {
+			"study_id": "2320",
+			"username": "p2323",
+			"access_token": None,
+			"port": 2323,
+		}, p2323_token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_volatile_request("GET", "has_consent", {
+			"study_id": "2320",
+			"username": "p2323",
+			"access_token": "None",
+			"port": 2323,
+		}, p2323_token, value=False)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertFalse(body["data"])
+
+		response = self.send_request("GET", "get_participants_by_study", {
+			"study_id": "2320",
+		}, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertTrue(any(user["user_id"] == "p2322" for user in body["data"]))
+		self.assertFalse(any(user["user_id"] == "p2323" for user in body["data"]))
+
+		"""
+		Withdraw consent from `p2322`.
+		"""
+
+		response = self.send_request("POST", "withdraw_consent", {
+			"study_id": "2320",
+			"username": "p2322",
+			"access_token": None,
+			"port": 2322,
+		}, p2322_token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_volatile_request("GET", "has_consent", {
+			"study_id": "2320",
+			"username": "p2322",
+			"access_token": "None",
+			"port": 2322,
+		}, p2322_token, value=False)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertFalse(body["data"])
+
+		"""
+		Give consent from `p2323`.
+		"""
+
+		response = self.send_request("POST", "give_consent", {
+			"study_id": "2320",
+			"username": "p2323",
+			"access_token": None,
+			"port": 2323,
+		}, p2323_token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_volatile_request("GET", "has_consent", {
+			"study_id": "2320",
+			"username": "p2323",
+			"access_token": "None",
+			"port": 2323,
+		}, p2323_token, value=True)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertTrue(body["data"])
+
+		response = self.send_request("GET", "get_participants_by_study", {
+			"study_id": "2320",
+		}, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertTrue(any(user["user_id"] == "p2323" for user in body["data"]))
+		self.assertFalse(any(user["user_id"] == "p2322" for user in body["data"]))
