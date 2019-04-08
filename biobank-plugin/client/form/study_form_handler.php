@@ -39,7 +39,7 @@ class StudyFormHandler extends StudyHandler {
 	 * @return	array 	The array containing the parsed response.
 	 */
 	public function get_study($study_id) {
-		$endpoint = "get_study_by_id";
+		$endpoint = "study";
 
 		$request = new \client\Request($this->scheme, $this->host, $this->port);
 		$request->add_parameter("study_id", $study_id);
@@ -161,7 +161,7 @@ class StudyFormHandler extends StudyHandler {
 	 */
 	public function create_study() {
 		$error = "";
-		$endpoint = "create_study"; // the REST API's endpoint
+		$endpoint = "study"; // the REST API's endpoint
 
 		if(isset($_POST["study_nonce"]) && wp_verify_nonce($_POST["study_nonce"], "study_form")) {
 			/*
@@ -227,7 +227,7 @@ class StudyFormHandler extends StudyHandler {
 	 */
 	public function update_study() {
 		$error = "";
-		$endpoint = "update_study"; // the REST API's endpoint
+		$endpoint = "study"; // the REST API's endpoint
 		$return = "";
 
 		if(isset($_POST["study_nonce"]) && wp_verify_nonce($_POST["study_nonce"], "study_form")) {
@@ -269,7 +269,7 @@ class StudyFormHandler extends StudyHandler {
 					$request->add_parameter("description", $input["description"]);
 					$request->add_parameter("homepage", $input["homepage"]);
 					$request->add_parameter("researchers", $researchers);
-					$response = $request->send_post_request($endpoint);
+					$response = $request->send_post_request($endpoint, "PUT");
 
 					if (! is_wp_error($response)) {
 						$body = json_decode($response["body"]);
@@ -295,7 +295,7 @@ class StudyFormHandler extends StudyHandler {
 	 */
 	public function remove_study() {
 		$error = "";
-		$endpoint = "remove_study"; // the REST API's endpoint
+		$endpoint = "study"; // the REST API's endpoint
 
 		if(isset($_POST["study_nonce"]) && wp_verify_nonce($_POST["study_nonce"], "study_form")) {
 			/*
@@ -324,7 +324,7 @@ class StudyFormHandler extends StudyHandler {
 					 */
 					$request = new \client\Request($this->scheme, $this->host, $this->port);
 					$request->add_parameter("study_id", $input["study_id"]);
-					$response = $request->send_post_request($endpoint);
+					$response = $request->send_post_request($endpoint, "DELETE");
 
 					if (! is_wp_error($response)) {
 						$body = json_decode($response["body"]);
