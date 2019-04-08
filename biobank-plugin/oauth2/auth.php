@@ -16,7 +16,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-require_once(realpath(dirname(__FILE__)) . "/../../../../wordpress/wp-load.php");
+require_once("/var/www/html/wordpress/wp-load.php");
 
 require_once(__DIR__.'/server.php');
 

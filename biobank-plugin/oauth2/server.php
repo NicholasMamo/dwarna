@@ -5,8 +5,8 @@
  */
 
 $dsn      = 'mysql:dbname=wordpress;host=localhost';
-$username = 'nicholas';
-$password = 'FUMr88v65P5CbOZa';
+$username = 'root';
+$password = 'root';
 
 // Switch on error reporting.
 ini_set('display_errors',1);
