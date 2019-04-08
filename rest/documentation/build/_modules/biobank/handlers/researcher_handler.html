@@ -51,12 +51,12 @@
 <span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">general_exceptions</span><span class="p">,</span> <span class="n">study_exceptions</span><span class="p">,</span> <span class="n">user_exceptions</span>
 <span class="kn">from</span> <span class="nn">.handler</span> <span class="k">import</span> <span class="n">UserHandler</span>
 
-<div class="viewcode-block" id="ResearcherHandler"><a class="viewcode-back" href="../../../biobank.html#config.ResearcherHandler">[docs]</a><span class="k">class</span> <span class="nc">ResearcherHandler</span><span class="p">(</span><span class="n">UserHandler</span><span class="p">):</span>
+<div class="viewcode-block" id="ResearcherHandler"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.researcher_handler.ResearcherHandler">[docs]</a><span class="k">class</span> <span class="nc">ResearcherHandler</span><span class="p">(</span><span class="n">UserHandler</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	The researcher handler class receives and handles requests that are related to researchers.</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ResearcherHandler.create_researcher"><a class="viewcode-back" href="../../../biobank.html#config.ResearcherHandler.create_researcher">[docs]</a>	<span class="k">def</span> <span class="nf">create_researcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ResearcherHandler.create_researcher"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.researcher_handler.ResearcherHandler.create_researcher">[docs]</a>	<span class="k">def</span> <span class="nf">create_researcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Insert a researcher into the database.</span>
 
@@ -102,7 +102,7 @@
 
 		<span class="k">return</span> <span class="n">response</span></div>
 
-<div class="viewcode-block" id="ResearcherHandler.remove_researcher_by_username"><a class="viewcode-back" href="../../../biobank.html#config.ResearcherHandler.remove_researcher_by_username">[docs]</a>	<span class="k">def</span> <span class="nf">remove_researcher_by_username</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ResearcherHandler.remove_researcher_by_username"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.researcher_handler.ResearcherHandler.remove_researcher_by_username">[docs]</a>	<span class="k">def</span> <span class="nf">remove_researcher_by_username</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Remove a researcher that has the given username.</span>
 
@@ -142,7 +142,7 @@
 
 		<span class="k">return</span> <span class="n">response</span></div>
 
-<div class="viewcode-block" id="ResearcherHandler.get_researchers"><a class="viewcode-back" href="../../../biobank.html#config.ResearcherHandler.get_researchers">[docs]</a>	<span class="k">def</span> <span class="nf">get_researchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ResearcherHandler.get_researchers"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.researcher_handler.ResearcherHandler.get_researchers">[docs]</a>	<span class="k">def</span> <span class="nf">get_researchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Retrieve a list of all researchers.</span>
 
@@ -175,10 +175,12 @@
 <h3><a href="../../../index.html">Table Of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../setup.html">Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../biobank.html">Biobank Management</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../connection.html">Data Store Connections</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../coauth.html">OAuth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../connection.html">Data Store Connections</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../server.html">Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tests.html">Tests</a></li>
 </ul>
 <div class="relations">
 <h3>Related Topics</h3>

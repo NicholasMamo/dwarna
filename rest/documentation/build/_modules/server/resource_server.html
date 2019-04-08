@@ -85,18 +85,20 @@
 
 <span class="sd">		The resource server receives a list of routes that it can handle.</span>
 <span class="sd">		Routes are dictionaries, where the keys are the paths.</span>
-<span class="sd">		The value is another dictionary of the form:</span>
+<span class="sd">		The keys themselves are split into the methods that they accept.</span>
+<span class="sd">		This method is another dictionary of the form:</span>
 
 <span class="sd">		.. code-block:: python</span>
 
 <span class="sd">		   {</span>
-<span class="sd">		   	&quot;/create_participant&quot;: {</span>
-<span class="sd">		   		&quot;handler&quot;: handler_class,</span>
-<span class="sd">				&quot;function&quot;: create_participant,</span>
-<span class="sd">		   		&quot;scopes&quot;: [&#39;create_participant&#39;],</span>
-<span class="sd">				&quot;parameters&quot;: [&#39;username&#39;],</span>
-<span class="sd">				&quot;method&quot;: [&quot;POST&quot;],</span>
-<span class="sd">				&quot;self_only&quot;: True</span>
+<span class="sd">		   	&quot;/participant&quot;: {</span>
+<span class="sd">				&quot;POST&quot;: {</span>
+<span class="sd">					&quot;handler&quot;: handler_class,</span>
+<span class="sd">					&quot;function&quot;: create_participant,</span>
+<span class="sd">			   		&quot;scopes&quot;: [&#39;create_participant&#39;],</span>
+<span class="sd">					&quot;parameters&quot;: [&#39;username&#39;],</span>
+<span class="sd">					&quot;self_only&quot;: True</span>
+<span class="sd">				}</span>
 <span class="sd">		   	}</span>
 <span class="sd">		   }</span>
 
@@ -105,7 +107,8 @@
 <span class="sd">		Moreover, to protect against erroneous requests, the method is linked with the API endpoint as well.</span>
 
 <span class="sd">		The `self_only` attribute is optional.</span>
-<span class="sd">		When set to `True`, it restricts participants to access only their own data.</span>
+<span class="sd">		When set to `True`, it restricts users to access only their own data.</span>
+<span class="sd">		To ensure that the user is accessing their own data, the access token owner is checked with the username in question.</span>
 
 <span class="sd">		The provided route handler contains the functions that handle each route.</span>
 
@@ -144,10 +147,9 @@
 <span class="sd">		:rtype: :class:`oauth2.web.Response`</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 
-		<span class="n">access_token</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;Authorization&quot;</span><span class="p">)</span>
-
 		<span class="n">path</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PATH_INFO&quot;</span><span class="p">),</span> <span class="n">env</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;REQUEST_METHOD&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-		<span class="n">route</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_routes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="p">{})</span> <span class="c1"># Get the route</span>
+		<span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_routes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="p">{})</span> <span class="c1"># Get the route</span>
+		<span class="n">route</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="p">{})</span> <span class="c1"># Get the actual route handler according to the method</span>
 
 		<span class="n">api_handler</span> <span class="o">=</span> <span class="n">route</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;handler&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_route_handlers</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">])</span>
 		<span class="n">api_function</span> <span class="o">=</span> <span class="n">route</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;function&quot;</span><span class="p">,</span> <span class="n">api_handler</span><span class="o">.</span><span class="n">_404_page_not_found</span><span class="p">)</span> <span class="c1"># If the route function is not found, return a 404 error</span>
@@ -158,34 +160,38 @@
 
 		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
 		<span class="k">try</span><span class="p">:</span>
-			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_authorized</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">api_scopes</span><span class="p">):</span>
-				<span class="k">raise</span> <span class="n">request_exceptions</span><span class="o">.</span><span class="n">InsufficientScopeException</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span> <span class="n">scope</span> <span class="k">for</span> <span class="n">scope</span> <span class="ow">in</span> <span class="n">token</span><span class="o">.</span><span class="n">scopes</span> <span class="k">if</span> <span class="n">scope</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">scopes</span> <span class="p">]))</span>
+			<span class="n">access_token</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;Authorization&quot;</span><span class="p">)</span>
+			<span class="n">token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_token_store</span><span class="o">.</span><span class="n">fetch_by_token</span><span class="p">(</span><span class="n">access_token</span><span class="p">)</span> <span class="c1"># Fetch the token</span>
+
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_authorized</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">api_scopes</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="n">request_exceptions</span><span class="o">.</span><span class="n">InsufficientScopeException</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span> <span class="n">scope</span> <span class="k">for</span> <span class="n">scope</span> <span class="ow">in</span> <span class="n">token</span><span class="o">.</span><span class="n">scopes</span> <span class="k">if</span> <span class="n">scope</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">api_scopes</span> <span class="p">]))</span>
 
 			<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">			If the request is authorized, check that the method is supported.</span>
 <span class="sd">			&quot;&quot;&quot;</span>
-			<span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
-				<span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_post_parameters</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
-			<span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;GET&quot;</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;GET&quot;</span><span class="p">:</span>
 				<span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_get_parameters</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
+			<span class="k">elif</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="s2">&quot;PUT&quot;</span><span class="p">]:</span>
+				<span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_post_parameters</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
 				<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">405</span>
 				<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span> <span class="s2">&quot;POST, GET&quot;</span><span class="p">)</span>
 				<span class="k">return</span> <span class="n">response</span>
 
-			<span class="k">if</span> <span class="ow">not</span> <span class="n">api_self_only</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_personal</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">api_self_only</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_personal</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
 				<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">				Ensure that the user is trying to access their own data if the route has this safety measure.</span>
 <span class="sd">				&quot;&quot;&quot;</span>
 				<span class="k">raise</span> <span class="n">request_exceptions</span><span class="o">.</span><span class="n">UnauthorizedDataAccessException</span><span class="p">()</span>
 
-			<span class="k">if</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">api_method</span><span class="p">:</span>
+			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">route</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 				<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">				Ensure that the request was made using the correct method.</span>
 <span class="sd">				&quot;&quot;&quot;</span>
 				<span class="k">raise</span> <span class="n">request_exceptions</span><span class="o">.</span><span class="n">MethodNotAllowedException</span><span class="p">()</span>
 
-			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_required_parameters</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">required_parameters</span><span class="p">):</span>
+			<span class="n">missing_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_required_parameters</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">required_parameters</span><span class="p">)</span>
+			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_parameters</span><span class="p">):</span>
 				<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">				Ensure that the request has all the required parameters.</span>
 <span class="sd">				&quot;&quot;&quot;</span>
@@ -205,7 +211,7 @@
 				<span class="n">error</span><span class="o">.</span><span class="n">AccessTokenNotFound</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
 			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">401</span>
 			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;WWW-Authenticate&quot;</span><span class="p">,</span> <span class="s2">&quot;Bearer realm=</span><span class="se">\&quot;</span><span class="s2">biobank</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
-			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="p">})</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">})</span>
 			<span class="k">return</span> <span class="n">response</span>
 		<span class="k">except</span> <span class="n">request_exceptions</span><span class="o">.</span><span class="n">InsufficientScopeException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
 			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">403</span>
@@ -274,13 +280,13 @@
 			<span class="n">request_body</span> <span class="o">=</span> <span class="n">parse</span><span class="o">.</span><span class="n">parse_qsl</span><span class="p">(</span><span class="n">request_body</span><span class="p">)</span>
 			<span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">request_body</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ResourceServer._is_authorized"><a class="viewcode-back" href="../../server.html#server.resource_server.ResourceServer._is_authorized">[docs]</a>	<span class="k">def</span> <span class="nf">_is_authorized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">,</span> <span class="n">scopes</span><span class="p">):</span>
+<div class="viewcode-block" id="ResourceServer._is_authorized"><a class="viewcode-back" href="../../server.html#server.resource_server.ResourceServer._is_authorized">[docs]</a>	<span class="k">def</span> <span class="nf">_is_authorized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">scopes</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Check whether the given access token is authorized to access a protected resource.</span>
 <span class="sd">		This validation check considers the access token&#39;s expiry and the scopes of the request.</span>
 
-<span class="sd">		:param access_token: The supplied access token.</span>
-<span class="sd">		:type access_token: str</span>
+<span class="sd">		:param token: The supplied access token.</span>
+<span class="sd">		:type token: :class:`oauth2.datatype.AccessToken`</span>
 <span class="sd">		:param scopes: The scope of a route, compared with the access token&#39;s scope.</span>
 <span class="sd">		:type scopes: str</span>
 
@@ -291,8 +297,6 @@
 <span class="sd">		&quot;&quot;&quot;</span>
 
 		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">scopes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-			<span class="n">token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_token_store</span><span class="o">.</span><span class="n">fetch_by_token</span><span class="p">(</span><span class="n">access_token</span><span class="p">)</span> <span class="c1"># Fetch the token</span>
-
 			<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">			First ensure that the token has not expired.</span>
 <span class="sd">			&quot;&quot;&quot;</span>
@@ -340,8 +344,8 @@
 <span class="sd">		:param required_parameters: The list of required arguments.</span>
 <span class="sd">		:type required_parameters: list</span>
 
-<span class="sd">		:return: A boolean indicating whether all the required parameters are provided in the request.</span>
-<span class="sd">		:rtype: bool</span>
+<span class="sd">		:return: A list of missing parameters.</span>
+<span class="sd">		:rtype: list</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 
 		<span class="sd">&quot;&quot;&quot;</span>
@@ -349,13 +353,7 @@
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="n">missing_parameters</span> <span class="o">=</span> <span class="p">[</span> <span class="n">parameter</span> <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">required_parameters</span> <span class="k">if</span> <span class="n">parameter</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parameters</span> <span class="p">]</span>
 
-		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		If there are missing parameters, raise an exception.</span>
-<span class="sd">		&quot;&quot;&quot;</span>
-		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_parameters</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-			<span class="k">return</span> <span class="kc">False</span>
-
-		<span class="k">return</span> <span class="kc">True</span></div></div>
+		<span class="k">return</span> <span class="n">missing_parameters</span></div></div>
 </pre></div>
 
           </div>
@@ -366,10 +364,12 @@
 <h3><a href="../../index.html">Table Of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../setup.html">Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../biobank.html">Biobank Management</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../connection.html">Data Store Connections</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../coauth.html">OAuth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../connection.html">Data Store Connections</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../server.html">Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests.html">Tests</a></li>
 </ul>
 <div class="relations">
 <h3>Related Topics</h3>

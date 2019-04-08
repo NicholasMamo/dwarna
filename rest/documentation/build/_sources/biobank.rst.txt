@@ -45,6 +45,23 @@ Study Handler
    :private-members:
    :special-members:
 
+===================
+Blockchain Handlers
+===================
+
+.. automodule:: biobank.handlers.blockchain.api
+  :members:
+  :private-members:
+  :special-members:
+
+Hyperledger Handler
+-------------------
+
+.. automodule:: biobank.handlers.blockchain.api.hyperledger
+   :members:
+   :private-members:
+   :special-members:
+
 ==========
 Exceptions
 ==========

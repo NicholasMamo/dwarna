@@ -62,12 +62,12 @@
 
 <span class="kn">import</span> <span class="nn">config</span>
 
-<div class="viewcode-block" id="StudyHandler"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler">[docs]</a><span class="k">class</span> <span class="nc">StudyHandler</span><span class="p">(</span><span class="n">PostgreSQLRouteHandler</span><span class="p">):</span>
+<div class="viewcode-block" id="StudyHandler"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.study_handler.StudyHandler">[docs]</a><span class="k">class</span> <span class="nc">StudyHandler</span><span class="p">(</span><span class="n">PostgreSQLRouteHandler</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	The study handler class receives and handles requests that are related to studies.</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="StudyHandler.create_study"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler.create_study">[docs]</a>	<span class="k">def</span> <span class="nf">create_study</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">homepage</span><span class="p">,</span> <span class="n">researchers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="StudyHandler.create_study"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.study_handler.StudyHandler.create_study">[docs]</a>	<span class="k">def</span> <span class="nf">create_study</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">homepage</span><span class="p">,</span> <span class="n">researchers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Insert a study into the database.</span>
 
@@ -150,7 +150,7 @@
 
 		<span class="k">return</span> <span class="n">response</span></div>
 
-<div class="viewcode-block" id="StudyHandler.update_study"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler.update_study">[docs]</a>	<span class="k">def</span> <span class="nf">update_study</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">homepage</span><span class="p">,</span> <span class="n">researchers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="StudyHandler.update_study"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.study_handler.StudyHandler.update_study">[docs]</a>	<span class="k">def</span> <span class="nf">update_study</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">homepage</span><span class="p">,</span> <span class="n">researchers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Update an existing study.</span>
 
@@ -230,7 +230,7 @@
 
 		<span class="k">return</span> <span class="n">response</span></div>
 
-<div class="viewcode-block" id="StudyHandler.remove_study"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler.remove_study">[docs]</a>	<span class="k">def</span> <span class="nf">remove_study</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="StudyHandler.remove_study"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.study_handler.StudyHandler.remove_study">[docs]</a>	<span class="k">def</span> <span class="nf">remove_study</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Remove an existing study.</span>
 
@@ -280,7 +280,7 @@
 
 		<span class="k">return</span> <span class="n">response</span></div>
 
-<div class="viewcode-block" id="StudyHandler.get_studies_by_researcher"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler.get_studies_by_researcher">[docs]</a>	<span class="k">def</span> <span class="nf">get_studies_by_researcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">researcher</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">search</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="StudyHandler.get_studies_by_researcher"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.study_handler.StudyHandler.get_studies_by_researcher">[docs]</a>	<span class="k">def</span> <span class="nf">get_studies_by_researcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">researcher</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">search</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Retrieve a list of studies.</span>
 
@@ -369,7 +369,7 @@
 
 		<span class="k">return</span> <span class="n">response</span></div>
 
-<div class="viewcode-block" id="StudyHandler.get_studies"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler.get_studies">[docs]</a>	<span class="k">def</span> <span class="nf">get_studies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">search</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">active_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="StudyHandler.get_studies"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.study_handler.StudyHandler.get_studies">[docs]</a>	<span class="k">def</span> <span class="nf">get_studies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">search</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">active_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Retrieve a list of studies.</span>
 
@@ -446,7 +446,7 @@
 
 		<span class="k">return</span> <span class="n">response</span></div>
 
-<div class="viewcode-block" id="StudyHandler.get_active_studies"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler.get_active_studies">[docs]</a>	<span class="k">def</span> <span class="nf">get_active_studies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">search</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="StudyHandler.get_active_studies"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.study_handler.StudyHandler.get_active_studies">[docs]</a>	<span class="k">def</span> <span class="nf">get_active_studies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">search</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Retrieve a list of studies that are active.</span>
 <span class="sd">		This function can be used to differentiate between studies that have been retired and active ones.</span>
@@ -469,7 +469,7 @@
 
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_studies</span><span class="p">(</span><span class="n">number</span><span class="o">=</span><span class="n">number</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="n">page</span><span class="p">,</span> <span class="n">search</span><span class="o">=</span><span class="n">search</span><span class="p">,</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="n">case_sensitive</span><span class="p">,</span> <span class="n">active_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="StudyHandler.get_study_by_id"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler.get_study_by_id">[docs]</a>	<span class="k">def</span> <span class="nf">get_study_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="StudyHandler.get_study_by_id"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.study_handler.StudyHandler.get_study_by_id">[docs]</a>	<span class="k">def</span> <span class="nf">get_study_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Retrieve a single study and all associated researchers and attributes.</span>
 
@@ -515,7 +515,7 @@
 
 		<span class="k">return</span> <span class="n">response</span></div>
 
-<div class="viewcode-block" id="StudyHandler._link_researchers"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler._link_researchers">[docs]</a>	<span class="k">def</span> <span class="nf">_link_researchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="n">researchers</span><span class="p">):</span>
+<div class="viewcode-block" id="StudyHandler._link_researchers"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.study_handler.StudyHandler._link_researchers">[docs]</a>	<span class="k">def</span> <span class="nf">_link_researchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="n">researchers</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Link the given researchers, identified by their username, with the study.</span>
 
@@ -542,7 +542,7 @@
 <span class="sd">			VALUES (%d, &#39;%s&#39;);&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="n">researcher</span><span class="p">)</span>
 		<span class="k">for</span> <span class="n">researcher</span> <span class="ow">in</span> <span class="n">researchers</span> <span class="p">])</span></div>
 
-<div class="viewcode-block" id="StudyHandler._unlink_researchers"><a class="viewcode-back" href="../../../biobank.html#config.StudyHandler._unlink_researchers">[docs]</a>	<span class="k">def</span> <span class="nf">_unlink_researchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">):</span>
+<div class="viewcode-block" id="StudyHandler._unlink_researchers"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.study_handler.StudyHandler._unlink_researchers">[docs]</a>	<span class="k">def</span> <span class="nf">_unlink_researchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Unlink all researchers associated with the study identified by the given ID.</span>
 
@@ -571,10 +571,12 @@
 <h3><a href="../../../index.html">Table Of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../setup.html">Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../biobank.html">Biobank Management</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../connection.html">Data Store Connections</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../coauth.html">OAuth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../connection.html">Data Store Connections</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../server.html">Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tests.html">Tests</a></li>
 </ul>
 <div class="relations">
 <h3>Related Topics</h3>

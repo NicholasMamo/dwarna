@@ -92,10 +92,8 @@
 <span class="sd">	&quot;&quot;&quot;</span>
 
 	<span class="k">try</span><span class="p">:</span>
-		<span class="n">client_store</span> <span class="o">=</span> <span class="n">ClientStore</span><span class="p">()</span>
-		<span class="c1"># TODO Where to store client ID and Client Secret? PostgreSQL maybe?</span>
-		<span class="n">client_store</span><span class="o">.</span><span class="n">add_client</span><span class="p">(</span><span class="n">client_id</span><span class="o">=</span><span class="s2">&quot;abc&quot;</span><span class="p">,</span> <span class="n">client_secret</span><span class="o">=</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span>
-								<span class="n">redirect_uris</span><span class="o">=</span><span class="p">[])</span>
+		<span class="n">client_store</span> <span class="o">=</span> <span class="n">PostgresqlClientStore</span><span class="p">(</span><span class="n">oauth_connection</span><span class="p">)</span>
+		<span class="n">client_store</span><span class="o">.</span><span class="n">add_client</span><span class="p">(</span><span class="n">client_id</span><span class="o">=</span><span class="s2">&quot;abc&quot;</span><span class="p">,</span> <span class="n">client_secret</span><span class="o">=</span><span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
 
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Create a token store.</span>
@@ -108,8 +106,9 @@
 <span class="sd">		The routes and their handler are also passed on as arguments.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="n">blockchain_handler</span> <span class="o">=</span> <span class="n">HyperledgerAPI</span><span class="p">(</span>
-			<span class="n">config</span><span class="o">.</span><span class="n">blockchain_admin_base_url</span><span class="p">,</span>
-			<span class="n">config</span><span class="o">.</span><span class="n">blockchain_multiuser_base_url</span><span class="p">,</span>
+			<span class="n">config</span><span class="o">.</span><span class="n">blockchain_host</span><span class="p">,</span>
+			<span class="n">config</span><span class="o">.</span><span class="n">blockchain_admin_port</span><span class="p">,</span>
+			<span class="n">config</span><span class="o">.</span><span class="n">blockchain_multiuser_port</span><span class="p">,</span>
 			<span class="n">connection</span>
 		<span class="p">)</span>
 
@@ -211,10 +210,12 @@
 <h3><a href="../index.html">Table Of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../setup.html">Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../biobank.html">Biobank Management</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../connection.html">Data Store Connections</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../coauth.html">OAuth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../connection.html">Data Store Connections</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../server.html">Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests.html">Tests</a></li>
 </ul>
 <div class="relations">
 <h3>Related Topics</h3>

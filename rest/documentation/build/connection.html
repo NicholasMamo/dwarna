@@ -157,19 +157,35 @@ This function only acts as a wrapper, getting just a number of rows.</p>
 <dt id="connection.db_connection.PostgreSQLConnection.cursor">
 <code class="descname">cursor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connection/db_connection.html#PostgreSQLConnection.cursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connection.db_connection.PostgreSQLConnection.cursor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetch the connection’s cursor.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A cursor for the connection.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">DictCursorBase</span></code></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="connection.db_connection.PostgreSQLConnection.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><em>batch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connection/db_connection.html#PostgreSQLConnection.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connection.db_connection.PostgreSQLConnection.execute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute</code><span class="sig-paren">(</span><em>batch</em>, <em>with_cursor=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connection/db_connection.html#PostgreSQLConnection.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connection.db_connection.PostgreSQLConnection.execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute the given transactions. If one fails, roll back all the changes.
 This function does not return anything, but it may throw exceptions.
 When something does go awry, the connection establishes a new connection.</p>
+<p>If the execution is supposed to return results, then the <cite>with_cursor</cite> parameter returns the used cursor.
+Otherwise, the used cursor is closed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>batch</strong> (<em>list of str</em>) – A batch of queries to execute.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A cursor with the results.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None or <code class="xref py py-class docutils literal"><span class="pre">DictCursorBase</span></code></td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">Exception</span></code>: Any exception that is caught is rethrown.</td>
 </tr>

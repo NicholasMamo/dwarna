@@ -10,10 +10,12 @@ Biobank Backend's Documentation
    :maxdepth: 2
    :caption: Contents:
 
+   setup
    biobank
-   connection
    coauth
+   connection
    server
+   tests
 
 Indices and tables
 ==================

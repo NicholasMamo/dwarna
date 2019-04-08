@@ -90,7 +90,6 @@
 
 			<span class="c1"># TODO: Error-handling.</span>
 			<span class="n">hyperledger_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blockchain_connector</span><span class="o">.</span><span class="n">create_participant</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
-			<span class="n">card</span> <span class="o">=</span> <span class="n">hyperledger_response</span><span class="o">.</span><span class="n">content</span>
 
 			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
 			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
@@ -157,7 +156,7 @@
 <span class="sd">		&quot;&quot;&quot;</span>
 
 		<span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">			SELECT *</span>
+<span class="s2">			SELECT user_id</span>
 <span class="s2">			FROM participants</span>
 <span class="s2">		&quot;&quot;&quot;</span><span class="p">)</span>
 
@@ -181,10 +180,12 @@
 <h3><a href="../../../index.html">Table Of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../setup.html">Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../biobank.html">Biobank Management</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../connection.html">Data Store Connections</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../coauth.html">OAuth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../connection.html">Data Store Connections</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../server.html">Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tests.html">Tests</a></li>
 </ul>
 <div class="relations">
 <h3>Related Topics</h3>

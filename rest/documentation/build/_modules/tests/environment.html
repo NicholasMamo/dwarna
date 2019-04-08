@@ -1,0 +1,180 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>tests.environment &#8212; biobank_backend 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for tests.environment</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">expanduser</span>
+
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+
+<span class="kn">from</span> <span class="nn">setup</span> <span class="k">import</span> <span class="n">minimal_schema</span><span class="p">,</span> <span class="n">oauth_schema</span>
+
+<span class="n">TEST_DATABASE</span> <span class="o">=</span> <span class="s2">&quot;biobank_test&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The database that is used as a testing environment.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">TEST_OAUTH_DATABASE</span> <span class="o">=</span> <span class="s2">&quot;biobank_oauth_test&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The OAuth 2.0 database that is used for the testing environment.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">PORT</span> <span class="o">=</span> <span class="mi">3198</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The port where the tests will be held.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">CLIENT_ID</span> <span class="o">=</span> <span class="s2">&quot;abc&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The client&#39;s ID.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">CLIENT_SECRET</span> <span class="o">=</span> <span class="s2">&quot;xyz&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The client&#39;s secret.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">cursor</span><span class="p">,</span> <span class="n">con</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="create_testing_environment"><a class="viewcode-back" href="../../tests.html#tests.environment.create_testing_environment">[docs]</a><span class="k">def</span> <span class="nf">create_testing_environment</span><span class="p">():</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Create a testing environment so that the actual database is not altered.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">con</span> <span class="o">=</span> <span class="n">get_connection</span><span class="p">(</span><span class="s2">&quot;postgres&quot;</span><span class="p">)</span>
+	<span class="n">con</span><span class="o">.</span><span class="n">autocommit</span> <span class="o">=</span> <span class="kc">True</span> <span class="c1"># commit all changes automatically</span>
+	<span class="n">cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="c1"># fetch the cursor</span>
+
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Ensure that the database does not already exist.</span>
+<span class="sd">	Create it only if it doesn&#39;t exist.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;SELECT 1 FROM pg_database WHERE datname = &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">TEST_DATABASE</span><span class="p">)</span>
+	<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Database has to be created&quot;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">cursor</span><span class="o">.</span><span class="n">rowcount</span> <span class="k">else</span> <span class="s2">&quot;Database already exists&quot;</span><span class="p">)</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">rowcount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+		<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;CREATE DATABASE </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">TEST_DATABASE</span><span class="p">)</span>
+	<span class="n">minimal_schema</span><span class="o">.</span><span class="n">create_schema</span><span class="p">(</span><span class="n">TEST_DATABASE</span><span class="p">)</span>
+
+	<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;SELECT 1 FROM pg_database WHERE datname = &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">TEST_OAUTH_DATABASE</span><span class="p">)</span>
+	<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Database has to be created&quot;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">cursor</span><span class="o">.</span><span class="n">rowcount</span> <span class="k">else</span> <span class="s2">&quot;Database already exists&quot;</span><span class="p">)</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">rowcount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+		<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;CREATE DATABASE </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">TEST_OAUTH_DATABASE</span><span class="p">)</span>
+	<span class="n">oauth_schema</span><span class="o">.</span><span class="n">create_schema</span><span class="p">(</span><span class="n">TEST_OAUTH_DATABASE</span><span class="p">)</span>
+
+	<span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+	<span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<span class="k">def</span> <span class="nf">get_connection</span><span class="p">(</span><span class="n">database</span><span class="o">=</span><span class="n">TEST_DATABASE</span><span class="p">):</span>
+	<span class="c1"># get the connection details from the .pgpass file</span>
+	<span class="n">home</span> <span class="o">=</span> <span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">)</span>
+	<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">home</span><span class="p">,</span> <span class="s2">&quot;.pgpass&quot;</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+		<span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+		<span class="n">con</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dbname</span><span class="o">=</span><span class="n">database</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">con</span>
+
+<div class="viewcode-block" id="clear"><a class="viewcode-back" href="../../tests.html#tests.environment.clear">[docs]</a><span class="k">def</span> <span class="nf">clear</span><span class="p">():</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Clear all the data from the database.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">con</span> <span class="o">=</span> <span class="n">get_connection</span><span class="p">()</span>
+	<span class="n">cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="c1"># fetch the cursor</span>
+
+	<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;DELETE FROM users&quot;</span><span class="p">)</span>
+	<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;DELETE FROM studies&quot;</span><span class="p">)</span>
+	<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;ALTER SEQUENCE studies_study_id_seq RESTART WITH 1&quot;</span><span class="p">)</span>
+	<span class="n">con</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+	<span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+	<span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../setup.html">Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../biobank.html">Biobank Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../coauth.html">OAuth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../connection.html">Data Store Connections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server.html">Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests.html">Tests</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Nicholas Mamo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -8,7 +8,6 @@ Configuration
 
 .. automodule:: config
    :members:
-   :private-members:
    :special-members:
 
 =======
@@ -22,10 +21,10 @@ Servers
    :private-members:
    :special-members:
 
-Resource Server
----------------
+Applications
+------------
 
-.. automodule:: server.resource_server
+.. automodule:: server.application
    :members:
    :private-members:
    :special-members:
@@ -38,19 +37,18 @@ Authorization Server
   :private-members:
   :special-members:
 
+Resource Server
+---------------
+
+.. automodule:: server.resource_server
+   :members:
+   :private-members:
+   :special-members:
+
 Exceptions
 ----------
 
 .. automodule:: server.exceptions.request_exceptions
-  :members:
-  :private-members:
-  :special-members:
-
-============
-Applications
-============
-
-.. automodule:: server.application
   :members:
   :private-members:
   :special-members:
