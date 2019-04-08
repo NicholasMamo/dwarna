@@ -26,15 +26,13 @@ class GeneralFunctionalityTest(BiobankTestCase):
 	Test the general functionality of the biobank backend.
 	"""
 
-	def test_general_requests(self):
+	def test_access_token(self):
 		"""
 		Perform general tests with requests.
 		"""
 
 		clear()
-
-		token = self._get_access_token(["create_participant"])
-		token = token["access_token"]
+		token = self._get_access_token(["create_participant"])["access_token"]
 
 		"""
 		Test that the access token works.
@@ -42,17 +40,27 @@ class GeneralFunctionalityTest(BiobankTestCase):
 		response = self.send_request("POST", "create_participant", { "username": "nick", "password": "pwd" }, token)
 		self.assertEqual(response.status_code, 200)
 
+	def test_argument_checks(self):
 		"""
 		Test the argument checks.
 		"""
+
+		clear()
+		token = self._get_access_token(["create_participant"])["access_token"]
+
 		response = self.send_request("POST", "create_participant", { "name": "nick", "password": "pwd" }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 400)
 		self.assertEqual(body["exception"], request_exceptions.MissingArgumentException.__name__)
 
+	def test_method_checks(self):
 		"""
 		Test the method checks.
 		"""
+
+		clear()
+		token = self._get_access_token(["create_participant"])["access_token"]
+
 		response = self.send_request("GET", "create_participant", { "username": "nick", "password": "pwd" }, token)
 		self.assertEqual(response.status_code, 405)
 
@@ -75,7 +83,7 @@ class GeneralFunctionalityTest(BiobankTestCase):
 		response = self.send_request("POST", "create_participant", { "username": "chri", "password": "pwd" }, token)
 		self.assertEqual(response.status_code, 403)
 
-	def test_escaping(self):
+	def test_sanitation(self):
 		"""
 		Test the escaping functionality.
 		"""
