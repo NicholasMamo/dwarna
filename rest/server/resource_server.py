@@ -127,7 +127,7 @@ class ResourceServer(Provider):
 			"""
 			if method == "GET":
 				parameters = self._get_get_parameters(env, request)
-			elif method in ["POST", "DELETE"]:
+			elif method in ["POST", "DELETE", "PUT"]:
 				parameters = self._get_post_parameters(env, request)
 			else:
 				response.status_code = 405

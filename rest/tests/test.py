@@ -172,6 +172,7 @@ class BiobankTestCase(unittest.TestCase):
 			"POST": requests.post,
 			"GET": requests.get,
 			"DELETE": requests.delete,
+			"PUT": requests.put,
 		}.get(method.upper())
 
 		headers = { "Authorization": access_token }

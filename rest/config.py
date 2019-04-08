@@ -190,61 +190,65 @@ routes.update({
 	}
 })
 
-# """
-# Routes related to study management.
-# """
-# routes.update({
-# 	"/create_study": {
-# 		"handler": study_handler_class,
-# 		"function": study_handler_class.create_study,
-# 		"scopes": ["create_study"],
-# 		"parameters": ["study_id", "name", "description", "homepage"],
-# 		"method": ["POST"]
-# 	},
-# 	"/update_study": {
-# 		"handler": study_handler_class,
-# 		"function": study_handler_class.update_study,
-# 		"scopes": ["update_study"],
-# 		"parameters": ["study_id", "name", "description", "homepage"],
-# 		"method": ["POST"]
-# 	},
-# 	"/remove_study": {
-# 		"handler": study_handler_class,
-# 		"function": study_handler_class.remove_study,
-# 		"scopes": ["remove_study"],
-# 		"parameters": ["study_id"],
-# 		"method": ["POST"]
-# 	},
-# 	"/get_studies": {
-# 		"handler": study_handler_class,
-# 		"function": study_handler_class.get_studies,
-# 		"scopes": ["view_study"],
-# 		"parameters": [],
-# 		"method": ["GET"]
-# 	},
-# 	"/get_active_studies": {
-# 		"handler": study_handler_class,
-# 		"function": study_handler_class.get_active_studies,
-# 		"scopes": ["view_study"],
-# 		"parameters": [],
-# 		"method": ["GET"]
-# 	},
-# 	"/get_studies_by_researcher": {
-# 		"handler": study_handler_class,
-# 		"function": study_handler_class.get_studies_by_researcher,
-# 		"scopes": ["view_study"],
-# 		"parameters": ["researcher"],
-# 		"method": ["GET"]
-# 	},
-# 	"/get_study_by_id": {
-# 		"handler": study_handler_class,
-# 		"function": study_handler_class.get_study_by_id,
-# 		"scopes": ["view_study"],
-# 		"parameters": ["study_id"],
-# 		"method": ["GET"]
-# 	},
-# })
-#
+"""
+Routes related to study management.
+"""
+routes.update({
+	"/study": {
+		"GET": {
+			"handler": study_handler_class,
+			"function": study_handler_class.get_study_by_id,
+			"scopes": ["view_study"],
+			"parameters": ["study_id"],
+		},
+		"POST": {
+			"handler": study_handler_class,
+			"function": study_handler_class.create_study,
+			"scopes": ["create_study"],
+			"parameters": ["study_id", "name", "description", "homepage"],
+		},
+		"PUT": {
+			"handler": study_handler_class,
+			"function": study_handler_class.update_study,
+			"scopes": ["update_study"],
+			"parameters": ["study_id", "name", "description", "homepage"],
+		},
+		"DELETE": {
+			"handler": study_handler_class,
+			"function": study_handler_class.remove_study,
+			"scopes": ["remove_study"],
+			"parameters": ["study_id"],
+		}
+	}
+})
+
+routes.update({
+	"/get_studies": {
+		"GET": {
+			"handler": study_handler_class,
+			"function": study_handler_class.get_studies,
+			"scopes": ["view_study"],
+			"parameters": [],
+		}
+	},
+	"/get_active_studies": {
+		"GET": {
+			"handler": study_handler_class,
+			"function": study_handler_class.get_active_studies,
+			"scopes": ["view_study"],
+			"parameters": []
+		}
+	},
+	"/get_studies_by_researcher": {
+		"GET": {
+			"handler": study_handler_class,
+			"function": study_handler_class.get_studies_by_researcher,
+			"scopes": ["view_study"],
+			"parameters": ["researcher"],
+		}
+	},
+})
+
 # """
 # Routes related to consent management.
 # """

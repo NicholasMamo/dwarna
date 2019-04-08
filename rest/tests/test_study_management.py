@@ -38,7 +38,7 @@ class UserManagementTest(BiobankTestCase):
 		"""
 		Test parameters.
 		"""
-		response = self.send_request("POST", "create_study", { "name": "nick" }, token)
+		response = self.send_request("POST", "study", { "name": "nick" }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 400)
 		self.assertEqual(body["exception"], request_exceptions.MissingArgumentException.__name__)
@@ -51,7 +51,7 @@ class UserManagementTest(BiobankTestCase):
 		clear()
 		token = self._get_access_token(["create_study"])["access_token"]
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "2320",
 			"name": "ALS",
 			"description": "ALS Study",
@@ -69,7 +69,7 @@ class UserManagementTest(BiobankTestCase):
 		clear()
 		token = self._get_access_token(["create_study"])["access_token"]
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "2320",
 			"name": "ALS",
 			"description": "ALS Study",
@@ -79,7 +79,7 @@ class UserManagementTest(BiobankTestCase):
 		body = response.json()
 		self.assertEqual(response.status_code, 200)
 
-		response = self.send_volatile_request("POST", "create_study", {
+		response = self.send_volatile_request("POST", "study", {
 			"study_id": "2320",
 			"name": "ALS",
 			"description": "ALS Study",
@@ -98,7 +98,7 @@ class UserManagementTest(BiobankTestCase):
 		clear()
 		token = self._get_access_token(["create_study"])["access_token"]
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "8190",
 			"name": "ALS",
 			"description": "ALS Study",
@@ -117,10 +117,10 @@ class UserManagementTest(BiobankTestCase):
 		clear()
 		token = self._get_access_token(["create_study", "create_researcher"])["access_token"]
 
-		response = self.send_request("POST", "create_researcher", { "username": "nick" }, token)
-		response = self.send_request("POST", "create_researcher", { "username": "bill" }, token)
+		response = self.send_request("POST", "researcher", { "username": "nick" }, token)
+		response = self.send_request("POST", "researcher", { "username": "bill" }, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "8190",
 			"name": "ALS",
 			"description": "ALS Study",
@@ -138,7 +138,7 @@ class UserManagementTest(BiobankTestCase):
 		clear()
 		token = self._get_access_token(["create_study", "view_study"])["access_token"]
 
-		response = self.send_request("GET", "get_study_by_id", { }, token)
+		response = self.send_request("GET", "study", { }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 400)
 		self.assertEqual(body["exception"], request_exceptions.MissingArgumentException.__name__)
@@ -151,7 +151,7 @@ class UserManagementTest(BiobankTestCase):
 		clear()
 		token = self._get_access_token(["create_study", "view_study"])["access_token"]
 
-		response = self.send_request("GET", "get_study_by_id", { "study_id": 8190 }, token)
+		response = self.send_request("GET", "study", { "study_id": 8190 }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], study_exceptions.StudyDoesNotExistException.__name__)
@@ -164,9 +164,9 @@ class UserManagementTest(BiobankTestCase):
 		clear()
 		token = self._get_access_token(["create_study", "view_study", "create_researcher"])["access_token"]
 
-		response = self.send_request("POST", "create_researcher", { "username": "nick" }, token)
-		response = self.send_request("POST", "create_researcher", { "username": "bill" }, token)
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "researcher", { "username": "nick" }, token)
+		response = self.send_request("POST", "researcher", { "username": "bill" }, token)
+		response = self.send_request("POST", "study", {
 			"study_id": "8190",
 			"name": "ALS",
 			"description": "ALS Study",
@@ -176,7 +176,7 @@ class UserManagementTest(BiobankTestCase):
 		body = response.json()
 		self.assertEqual(response.status_code, 200)
 
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 8190 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 8190 }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(body["study"]["study_id"], 8190)
@@ -191,7 +191,7 @@ class UserManagementTest(BiobankTestCase):
 		token = self._get_access_token(["create_study", "view_study"])["access_token"]
 
 		for i in range(0, 12):
-			response = self.send_request("POST", "create_study", {
+			response = self.send_request("POST", "study", {
 				"study_id": 2322 + i,
 				"name": "Study %d" % i,
 				"description": "Another study",
@@ -203,7 +203,7 @@ class UserManagementTest(BiobankTestCase):
 		Ensure that the studies have been created.
 		"""
 		for i in range(0, 10):
-			response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 2322 + i }, token)
+			response = self.send_volatile_request("GET", "study", { "study_id": 2322 + i }, token)
 
 		response = self.send_request("GET", "get_studies", { }, token)
 		self.assertEqual(response.status_code, 200)
@@ -262,7 +262,7 @@ class UserManagementTest(BiobankTestCase):
 		token = self._get_access_token(["create_study", "view_study"])["access_token"]
 
 		for i in range(0, 12):
-			response = self.send_request("POST", "create_study", {
+			response = self.send_request("POST", "study", {
 				"study_id": 2322 + i,
 				"name": "Study %d" % i,
 				"description": "Another study",
@@ -274,7 +274,7 @@ class UserManagementTest(BiobankTestCase):
 		Ensure that the studies have been created.
 		"""
 		for i in range(0, 10):
-			response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 2322 + i }, token)
+			response = self.send_volatile_request("GET", "study", { "study_id": 2322 + i }, token)
 
 		response = self.send_request("GET", "get_studies", { "page": 20 }, token)
 		body = response.json()["data"]
@@ -319,7 +319,7 @@ class UserManagementTest(BiobankTestCase):
 		clear()
 		token = self._get_access_token(["create_study", "view_study"])["access_token"]
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "2320",
 			"name": "ALS",
 			"description": "ALS study",
@@ -327,7 +327,7 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": [],
 		}, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "8190",
 			"name": "Diabetes",
 			"description": "Diabetes study",
@@ -336,7 +336,7 @@ class UserManagementTest(BiobankTestCase):
 		}, token)
 
 		for i in range(0, 10):
-			response = self.send_request("POST", "create_study", {
+			response = self.send_request("POST", "study", {
 				"study_id": 2322 + i,
 				"name": "Study %d" % i,
 				"description": "Another study",
@@ -348,7 +348,7 @@ class UserManagementTest(BiobankTestCase):
 		Ensure that the studies have been created.
 		"""
 		for i in range(0, 10):
-			response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 2322 + i }, token)
+			response = self.send_volatile_request("GET", "study", { "study_id": 2322 + i }, token)
 
 		response = self.send_request("GET", "get_studies", { "search": "ALS" }, token)
 		body = response.json()["data"]
@@ -415,10 +415,10 @@ class UserManagementTest(BiobankTestCase):
 		Create a few researchers and studies.
 		"""
 
-		response = self.send_request("POST", "create_researcher", { "username": "nick" }, token)
-		response = self.send_request("POST", "create_researcher", { "username": "bill" }, token)
+		response = self.send_request("POST", "researcher", { "username": "nick" }, token)
+		response = self.send_request("POST", "researcher", { "username": "bill" }, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "2320",
 			"name": "ALS",
 			"description": "ALS study",
@@ -426,7 +426,7 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["nick", "bill"],
 		}, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "8190",
 			"name": "Diabetes",
 			"description": "Diabetes study",
@@ -434,7 +434,7 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["bill"],
 		}, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "4540",
 			"name": "Thalassemia",
 			"description": "Thalassemia study",
@@ -442,9 +442,9 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["nick", "bill"],
 		}, token)
 
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 2320 }, token)
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 8190 }, token)
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 4540 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 2320 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 8190 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 4540 }, token)
 
 		"""
 		Get studies normally.
@@ -472,10 +472,10 @@ class UserManagementTest(BiobankTestCase):
 		Create a few researchers and studies.
 		"""
 
-		response = self.send_request("POST", "create_researcher", { "username": "nick" }, token)
-		response = self.send_request("POST", "create_researcher", { "username": "bill" }, token)
+		response = self.send_request("POST", "researcher", { "username": "nick" }, token)
+		response = self.send_request("POST", "researcher", { "username": "bill" }, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "2320",
 			"name": "ALS",
 			"description": "ALS study",
@@ -483,7 +483,7 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["nick", "bill"],
 		}, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "8190",
 			"name": "Diabetes",
 			"description": "Diabetes study",
@@ -491,7 +491,7 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["bill"],
 		}, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "4540",
 			"name": "Thalassemia",
 			"description": "Thalassemia study",
@@ -499,9 +499,9 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["nick", "bill"],
 		}, token)
 
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 2320 }, token)
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 8190 }, token)
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 4540 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 2320 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 8190 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 4540 }, token)
 
 		response = self.send_request("GET", "get_studies_by_researcher", {
 			"researcher": "nick",
@@ -539,10 +539,10 @@ class UserManagementTest(BiobankTestCase):
 		Create a few researchers and studies.
 		"""
 
-		response = self.send_request("POST", "create_researcher", { "username": "nick" }, token)
-		response = self.send_request("POST", "create_researcher", { "username": "bill" }, token)
+		response = self.send_request("POST", "researcher", { "username": "nick" }, token)
+		response = self.send_request("POST", "researcher", { "username": "bill" }, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "2320",
 			"name": "ALS",
 			"description": "ALS study",
@@ -550,7 +550,7 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["nick", "bill"],
 		}, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "8190",
 			"name": "Diabetes",
 			"description": "Diabetes study",
@@ -558,7 +558,7 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["bill"],
 		}, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "4540",
 			"name": "Thalassemia",
 			"description": "Thalassemia study",
@@ -566,9 +566,9 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["nick", "bill"],
 		}, token)
 
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 2320 }, token)
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 8190 }, token)
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 4540 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 2320 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 8190 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 4540 }, token)
 
 		response = self.send_request("GET", "get_studies_by_researcher", {
 			"researcher": "nick",
@@ -633,10 +633,10 @@ class UserManagementTest(BiobankTestCase):
 		Create a few researchers and studies.
 		"""
 
-		response = self.send_request("POST", "create_researcher", { "username": "nick" }, token)
-		response = self.send_request("POST", "create_researcher", { "username": "bill" }, token)
+		response = self.send_request("POST", "researcher", { "username": "nick" }, token)
+		response = self.send_request("POST", "researcher", { "username": "bill" }, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "2320",
 			"name": "ALS",
 			"description": "ALS study",
@@ -644,7 +644,7 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["nick", "bill"],
 		}, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "8190",
 			"name": "Diabetes",
 			"description": "Diabetes study",
@@ -652,7 +652,7 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["bill"],
 		}, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "4540",
 			"name": "Thalassemia",
 			"description": "Thalassemia study",
@@ -660,9 +660,9 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["nick", "bill"],
 		}, token)
 
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 2320 }, token)
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 8190 }, token)
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 4540 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 2320 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 8190 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 4540 }, token)
 
 		response = self.send_request("GET", "get_studies_by_researcher", {
 			"researcher": "nick",
@@ -714,10 +714,10 @@ class UserManagementTest(BiobankTestCase):
 		Create a few researchers and studies.
 		"""
 
-		response = self.send_request("POST", "create_researcher", { "username": "nick" }, token)
-		response = self.send_request("POST", "create_researcher", { "username": "bill" }, token)
+		response = self.send_request("POST", "researcher", { "username": "nick" }, token)
+		response = self.send_request("POST", "researcher", { "username": "bill" }, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "2320",
 			"name": "ALS",
 			"description": "ALS study",
@@ -725,7 +725,7 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["nick", "bill"],
 		}, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "8190",
 			"name": "Diabetes",
 			"description": "Diabetes study",
@@ -733,14 +733,14 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["bill"],
 		}, token)
 
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 2320 }, token)
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 8190 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 2320 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 8190 }, token)
 
 		"""
 		Test normal updating.
 		"""
 
-		response = self.send_request("POST", "update_study", {
+		response = self.send_request("PUT", "study", {
 			"study_id": "8190",
 			"name": "Diabetes Type I",
 			"description": "Diabetes study",
@@ -748,7 +748,7 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["bill"],
 		}, token)
 		self.assertEqual(response.status_code, 200)
-		response = self.send_request("GET", "get_study_by_id", { "study_id": 8190 }, token)
+		response = self.send_request("GET", "study", { "study_id": 8190 }, token)
 		body = response.json()["study"]
 		self.assertEqual(body["name"], "Diabetes Type I")
 
@@ -764,10 +764,10 @@ class UserManagementTest(BiobankTestCase):
 		Create a few researchers and studies.
 		"""
 
-		response = self.send_request("POST", "create_researcher", { "username": "nick" }, token)
-		response = self.send_request("POST", "create_researcher", { "username": "bill" }, token)
+		response = self.send_request("POST", "researcher", { "username": "nick" }, token)
+		response = self.send_request("POST", "researcher", { "username": "bill" }, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "2320",
 			"name": "ALS",
 			"description": "ALS study",
@@ -775,7 +775,7 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["nick", "bill"],
 		}, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "8190",
 			"name": "Diabetes",
 			"description": "Diabetes study",
@@ -783,14 +783,14 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["bill"],
 		}, token)
 
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 2320 }, token)
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 8190 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 2320 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 8190 }, token)
 
 		"""
 		Test updating researchers.
 		"""
 
-		response = self.send_request("POST", "update_study", {
+		response = self.send_request("PUT", "study", {
 			"study_id": "8190",
 			"name": "Diabetes",
 			"description": "Diabetes study",
@@ -799,11 +799,11 @@ class UserManagementTest(BiobankTestCase):
 		}, token)
 		self.assertEqual(response.status_code, 200)
 
-		response = self.send_request("GET", "get_study_by_id", { "study_id": 8190 }, token)
+		response = self.send_request("GET", "study", { "study_id": 8190 }, token)
 		body = response.json()["researchers"]
 		self.assertEqual(body[0]["user_id"], "nick")
 
-		response = self.send_request("GET", "get_study_by_id", { "study_id": 2320 }, token)
+		response = self.send_request("GET", "study", { "study_id": 2320 }, token)
 		body = response.json()["researchers"]
 		self.assertEqual(body[0]["user_id"], "nick")
 		self.assertEqual(body[1]["user_id"], "bill")
@@ -820,10 +820,10 @@ class UserManagementTest(BiobankTestCase):
 		Create a few researchers and studies.
 		"""
 
-		response = self.send_request("POST", "create_researcher", { "username": "nick" }, token)
-		response = self.send_request("POST", "create_researcher", { "username": "bill" }, token)
+		response = self.send_request("POST", "researcher", { "username": "nick" }, token)
+		response = self.send_request("POST", "researcher", { "username": "bill" }, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "2320",
 			"name": "ALS",
 			"description": "ALS study",
@@ -831,7 +831,7 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["nick", "bill"],
 		}, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "8190",
 			"name": "Diabetes",
 			"description": "Diabetes study",
@@ -843,8 +843,8 @@ class UserManagementTest(BiobankTestCase):
 		Test normal deletion.
 		"""
 
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 2320 }, token)
-		response = self.send_volatile_request("GET", "get_study_by_id", { "study_id": 8190 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 2320 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": 8190 }, token)
 
 		response = self.send_request("GET", "get_studies", { }, token)
 		body = response.json()
@@ -862,10 +862,10 @@ class UserManagementTest(BiobankTestCase):
 		Create a few researchers and studies.
 		"""
 
-		response = self.send_request("POST", "create_researcher", { "username": "nick" }, token)
-		response = self.send_request("POST", "create_researcher", { "username": "bill" }, token)
+		response = self.send_request("POST", "researcher", { "username": "nick" }, token)
+		response = self.send_request("POST", "researcher", { "username": "bill" }, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "2320",
 			"name": "ALS",
 			"description": "ALS study",
@@ -873,7 +873,7 @@ class UserManagementTest(BiobankTestCase):
 			"researchers": ["nick", "bill"],
 		}, token)
 
-		response = self.send_request("POST", "create_study", {
+		response = self.send_request("POST", "study", {
 			"study_id": "8190",
 			"name": "Diabetes",
 			"description": "Diabetes study",
@@ -885,17 +885,17 @@ class UserManagementTest(BiobankTestCase):
 		Test getting a deleted study.
 		"""
 
-		response = self.send_request("POST", "remove_study", { "study_id": 8190 }, token)
+		response = self.send_request("DELETE", "study", { "study_id": 8190 }, token)
 		self.assertEqual(response.status_code, 200)
 
 		response = self.send_request("GET", "get_studies", { }, token)
 		body = response.json()
 		self.assertEqual(len(body["data"]), 1)
 
-		response = self.send_request("GET", "get_study_by_id", { "study_id": 8190 }, token)
+		response = self.send_request("GET", "study", { "study_id": 8190 }, token)
 		body = response.json()
 		self.assertEqual(body["exception"], study_exceptions.StudyDoesNotExistException.__name__)
 
-		response = self.send_request("GET", "get_study_by_id", { "study_id": 2320 }, token)
+		response = self.send_request("GET", "study", { "study_id": 2320 }, token)
 		body = response.json()
 		self.assertEqual(response.status_code, 200)
