@@ -103,9 +103,6 @@ class ResourceServer(Provider):
 		:rtype: :class:`oauth2.web.Response`
 		"""
 
-		access_token = request.header("Authorization")
-		token = self.access_token_store.fetch_by_token(access_token) # Fetch the token
-
 		path, method = env.get("PATH_INFO"), env.get("REQUEST_METHOD").upper()
 		route = self._routes.get(path, {}) # Get the route
 
@@ -118,6 +115,9 @@ class ResourceServer(Provider):
 
 		response = Response()
 		try:
+			access_token = request.header("Authorization")
+			token = self.access_token_store.fetch_by_token(access_token) # Fetch the token
+
 			if not self._is_authorized(token, api_scopes):
 				raise request_exceptions.InsufficientScopeException(" ".join([ scope for scope in token.scopes if scope not in api_scopes ]))
 
