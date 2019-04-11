@@ -36,7 +36,7 @@ cd ../../../
 # Start the Dwarna network.
 cd dwarna-blockchain
 composer network install --archiveFile dwarna-blockchain.bna --card PeerAdmin@hlfv1
-composer network start --networkName dwarna-blockchain --networkVersion 0.1.0 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file admin.card
+composer network start --networkName dwarna-blockchain --networkVersion 0.1.1 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file admin.card
 composer card import --file admin.card
 cd ..
 

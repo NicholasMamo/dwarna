@@ -99,11 +99,12 @@ routes = {
 :var routes: A list of routes that are accepted by the REST API.
 	Associated with each route are a number of methods that it accepts.
 	Each method has:
-		- the handler class;
-		- the handler function;
-		- a list of scopes;
-		- the required parameters; and
-		- a boolean indicating whether the function is personal.
+
+	- the handler class;
+	- the handler function;
+	- a list of scopes;
+	- the required parameters; and
+	- a boolean indicating whether the function is personal.
 
 	Scopes need not be unique.
 	For example, different ways of removing participants may share the same scope.

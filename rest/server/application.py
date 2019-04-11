@@ -1,5 +1,6 @@
 """
-The application that handles requests
+A custom application to handle requests.
+The application adds status codes that are not included by default.
 """
 
 from oauth2.web.wsgi import Application, Request

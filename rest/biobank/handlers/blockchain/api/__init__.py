@@ -1,5 +1,5 @@
 """
-Define the standard functions that a blockchain API should be able to handle.
+Defines the standard functions that a blockchain API should be able to handle.
 """
 
 from abc import ABC, abstractmethod

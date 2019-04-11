@@ -5,26 +5,30 @@ import psycopg2
 
 from setup import minimal_schema, oauth_schema
 
-"""
-The databases that are used as a testing environment.
-"""
 TEST_DATABASE = "biobank_test"
-TEST_OAUTH_DATABASE = "biobank_oauth_test"
+"""
+The database that is used as a testing environment.
+"""
 
+TEST_OAUTH_DATABASE = "biobank_oauth_test"
+"""
+The OAuth 2.0 database that is used for the testing environment.
+"""
+
+PORT = 3198
 """
 The port where the tests will be held.
 """
-PORT = 3198
 
+CLIENT_ID = "abc"
 """
 The client's ID.
 """
-CLIENT_ID = "abc"
 
+CLIENT_SECRET = "xyz"
 """
 The client's secret.
 """
-CLIENT_SECRET = "xyz"
 
 cursor, con = None, None
 
