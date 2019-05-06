@@ -1,44 +1,179 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Biobank Management &#8212; biobank_backend 1.0.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.0.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Biobank Management &mdash; biobank_backend 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="OAuth" href="coauth.html" />
-    <link rel="prev" title="Setup" href="setup.html" />
+    <link rel="prev" title="Setup" href="setup.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
 
-  </head>
-  <body>
-  
+          
+            <a href="index.html" class="icon icon-home"> biobank_backend
+          
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Biobank Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-biobank.handlers.handler">Handlers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-biobank.handlers.consent_handler">Dynamic Consent Handler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-biobank.handlers.participant_handler">Participant Handler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-biobank.handlers.researcher_handler">Researcher Handler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-biobank.handlers.study_handler">Study Handler</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-biobank.handlers.blockchain.api">Blockchain Handlers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-biobank.handlers.blockchain.api.hyperledger">Hyperledger Handler</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-biobank.handlers.exceptions">Exceptions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-biobank.handlers.exceptions.user_exceptions">User Exceptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-biobank.handlers.exceptions.study_exceptions">Study Exceptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-biobank.handlers.exceptions.general_exceptions">General Exceptions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="coauth.html">OAuth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="connection.html">Data Store Connections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">biobank_backend</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Biobank Management</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/biobank.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="module-biobank">
 <span id="biobank-management"></span><h1>Biobank Management<a class="headerlink" href="#module-biobank" title="Permalink to this headline">¶</a></h1>
@@ -53,158 +188,144 @@ Its job is to handle the given requests.</p>
 It assumes that all the data is stored in a PostgerSQL database.</p>
 <p>The general workflow of handlers is as follows:</p>
 <ol class="arabic simple">
-<li>Create an empty response.</li>
-<li>Extract the given arguments, if any, and sanitize them.</li>
-<li>Perform any required validation, raising exceptions if anything fails.</li>
-<li>Communicate any queries with the database, if need be, and fetch a status.</li>
-<li>Set the status code and write any required output to the response body.</li>
+<li><p>Create an empty response.</p></li>
+<li><p>Extract the given arguments, if any, and sanitize them.</p></li>
+<li><p>Perform any required validation, raising exceptions if anything fails.</p></li>
+<li><p>Communicate any queries with the database, if need be, and fetch a status.</p></li>
+<li><p>Set the status code and write any required output to the response body.</p></li>
 </ol>
 <dl class="method">
 <dt id="biobank.handlers.handler.PostgreSQLRouteHandler._attribute_exists">
 <code class="descname">_attribute_exists</code><span class="sig-paren">(</span><em>name</em>, <em>type</em>, <em>constraints=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler._attribute_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler._attribute_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether an attribute with the given details exists.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>name</strong> (<em>str</em>) – The attribute name.</li>
-<li><strong>type</strong> (<em>str</em>) – The attribute type.</li>
-<li><strong>constraints</strong> (<em>list</em>) – The different values that the attribute may take.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The attribute name.</p></li>
+<li><p><strong>type</strong> (<em>str</em>) – The attribute type.</p></li>
+<li><p><strong>constraints</strong> (<em>list</em>) – The different values that the attribute may take.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A boolean indicating whether the attribute exists or not.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A boolean indicating whether the attribute exists or not.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.handler.PostgreSQLRouteHandler._attribute_id_exists">
 <code class="descname">_attribute_id_exists</code><span class="sig-paren">(</span><em>attribute_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler._attribute_id_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler._attribute_id_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether an attribute with the given ID exists.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>attribute_id</strong> (<em>str</em>) – The attribute’s unique ID.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A boolean indicating whether the attribute exists or not.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attribute_id</strong> (<em>str</em>) – The attribute’s unique ID.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A boolean indicating whether the attribute exists or not.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.handler.PostgreSQLRouteHandler._biobanker_exists">
 <code class="descname">_biobanker_exists</code><span class="sig-paren">(</span><em>username</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler._biobanker_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler._biobanker_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether a biobanker with the given username exists.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>username</strong> (<em>str</em>) – The biobanker’s username.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A boolean indicating whether the biobanker exists or not.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The biobanker’s username.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A boolean indicating whether the biobanker exists or not.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.handler.PostgreSQLRouteHandler._create_attribute">
 <code class="descname">_create_attribute</code><span class="sig-paren">(</span><em>name</em>, <em>type</em>, <em>constraints=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler._create_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler._create_attribute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an attribute.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>name</strong> (<em>str</em>) – The attribute name.</li>
-<li><strong>type</strong> (<em>str</em>) – The attribute type.</li>
-<li><strong>constraints</strong> (<em>list</em>) – The different values that the attribute may take.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The attribute name.</p></li>
+<li><p><strong>type</strong> (<em>str</em>) – The attribute type.</p></li>
+<li><p><strong>constraints</strong> (<em>list</em>) – The different values that the attribute may take.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">handlers.exceptions.study_exceptions.AttributeExistsException</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">handlers.exceptions.study_exceptions.AttributeExistsException</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.handler.PostgreSQLRouteHandler._get_attribute_id">
 <code class="descname">_get_attribute_id</code><span class="sig-paren">(</span><em>name</em>, <em>type</em>, <em>constraints=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler._get_attribute_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler._get_attribute_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the unique ID of the attribute having the given details.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>name</strong> (<em>str</em>) – The attribute name.</li>
-<li><strong>type</strong> (<em>str</em>) – The attribute type.</li>
-<li><strong>constraints</strong> (<em>list</em>) – The different values that the attribute may take.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The attribute name.</p></li>
+<li><p><strong>type</strong> (<em>str</em>) – The attribute type.</p></li>
+<li><p><strong>constraints</strong> (<em>list</em>) – The different values that the attribute may take.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The unique ID of the attribute.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The unique ID of the attribute.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.handler.PostgreSQLRouteHandler._get_study_attributes">
 <code class="descname">_get_study_attributes</code><span class="sig-paren">(</span><em>study_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler._get_study_attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler._get_study_attributes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a list of attributes associated with the study identified by the given ID.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of attribute objects.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">handlers.exceptions.study_exceptions.StudyDoesNotExistException</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of attribute objects.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">handlers.exceptions.study_exceptions.StudyDoesNotExistException</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.handler.PostgreSQLRouteHandler._get_study_researchers">
 <code class="descname">_get_study_researchers</code><span class="sig-paren">(</span><em>study_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler._get_study_researchers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler._get_study_researchers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a list of researchers associated with the study identified by the given ID.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of researcher objects.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">handlers.exceptions.study_exceptions.StudyDoesNotExistException</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of researcher objects.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">handlers.exceptions.study_exceptions.StudyDoesNotExistException</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -213,182 +334,165 @@ It assumes that all the data is stored in a PostgerSQL database.</p>
 <dd><p>Check whether the study with the given ID is active.
 A study is active if the date of execution is between its start and end dates.
 This operation is inclusive.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>study_id</strong> (<em>int</em>) – The study’s ID.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A boolean indicating whether the study is active.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">handlers.exceptions.study_exceptions.StudyDoesNotExistException</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>study_id</strong> (<em>int</em>) – The study’s ID.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A boolean indicating whether the study is active.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">handlers.exceptions.study_exceptions.StudyDoesNotExistException</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.handler.PostgreSQLRouteHandler._participant_exists">
 <code class="descname">_participant_exists</code><span class="sig-paren">(</span><em>username</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler._participant_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler._participant_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether a participant with the given username exists.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>username</strong> (<em>str</em>) – The participant’s username.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A boolean indicating whether the participant exists or not.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The participant’s username.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A boolean indicating whether the participant exists or not.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.handler.PostgreSQLRouteHandler._researcher_exists">
 <code class="descname">_researcher_exists</code><span class="sig-paren">(</span><em>username</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler._researcher_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler._researcher_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether a researcher with the given username exists.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>username</strong> (<em>str</em>) – The researcher’s username.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A boolean indicating whether the researcher exists or not.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The researcher’s username.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A boolean indicating whether the researcher exists or not.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.handler.PostgreSQLRouteHandler._sanitize">
 <code class="descname">_sanitize</code><span class="sig-paren">(</span><em>string</em>, <em>sanitize_escaped=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler._sanitize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler._sanitize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sanitize the given string to be used in PostgreSQL.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>string</strong> (<em>str</em>) – The string to sanitize.</li>
-<li><strong>sanitize_escaped</strong> (<em>bool</em>) – A boolean indicating whether escaped characters should be sanitized.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>string</strong> (<em>str</em>) – The string to sanitize.</p></li>
+<li><p><strong>sanitize_escaped</strong> (<em>bool</em>) – A boolean indicating whether escaped characters should be sanitized.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The sanitized string.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The sanitized string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.handler.PostgreSQLRouteHandler._sanitize_dict">
 <code class="descname">_sanitize_dict</code><span class="sig-paren">(</span><em>d</em>, <em>sanitize_escaped=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler._sanitize_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler._sanitize_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sanitize all the values in the given dictionary to be used in PostgreSQL.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>d</strong> (<em>dict</em>) – The dict containing all the elements to sanitize.</li>
-<li><strong>sanitize_escaped</strong> (<em>bool</em>) – A boolean indicating whether escaped characters should be sanitized.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d</strong> (<em>dict</em>) – The dict containing all the elements to sanitize.</p></li>
+<li><p><strong>sanitize_escaped</strong> (<em>bool</em>) – A boolean indicating whether escaped characters should be sanitized.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A new dict with sanitized values.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new dict with sanitized values.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.handler.PostgreSQLRouteHandler._sanitize_list">
 <code class="descname">_sanitize_list</code><span class="sig-paren">(</span><em>l</em>, <em>sanitize_escaped=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler._sanitize_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler._sanitize_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sanitize all the elements in the given list to be used in PostgreSQL.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>l</strong> (<em>list</em>) – The list containing all the elements to sanitize.</li>
-<li><strong>sanitize_escaped</strong> (<em>bool</em>) – A boolean indicating whether escaped characters should be sanitized.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l</strong> (<em>list</em>) – The list containing all the elements to sanitize.</p></li>
+<li><p><strong>sanitize_escaped</strong> (<em>bool</em>) – A boolean indicating whether escaped characters should be sanitized.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A new list of sanitized strings.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new list of sanitized strings.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.handler.PostgreSQLRouteHandler._study_exists">
 <code class="descname">_study_exists</code><span class="sig-paren">(</span><em>study_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler._study_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler._study_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether a study with the given ID exists.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>study_id</strong> (<em>int</em>) – The study’s ID.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A boolean indicating whether the study exists.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>study_id</strong> (<em>int</em>) – The study’s ID.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A boolean indicating whether the study exists.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.handler.PostgreSQLRouteHandler._user_exists">
 <code class="descname">_user_exists</code><span class="sig-paren">(</span><em>username</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler._user_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler._user_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether a user with the given username exists.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>username</strong> (<em>str</em>) – The user’s username.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A boolean indicating whether the user exists or not.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The user’s username.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A boolean indicating whether the user exists or not.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.handler.PostgreSQLRouteHandler.escape_escaped">
 <code class="descname">escape_escaped</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler.escape_escaped"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler.escape_escaped" title="Permalink to this definition">¶</a></dt>
 <dd><p>Escape the escape characters in the given string.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>string</strong> (<em>str</em>) – The string to sanitize.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The sanitized string.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>string</strong> (<em>str</em>) – The string to sanitize.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The sanitized string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -397,34 +501,31 @@ This operation is inclusive.</p>
 <dd><p>Reply to a ping to the server.
 This function always returns a success notice.
 Its purpose is to ensure that there is a link with the server.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A success response.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A success response.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.handler.PostgreSQLRouteHandler.to_binary">
 <code class="descname">to_binary</code><span class="sig-paren">(</span><em>byte_string</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler.to_binary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler.to_binary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the given byte string to a binary representation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>byte_string</strong> (<em>byte</em>) – The byte string to convert.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The binary representation as accepted by PostgreSQL.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>byte_string</strong> (<em>byte</em>) – The byte string to convert.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The binary representation as accepted by PostgreSQL.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -433,34 +534,29 @@ Its purpose is to ensure that there is a link with the server.</p>
 <dt id="biobank.handlers.handler.RouteHandler">
 <em class="property">class </em><code class="descclassname">biobank.handlers.handler.</code><code class="descname">RouteHandler</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#RouteHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.RouteHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>The route handler receives request arguments and uses them to service requests.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>_connector</strong> (<a class="reference internal" href="connection.html#connection.connection.Connection" title="connection.connection.Connection"><code class="xref py py-class docutils literal"><span class="pre">connection.connection.Connection</span></code></a>) – The connector that is used to access the data store.</li>
-<li><strong>_blockchain_connector</strong> (<code class="xref py py-class docutils literal"><span class="pre">biobank.blockchain.api.BlockchainAPI</span></code>) – The connector to the blockchain.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>_connector</strong> (<a class="reference internal" href="connection.html#connection.connection.Connection" title="connection.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">connection.connection.Connection</span></code></a>) – The connector that is used to access the data store.</p></li>
+<li><p><strong>_blockchain_connector</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">biobank.blockchain.api.BlockchainAPI</span></code>) – The connector to the blockchain.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="biobank.handlers.handler.RouteHandler._404_page_not_found">
 <code class="descname">_404_page_not_found</code><span class="sig-paren">(</span><em>arguments</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#RouteHandler._404_page_not_found"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.RouteHandler._404_page_not_found" title="Permalink to this definition">¶</a></dt>
 <dd><p>Page not found error.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>arguments</strong> (<em>list</em>) – The environment arguments.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A 404 response with an error.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>arguments</strong> (<em>list</em>) – The environment arguments.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A 404 response with an error.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -469,18 +565,20 @@ Its purpose is to ensure that there is a link with the server.</p>
 <dd><p>Create the route handler, incorporating a connection with a store.
 This store can be both in memory or as a database.
 However, all route handlers need some form of connector to manage data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>connector</strong> (<a class="reference internal" href="connection.html#connection.connection.Connection" title="connection.connection.Connection"><code class="xref py py-class docutils literal"><span class="pre">connection.connection.Connection</span></code></a>) – The connector that is used to access the data store.</li>
-<li><strong>blockchain_connector</strong> (<code class="xref py py-class docutils literal"><span class="pre">biobank.blockchain.api.BlockchainAPI</span></code>) – The connector to the blockchain.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connector</strong> (<a class="reference internal" href="connection.html#connection.connection.Connection" title="connection.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">connection.connection.Connection</span></code></a>) – The connector that is used to access the data store.</p></li>
+<li><p><strong>blockchain_connector</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">biobank.blockchain.api.BlockchainAPI</span></code>) – The connector to the blockchain.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="biobank.handlers.handler.RouteHandler.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#biobank.handlers.handler.RouteHandler.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
 </dd></dl>
 
 </dd></dl>
@@ -502,25 +600,21 @@ However, all route handlers need some form of connector to manage data.</p>
 <dt id="biobank.handlers.consent_handler.ConsentHandler._set_attribute_value">
 <code class="descname">_set_attribute_value</code><span class="sig-paren">(</span><em>attribute_id</em>, <em>username</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/consent_handler.html#ConsentHandler._set_attribute_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.consent_handler.ConsentHandler._set_attribute_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the participant’s value for the given attribute.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>attribute_id</strong> (<em>int</em>) – The unique ID of the attribute.</li>
-<li><strong>username</strong> (<em>str</em>) – The unique username of the participant.</li>
-<li><strong>value</strong> (<em>mixed</em>) – The new value of the attribute.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute_id</strong> (<em>int</em>) – The unique ID of the attribute.</p></li>
+<li><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p></li>
+<li><p><strong>value</strong> (<em>mixed</em>) – The new value of the attribute.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">handlers.exceptions.study_exceptions.StudyAttributeDoesNotExistException</span></code></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">handlers.exceptions.user_exceptions.ParticipantDoesNotExistException</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">handlers.exceptions.study_exceptions.StudyAttributeDoesNotExistException</span></code></p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">handlers.exceptions.user_exceptions.ParticipantDoesNotExistException</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -529,51 +623,43 @@ However, all route handlers need some form of connector to manage data.</p>
 <dd><p>Set a user’s consent to the given study.
 A consent is created if it does not exist.
 However, consent cannot be changed for inactive studies.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</li>
-<li><strong>username</strong> (<em>str</em>) – The unique username of the participant.</li>
-<li><strong>consent</strong> (<em>bool</em>) – The consent status.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p></li>
+<li><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p></li>
+<li><p><strong>consent</strong> (<em>bool</em>) – The consent status.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">handlers.exceptions.study_exceptions.StudyDoesNotExistException</span></code></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">handlers.exceptions.user_exceptions.ParticipantDoesNotExistException</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">handlers.exceptions.study_exceptions.StudyDoesNotExistException</span></code></p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">handlers.exceptions.user_exceptions.ParticipantDoesNotExistException</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.consent_handler.ConsentHandler.get_attributes">
 <code class="descname">get_attributes</code><span class="sig-paren">(</span><em>username</em>, <em>attributes</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/consent_handler.html#ConsentHandler.get_attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.consent_handler.ConsentHandler.get_attributes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the attribute values of the participant with the given username.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>username</strong> (<em>str</em>) – The unique username of the participant.</li>
-<li><strong>attributes</strong> (<em>list</em>) – A list of attribute IDs whose values are sought.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p></li>
+<li><p><strong>attributes</strong> (<em>list</em>) – A list of attribute IDs whose values are sought.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A response with any errors that may arise.
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response with any errors that may arise.
 The data is returned as an associative array.
 If an attribute does not have a value, None is returned instead.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -581,135 +667,121 @@ If an attribute does not have a value, None is returned instead.</p>
 <code class="descname">get_consent_trail</code><span class="sig-paren">(</span><em>username</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/consent_handler.html#ConsentHandler.get_consent_trail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.consent_handler.ConsentHandler.get_consent_trail" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a user’s consent trail.
 This trail shows how the participant’s consent for studies changed over time.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>username</strong> (<em>str</em>) – The unique username of the participant.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A response with any errors that may arise.
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response with any errors that may arise.
 The body contains the studies and the timelines.
 The two are separated from each other.
 The timeline is made up of the timestamp, and a list of consent changes separated by study IDs.
-The studies are separated by IDs, and therefore the timeline can use it as a look-up table.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></td>
-</tr>
-</tbody>
-</table>
+The studies are separated by IDs, and therefore the timeline can use it as a look-up table.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.consent_handler.ConsentHandler.get_participants_by_study">
 <code class="descname">get_participants_by_study</code><span class="sig-paren">(</span><em>study_id</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/consent_handler.html#ConsentHandler.get_participants_by_study"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.consent_handler.ConsentHandler.get_participants_by_study" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a list of participant which have given their consent to the given study.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A response with any errors that may arise.
-The body contains the studies.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">handlers.exceptions.study_exceptions.StudyDoesNotExistException</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response with any errors that may arise.
+The body contains the studies.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">handlers.exceptions.study_exceptions.StudyDoesNotExistException</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.consent_handler.ConsentHandler.get_studies_by_participant">
 <code class="descname">get_studies_by_participant</code><span class="sig-paren">(</span><em>username</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/consent_handler.html#ConsentHandler.get_studies_by_participant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.consent_handler.ConsentHandler.get_studies_by_participant" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a list of studies that the participant has consented to.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>username</strong> (<em>str</em>) – The unique username of the participant.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A response with any errors that may arise.
-The body contains the studies.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response with any errors that may arise.
+The body contains the studies.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.consent_handler.ConsentHandler.give_consent">
 <code class="descname">give_consent</code><span class="sig-paren">(</span><em>study_id</em>, <em>username</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/consent_handler.html#ConsentHandler.give_consent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.consent_handler.ConsentHandler.give_consent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the consent of a participant.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</li>
-<li><strong>username</strong> (<em>str</em>) – The unique username of the participant.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p></li>
+<li><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A response with any errors that may arise.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response with any errors that may arise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.consent_handler.ConsentHandler.has_consent">
 <code class="descname">has_consent</code><span class="sig-paren">(</span><em>study_id</em>, <em>username</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/consent_handler.html#ConsentHandler.has_consent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.consent_handler.ConsentHandler.has_consent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether the participant with the given username has consented to the use of his data in the given study.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</li>
-<li><strong>username</strong> (<em>str</em>) – The unique username of the participant.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p></li>
+<li><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A response with any errors that may arise.
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response with any errors that may arise.
 The body contains the consent status.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.consent_handler.ConsentHandler.withdraw_consent">
 <code class="descname">withdraw_consent</code><span class="sig-paren">(</span><em>study_id</em>, <em>username</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/consent_handler.html#ConsentHandler.withdraw_consent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.consent_handler.ConsentHandler.withdraw_consent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Withdraw the consent of a participant.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</li>
-<li><strong>username</strong> (<em>str</em>) – The unique username of the participant.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p></li>
+<li><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A response with any errors that may arise.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response with any errors that may arise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -726,52 +798,48 @@ The body contains the consent status.</p>
 <dt id="biobank.handlers.participant_handler.ParticipantHandler.create_participant">
 <code class="descname">create_participant</code><span class="sig-paren">(</span><em>username</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/participant_handler.html#ParticipantHandler.create_participant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.participant_handler.ParticipantHandler.create_participant" title="Permalink to this definition">¶</a></dt>
 <dd><p>Insert a participant into the database.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>username</strong> (<em>str</em>) – The participant’s username.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A response with any errors that may arise.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The participant’s username.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response with any errors that may arise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.participant_handler.ParticipantHandler.get_participants">
 <code class="descname">get_participants</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/participant_handler.html#ParticipantHandler.get_participants"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.participant_handler.ParticipantHandler.get_participants" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve a list of all participants.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A response containing a list of participant objects and any errors that may arise.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A response containing a list of participant objects and any errors that may arise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.participant_handler.ParticipantHandler.remove_participant_by_username">
 <code class="descname">remove_participant_by_username</code><span class="sig-paren">(</span><em>username</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/participant_handler.html#ParticipantHandler.remove_participant_by_username"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.participant_handler.ParticipantHandler.remove_participant_by_username" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove a participant that has the given username.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>username</strong> (<em>str</em>) – The user’s username.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A response with any errors that may arise.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The user’s username.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response with any errors that may arise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -788,52 +856,48 @@ The body contains the consent status.</p>
 <dt id="biobank.handlers.researcher_handler.ResearcherHandler.create_researcher">
 <code class="descname">create_researcher</code><span class="sig-paren">(</span><em>username</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/researcher_handler.html#ResearcherHandler.create_researcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.researcher_handler.ResearcherHandler.create_researcher" title="Permalink to this definition">¶</a></dt>
 <dd><p>Insert a researcher into the database.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>username</strong> (<em>str</em>) – The user’s username.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A response with any errors that may arise.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The user’s username.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response with any errors that may arise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.researcher_handler.ResearcherHandler.get_researchers">
 <code class="descname">get_researchers</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/researcher_handler.html#ResearcherHandler.get_researchers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.researcher_handler.ResearcherHandler.get_researchers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve a list of all researchers.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A response containing a list of researcher objects and any errors that may arise.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A response containing a list of researcher objects and any errors that may arise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.researcher_handler.ResearcherHandler.remove_researcher_by_username">
 <code class="descname">remove_researcher_by_username</code><span class="sig-paren">(</span><em>username</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/researcher_handler.html#ResearcherHandler.remove_researcher_by_username"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.researcher_handler.ResearcherHandler.remove_researcher_by_username" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove a researcher that has the given username.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>username</strong> (<em>str</em>) – The user’s username.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A response with any errors that may arise.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The user’s username.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response with any errors that may arise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -850,74 +914,64 @@ The body contains the consent status.</p>
 <dt id="biobank.handlers.study_handler.StudyHandler._link_researchers">
 <code class="descname">_link_researchers</code><span class="sig-paren">(</span><em>study_id</em>, <em>researchers</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/study_handler.html#StudyHandler._link_researchers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.study_handler.StudyHandler._link_researchers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Link the given researchers, identified by their username, with the study.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</li>
-<li><strong>researchers</strong> (<em>list</em>) – The list of researchers to link with the study.
-Each researcher is represented by their username.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p></li>
+<li><p><strong>researchers</strong> (<em>list</em>) – The list of researchers to link with the study.
+Each researcher is represented by their username.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">handlers.exceptions.study_exceptions.StudyDoesNotExistException</span></code></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">handlers.exceptions.user_exceptions.ResearcherDoesNotExistException</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">handlers.exceptions.study_exceptions.StudyDoesNotExistException</span></code></p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">handlers.exceptions.user_exceptions.ResearcherDoesNotExistException</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.study_handler.StudyHandler._unlink_researchers">
 <code class="descname">_unlink_researchers</code><span class="sig-paren">(</span><em>study_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/study_handler.html#StudyHandler._unlink_researchers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.study_handler.StudyHandler._unlink_researchers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unlink all researchers associated with the study identified by the given ID.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">handlers.exceptions.study_exceptions.StudyDoesNotExistException</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">handlers.exceptions.study_exceptions.StudyDoesNotExistException</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.study_handler.StudyHandler.create_study">
 <code class="descname">create_study</code><span class="sig-paren">(</span><em>study_id</em>, <em>name</em>, <em>description</em>, <em>homepage</em>, <em>researchers=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/study_handler.html#StudyHandler.create_study"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.study_handler.StudyHandler.create_study" title="Permalink to this definition">¶</a></dt>
 <dd><p>Insert a study into the database.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>study_id</strong> (<em>str</em>) – The study’s unique ID.</li>
-<li><strong>name</strong> (<em>str</em>) – The study’s name.</li>
-<li><strong>description</strong> (<em>str</em>) – A short description of the study.</li>
-<li><strong>homepage</strong> (<em>str</em>) – A link to the study’s homepage.</li>
-<li><strong>researchers</strong> (<em>list</em>) – A list of researchers that are participating in the study.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>study_id</strong> (<em>str</em>) – The study’s unique ID.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The study’s name.</p></li>
+<li><p><strong>description</strong> (<em>str</em>) – A short description of the study.</p></li>
+<li><p><strong>homepage</strong> (<em>str</em>) – A link to the study’s homepage.</p></li>
+<li><p><strong>researchers</strong> (<em>list</em>) – A list of researchers that are participating in the study.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A response with any errors that may arise.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">handlers.exceptions.study_exceptions.StudyExistsException</span></code></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">handlers.exceptions.user_exceptions.ResearcherDoesNotExistException</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response with any errors that may arise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">handlers.exceptions.study_exceptions.StudyExistsException</span></code></p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">handlers.exceptions.user_exceptions.ResearcherDoesNotExistException</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -926,150 +980,132 @@ Each researcher is represented by their username.</li>
 <dd><p>Retrieve a list of studies that are active.
 This function can be used to differentiate between studies that have been retired and active ones.
 The function acts only as a wrapper to call the <cite>get_studies</cite> function, filtering specifically by active studies.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>number</strong> (<em>str</em>) – The number of studies to retrieve.
-If a negative number is given, all matching studies are retrieved.</li>
-<li><strong>page</strong> (<em>str</em>) – The page number, used to aid in pagination.
-If a negative number is given, no pagination is applied.</li>
-<li><strong>search</strong> (<em>str</em>) – A search string used to look up studies using their name and description.</li>
-<li><strong>case_sensitive</strong> (<em>str</em>) – A boolean indicating whether the search should be case sensitive.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>number</strong> (<em>str</em>) – The number of studies to retrieve.
+If a negative number is given, all matching studies are retrieved.</p></li>
+<li><p><strong>page</strong> (<em>str</em>) – The page number, used to aid in pagination.
+If a negative number is given, no pagination is applied.</p></li>
+<li><p><strong>search</strong> (<em>str</em>) – A search string used to look up studies using their name and description.</p></li>
+<li><p><strong>case_sensitive</strong> (<em>str</em>) – A boolean indicating whether the search should be case sensitive.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A response containing a list of study objects and any errors that may arise.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response containing a list of study objects and any errors that may arise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.study_handler.StudyHandler.get_studies">
 <code class="descname">get_studies</code><span class="sig-paren">(</span><em>number=10</em>, <em>page=1</em>, <em>search=''</em>, <em>case_sensitive=False</em>, <em>active_only=False</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/study_handler.html#StudyHandler.get_studies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.study_handler.StudyHandler.get_studies" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve a list of studies.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>number</strong> (<em>str</em>) – The number of studies to retrieve.
-If a negative number is provided, all matching studies are retrieved.</li>
-<li><strong>page</strong> (<em>str</em>) – The page number, used to aid in pagination.</li>
-<li><strong>search</strong> (<em>str</em>) – A search string used to look up studies using their name and description.</li>
-<li><strong>case_sensitive</strong> (<em>str</em>) – A boolean indicating whether the search should be case sensitive.</li>
-<li><strong>active_only</strong> (<em>bool</em>) – A boolean indicating whether only active studies should be fetched.
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>number</strong> (<em>str</em>) – The number of studies to retrieve.
+If a negative number is provided, all matching studies are retrieved.</p></li>
+<li><p><strong>page</strong> (<em>str</em>) – The page number, used to aid in pagination.</p></li>
+<li><p><strong>search</strong> (<em>str</em>) – A search string used to look up studies using their name and description.</p></li>
+<li><p><strong>case_sensitive</strong> (<em>str</em>) – A boolean indicating whether the search should be case sensitive.</p></li>
+<li><p><strong>active_only</strong> (<em>bool</em>) – A boolean indicating whether only active studies should be fetched.
 By default, all studies are fetched.
-In the current implementation, the parameter has no effect.</li>
+In the current implementation, the parameter has no effect.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A response containing a list of study objects and any errors that may arise.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response containing a list of study objects and any errors that may arise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.study_handler.StudyHandler.get_studies_by_researcher">
 <code class="descname">get_studies_by_researcher</code><span class="sig-paren">(</span><em>researcher</em>, <em>number=10</em>, <em>page=1</em>, <em>search=''</em>, <em>case_sensitive=False</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/study_handler.html#StudyHandler.get_studies_by_researcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.study_handler.StudyHandler.get_studies_by_researcher" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve a list of studies.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>researcher</strong> (<em>str</em>) – The unique ID of the researcher, only used if it is not empty.
-The studies are filtered such that only those studies in which the researcher is participating are retrieved.</li>
-<li><strong>number</strong> (<em>str</em>) – The number of studies to retrieve.
-If a negative number is provided, all matching studies are retrieved.</li>
-<li><strong>page</strong> (<em>str</em>) – The page number, used to aid in pagination.</li>
-<li><strong>search</strong> (<em>str</em>) – A search string used to look up studies using their name and description.</li>
-<li><strong>case_sensitive</strong> (<em>str</em>) – A boolean indicating whether the search should be case sensitive.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>researcher</strong> (<em>str</em>) – The unique ID of the researcher, only used if it is not empty.
+The studies are filtered such that only those studies in which the researcher is participating are retrieved.</p></li>
+<li><p><strong>number</strong> (<em>str</em>) – The number of studies to retrieve.
+If a negative number is provided, all matching studies are retrieved.</p></li>
+<li><p><strong>page</strong> (<em>str</em>) – The page number, used to aid in pagination.</p></li>
+<li><p><strong>search</strong> (<em>str</em>) – A search string used to look up studies using their name and description.</p></li>
+<li><p><strong>case_sensitive</strong> (<em>str</em>) – A boolean indicating whether the search should be case sensitive.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A response containing a list of study objects and any errors that may arise.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response containing a list of study objects and any errors that may arise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.study_handler.StudyHandler.get_study_by_id">
 <code class="descname">get_study_by_id</code><span class="sig-paren">(</span><em>study_id</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/study_handler.html#StudyHandler.get_study_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.study_handler.StudyHandler.get_study_by_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve a single study and all associated researchers and attributes.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>study_id</strong> (<em>str</em>) – The study’s unique ID.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A response containing a list of study objects and any errors that may arise.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>study_id</strong> (<em>str</em>) – The study’s unique ID.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response containing a list of study objects and any errors that may arise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.study_handler.StudyHandler.remove_study">
 <code class="descname">remove_study</code><span class="sig-paren">(</span><em>study_id</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/study_handler.html#StudyHandler.remove_study"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.study_handler.StudyHandler.remove_study" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove an existing study.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>study_id</strong> (<em>str</em>) – The study’s unique ID.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A response with any errors that may arise.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>study_id</strong> (<em>str</em>) – The study’s unique ID.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response with any errors that may arise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.study_handler.StudyHandler.update_study">
 <code class="descname">update_study</code><span class="sig-paren">(</span><em>study_id</em>, <em>name</em>, <em>description</em>, <em>homepage</em>, <em>researchers=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/study_handler.html#StudyHandler.update_study"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.study_handler.StudyHandler.update_study" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update an existing study.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>study_id</strong> (<em>str</em>) – The study’s unique ID.</li>
-<li><strong>name</strong> (<em>str</em>) – The study’s name.</li>
-<li><strong>description</strong> (<em>str</em>) – A short description of the study.</li>
-<li><strong>homepage</strong> (<em>str</em>) – A link to the study’s homepage.</li>
-<li><strong>researchers</strong> (<em>list</em>) – A list of researchers that are participating in the study.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>study_id</strong> (<em>str</em>) – The study’s unique ID.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The study’s name.</p></li>
+<li><p><strong>description</strong> (<em>str</em>) – A short description of the study.</p></li>
+<li><p><strong>homepage</strong> (<em>str</em>) – A link to the study’s homepage.</p></li>
+<li><p><strong>researchers</strong> (<em>list</em>) – A list of researchers that are participating in the study.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A response with any errors that may arise.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response with any errors that may arise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1085,12 +1121,11 @@ If a negative number is provided, all matching studies are retrieved.</li>
 <dd><p>Classes that inherit from the blockchain API must implement its functionality.</p>
 <p>The class is meant to be a skeleton of functionality that they need to provide.
 Additional blockchain-specific parameters may be passed as <cite>args</cite> or <cite>kwargs</cite>.</p>
-<dl class="docutils">
-<dt>The blockchain API offers three different kinds of functionality:</dt>
-<dd><ol class="first last arabic simple">
-<li>Participant management;</li>
-<li>Study management; and</li>
-<li>Consent management.</li>
+<dl class="simple">
+<dt>The blockchain API offers three different kinds of functionality:</dt><dd><ol class="arabic simple">
+<li><p>Participant management;</p></li>
+<li><p>Study management; and</p></li>
+<li><p>Consent management.</p></li>
 </ol>
 </dd>
 </dl>
@@ -1098,95 +1133,80 @@ Additional blockchain-specific parameters may be passed as <cite>args</cite> or 
 <dt id="biobank.handlers.blockchain.api.BlockchainAPI.create_participant">
 <code class="descname">create_participant</code><span class="sig-paren">(</span><em>username</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api.html#BlockchainAPI.create_participant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.BlockchainAPI.create_participant" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a participant on the blockchain.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>username</strong> (<em>str</em>) – The participant’s unique username.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The participant’s unique username.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.blockchain.api.BlockchainAPI.create_study">
 <code class="descname">create_study</code><span class="sig-paren">(</span><em>study_id</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api.html#BlockchainAPI.create_study"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.BlockchainAPI.create_study" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a study on the blockchain.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>study_id</strong> (<em>str</em>) – The study’s unique ID.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>study_id</strong> (<em>str</em>) – The study’s unique ID.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.blockchain.api.BlockchainAPI.get_consent_trail">
 <code class="descname">get_consent_trail</code><span class="sig-paren">(</span><em>study_id</em>, <em>username</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api.html#BlockchainAPI.get_consent_trail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.BlockchainAPI.get_consent_trail" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a user’s consent trail for the one given study.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</li>
-<li><strong>username</strong> (<em>str</em>) – The unique username of the participant.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p></li>
+<li><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A dictionary of consent changes.
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary of consent changes.
 The consent changes relate the timestamp of the consent with the consent status.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.blockchain.api.BlockchainAPI.get_studies_by_participant">
 <code class="descname">get_studies_by_participant</code><span class="sig-paren">(</span><em>username</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api.html#BlockchainAPI.get_studies_by_participant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.BlockchainAPI.get_studies_by_participant" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a list of studies that the participant has consented to.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>username</strong> (<em>str</em>) – The unique username of the participant.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of study IDs to which the participant has consented.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of study IDs to which the participant has consented.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.blockchain.api.BlockchainAPI.has_consent">
 <code class="descname">has_consent</code><span class="sig-paren">(</span><em>study_id</em>, <em>username</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api.html#BlockchainAPI.has_consent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.BlockchainAPI.has_consent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether the participant with the given username has consented to the use of his data in the given study.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</li>
-<li><strong>username</strong> (<em>str</em>) – The unique username of the participant.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p></li>
+<li><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A boolean indicating whether the participant has consented to the use of their sample in the study.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A boolean indicating whether the participant has consented to the use of their sample in the study.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -1194,19 +1214,15 @@ The consent changes relate the timestamp of the consent with the consent status.
 <code class="descname">set_consent</code><span class="sig-paren">(</span><em>study_id</em>, <em>username</em>, <em>consent</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api.html#BlockchainAPI.set_consent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.BlockchainAPI.set_consent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set a user’s consent to the given study.
 However, consent cannot be changed for inactive studies.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</li>
-<li><strong>username</strong> (<em>str</em>) – The unique username of the participant.</li>
-<li><strong>consent</strong> (<em>bool</em>) – The consent status.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p></li>
+<li><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p></li>
+<li><p><strong>consent</strong> (<em>bool</em>) – The consent status.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1221,8 +1237,8 @@ However, consent cannot be changed for inactive studies.</p>
 <p>It can communicate with two REST APIs at the same time:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li>The admin API; and</li>
-<li>The multi-user API.</li>
+<li><p>The admin API; and</p></li>
+<li><p>The multi-user API.</p></li>
 </ol>
 </div></blockquote>
 <p>All multi-user functions require an access token to operate.
@@ -1231,38 +1247,30 @@ They import the card into Hyperledger, which creates a new card with credentials
 Users can export this card and save it to re-import it later.</p>
 <p>At the same time, an access token is generated for them.
 This access token allows access to this API.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>_host</strong> (<em>str</em>) – The hostname where the Hyperledger Composer REST API is running.</li>
-<li><strong>_default_admin_port</strong> (<em>int</em>) – The default port where admin requests are made.</li>
-<li><strong>_default_multiuser_port</strong> (<em>int</em>) – The default port where multi-user requests are made.</li>
-<li><strong>_connector</strong> (<a class="reference internal" href="connection.html#connection.connection.Connection" title="connection.connection.Connection"><code class="xref py py-class docutils literal"><span class="pre">connection.connection.Connection</span></code></a>) – The connector that is used to access the data store.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>_host</strong> (<em>str</em>) – The hostname where the Hyperledger Composer REST API is running.</p></li>
+<li><p><strong>_default_admin_port</strong> (<em>int</em>) – The default port where admin requests are made.</p></li>
+<li><p><strong>_default_multiuser_port</strong> (<em>int</em>) – The default port where multi-user requests are made.</p></li>
+<li><p><strong>_connector</strong> (<a class="reference internal" href="connection.html#connection.connection.Connection" title="connection.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">connection.connection.Connection</span></code></a>) – The connector that is used to access the data store.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.__init__">
 <code class="descname">__init__</code><span class="sig-paren">(</span><em>host</em>, <em>default_admin_port</em>, <em>default_multiuser_port</em>, <em>connector</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api/hyperledger.html#HyperledgerAPI.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instantiate the Hyperledger API handler with the URLs it should use.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>host</strong> (<em>str</em>) – The hostname where the Hyperledger Composer REST API is running.</li>
-<li><strong>default_admin_port</strong> (<em>int</em>) – The default port where admin requests are made.</li>
-<li><strong>default_multiuser_port</strong> (<em>int</em>) – The default port where multi-user requests are made.</li>
-<li><strong>connector</strong> (<a class="reference internal" href="connection.html#connection.connection.Connection" title="connection.connection.Connection"><code class="xref py py-class docutils literal"><span class="pre">connection.connection.Connection</span></code></a>) – The connector that is used to access the data store.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>host</strong> (<em>str</em>) – The hostname where the Hyperledger Composer REST API is running.</p></li>
+<li><p><strong>default_admin_port</strong> (<em>int</em>) – The default port where admin requests are made.</p></li>
+<li><p><strong>default_multiuser_port</strong> (<em>int</em>) – The default port where multi-user requests are made.</p></li>
+<li><p><strong>connector</strong> (<a class="reference internal" href="connection.html#connection.connection.Connection" title="connection.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">connection.connection.Connection</span></code></a>) – The connector that is used to access the data store.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -1271,25 +1279,21 @@ This access token allows access to this API.</p>
 <dd><p>Check whether the given card exists for the user with the given username.
 The query checks that the card is not empty.
 If it is empty, it’s as if the card does not exist.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>username</strong> (<em>str</em>) – The participant’s unique username.</li>
-<li><strong>temp</strong> (<em>bool</em>) – A boolean indicating whether the query should look at the temporary card.
-If it is set to false, the credential-ready card is queried instead.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The participant’s unique username.</p></li>
+<li><p><strong>temp</strong> (<em>bool</em>) – A boolean indicating whether the query should look at the temporary card.
+If it is set to false, the credential-ready card is queried instead.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A boolean indicating whether the given card exists for the user with the given username.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A boolean indicating whether the given card exists for the user with the given username.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -1298,43 +1302,38 @@ If it is set to false, the credential-ready card is queried instead.</li>
 <dd><p>Create the actual Hyperledger participant on the blockchain.</p>
 <p>The function creates the biobank participant on the blockchain.
 The response contains the card in the <cite>content field</cite>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>username</strong> (<em>str</em>) – The participant’s unique username.</li>
-<li><strong>port</strong> (<em>int</em>) – The port to use when issuing the identity.
-By default, the request is made to the admin REST API endpoint.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The participant’s unique username.</p></li>
+<li><p><strong>port</strong> (<em>int</em>) – The port to use when issuing the identity.
+By default, the request is made to the admin REST API endpoint.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The API response.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">requests.models.Response</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The API response.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.models.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI._get_participant_address">
 <code class="descname">_get_participant_address</code><span class="sig-paren">(</span><em>username</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api/hyperledger.html#HyperledgerAPI._get_participant_address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI._get_participant_address" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the participant’s address.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>username</strong> (<em>str</em>) – The participant’s username.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The participant’s address on the blockchain.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The participant’s username.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The participant’s address on the blockchain.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -1342,25 +1341,21 @@ By default, the request is made to the admin REST API endpoint.</li>
 <code class="descname">_issue_identity</code><span class="sig-paren">(</span><em>username</em>, <em>port=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api/hyperledger.html#HyperledgerAPI._issue_identity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI._issue_identity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Issue an identity for the user with the given username.</p>
 <p>The response contains the user’s card data as a <cite>bytes</cite> object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>username</strong> (<em>str</em>) – The participant’s unique username.</li>
-<li><strong>port</strong> (<em>int</em>) – The port to use when issuing the identity.
-By default, the request is made to the admin REST API endpoint.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The participant’s unique username.</p></li>
+<li><p><strong>port</strong> (<em>int</em>) – The port to use when issuing the identity.
+By default, the request is made to the admin REST API endpoint.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The API response.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">requests.models.Response</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The API response.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.models.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -1369,25 +1364,21 @@ By default, the request is made to the admin REST API endpoint.</li>
 <dd><p>Revoke the identity of the user with the given username.</p>
 <p>First, the identity ID is fetched by looking for the username.
 Then, the identity is revoked.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>username</strong> (<em>str</em>) – The participant’s unique username.</li>
-<li><strong>port</strong> (<em>int</em>) – The port to use when issuing the identity.
-By default, the request is made to the admin REST API endpoint.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The participant’s unique username.</p></li>
+<li><p><strong>port</strong> (<em>int</em>) – The port to use when issuing the identity.
+By default, the request is made to the admin REST API endpoint.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The API response.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">requests.models.Response</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The API response.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.models.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -1395,169 +1386,147 @@ By default, the request is made to the admin REST API endpoint.</li>
 <code class="descname">create_participant</code><span class="sig-paren">(</span><em>username</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api/hyperledger.html#HyperledgerAPI.create_participant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.create_participant" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a participant on the blockchain.</p>
 <p>The response contains the user’s card data as a <cite>bytes</cite> object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>username</strong> (<em>str</em>) – The participant’s unique username.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The API response.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">requests.models.Response</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The participant’s unique username.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The API response.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.models.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.create_study">
 <code class="descname">create_study</code><span class="sig-paren">(</span><em>study_id</em>, <em>port=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api/hyperledger.html#HyperledgerAPI.create_study"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.create_study" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a study on the blockchain.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>study_id</strong> (<em>str</em>) – The study’s unique ID.</li>
-<li><strong>port</strong> (<em>int</em>) – The port to use when issuing the identity.
-By default, the request is made to the admin REST API endpoint.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>study_id</strong> (<em>str</em>) – The study’s unique ID.</p></li>
+<li><p><strong>port</strong> (<em>int</em>) – The port to use when issuing the identity.
+By default, the request is made to the admin REST API endpoint.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.get_card">
 <code class="descname">get_card</code><span class="sig-paren">(</span><em>username</em>, <em>temp</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api/hyperledger.html#HyperledgerAPI.get_card"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.get_card" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the given participant’s actual, credential-ready business card.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>username</strong> (<em>str</em>) – The participant’s unique username.</li>
-<li><strong>temp</strong> (<em>str</em>) – <p>A boolean indicating whether the query should look at the temporary card.
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The participant’s unique username.</p></li>
+<li><p><strong>temp</strong> (<em>str</em>) – <p>A boolean indicating whether the query should look at the temporary card.
 If it is set to false, the credential-ready card is queried instead.</p>
 <p>The boolean is actually provided as a string and converted.</p>
-</li>
+</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A response containing the participant’s credential-ready card.
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response containing the participant’s credential-ready card.
 This is not stored as a JSON string since it is a <cite>bytes</cite> string.
 Any errors that may arise are included.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.get_consent_trail">
 <code class="descname">get_consent_trail</code><span class="sig-paren">(</span><em>study_id</em>, <em>username</em>, <em>access_token</em>, <em>port=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api/hyperledger.html#HyperledgerAPI.get_consent_trail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.get_consent_trail" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a user’s consent trail for the one given study.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</li>
-<li><strong>username</strong> (<em>str</em>) – The unique username of the participant.</li>
-<li><strong>access_token</strong> (<em>str</em>) – The participant’s access token.
-This is the access token that is given upon authenticating with Hyperledger Compose.</li>
-<li><strong>port</strong> (<em>int</em>) – The port to use when issuing the identity.
-By default, the request is made to the multi-user REST API endpoint.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p></li>
+<li><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p></li>
+<li><p><strong>access_token</strong> (<em>str</em>) – The participant’s access token.
+This is the access token that is given upon authenticating with Hyperledger Compose.</p></li>
+<li><p><strong>port</strong> (<em>int</em>) – The port to use when issuing the identity.
+By default, the request is made to the multi-user REST API endpoint.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A dictionary of consent changes.
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary of consent changes.
 The consent changes relate the timestamp of the consent with the consent status.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.get_studies_by_participant">
 <code class="descname">get_studies_by_participant</code><span class="sig-paren">(</span><em>username</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api/hyperledger.html#HyperledgerAPI.get_studies_by_participant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.get_studies_by_participant" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a list of studies that the participant has consented to.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>username</strong> (<em>str</em>) – The unique username of the participant.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of study IDs to which the participant has consented.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of study IDs to which the participant has consented.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.has_card">
 <code class="descname">has_card</code><span class="sig-paren">(</span><em>username</em>, <em>temp</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api/hyperledger.html#HyperledgerAPI.has_card"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.has_card" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether the participant with the given username has a card.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>username</strong> (<em>str</em>) – The participant’s unique username.</li>
-<li><strong>temp</strong> (<em>str</em>) – <p>A boolean indicating whether the query should look at the temporary card.
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The participant’s unique username.</p></li>
+<li><p><strong>temp</strong> (<em>str</em>) – <p>A boolean indicating whether the query should look at the temporary card.
 If it is set to false, the credential-ready card is queried instead.</p>
 <p>The boolean is actually provided as a string and converted.</p>
-</li>
+</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A response containing a boolean indicating whether the participant has a card.
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response containing a boolean indicating whether the participant has a card.
 Any errors that may arise are included.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.has_consent">
 <code class="descname">has_consent</code><span class="sig-paren">(</span><em>study_id</em>, <em>username</em>, <em>access_token</em>, <em>port=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api/hyperledger.html#HyperledgerAPI.has_consent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.has_consent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether the participant with the given username has consented to the use of his data in the given study.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</li>
-<li><strong>username</strong> (<em>str</em>) – The unique username of the participant.</li>
-<li><strong>access_token</strong> (<em>str</em>) – The participant’s access token.
-This is the access token that is given upon authenticating with Hyperledger Compose.</li>
-<li><strong>port</strong> (<em>int</em>) – The port to use when issuing the identity.
-By default, the request is made to the multi-user REST API endpoint.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p></li>
+<li><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p></li>
+<li><p><strong>access_token</strong> (<em>str</em>) – The participant’s access token.
+This is the access token that is given upon authenticating with Hyperledger Compose.</p></li>
+<li><p><strong>port</strong> (<em>int</em>) – The port to use when issuing the identity.
+By default, the request is made to the multi-user REST API endpoint.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A boolean indicating whether the participant has consented to the use of their sample in the study.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A boolean indicating whether the participant has consented to the use of their sample in the study.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -1568,26 +1537,22 @@ This card is saved into the credential field.
 Later, this card can be imported back.</p>
 <p>The creation of the credentials card invalidates the temporary card.
 Therefore this card is set to empty.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>username</strong> (<em>str</em>) – The participant’s unique username.</li>
-<li><strong>card</strong> (<em>str</em>) – The card to save.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The participant’s unique username.</p></li>
+<li><p><strong>card</strong> (<em>str</em>) – The card to save.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A response containing the participant’s credential-ready card.
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response containing the participant’s credential-ready card.
 This is not stored as a JSON string since it is a <cite>bytes</cite> string.
 Any errors that may arise are included.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">oauth2.web.Response</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -1595,23 +1560,19 @@ Any errors that may arise are included.</p>
 <code class="descname">set_consent</code><span class="sig-paren">(</span><em>study_id</em>, <em>username</em>, <em>consent</em>, <em>access_token</em>, <em>port=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api/hyperledger.html#HyperledgerAPI.set_consent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.set_consent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set a user’s consent to the given study.</p>
 <p>The consent ID is generated using the study’s ID, the participant’s username and the timestamp.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</li>
-<li><strong>username</strong> (<em>str</em>) – The unique username of the participant.</li>
-<li><strong>consent</strong> (<em>bool</em>) – The consent status.</li>
-<li><strong>access_token</strong> (<em>strticipant's unique username.</em>) – The participant’s access token.
-This is the access token that is given upon authenticating with Hyperledger Compose.</li>
-<li><strong>port</strong> (<em>int</em>) – The port to use when issuing the identity.
-By default, the request is made to the multi-user REST API endpoint.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p></li>
+<li><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p></li>
+<li><p><strong>consent</strong> (<em>bool</em>) – The consent status.</p></li>
+<li><p><strong>access_token</strong> (<em>strticipant's unique username.</em>) – The participant’s access token.
+This is the access token that is given upon authenticating with Hyperledger Compose.</p></li>
+<li><p><strong>port</strong> (<em>int</em>) – The port to use when issuing the identity.
+By default, the request is made to the multi-user REST API endpoint.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1733,70 +1694,52 @@ This typically happens because the start date is after the end date.</p>
 </div>
 
 
+           </div>
+           
           </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="coauth.html" class="btn btn-neutral float-right" title="OAuth" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="setup.html" class="btn btn-neutral float-left" title="Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Nicholas Mamo
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h3><a href="index.html">Table Of Contents</a></h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Biobank Management</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-biobank.handlers.handler">Handlers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-biobank.handlers.blockchain.api">Blockchain Handlers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-biobank.handlers.exceptions">Exceptions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="coauth.html">OAuth</a></li>
-<li class="toctree-l1"><a class="reference internal" href="connection.html">Data Store Connections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="server.html">Server</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
-</ul>
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="setup.html" title="previous chapter">Setup</a></li>
-      <li>Next: <a href="coauth.html" title="next chapter">OAuth</a></li>
-  </ul></li>
-</ul>
-</div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/biobank.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2018, Nicholas Mamo.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
-      
-      |
-      <a href="_sources/biobank.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
 
-    
+    </section>
 
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
     
-  </body>
+   
+
+</body>
 </html>
