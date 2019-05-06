@@ -113,6 +113,13 @@ class HyperledgerAPI(BlockchainAPI):
 		"""
 
 		response = Response()
+		
+		if (not self._card_exists(username, False, *args, **kwargs)
+			and not self._card_exists(username, True, *args, **kwargs)):
+			"""
+			If the research partner has neither card, then re-create the participant.
+			"""
+			self.create_participant(username)
 
 		temp = temp.lower() == "true"
 		exists = self._card_exists(username, temp, *args, **kwargs)
@@ -147,9 +154,12 @@ class HyperledgerAPI(BlockchainAPI):
 		card_name = "temp" if temp else "cred"
 		card_name = "%s_card" % card_name
 		row = self._connector.select_one("""
-			SELECT %s
-			FROM participants
-			WHERE user_id = '%s'
+			SELECT
+				%s
+			FROM
+				participants
+			WHERE
+				user_id = '%s'
 		""" % (card_name, username))
 
 		"""
@@ -159,6 +169,21 @@ class HyperledgerAPI(BlockchainAPI):
 
 		card_data = row[card_name]
 		card_data = bytes(card_data)
+
+		if temp:
+			"""
+			The temporary card can only be used once.
+			Therefore it should be cleared once requested.
+			"""
+
+			self._connector.execute("""
+				UPDATE
+					public.participants
+				SET
+					temp_card = null
+				WHERE
+					user_id = '%s';
+			""" % (username))
 
 		response.status_code = 200
 		response.add_header("Content-Type", "application/octet-stream")
