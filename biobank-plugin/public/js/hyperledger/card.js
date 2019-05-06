@@ -84,7 +84,7 @@ function importCard(temp) {
 	var access_token = decodeURIComponent(getCookie("access_token"));
 	access_token = access_token.substring(2, access_token.indexOf("."));
 	/*
-	 * Get the card from the backend.
+	 * Get the requested card from the backend.
 	 */
 	request.open("GET", `${ajax_base_path}get_card.php?temp=${temp ? "true" : "false"}`, true);
 	request.onreadystatechange = function(){
