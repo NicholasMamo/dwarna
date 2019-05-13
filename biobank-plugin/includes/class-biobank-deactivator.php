@@ -1,7 +1,5 @@
 <?php
 
-// TODO: Remove the OAuth2 tables and the user meta
-
 /**
  * Fired during plugin deactivation
  *
@@ -56,6 +54,20 @@ class Biobank_Deactivator {
     }
 
 	/**
+	 * Drop the OAuth 2.0 tables from the database.
+	 */
+	private static function drop_oauth_tables() {
+		global $wpdb;
+		$uninstall_script = file_get_contents(plugin_dir_path(__FILE__) . "../oauth2/uninstall.sql");
+		$queries = preg_split("/;\n/", $uninstall_script);
+		foreach ($queries as $query) {
+			if (strlen($query)) {
+				$wpdb->query($query, array());
+			}
+		}
+	}
+
+	/**
 	 * Clean up when the biobank plugin is deactivated.
 	 *
 	 * When the biobank plugin is deactivated, the activation actions have to be rolled back.
@@ -98,6 +110,10 @@ class Biobank_Deactivator {
 			}
 		}
 
+		/*
+		 * Remove any OAuth 2.0 data from the database.
+		 */
+		 self::drop_oauth_tables();
 	}
 
 }
