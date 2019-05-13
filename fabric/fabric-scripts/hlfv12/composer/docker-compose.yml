@@ -1,5 +1,10 @@
 version: '2'
 
+volumes:
+  backup_peer:
+  backup_orderer:
+  backup_ca_server:
+
 services:
   ca.org1.example.com:
     image: hyperledger/fabric-ca:1.2.1
@@ -12,6 +17,7 @@ services:
     command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/19ab65abbb04807dad12e4c0a9aaa6649e70868e3abd0217a322d89e47e1a6ae_sk -b admin:adminpw -d'
     volumes:
       - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ./backup_ca_server:/etc/hyperledger/fabric-ca-server
     container_name: ca.org1.example.com
 
   orderer.example.com:
@@ -31,6 +37,7 @@ services:
     volumes:
         - ./:/etc/hyperledger/configtx
         - ./crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp:/etc/hyperledger/msp/orderer/msp
+        - ./backup_orderer:/var/hyperledger/production/orderer
 
   peer0.org1.example.com:
     container_name: peer0.org1.example.com
@@ -56,7 +63,7 @@ services:
         - ./:/etc/hyperledger/configtx
         - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/peer/msp
         - ./crypto-config/peerOrganizations/org1.example.com/users:/etc/hyperledger/msp/users
-        # - backup_peer:/var/hyperledger/production
+        - ./backup_peer:/var/hyperledger/production
     depends_on:
       - orderer.example.com
       - couchdb
