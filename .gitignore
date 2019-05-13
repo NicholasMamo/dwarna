@@ -5,6 +5,7 @@ __pycache__/
 # Hyperledger Fabric deployment-specific files
 
 fabric/dwarna-blockchain/*.card
+fabric/.nvm
 
 # Backups
 
