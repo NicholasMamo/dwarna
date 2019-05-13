@@ -1,7 +1,13 @@
 # Dwarna
 **Dwarna: Introducing a Dynamic Consent Solution for Biobanking on the Blockchain**
 
+## Starting Dwarna
+
+To start, Dwarna, execute the `start.sh` script. It might be necessary to make this script executable using `chmod +x start.sh`. The script first starts Hyperledger, and then starts the REST API.
+
 ## Directory Structure
+
+More specific `README.md` files are in each of the respective directories where necessary.
 
 ### `biobank-plugin/`
 
