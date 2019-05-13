@@ -21,6 +21,10 @@ The Hyperledger Fabric files.
 
 The REST API, runnable from `rest/main.py`.
 
+#### Command-Line Arguments
+
+-p --port - The port on which to serve the REST API, defaults to 7225 (optional).
+
 ### `setup/`
 
 The setup scripts to construct the database schema for the REST API and associated tests.

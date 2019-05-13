@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 The server that handles all requests to the backend.
 """
@@ -11,6 +13,7 @@ from oauth2.web.wsgi import Application, Request
 
 from wsgiref.simple_server import make_server
 
+import argparse
 import signal
 import sys
 
@@ -35,6 +38,22 @@ from server.resource_server import ResourceServer
 from server.authorization_server import AuthorizationServer
 
 import config
+
+def setup_args():
+	"""
+	Set up and get the list of command-line arguments.
+
+	Accepted arguments:
+		- -p --port		The port on which to serve the REST API, defaults to 7225.
+
+	:return: The command-line arguments.
+	:rtype: list
+	"""
+
+	parser = argparse.ArgumentParser(description="Serve the REST API which controls the dynamic consent functionality.")
+	parser.add_argument("-p", "--port", nargs="+", type=str, help="<Optional> The port on which to serve the REST API, defaults to 7225.", required=False)
+	args = parser.parse_args()
+	return args
 
 def start_auth_server(port, token_expiry, connection, oauth_connection):
 	"""
@@ -113,8 +132,7 @@ def start_auth_server(port, token_expiry, connection, oauth_connection):
 	except KeyboardInterrupt:
 		httpd.server_close()
 
-pid = None
-def main(database, oauth_database, listen_port, token_expiry=config.token_expiry):
+def main(database, oauth_database, token_expiry=config.token_expiry):
 	"""
 	Establish a connection with PostgreSQL and start the server.
 
@@ -122,26 +140,34 @@ def main(database, oauth_database, listen_port, token_expiry=config.token_expiry
 	:type database: str
 	:param oauth_database: The name of the database to connect to for OAuth storage.
 	:type oauth_database: str
-	:param listen_port: The port on which the server listens.
-	:type listen_port: int
 	:param token_expiry: The time taken for an access token delivered by the authorization server to expire.
 		This should only be provided in testing environments.
 		Otherwise, the configuration should be updated.
 	:type token_expiry: int
 	"""
-	global pid
 
-	# get the connection details from the .pgpass file
+	"""
+	Get the listen port.
+	"""
+	args = setup_args()
+	listen_port = args.port[0] if args.port else 7225
+
+	"""
+	Get the connection details from the .pgpass file.
+	Then, create connections to the server's database and to the OAuth 2.0 database.
+	"""
 	home = expanduser("~")
 	with open(os.path.join(home, ".pgpass"), "r") as f:
 		host, port, _, username, password = f.readline().strip().split(":")
-
 	connection = config.handler_connector(database=database, host=host, username=username, password=password)
 	oauth_connection = config.handler_connector(database=oauth_database, host=host, username=username, password=password, cursor_factory=cursor)
 
+	"""
+	Start the OAuth 2.0 server.
+	"""
+
 	auth_server = Process(target=start_auth_server, args=(listen_port, token_expiry, connection, oauth_connection))
 	auth_server.start()
-	pid = os.getpid()
 
 	def sigint_handler(signal, frame):
 		print("Terminating servers...")
