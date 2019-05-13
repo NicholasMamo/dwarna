@@ -50,7 +50,7 @@ class Biobank_Deactivator {
      * @access	private
      */
     private static function initialize() {
-		require_once(plugin_dir_path(__FILE__) . "globals.php");
+		require(plugin_dir_path(__FILE__) . "globals.php");
 		self::$biobanker_capabilities = $biobanker_capabilities;
 		self::$pages = $plugin_pages;
     }
