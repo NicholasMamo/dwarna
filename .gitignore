@@ -1,5 +1,11 @@
 __pycache__/
 
-# Hyperledger Fabric backups
+# Fabric
 
-# fabric/dwarna-blockchain/old-versions
+# Hyperledger Fabric deployment-specific files
+
+fabric/dwarna-blockchain/*.card
+
+# Backups
+
+fabric/fabric-scripts/hlfv12/backup*
