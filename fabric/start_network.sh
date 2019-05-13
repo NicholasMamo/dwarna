@@ -35,9 +35,13 @@ cd ../../../
 
 # Start the Dwarna network.
 cd dwarna-blockchain
+composer card delete --card admin@dwarna-blockchain
+echo "Installing network"
 composer network install --archiveFile dwarna-blockchain.bna --card PeerAdmin@hlfv1
-composer network start --networkName dwarna-blockchain --networkVersion 0.1.2 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file admin.card
-composer card import --file admin.card
+echo "Starting network"
+composer network start --networkName dwarna-blockchain --networkVersion 0.1.2 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file admin@dwarna-blockchain.card
+echo "Importing card"
+composer card import --file admin@dwarna-blockchain.card --card admin@dwarna-blockchain
 cd ..
 
 # Start the multi-user REST API.
