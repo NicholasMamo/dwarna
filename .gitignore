@@ -8,4 +8,4 @@ fabric/dwarna-blockchain/*.card
 
 # Backups
 
-fabric/fabric-scripts/hlfv12/backup*
+fabric/fabric-scripts/hlfv12/composer/backup*
