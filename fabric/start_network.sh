@@ -42,6 +42,8 @@ echo "Starting network"
 composer network start --networkName dwarna-blockchain --networkVersion 0.1.2 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file admin@dwarna-blockchain.card
 echo "Importing card"
 composer card import --file admin@dwarna-blockchain.card --card admin@dwarna-blockchain
+composer network ping -c admin@dwarna-blockchain
+composer card export -c admin@dwarna-blockchain
 cd ..
 
 # Start the multi-user REST API.
