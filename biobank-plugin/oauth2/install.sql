@@ -59,3 +59,9 @@ CREATE TABLE oauth_jwt (
   subject             VARCHAR(80),
   public_key          VARCHAR(2000)   NOT NULL
 );
+
+-- Test data
+INSERT INTO
+	oauth_clients (client_id, client_secret, redirect_uri)
+VALUES
+	("7815696ecbf1c96e6894b779456d330e", "41e0b81ec1d89ccaf238565b50263251", "http://localhost:3000/auth/local-wordpress/callback");

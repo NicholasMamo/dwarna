@@ -1,7 +1,5 @@
 <?php
 
-// TODO: Create the OAuth2 tables
-
 /**
  * Fired during plugin activation
  *
@@ -77,6 +75,20 @@ class Biobank_Activator {
 		self::$pages = $plugin_pages;
     }
 
+	/**
+	 * Set up the OAuth 2.0 tables from the database.
+	 */
+	private static function create_oauth_tables() {
+		global $wpdb;
+		$install_script = file_get_contents(plugin_dir_path(__FILE__) . "../oauth2/install.sql");
+		$queries = preg_split("/;\n/", $install_script);
+		foreach ($queries as $query) {
+			if (strlen($query)) {
+				$wpdb->query($query, array());
+			}
+		}
+	}
+
     /**
      * Activate the biobank plugin.
      *
@@ -125,6 +137,11 @@ class Biobank_Activator {
 		foreach (self::$pages as $slug => $page) {
 			$post = wp_insert_post($page["wp_info"]);
 		}
+
+		/*
+		 * Create the OAuth 2.0 table structure in the the database.
+		 */
+		 self::create_oauth_tables();
     }
 
 }
