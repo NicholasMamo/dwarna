@@ -28,10 +28,6 @@ const host = `${window.location.protocol}//${window.location.hostname}`;
 const ajax_base_path = `${host}/wordpress/wp-content/plugins/biobank-plugin/public/ajax/`;
 
 /**
- * The logged-in user's username.
- */
-
-/**
 * When the document loads, check import the user's card.
 */
 jQuery(document).ready(function(){
@@ -58,20 +54,39 @@ jQuery(document).ready(function(){
  * This card allows them to make requests to the Hyperledger API.
  */
 function loadCard() {
-	jQuery.get(`${ajax_base_path}has_card.php?temp=false`).then(function(response) {
-		/*
-		 * If the user has a credential card, load it.
-		 * Otherwise, import the temporary card.
-		 */
-		var access_token = decodeURIComponent(getCookie(hyperledger_access_token));
-		access_token = access_token.substring(2, access_token.indexOf("."));
-		if (response) {
- 			console.log("Getting credentials card");
- 			importCard(false);
-		} else {
-			tryImport(access_token);
- 		}
-	});
+	var access_token = decodeURIComponent(getCookie(hyperledger_access_token));
+	access_token = access_token.substring(2, access_token.indexOf("."));
+
+	var request = new XMLHttpRequest();
+	request.open("GET", `${host}:${hyperldger_port}/api/wallet/card`, true);
+	request.setRequestHeader("X-Access-Token", access_token);
+	request.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if (this.status == 200) {
+				ping().then(function(response) {
+					console.log(typeof(response));
+					console.log("System pinged");
+					console.log("Getting already-imported card");
+					exportCard(access_token);
+				});
+			} else {
+				jQuery.get(`${ajax_base_path}has_card.php?temp=false`).then(function(response) {
+					/*
+					 * If the user has a credential card, load it.
+					 * Otherwise, import the temporary card.
+					 */
+					if (response) {
+			 			console.log("Getting credentials card");
+			 			importCard(false);
+					} else {
+						console.log("Getting temporary card");
+						importCard(true);
+			 		}
+				});
+			}
+		}
+	}
+	request.send(null);
 }
 
 /**
@@ -112,19 +127,10 @@ function importCard(temp) {
 					},
 				}).then(function(response) {
 					console.log("Card imported")
-					if (temp) {
-						jQuery.ajax({
-							url: `${host}:${hyperldger_port}/api/system/ping`,
-							method: "GET",
-							type: "GET",
-							headers: {
-								"X-Access-Token": access_token,
-							},
-						}).then(function(response) {
-							console.log("System pinged");
-							exportCard(access_token);
-						});
-					}
+					ping().then(function(response) {
+						console.log("System pinged");
+						exportCard(access_token);
+					});
 				});
 			} else if(this.responseText != "") {
 				console.log(this.responseText);
@@ -137,32 +143,6 @@ function importCard(temp) {
 			}
 		}
 	};
-	request.send(null);
-}
-
-/**
- * Check whether the user has imported a card already.
- *
- * @param	{string} access_token - The user's Hyperledger access token.
- *									This token is stored as a cookie.
- *
- * @return	{mixed} The cookie's value, or null if no cookie with the given name is found.
- */
-function tryImport(access_token) {
-	var request = new XMLHttpRequest();
-	request.open("GET", `${host}:${hyperldger_port}/api/wallet/card`, true);
-	request.setRequestHeader("X-Access-Token", access_token);
-	request.onreadystatechange = function() {
-		if(this.readyState == 4) {
-			if (this.status == 200) {
-				console.log("Getting imported card");
-				exportCard(access_token);
-			} else {
-				console.log("Getting temporary card");
-				importCard(true);
-			}
-		}
-	}
 	request.send(null);
 }
 
@@ -223,12 +203,31 @@ function saveCard(card) {
 }
 
 /**
+ * Ping the imported card to exchange the secret for credentials.
+ *
+ * @return	{object} The ping response.
+ */
+function ping() {
+	console.log("Pinging card");
+	var access_token = decodeURIComponent(getCookie("access_token"));
+	access_token = access_token.substring(2, access_token.indexOf("."));
+	return jQuery.ajax({
+		url: `${host}:${hyperldger_port}/api/system/ping`,
+		method: "GET",
+		type: "GET",
+		headers: {
+			"X-Access-Token": access_token,
+		},
+	});
+}
+
+/**
 * Get the value of the cookie having the given name.
 * Based on https://stackoverflow.com/a/1599291/1771724
 *
 * @param	{string} name - The name of the cookie whose value to retrieve.
 *
-* @return	{mixed} The cookie's value, or null if no cookie with the given name is found.
+* @return	{string|null} The cookie's value, or null if no cookie with the given name is found.
 */
 function getCookie(name) {
 	var cookie_name = name + "=";
