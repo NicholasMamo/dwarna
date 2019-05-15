@@ -1,7 +1,6 @@
 ![](https://github.com/NicholasMamo/dwarna/raw/master/assets/logo.png "Dwarna Logo")
 
-# Dwarna
-**Dwarna: Introducing a Dynamic Consent Solution for Biobanking on the Blockchain**
+# WordPress Plugin
 
 The WordPress plugin that handles all biobanking functionality in the frontend.
 

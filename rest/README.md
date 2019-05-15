@@ -1,7 +1,6 @@
 ![](https://github.com/NicholasMamo/dwarna/raw/master/assets/logo.png "Dwarna Logo")
 
-# Dwarna
-**Dwarna: Introducing a Dynamic Consent Solution for Biobanking on the Blockchain**
+# REST API
 
 The REST API is used by the WordPress plugin to store biobanking-related information.
 

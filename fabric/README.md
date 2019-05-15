@@ -1,7 +1,6 @@
 ![](https://github.com/NicholasMamo/dwarna/raw/master/assets/logo.png "Dwarna Logo")
 
-# Dwarna
-**Dwarna: Introducing a Dynamic Consent Solution for Biobanking on the Blockchain**
+# Hyperledger Fabric
 
 ## Installing Hyperledger Fabric
 
