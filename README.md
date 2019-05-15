@@ -3,7 +3,11 @@
 
 ## Starting Dwarna
 
-To start, Dwarna, execute the `start.sh` script. It might be necessary to make this script executable using `chmod +x start.sh`. The script first starts Hyperledger, and then starts the REST API.
+To start, Dwarna, execute the `start.sh` script. It might be necessary to make this script executable using `chmod +x start.sh`. The script first starts Hyperledger Fabric, and then starts the REST API.
+
+## Installing Dwarna
+
+To install, Dwarna, execute the `install.sh` script. It might be necessary to make this script executable using `chmod +x install.sh`. The script installs Hyperledger Fabric and its dependencies.
 
 ## Directory Structure
 
