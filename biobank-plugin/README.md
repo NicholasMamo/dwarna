@@ -1,3 +1,5 @@
+![](https://github.com/NicholasMamo/dwarna/raw/master/assets/logo.png "Dwarna Logo")
+
 # Dwarna
 **Dwarna: Introducing a Dynamic Consent Solution for Biobanking on the Blockchain**
 
@@ -15,4 +17,4 @@ The plugin can be deactivated or removed from the the _Installed Plugins_ tab un
 
 ## Shortcodes
 
-The consenting procedure and the consent trail functionality can be added to any page and post using the `[biobank-consent type="all"]` and `[biobank-trail]` WordPress shortcodes. 
+The consenting procedure and the consent trail functionality can be added to any page and post using the `[biobank-consent type="all"]` and `[biobank-trail]` WordPress shortcodes.
