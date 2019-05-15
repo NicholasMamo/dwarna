@@ -2,8 +2,12 @@
 
 # Start the Hyperledger Fabric blockchain and associated REST APIs.
 
-# Set the environment variables.
+# Go to the script directory.
+parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+cd "$parent_path"
+source ../variables.sh
 
+# Set the environment variables.
 export COMPOSER_PROVIDERS='{
     "local-wordpress": {
         "provider": "local-wordpress",
@@ -25,7 +29,7 @@ export FABRIC_VERSION=hlfv12
 source ~/.nvm/nvm.sh
 nvm use 8.9.4
 
-# Start the peer nodes.
+echo -e "${HIGHLIGHT}Starting Hyperledger Fabric${DEFAULT}"
 cd fabric-scripts/hlfv12/composer/
 docker-compose stop
 sleep 15s
@@ -33,30 +37,31 @@ docker-compose start
 sleep 15s
 cd ../../../
 
-# Start the Dwarna network.
+echo -e "${HIGHLIGHT}Cleaning Dwarna blockchain${DEFAULT}"
 cd dwarna-blockchain
 composer card delete --card admin@dwarna-blockchain
-echo "Installing network"
+echo -e "${HIGHLIGHT}Installing Dwarna blockchain${DEFAULT}"
 composer network install --archiveFile dwarna-blockchain.bna --card PeerAdmin@hlfv1
-echo "Starting network"
+echo -e "${HIGHLIGHT}Starting Dwarna blockchain${DEFAULT}"
 composer network start --networkName dwarna-blockchain --networkVersion 0.1.2 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file admin@dwarna-blockchain.card
-echo "Importing card"
+echo -e "${HIGHLIGHT}Importing and re-exporting administrator card${DEFAULT}"
 composer card import --file admin@dwarna-blockchain.card --card admin@dwarna-blockchain
 composer network ping -c admin@dwarna-blockchain
 composer card export -c admin@dwarna-blockchain
 cd ..
 
-# Start the multi-user REST API.
+echo -e "${HIGHLIGHT}Starting multi-user Hyperledger Composer REST API${DEFAULT}"
 composer-rest-server -c admin@dwarna-blockchain -m true &
 sleep 10s
 multiuser_rest_pid=$!
-echo "Multi-user REST API served on port 3000 ($multiuser_rest_pid)"
+echo -e "${HIGHLIGHT}Multi-user REST API served on port 3000 ($multiuser_rest_pid)${DEFAULT}"
 
-# Start the administration REST API.
+echo -e "${HIGHLIGHT}Starting administrator Hyperledger Composer REST API${DEFAULT}"
 composer-rest-server -c admin@dwarna-blockchain -p 3001 &
 sleep 10s
 admin_rest_pid=$!
-echo "Admin REST API served on port 3001 ($admin_rest_pid)"
+echo -e "${HIGHLIGHT}Admin REST API served on port 3001 ($admin_rest_pid)${DEFAULT}"
 
+echo -e "${HIGHLIGHT}Starting Composer Playground${DEFAULT}"
 composer-playground >/dev/null 2>&1 &
-echo "Composer Playground served on port 8080"
+echo -e "${HIGHLIGHT}Composer Playground served on port 8080${DEFAULT}"
