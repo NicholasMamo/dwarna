@@ -15,7 +15,7 @@ More specific `README.md` files are in each of the respective directories where 
 
 ### `biobank-plugin/`
 
-The WordPress plugin. It can be installed by placing it in the `wordpress/wp-content/plugins/` directory of your local installation.
+The WordPress plugin.
 
 ### `fabric/`
 
@@ -23,11 +23,7 @@ The Hyperledger Fabric files.
 
 ### `rest/`
 
-The REST API, runnable from `rest/main.py`.
-
-#### Command-Line Arguments
-
--p --port - The port on which to serve the REST API, defaults to 7225 (optional).
+The REST API.
 
 ### `setup/`
 
