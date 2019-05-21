@@ -1,34 +1,28 @@
 #!/bin/bash
 
+source ../variables.sh
+
 usage() {
-	echo "Usage: sh $0 [-t <user|study|general|consent>]";
+	echo -e "${HIGHLIGHT}Usage: sh $0 [-t <user|study|general|consent>]${DEFAULT}";
 }
 
 consent_tests() {
-	echo "=========="
-	echo "Consent Tests"
-	echo "=========="
+	echo -e "${HIGHLIGHT}Consent Tests${DEFAULT}"
 	python3 -m unittest tests.test_consent_management
 }
 
 user_tests() {
-	echo "=========="
-	echo "User Tests"
-	echo "=========="
+	echo -e "${HIGHLIGHT}User Tests${DEFAULT}"
 	python3 -m unittest tests.test_user_management
 }
 
 study_tests() {
-	echo "=========="
-	echo "Study Tests"
-	echo "=========="
+	echo -e "${HIGHLIGHT}Study Tests${DEFAULT}"
 	python3 -m unittest tests.test_study_management
 }
 
 general_tests() {
-	echo "=========="
-	echo "General Tests"
-	echo "=========="
+	echo -e "${HIGHLIGHT}General Tests${DEFAULT}"
 	python3 -m unittest tests.test_general_functionality
 }
 
@@ -52,7 +46,7 @@ then
 			consent_tests
 			;;
 		*)
-			echo "Invalid argument"
+			echo -e "${HIGHLIGHT}Invalid argument${DEFAULT}"
 			usage
 			;;
 	esac
@@ -62,6 +56,3 @@ else
 	general_tests
 	consent_tests
 fi
-
-# clean up
-# kill $blockchain_pid
