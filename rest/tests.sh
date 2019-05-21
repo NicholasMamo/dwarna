@@ -27,8 +27,8 @@ general_tests() {
 }
 
 # to allow relative path calls
-# parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P ) # get the script path
-# cd "$parent_path" # go to the script path
+parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P ) # get the script path
+cd "$parent_path" # go to the script path
 
 if getopts "t:" o
 then
