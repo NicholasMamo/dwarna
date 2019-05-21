@@ -39,6 +39,11 @@ from server.authorization_server import AuthorizationServer
 
 import config
 
+pid = None
+"""
+The PID of the REST server. Used in case it needs to be killed programmatically.
+"""
+
 def setup_args():
 	"""
 	Set up and get the list of command-line arguments.
@@ -132,7 +137,7 @@ def start_auth_server(port, token_expiry, connection, oauth_connection):
 	except KeyboardInterrupt:
 		httpd.server_close()
 
-def main(database, oauth_database, token_expiry=config.token_expiry):
+def main(database, oauth_database, listen_port=None, token_expiry=config.token_expiry):
 	"""
 	Establish a connection with PostgreSQL and start the server.
 
@@ -140,6 +145,8 @@ def main(database, oauth_database, token_expiry=config.token_expiry):
 	:type database: str
 	:param oauth_database: The name of the database to connect to for OAuth storage.
 	:type oauth_database: str
+	:param listen_port: The port on which to serve the REST API.
+	:type listen_port: int
 	:param token_expiry: The time taken for an access token delivered by the authorization server to expire.
 		This should only be provided in testing environments.
 		Otherwise, the configuration should be updated.
@@ -148,9 +155,11 @@ def main(database, oauth_database, token_expiry=config.token_expiry):
 
 	"""
 	Get the listen port.
+	If it was not provided as an argument, it is sought as a command-line argument.
 	"""
-	args = setup_args()
-	listen_port = args.port[0] if args.port else 7225
+	if listen_port is None:
+		args = setup_args()
+		listen_port = args.port[0] if args.port else 7225
 
 	"""
 	Get the connection details from the .pgpass file.
@@ -161,6 +170,9 @@ def main(database, oauth_database, token_expiry=config.token_expiry):
 		host, port, _, username, password = f.readline().strip().split(":")
 	connection = config.handler_connector(database=database, host=host, username=username, password=password)
 	oauth_connection = config.handler_connector(database=oauth_database, host=host, username=username, password=password, cursor_factory=cursor)
+
+	global pid
+	pid = os.getpid()
 
 	"""
 	Start the OAuth 2.0 server.
