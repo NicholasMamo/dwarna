@@ -10,6 +10,7 @@ import signal
 import sys
 import time
 import unittest
+import uuid
 
 path = sys.path[0]
 path = os.path.join(path, "../")
@@ -98,6 +99,20 @@ class BiobankTestCase(unittest.TestCase):
 
 		if main.pid is not None:
 			os.kill(main.pid, signal.SIGINT)
+
+	def _generate_study_name(self, prefix="t"):
+		"""
+		Generate a new name for a study with the goal of avoiding overlapping names in the blockchain.
+
+		The name is formed by generating a UUID and prepending it with a prefix.
+
+		:param prefix: A string to prepend to every test name.
+		:type prefix: str
+		:return: A random study ID.
+		:rtype: str
+		"""
+
+		return f"{prefix}-{str(uuid.uuid4())}"
 
 	def _get_access_token(self, scopes, user_id="admin"):
 		"""
