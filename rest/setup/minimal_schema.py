@@ -106,7 +106,7 @@ def create_schema(database):
 
 			cursor.execute("""DROP TABLE IF EXISTS studies CASCADE;""")
 			cursor.execute("""CREATE TABLE studies (
-								study_id			SERIAL 			PRIMARY KEY,
+								study_id			VARCHAR(128)		PRIMARY KEY,
 								name				VARCHAR(256),
 								description			VARCHAR(1024),
 								homepage			VARCHAR(512)
@@ -123,7 +123,7 @@ def create_schema(database):
 
 			cursor.execute("""DROP TABLE IF EXISTS studies_researchers;""")
 			cursor.execute("""CREATE TABLE studies_researchers (
-								study_id			INT				REFERENCES studies(study_id) ON DELETE CASCADE,
+								study_id			VARCHAR(128)	REFERENCES studies(study_id) ON DELETE CASCADE,
 								researcher_id		VARCHAR(64)		REFERENCES researchers(user_id) ON DELETE CASCADE
 			);""")
 

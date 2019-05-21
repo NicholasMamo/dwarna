@@ -78,7 +78,6 @@ def clear():
 
 	cursor.execute("DELETE FROM users")
 	cursor.execute("DELETE FROM studies")
-	cursor.execute("ALTER SEQUENCE studies_study_id_seq RESTART WITH 1")
 	con.commit()
 
 	cursor.close()
