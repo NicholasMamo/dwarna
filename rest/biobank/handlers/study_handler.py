@@ -54,7 +54,6 @@ class StudyHandler(PostgreSQLRouteHandler):
 			"""
 			Load, parse and sanitize the study arguments.
 			"""
-			study_id = int(study_id)
 			name, description, homepage = self._sanitize_list([ name, description, homepage ])
 
 			researchers = [] if researchers is None else researchers
@@ -84,7 +83,7 @@ class StudyHandler(PostgreSQLRouteHandler):
 				"""
 				INSERT INTO studies (
 					study_id, name, description, homepage)
-				VALUES (%d, '%s', '%s', '%s');""" % (study_id, name, description, homepage),
+				VALUES ('%s', '%s', '%s', '%s');""" % (study_id, name, description, homepage),
 			])
 
 			"""
@@ -134,7 +133,6 @@ class StudyHandler(PostgreSQLRouteHandler):
 			"""
 			Load, parse and sanitize the study arguments.
 			"""
-			study_id = int(study_id)
 			name, description, homepage = self._sanitize_list([ name, description, homepage ])
 
 			researchers = [] if researchers is None else researchers
@@ -161,7 +159,7 @@ class StudyHandler(PostgreSQLRouteHandler):
 					"description" = '%s',
 					"homepage" = '%s'
 				WHERE
-					"study_id" = %d;""" % (name, description, homepage, study_id),
+					"study_id" = '%s';""" % (name, description, homepage, study_id),
 			])
 
 			"""
@@ -204,11 +202,6 @@ class StudyHandler(PostgreSQLRouteHandler):
 
 		try:
 			"""
-			Load, parse and sanitize the study arguments.
-			"""
-			study_id = int(study_id)
-
-			"""
 			Validate the data.
 			"""
 			if not self._study_exists(study_id):
@@ -221,7 +214,7 @@ class StudyHandler(PostgreSQLRouteHandler):
 				"""
 				DELETE FROM studies
 				WHERE
-					"study_id" = %d;""" % (study_id, ),
+					"study_id" = '%s';""" % (study_id, ),
 			])
 
 			response.status_code = 200
@@ -441,7 +434,6 @@ class StudyHandler(PostgreSQLRouteHandler):
 
 		response = Response()
 		try:
-			study_id = int(study_id)
 
 			if not self._study_exists(study_id):
 				raise study_exceptions.StudyDoesNotExistException()
@@ -450,7 +442,7 @@ class StudyHandler(PostgreSQLRouteHandler):
 				SELECT *
 				FROM studies
 				WHERE
-					"study_id" = %d
+					"study_id" = '%s'
 			""" % (study_id))
 
 			researchers = self._get_study_researchers(study_id)
@@ -479,7 +471,7 @@ class StudyHandler(PostgreSQLRouteHandler):
 		Link the given researchers, identified by their username, with the study.
 
 		:param study_id: The unique ID of the study.
-		:type study_id: int
+		:type study_id: str
 		:param researchers: The list of researchers to link with the study.
 			Each researcher is represented by their username.
 		:type researchers: list
@@ -498,7 +490,7 @@ class StudyHandler(PostgreSQLRouteHandler):
 			"""
 			INSERT INTO studies_researchers(
 				study_id, researcher_id)
-			VALUES (%d, '%s');""" % (study_id, researcher)
+			VALUES ('%s', '%s');""" % (study_id, researcher)
 		for researcher in researchers ])
 
 	def _unlink_researchers(self, study_id):
@@ -506,7 +498,7 @@ class StudyHandler(PostgreSQLRouteHandler):
 		Unlink all researchers associated with the study identified by the given ID.
 
 		:param study_id: The unique ID of the study.
-		:type study_id: int
+		:type study_id: str
 
 		:raises: :class:`handlers.exceptions.study_exceptions.StudyDoesNotExistException`
 		"""
@@ -518,5 +510,5 @@ class StudyHandler(PostgreSQLRouteHandler):
 			"""
 			DELETE FROM studies_researchers
 			WHERE
-				"study_id" = %d
+				"study_id" = '%s'
 			""" % study_id, ])

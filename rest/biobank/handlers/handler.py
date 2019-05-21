@@ -269,7 +269,7 @@ class PostgreSQLRouteHandler(RouteHandler):
 		Get a list of researchers associated with the study identified by the given ID.
 
 		:param study_id: The unique ID of the study.
-		:type study_id: int
+		:type study_id: str
 
 		:return: A list of researcher objects.
 		:rtype: list
@@ -284,7 +284,7 @@ class PostgreSQLRouteHandler(RouteHandler):
 			SELECT researchers.*
 			FROM researchers, studies_researchers
 			WHERE
-				studies_researchers."study_id" = %d AND
+				studies_researchers."study_id" = '%s' AND
 				studies_researchers."researcher_id" = researchers."user_id"
 		""" % (study_id, ))
 
@@ -293,7 +293,7 @@ class PostgreSQLRouteHandler(RouteHandler):
 		Check whether a study with the given ID exists.
 
 		:param study_id: The study's ID.
-		:type study_id: int
+		:type study_id: str
 
 		:return: A boolean indicating whether the study exists.
 		:rtype: bool
@@ -303,7 +303,7 @@ class PostgreSQLRouteHandler(RouteHandler):
 			SELECT *
 			FROM studies
 			WHERE
-				study_id = '%d'
+				study_id = '%s'
 			""" % (study_id)
 		)
 		return exists
@@ -315,7 +315,7 @@ class PostgreSQLRouteHandler(RouteHandler):
 		This operation is inclusive.
 
 		:param study_id: The study's ID.
-		:type study_id: int
+		:type study_id: str
 
 		:return: A boolean indicating whether the study is active.
 		:rtype: bool
@@ -327,7 +327,7 @@ class PostgreSQLRouteHandler(RouteHandler):
 			SELECT start_date, end_date
 			FROM studies
 			WHERE
-				study_id = '%d'
+				study_id = '%s'
 			""" % (study_id)
 		)
 
@@ -344,7 +344,7 @@ class PostgreSQLRouteHandler(RouteHandler):
 		Get a list of attributes associated with the study identified by the given ID.
 
 		:param study_id: The unique ID of the study.
-		:type study_id: int
+		:type study_id: str
 
 		:return: A list of attribute objects.
 		:rtype: list
@@ -359,7 +359,7 @@ class PostgreSQLRouteHandler(RouteHandler):
 			SELECT attributes.*
 			FROM attributes, studies_attributes
 			WHERE
-				studies_attributes."study_id" = %d AND
+				studies_attributes."study_id" = '%s' AND
 				studies_attributes."attribute_id" = attributes."attribute_id"
 		""" % (study_id, ))
 
