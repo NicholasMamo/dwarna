@@ -6,8 +6,16 @@ The REST API is used by the WordPress plugin to store biobanking-related informa
 
 ## Starting the REST API
 
-The REST API can be run from `rest/main.py`.
+The REST API can be run using `python3 rest/main.py`.
 
-#### Command-Line Arguments
+### Command-Line Arguments
 
 -p --port - The port on which to serve the REST API, defaults to 7225 (optional).
+
+## Unit Tests
+
+The unit tests can be run using `./tests.sh`. It might be necessary to make this script executable using `chmod +x tests.sh`.
+
+### Command-Line Arguments
+
+-t - The test to run, one of _user_, _study_, _general_, _consent_. If no argument is given, all tests are run (optional).
