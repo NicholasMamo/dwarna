@@ -85,7 +85,7 @@ class ConsentHandler(PostgreSQLRouteHandler):
 		Set the consent of a participant.
 
 		:param study_id: The unique ID of the study.
-		:type study_id: int
+		:type study_id: str
 		:param username: The unique username of the participant.
 		:type username: str
 
@@ -96,7 +96,6 @@ class ConsentHandler(PostgreSQLRouteHandler):
 		response = Response()
 
 		try:
-			study_id = int(study_id)
 			username = self._sanitize(username)
 
 			"""
@@ -131,7 +130,7 @@ class ConsentHandler(PostgreSQLRouteHandler):
 		Withdraw the consent of a participant.
 
 		:param study_id: The unique ID of the study.
-		:type study_id: int
+		:type study_id: str
 		:param username: The unique username of the participant.
 		:type username: str
 
@@ -142,7 +141,6 @@ class ConsentHandler(PostgreSQLRouteHandler):
 		response = Response()
 
 		try:
-			study_id = int(study_id)
 			username = self._sanitize(username)
 
 			self._set_consent(study_id, username, False, *args, **kwargs)
@@ -169,7 +167,7 @@ class ConsentHandler(PostgreSQLRouteHandler):
 		Get a list of participant which have given their consent to the given study.
 
 		:param study_id: The unique ID of the study.
-		:type study_id: int
+		:type study_id: str
 
 		:return: A response with any errors that may arise.
 			The body contains the studies.
@@ -180,7 +178,6 @@ class ConsentHandler(PostgreSQLRouteHandler):
 
 		response = Response()
 
-		study_id = int(study_id)
 
 		try:
 			if not self._study_exists(study_id):
@@ -251,7 +248,7 @@ class ConsentHandler(PostgreSQLRouteHandler):
 			"""
 			studies = []
 			for row in rows:
-				study_id = int(row["study_id"])
+				study_id = row["study_id"]
 
 				consent = self._blockchain_connector.has_consent(study_id, username, *args, **kwargs)
 				if consent:
@@ -285,7 +282,7 @@ class ConsentHandler(PostgreSQLRouteHandler):
 		Check whether the participant with the given username has consented to the use of his data in the given study.
 
 		:param study_id: The unique ID of the study.
-		:type study_id: int
+		:type study_id: str
 		:param username: The unique username of the participant.
 		:type username: str
 
@@ -297,7 +294,6 @@ class ConsentHandler(PostgreSQLRouteHandler):
 		response = Response()
 
 		try:
-			study_id = int(study_id)
 			username = self._sanitize(username)
 
 			if not self._study_exists(study_id):
@@ -408,7 +404,7 @@ class ConsentHandler(PostgreSQLRouteHandler):
 		However, consent cannot be changed for inactive studies.
 
 		:param study_id: The unique ID of the study.
-		:type study_id: int
+		:type study_id: str
 		:param username: The unique username of the participant.
 		:type username: str
 		:param consent: The consent status.
