@@ -17,9 +17,9 @@ import psycopg2
 import minimal_schema
 import unittest
 
-from environment import *
-from models import *
-from test import SchemaTestCase
+from .environment import *
+from .models import *
+from .test import SchemaTestCase
 
 class UserTests(SchemaTestCase):
 	"""
@@ -31,244 +31,616 @@ class UserTests(SchemaTestCase):
 		Test user data.
 		"""
 
-		print()
-		print("User tests")
-		print("----------")
-
-		self.clear()
-
-		alice = Participant("al")
-		john = Participant("jo")
+		clear()
+		alice = Participant("alice")
 		biobanker = Biobanker("biobanker")
-		scientist = Researcher("re")
+		researcher = Researcher("researcher")
 
 		"""
 		The database should be empty by now
 		"""
-		self._cursor.execute("""SELECT * FROM users""")
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				users""")
 		self.assertEqual(self._cursor.rowcount, 0)
 
 		"""
 		Therefore biobankers, researchers and participants cannot be inserted
 		Each time, an IntegrityError should be raised because the ForeignKey constraint is not respected
 		"""
-		self.assert_fail_sql("""INSERT INTO biobankers (
-			user_id)
-			VALUES ('%s');""" % biobanker.get_username(), "IntegrityError")
-		self.assert_fail_sql("""INSERT INTO researchers (
-			user_id)
-			VALUES ('%s');""" % scientist.get_username(), "IntegrityError")
-		self.assert_fail_sql("""INSERT INTO participants (
-			user_id)
-			VALUES ('%s');""" % alice.get_username(), "IntegrityError")
+		self.assert_fail_sql("""
+			INSERT INTO
+				biobankers (user_id)
+			VALUES
+				('%s');
+			""" % biobanker.get_username(), "IntegrityError")
+		self.assert_fail_sql("""
+			INSERT INTO
+				researchers (user_id)
+			VALUES
+				('%s');
+		""" % researcher.get_username(), "IntegrityError")
+		self.assert_fail_sql("""
+			INSERT INTO
+				participants (user_id)
+			VALUES
+				('%s');
+		""" % alice.get_username(), "IntegrityError")
 
+	def test_user_type_enumeration(self):
 		"""
-		The user role is an enumeration, and it cannot be violated
-		This is incorrect data, hence the DataError violation
+		The user role is an enumeration, and it cannot be violated.
+		This is incorrect data, hence the DataError violation.
 		"""
-		self.assert_fail_sql("""INSERT INTO users (
-			user_id, role)
-			VALUES ('t_id', 'ADMIN');""", "DataError")
 
-		"""
-		There may be no duplicate users
-		This forces an IntegrityError
-		"""
-		self._cursor.execute("""INSERT INTO users (
-			user_id, role)
-			VALUES (%s);""" % alice.get_insertion_string())
-		self.assert_fail_sql("""INSERT INTO users (
-			user_id, role)
-			VALUES (%s);""" % alice.get_insertion_string(), "IntegrityError")
+		clear()
 
-		"""
-		Biobankers, researchers and participants must be unique
-		Otherwise, an IntegrityError is raised
-		"""
-		self._cursor.execute("""INSERT INTO users (
-			user_id, role)
-			VALUES (%s);""" % alice.get_insertion_string())
-		self._cursor.execute("""INSERT INTO biobankers (
-			user_id)
-			VALUES ('%s');""" % alice.get_username())
-		self.assert_fail_sql("""INSERT INTO biobankers (
-			user_id)
-			VALUES ('%s');""" % alice.get_username(), "IntegrityError")
+		self.assert_fail_sql("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				('t_id', 'ADMIN');""", "DataError")
 
-		self._cursor.execute("""INSERT INTO users (
-			user_id, role)
-			VALUES (%s);""" % alice.get_insertion_string())
-		self._cursor.execute("""INSERT INTO researchers (
-			user_id)
-			VALUES ('%s');""" % alice.get_username())
-		self.assert_fail_sql("""INSERT INTO researchers (
-			user_id)
-			VALUES ('%s');""" % alice.get_username(), "IntegrityError")
-
-		self._cursor.execute("""INSERT INTO users (
-			user_id, role)
-			VALUES (%s);""" % alice.get_insertion_string())
-		self._cursor.execute("""INSERT INTO participants (
-			user_id)
-			VALUES ('%s');""" % alice.get_username())
-		self.assert_fail_sql("""INSERT INTO participants (
-			user_id)
-			VALUES ('%s');""" % alice.get_username(), "IntegrityError")
-
-		self.clear()
-
+	def test_inserting_duplicate_user(self):
 		"""
-		Insert a single user into the database
+		There may be no duplicate users.
+		This forces an IntegrityError.
 		"""
-		self._cursor.execute("""INSERT INTO users (
-			user_id, role)
-			VALUES (%s);""" % alice.get_insertion_string())
-		self._cursor.execute("""SELECT * FROM users""")
-		self.assertEqual(self._cursor.rowcount, 1)
 
+		clear()
+		alice = Participant("alice")
+
+		self._cursor.execute("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				(%s);
+		""" % alice.get_insertion_string())
+
+		self.assert_fail_sql("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				(%s);
+		""" % alice.get_insertion_string(), "IntegrityError")
+
+	def test_inserting_duplicate_biobanker(self):
 		"""
-		Delete all users
+		Biobankers must be unique.
+		Otherwise, an IntegrityError is raised.
 		"""
-		self._cursor.execute("""DELETE FROM users
-			WHERE user_id = '%s'""" % alice.get_username())
-		self._cursor.execute("""SELECT *
-			FROM users""")
+
+		clear()
+		biobanker = Biobanker("biobanker")
+
+		self._cursor.execute("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				(%s);
+		""" % biobanker.get_insertion_string())
+		self._cursor.execute("""
+			INSERT INTO
+				biobankers (user_id)
+			VALUES
+				('%s');
+		""" % biobanker.get_username())
+		self.assert_fail_sql("""
+			INSERT INTO
+				biobankers (user_id)
+			VALUES
+				('%s');
+		""" % biobanker.get_username(), "IntegrityError")
+
+	def test_inserting_duplicate_researcher(self):
+		"""
+		Researchers must be unique.
+		Otherwise, an IntegrityError is raised.
+		"""
+
+		clear()
+		researcher = Researcher("researcher")
+
+		self._cursor.execute("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				(%s);
+		""" % researcher.get_insertion_string())
+		self._cursor.execute("""
+			INSERT INTO
+				researchers (user_id)
+			VALUES
+				('%s');
+		""" % researcher.get_username())
+		self.assert_fail_sql("""
+			INSERT INTO
+				researchers (user_id)
+			VALUES
+				('%s');
+		""" % researcher.get_username(), "IntegrityError")
+
+	def test_inserting_duplicate_participant(self):
+		"""
+		Participants must be unique.
+		Otherwise, an IntegrityError is raised.
+		"""
+
+		clear()
+		alice = Participant("alice")
+
+		self._cursor.execute("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				(%s);
+		""" % alice.get_insertion_string())
+		self._cursor.execute("""
+			INSERT INTO
+				participants (user_id)
+			VALUES
+				('%s');
+		""" % alice.get_username())
+		self.assert_fail_sql("""
+			INSERT INTO
+				participants (user_id)
+			VALUES
+				('%s');
+		""" % alice.get_username(), "IntegrityError")
+
+	def test_insert_user(self):
+		"""
+		Insert a single user into the database.
+		"""
+
+		clear()
+		alice = Participant("alice")
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				users""")
 		self.assertEqual(self._cursor.rowcount, 0)
 
-		"""
-		Insert a biobanker into the database
-		"""
-		self._cursor.execute("""INSERT INTO users (
-			user_id, role)
-			VALUES (%s);""" % biobanker.get_insertion_string())
-		self._cursor.execute("""INSERT INTO biobankers (
-			user_id)
-			VALUES ('%s');""" % biobanker.get_username())
-		self._cursor.execute("""SELECT *
-			FROM users, biobankers
-			WHERE users.user_id = biobankers.user_id""")
+		self._cursor.execute("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				(%s);
+		""" % alice.get_insertion_string())
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				users""")
 		self.assertEqual(self._cursor.rowcount, 1)
 
+	def test_delete_user(self):
 		"""
-		Remove a biobanker from the users table
+		Delete a user from the database.
 		"""
-		self._cursor.execute("""DELETE FROM users
-			WHERE user_id = '%s'""" % biobanker.get_username())
-		self._cursor.execute("""SELECT *
-			FROM biobankers""")
+
+		clear()
+		alice = Participant("alice")
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				users""")
 		self.assertEqual(self._cursor.rowcount, 0)
 
-		"""
-		Insert a biobanker into the database
-		"""
-		self._cursor.execute("""INSERT INTO users (
-			user_id, role)
-			VALUES (%s);""" % biobanker.get_insertion_string())
-		self._cursor.execute("""INSERT INTO biobankers (
-			user_id)
-			VALUES ('%s');""" % biobanker.get_username())
-		self._cursor.execute("""SELECT *
-			FROM users, biobankers
-			WHERE users.user_id = biobankers.user_id""")
+		self._cursor.execute("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				(%s);
+		""" % alice.get_insertion_string())
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				users""")
 		self.assertEqual(self._cursor.rowcount, 1)
 
-		"""
-		Remove a biobanker from the biobankers table
-		"""
-		self._cursor.execute("""DELETE FROM biobankers
-			WHERE user_id = '%s'""" % biobanker.get_username())
-		self._cursor.execute("""SELECT *
-			FROM users""")
+		self._cursor.execute("""
+			DELETE FROM
+				users
+			WHERE
+				user_id = '%s'
+		""" % alice.get_username())
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				users""")
 		self.assertEqual(self._cursor.rowcount, 0)
 
+	def test_delete_all_users(self):
 		"""
-		Insert a researcher into the database
+		Delete all users from the database.
 		"""
-		self._cursor.execute("""INSERT INTO users (
-			user_id, role)
-			VALUES (%s);""" % scientist.get_insertion_string())
-		self._cursor.execute("""INSERT INTO researchers (
-			user_id)
-			VALUES ('%s');""" % scientist.get_username())
-		self._cursor.execute("""SELECT *
-			FROM users, researchers
-			WHERE users.user_id = researchers.user_id""")
-		self.assertEqual(self._cursor.rowcount, 1)
 
-		"""
-		Remove a researcher from the users table
-		"""
-		self._cursor.execute("""DELETE FROM users
-			WHERE user_id = '%s'""" % scientist.get_username())
-		self._cursor.execute("""SELECT *
-			FROM researchers""")
+		clear()
+		alice = Participant("alice")
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				users""")
 		self.assertEqual(self._cursor.rowcount, 0)
 
-		"""
-		Insert a researcher into the database
-		"""
-		self._cursor.execute("""INSERT INTO users (
-			user_id, role)
-			VALUES (%s);""" % scientist.get_insertion_string())
-		self._cursor.execute("""INSERT INTO researchers (
-			user_id)
-			VALUES ('%s');""" % scientist.get_username())
-		self._cursor.execute("""SELECT *
-			FROM users, researchers
-			WHERE users.user_id = researchers.user_id""")
+		self._cursor.execute("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				(%s);
+		""" % alice.get_insertion_string())
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				users""")
 		self.assertEqual(self._cursor.rowcount, 1)
 
-		"""
-		Remove a researcher from the researchers table
-		"""
-		self._cursor.execute("""DELETE FROM researchers
-			WHERE user_id = '%s'""" % scientist.get_username())
-		self._cursor.execute("""SELECT *
-			FROM users""")
+		self._cursor.execute("""
+			DELETE FROM
+				users
+			WHERE TRUE;
+		""")
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				users""")
 		self.assertEqual(self._cursor.rowcount, 0)
 
+	def test_insert_biobanker(self):
 		"""
-		Insert a participant into the database
+		Insert a biobanker into the database.
 		"""
-		self._cursor.execute("""INSERT INTO users (
-			user_id, role)
-			VALUES (%s);""" % alice.get_insertion_string())
-		self._cursor.execute("""INSERT INTO participants (
-			user_id)
-			VALUES ('%s');""" % alice.get_username())
-		self._cursor.execute("""SELECT *
-			FROM users, participants
-			WHERE users.user_id = participants.user_id""")
+
+		clear()
+		biobanker = Biobanker("biobanker")
+
+		self._cursor.execute("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				(%s);
+		""" % biobanker.get_insertion_string())
+		self._cursor.execute("""
+			INSERT INTO
+				biobankers (user_id)
+			VALUES
+				('%s');
+		""" % biobanker.get_username())
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				users, biobankers
+			WHERE
+				users.user_id = biobankers.user_id""")
 		self.assertEqual(self._cursor.rowcount, 1)
 
+	def test_remove_biobanker_from_users(self):
 		"""
-		Remove a participant from the users table
+		Remove a biobanker from the users table.
+		The user should also be removed from the biobankers table at the same time.
 		"""
-		self._cursor.execute("""DELETE FROM users
-			WHERE user_id = '%s'""" % alice.get_username())
-		self._cursor.execute("""SELECT *
-			FROM participants""")
+
+		clear()
+		biobanker = Biobanker("biobanker")
+
+		self._cursor.execute("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				(%s);
+		""" % biobanker.get_insertion_string())
+		self._cursor.execute("""
+			INSERT INTO
+				biobankers (user_id)
+			VALUES
+				('%s');
+		""" % biobanker.get_username())
+
+		self._cursor.execute("""
+			DELETE FROM
+				users
+			WHERE
+				user_id = '%s'""" % biobanker.get_username())
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				biobankers""")
 		self.assertEqual(self._cursor.rowcount, 0)
 
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				biobankers""")
+		self.assertEqual(self._cursor.rowcount, 0)
+
+	def test_remove_biobanker_from_biobankers(self):
 		"""
-		Insert a participant into the database
+		Remove a biobanker from the biobankers table.
+		The user should also be removed from the users table at the same time.
 		"""
-		self._cursor.execute("""INSERT INTO users (
-			user_id, role)
-			VALUES (%s);""" % alice.get_insertion_string())
-		self._cursor.execute("""INSERT INTO participants (
-			user_id)
-			VALUES ('%s');""" % alice.get_username())
-		self._cursor.execute("""SELECT *
-			FROM users, participants
-			WHERE users.user_id = participants.user_id""")
+
+		clear()
+		biobanker = Biobanker("biobanker")
+
+		self._cursor.execute("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				(%s);
+		""" % biobanker.get_insertion_string())
+		self._cursor.execute("""
+			INSERT INTO
+				biobankers (user_id)
+			VALUES
+				('%s');
+		""" % biobanker.get_username())
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				users, biobankers
+			WHERE
+				users.user_id = biobankers.user_id""")
 		self.assertEqual(self._cursor.rowcount, 1)
 
+		self._cursor.execute("""
+			DELETE FROM
+				biobankers
+			WHERE
+				user_id = '%s'
+		""" % biobanker.get_username())
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				biobankers""")
+		self.assertEqual(self._cursor.rowcount, 0)
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				users""")
+		self.assertEqual(self._cursor.rowcount, 0)
+
+	def test_insert_researcher(self):
 		"""
-		Remove a participant from the participants table
+		Insert a researcher into the database.
 		"""
-		self._cursor.execute("""DELETE FROM users
-			WHERE user_id = '%s'""" % alice.get_username())
-		self._cursor.execute("""SELECT *
-			FROM users""")
+
+		clear()
+		researcher = Researcher("researcher")
+
+		self._cursor.execute("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				(%s);
+		""" % researcher.get_insertion_string())
+		self._cursor.execute("""
+			INSERT INTO
+				researchers (user_id)
+			VALUES
+				('%s');
+		""" % researcher.get_username())
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				users, researchers
+			WHERE
+				users.user_id = researchers.user_id""")
+		self.assertEqual(self._cursor.rowcount, 1)
+
+	def test_remove_researcher_from_users(self):
+		"""
+		Remove a researcher from the users table.
+		The user should also be removed from the researchers table at the same time.
+		"""
+
+		clear()
+		researcher = Researcher("researcher")
+
+		self._cursor.execute("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				(%s);
+		""" % researcher.get_insertion_string())
+		self._cursor.execute("""
+			INSERT INTO
+				researchers (user_id)
+			VALUES
+				('%s');
+		""" % researcher.get_username())
+
+		self._cursor.execute("""
+			DELETE FROM
+				users
+			WHERE
+				user_id = '%s'""" % researcher.get_username())
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				researchers""")
+		self.assertEqual(self._cursor.rowcount, 0)
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				researchers""")
+		self.assertEqual(self._cursor.rowcount, 0)
+
+	def test_remove_researcher_from_researchers(self):
+		"""
+		Remove a researcher from the researchers table.
+		The user should also be removed from the users table at the same time.
+		"""
+
+		clear()
+		researcher = Researcher("researcher")
+
+		self._cursor.execute("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				(%s);
+		""" % researcher.get_insertion_string())
+		self._cursor.execute("""
+			INSERT INTO
+				researchers (user_id)
+			VALUES
+				('%s');
+		""" % researcher.get_username())
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				users, researchers
+			WHERE
+				users.user_id = researchers.user_id""")
+		self.assertEqual(self._cursor.rowcount, 1)
+
+		self._cursor.execute("""
+			DELETE FROM
+				researchers
+			WHERE
+				user_id = '%s'
+		""" % researcher.get_username())
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				researchers""")
+		self.assertEqual(self._cursor.rowcount, 0)
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				users""")
+		self.assertEqual(self._cursor.rowcount, 0)
+
+	def test_insert_participant(self):
+		"""
+		Insert a participant into the database.
+		"""
+
+		clear()
+		participant = Participant("alice")
+
+		self._cursor.execute("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				(%s);
+		""" % participant.get_insertion_string())
+		self._cursor.execute("""
+			INSERT INTO
+				participants (user_id)
+			VALUES
+				('%s');
+		""" % participant.get_username())
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				users, participants
+			WHERE
+				users.user_id = participants.user_id""")
+		self.assertEqual(self._cursor.rowcount, 1)
+
+	def test_remove_participant_from_users(self):
+		"""
+		Remove a participant from the users table.
+		The user should also be removed from the participants table at the same time.
+		"""
+
+		clear()
+		participant = Participant("alice")
+
+		self._cursor.execute("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				(%s);
+		""" % participant.get_insertion_string())
+		self._cursor.execute("""
+			INSERT INTO
+				participants (user_id)
+			VALUES
+				('%s');
+		""" % participant.get_username())
+
+		self._cursor.execute("""
+			DELETE FROM
+				users
+			WHERE
+				user_id = '%s'""" % participant.get_username())
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				participants""")
+		self.assertEqual(self._cursor.rowcount, 0)
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				participants""")
+		self.assertEqual(self._cursor.rowcount, 0)
+
+	def test_remove_participant_from_participants(self):
+		"""
+		Remove a participant from the participants table.
+		The user should also be removed from the users table at the same time.
+		"""
+
+		clear()
+		participant = Participant("alice")
+
+		self._cursor.execute("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				(%s);
+		""" % participant.get_insertion_string())
+		self._cursor.execute("""
+			INSERT INTO
+				participants (user_id)
+			VALUES
+				('%s');
+		""" % participant.get_username())
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				users, participants
+			WHERE
+				users.user_id = participants.user_id""")
+		self.assertEqual(self._cursor.rowcount, 1)
+
+		self._cursor.execute("""
+			DELETE FROM
+				participants
+			WHERE
+				user_id = '%s'
+		""" % participant.get_username())
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				participants""")
+		self.assertEqual(self._cursor.rowcount, 0)
+
+		self._cursor.execute("""
+			SELECT *
+			FROM
+				users""")
 		self.assertEqual(self._cursor.rowcount, 0)
