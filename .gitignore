@@ -13,4 +13,4 @@ fabric/fabric-scripts/hlfv12/composer/backup*
 
 # REST API changing files
 
-rest/tests/cards/*
+rest/tests/cards

@@ -39,6 +39,7 @@ class ConsentManagementTest(BiobankTestCase):
 	_study_ids = []
 
 	@classmethod
+	@BiobankTestCase.isolated_test
 	def setUpClass(self):
 		"""
 		Connect with the database, create the schema and start the server.
@@ -46,8 +47,6 @@ class ConsentManagementTest(BiobankTestCase):
 		"""
 
 		super(ConsentManagementTest, self).setUpClass()
-
-		clear()
 
 		self = ConsentManagementTest()
 		token = self._get_access_token(

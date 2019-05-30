@@ -28,12 +28,12 @@ class GeneralFunctionalityTest(BiobankTestCase):
 	Test the general functionality of the biobank backend.
 	"""
 
+	@BiobankTestCase.isolated_test
 	def test_access_token(self):
 		"""
 		Perform general tests with requests.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_participant"])["access_token"]
 
 		"""
@@ -42,12 +42,11 @@ class GeneralFunctionalityTest(BiobankTestCase):
 		response = self.send_request("POST", "participant", { "username": "nick" }, token)
 		self.assertEqual(response.status_code, 200)
 
+	@BiobankTestCase.isolated_test
 	def test_invalid_token(self):
 		"""
 		Make a request with an incorrect access token.
 		"""
-
-		clear()
 
 		"""
 		Get a token and invalidate it by changing a single character.
@@ -65,12 +64,12 @@ class GeneralFunctionalityTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 401)
 		self.assertEqual(body["exception"], oauth2.error.AccessTokenNotFound.__name__)
 
+	@BiobankTestCase.isolated_test
 	def test_argument_checks(self):
 		"""
 		Test the argument checks.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_participant"])["access_token"]
 
 		response = self.send_request("POST", "participant", { "name": "nick" }, token)
@@ -78,17 +77,18 @@ class GeneralFunctionalityTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 400)
 		self.assertEqual(body["exception"], request_exceptions.MissingArgumentException.__name__)
 
+	@BiobankTestCase.isolated_test
 	def test_method_checks(self):
 		"""
 		Test the method checks.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_participant"])["access_token"]
 
 		response = self.send_request("GET", "create_participant", { "username": "nick" }, token)
 		self.assertEqual(response.status_code, 405)
 
+	@BiobankTestCase.isolated_test
 	def test_scopes(self):
 		"""
 		Test that the scope permissions work.
@@ -108,12 +108,11 @@ class GeneralFunctionalityTest(BiobankTestCase):
 		response = self.send_request("POST", "participant", { "username": "chri" }, token)
 		self.assertEqual(response.status_code, 403)
 
+	@BiobankTestCase.isolated_test
 	def test_sanitation(self):
 		"""
 		Test the escaping functionality.
 		"""
-
-		clear()
 
 		token = self._get_access_token(["create_study", "view_study"])["access_token"]
 
@@ -147,6 +146,7 @@ class GeneralTimedFunctionalityTest(BiobankTestCase):
 		main.main(TEST_DATABASE, TEST_OAUTH_DATABASE, PORT, 1)
 		time.sleep(2) # NOTE: Needed to give time for other test servers to shutdown, or for this one to start
 
+	@BiobankTestCase.isolated_test
 	def test_short_tokens(self):
 		"""
 		Test token expiry.

@@ -12,6 +12,8 @@ import time
 import unittest
 import uuid
 
+from functools import wraps
+
 path = sys.path[0]
 path = os.path.join(path, "../")
 if path not in sys.path:
@@ -99,6 +101,33 @@ class BiobankTestCase(unittest.TestCase):
 
 		if main.pid is not None:
 			os.kill(main.pid, signal.SIGINT)
+
+	def isolated_test(test):
+		"""
+		Perform the test in isolation.
+		In essence, this means that the data is cleared from the database.
+
+		:param test: The test to perform.
+		:type test: function
+		"""
+
+		@wraps(test)
+
+		def wrapper(*args):
+			"""
+			The wrapper removes all data from the database.
+			"""
+
+			clear()
+			test(*args)
+
+		return wrapper
+
+	"""
+	Make the isolated test a static method.
+	NOTE: This should be done after the methods in this class that use this decorator have already been defined.
+	"""
+	isolated_test = staticmethod(isolated_test)
 
 	def _generate_study_name(self, prefix="t"):
 		"""

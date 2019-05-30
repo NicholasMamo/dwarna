@@ -27,12 +27,12 @@ class StudyManagementTest(BiobankTestCase):
 	Test the study management functionality of the biobank backend.
 	"""
 
+	@BiobankTestCase.isolated_test
 	def test_create_study_with_missing_arguments(self):
 		"""
 		Test creating a study without all the arguments.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study"])["access_token"]
 
 		"""
@@ -43,12 +43,12 @@ class StudyManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 400)
 		self.assertEqual(body["exception"], request_exceptions.MissingArgumentException.__name__)
 
+	@BiobankTestCase.isolated_test
 	def test_create_study(self):
 		"""
 		Normal study creation.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study"])["access_token"]
 		study_id = self._generate_study_name()
 
@@ -62,12 +62,12 @@ class StudyManagementTest(BiobankTestCase):
 		body = response.json()
 		self.assertEqual(response.status_code, 200)
 
+	@BiobankTestCase.isolated_test
 	def test_create_duplicate_study(self):
 		"""
 		Test creating a study that already exists.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study"])["access_token"]
 		study_id = self._generate_study_name()
 
@@ -92,12 +92,12 @@ class StudyManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], study_exceptions.StudyExistsException.__name__)
 
+	@BiobankTestCase.isolated_test
 	def test_create_study_with_inexistent_researchers(self):
 		"""
 		Test creating studies with inexistent researchers.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study"])["access_token"]
 		study_id = self._generate_study_name()
 
@@ -112,12 +112,12 @@ class StudyManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], user_exceptions.ResearcherDoesNotExistException.__name__)
 
+	@BiobankTestCase.isolated_test
 	def test_create_study_with_researchers(self):
 		"""
 		Test creating studies with researchers.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study", "create_researcher"])["access_token"]
 		study_id = self._generate_study_name()
 
@@ -134,12 +134,12 @@ class StudyManagementTest(BiobankTestCase):
 		body = response.json()
 		self.assertEqual(response.status_code, 200)
 
+	@BiobankTestCase.isolated_test
 	def test_get_study_without_id(self):
 		"""
 		Test getting a study without providing an ID.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study", "view_study"])["access_token"]
 
 		response = self.send_request("GET", "study", { }, token)
@@ -147,12 +147,12 @@ class StudyManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 400)
 		self.assertEqual(body["exception"], request_exceptions.MissingArgumentException.__name__)
 
+	@BiobankTestCase.isolated_test
 	def test_get_inexistent_study(self):
 		"""
 		Test getting a study that does not exist.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study", "view_study"])["access_token"]
 		study_id = self._generate_study_name()
 
@@ -161,12 +161,12 @@ class StudyManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], study_exceptions.StudyDoesNotExistException.__name__)
 
+	@BiobankTestCase.isolated_test
 	def test_get_single_study(self):
 		"""
 		Create sample data.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study", "view_study", "create_researcher"])["access_token"]
 		study_id = self._generate_study_name()
 
@@ -188,12 +188,12 @@ class StudyManagementTest(BiobankTestCase):
 		self.assertEqual(body["study"]["study_id"], study_id)
 		self.assertEqual(len(body["researchers"]), 2)
 
+	@BiobankTestCase.isolated_test
 	def test_get_list_of_studies(self):
 		"""
 		Test study listings.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study", "view_study"])["access_token"]
 
 		study_ids = []
@@ -262,12 +262,12 @@ class StudyManagementTest(BiobankTestCase):
 		self.assertEqual(len(body), 0)
 		self.assertEqual(total, 12)
 
+	@BiobankTestCase.isolated_test
 	def test_study_pagination(self):
 		"""
 		Test pagination of studies.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study", "view_study"])["access_token"]
 
 		study_ids = []
@@ -323,12 +323,12 @@ class StudyManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(len(body), 2)
 
+	@BiobankTestCase.isolated_test
 	def test_search_studies(self):
 		"""
 		Test searches for studies.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study", "view_study"])["access_token"]
 		study_ids = [
 			self._generate_study_name(),
@@ -408,12 +408,12 @@ class StudyManagementTest(BiobankTestCase):
 		self.assertEqual(len(body), 2)
 		self.assertEqual(response.json()["total"], 12)
 
+	@BiobankTestCase.isolated_test
 	def test_get_studies_by_researcher_without_researcher(self):
 		"""
 		Test filtering studies by researchers without providing a researcher.
 		"""
 
-		clear()
 		token = self._get_access_token(["view_study"])["access_token"]
 
 		response = self.send_request("GET", "get_studies_by_researcher", { }, token)
@@ -421,12 +421,12 @@ class StudyManagementTest(BiobankTestCase):
 		body = response.json()
 		self.assertEqual(body["exception"], request_exceptions.MissingArgumentException.__name__)
 
+	@BiobankTestCase.isolated_test
 	def test_get_studies_by_researcher(self):
 		"""
 		Test filtering studies by reseachers.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study", "update_study", "view_study", "create_researcher"])["access_token"]
 
 		"""
@@ -483,12 +483,12 @@ class StudyManagementTest(BiobankTestCase):
 		body = response.json()["data"]
 		self.assertEqual(len(body), 3)
 
+	@BiobankTestCase.isolated_test
 	def test_limit_studies_by_researcher(self):
 		"""
 		Test limiting the number of studies fetched by researcher.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study", "update_study", "view_study", "create_researcher"])["access_token"]
 		study_ids = [
 			self._generate_study_name(),
@@ -555,12 +555,12 @@ class StudyManagementTest(BiobankTestCase):
 		body = response.json()["data"]
 		self.assertEqual(len(body), 2)
 
+	@BiobankTestCase.isolated_test
 	def test_paginate_studies_by_researcher(self):
 		"""
 		Test paginating the results of studies filtered by researcher.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study", "update_study", "view_study", "create_researcher"])["access_token"]
 		study_ids = [
 			self._generate_study_name(),
@@ -654,12 +654,12 @@ class StudyManagementTest(BiobankTestCase):
 		body = response.json()["data"]
 		self.assertEqual(len(body), 2)
 
+	@BiobankTestCase.isolated_test
 	def test_search_studies_of_researcher(self):
 		"""
 		Test searching for studies to which the researcher belongs.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study", "update_study", "view_study", "create_researcher"])["access_token"]
 		study_ids = [
 			self._generate_study_name(),
@@ -740,12 +740,12 @@ class StudyManagementTest(BiobankTestCase):
 		body = response.json()["data"]
 		self.assertEqual(len(body), 0)
 
+	@BiobankTestCase.isolated_test
 	def test_update_study(self):
 		"""
 		Test updating a study.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study", "update_study", "view_study", "create_researcher"])["access_token"]
 		study_ids = [
 			self._generate_study_name(),
@@ -794,12 +794,12 @@ class StudyManagementTest(BiobankTestCase):
 		body = response.json()["study"]
 		self.assertEqual(body["name"], "Diabetes Type I")
 
+	@BiobankTestCase.isolated_test
 	def test_update_study_researchers(self):
 		"""
 		Test updating a study's reseachers.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study", "update_study", "view_study", "create_researcher"])["access_token"]
 		study_ids = [
 			self._generate_study_name(),
@@ -854,12 +854,12 @@ class StudyManagementTest(BiobankTestCase):
 		self.assertEqual(body[0]["user_id"], "nick")
 		self.assertEqual(body[1]["user_id"], "bill")
 
+	@BiobankTestCase.isolated_test
 	def test_remove_study(self):
 		"""
 		Test removing a study.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study", "update_study", "remove_study", "view_study", "create_researcher"])["access_token"]
 		study_ids = [
 			self._generate_study_name(),
@@ -900,12 +900,12 @@ class StudyManagementTest(BiobankTestCase):
 		body = response.json()
 		self.assertEqual(len(body["data"]), 2)
 
+	@BiobankTestCase.isolated_test
 	def test_get_removed_study(self):
 		"""
 		Test getting a removed study.
 		"""
 
-		clear()
 		token = self._get_access_token(["create_study", "update_study", "remove_study", "view_study", "create_researcher"])["access_token"]
 		study_ids = [
 			self._generate_study_name(),
