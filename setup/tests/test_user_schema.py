@@ -47,26 +47,26 @@ class UserTests(SchemaTestCase):
 
 		"""
 		Therefore biobankers, researchers and participants cannot be inserted
-		Each time, an IntegrityError should be raised because the ForeignKey constraint is not respected
+		Each time, an ForeignKeyViolation should be raised because the ForeignKey constraint is not respected
 		"""
 		self.assert_fail_sql("""
 			INSERT INTO
 				biobankers (user_id)
 			VALUES
 				('%s');
-			""" % biobanker.get_username(), "IntegrityError")
+			""" % biobanker.get_username(), "ForeignKeyViolation")
 		self.assert_fail_sql("""
 			INSERT INTO
 				researchers (user_id)
 			VALUES
 				('%s');
-		""" % researcher.get_username(), "IntegrityError")
+		""" % researcher.get_username(), "ForeignKeyViolation")
 		self.assert_fail_sql("""
 			INSERT INTO
 				participants (user_id)
 			VALUES
 				('%s');
-		""" % participant.get_username(), "IntegrityError")
+		""" % participant.get_username(), "ForeignKeyViolation")
 
 	def test_user_type_enumeration(self):
 		"""
@@ -80,7 +80,7 @@ class UserTests(SchemaTestCase):
 			INSERT INTO
 				users (user_id, role)
 			VALUES
-				('t_id', 'ADMIN');""", "DataError")
+				('t_id', 'ADMIN');""", "InvalidTextRepresentation")
 
 	def test_inserting_duplicate_user(self):
 		"""
@@ -103,7 +103,7 @@ class UserTests(SchemaTestCase):
 				users (user_id, role)
 			VALUES
 				(%s);
-		""" % participant.get_insertion_string(), "IntegrityError")
+		""" % participant.get_insertion_string(), "UniqueViolation")
 
 	def test_inserting_duplicate_biobanker(self):
 		"""
@@ -131,7 +131,7 @@ class UserTests(SchemaTestCase):
 				biobankers (user_id)
 			VALUES
 				('%s');
-		""" % biobanker.get_username(), "IntegrityError")
+		""" % biobanker.get_username(), "UniqueViolation")
 
 	def test_inserting_duplicate_researcher(self):
 		"""
@@ -159,7 +159,7 @@ class UserTests(SchemaTestCase):
 				researchers (user_id)
 			VALUES
 				('%s');
-		""" % researcher.get_username(), "IntegrityError")
+		""" % researcher.get_username(), "UniqueViolation")
 
 	def test_inserting_duplicate_participant(self):
 		"""
@@ -187,7 +187,7 @@ class UserTests(SchemaTestCase):
 				participants (user_id)
 			VALUES
 				('%s');
-		""" % participant.get_username(), "IntegrityError")
+		""" % participant.get_username(), "UniqueViolation")
 
 	def test_insert_user(self):
 		"""
