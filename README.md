@@ -8,7 +8,7 @@ To start, Dwarna, execute the `start.sh` script. It might be necessary to make t
 
 ## Installing Dwarna
 
-To install, Dwarna, execute the `install.sh` script. It might be necessary to make this script executable using `chmod +x install.sh`. The script installs Hyperledger Fabric and its dependencies.
+To install, Dwarna, execute the `install.sh` script. It might be necessary to make this script executable using `chmod +x install.sh`. The script installs the schema using psycopg2, and then Hyperledger Fabric and its dependencies.
 
 ## Unit Tests
 
