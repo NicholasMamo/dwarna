@@ -12,6 +12,8 @@ import time
 import unittest
 import uuid
 
+from functools import wraps
+
 from .environment import *
 
 class SchemaTestCase(unittest.TestCase):
@@ -42,6 +44,33 @@ class SchemaTestCase(unittest.TestCase):
 
 		super(SchemaTestCase, self).__init__(*args, **kwargs)
 		self.reconnect()
+
+	def isolated_test(test):
+		"""
+		Perform the test in isolation.
+		In essence, this means that the data is cleared from the database.
+
+		:param test: The test to perform.
+		:type test: function
+		"""
+
+		@wraps(test)
+
+		def wrapper(*args):
+			"""
+			The wrapper removes all data from the database.
+			"""
+
+			clear()
+			test(*args)
+
+		return wrapper
+
+	"""
+	Make the isolated test a static method.
+	NOTE: This should be done after the methods in this class that use this decorator have already been defined.
+	"""
+	isolated_test = staticmethod(isolated_test)
 
 	def reconnect(self):
 		"""

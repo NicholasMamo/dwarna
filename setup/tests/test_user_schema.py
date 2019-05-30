@@ -26,12 +26,12 @@ class UserTests(SchemaTestCase):
 	Test the user schema.
 	"""
 
+	@SchemaTestCase.isolated_test
 	def test_users(self):
 		"""
 		Test user data.
 		"""
 
-		clear()
 		participant = Participant("participant")
 		biobanker = Biobanker("biobanker")
 		researcher = Researcher("researcher")
@@ -68,13 +68,13 @@ class UserTests(SchemaTestCase):
 				('%s');
 		""" % participant.get_username(), "ForeignKeyViolation")
 
+	@SchemaTestCase.isolated_test
 	def test_user_type_enumeration(self):
 		"""
 		The user role is an enumeration, and it cannot be violated.
 		This is incorrect data, hence the DataError violation.
 		"""
 
-		clear()
 
 		self.assert_fail_sql("""
 			INSERT INTO
@@ -82,13 +82,13 @@ class UserTests(SchemaTestCase):
 			VALUES
 				('t_id', 'ADMIN');""", "InvalidTextRepresentation")
 
+	@SchemaTestCase.isolated_test
 	def test_inserting_duplicate_user(self):
 		"""
 		There may be no duplicate users.
 		This forces an IntegrityError.
 		"""
 
-		clear()
 		participant = Participant("participant")
 
 		self._cursor.execute("""
@@ -105,13 +105,13 @@ class UserTests(SchemaTestCase):
 				(%s);
 		""" % participant.get_insertion_string(), "UniqueViolation")
 
+	@SchemaTestCase.isolated_test
 	def test_inserting_duplicate_biobanker(self):
 		"""
 		Biobankers must be unique.
 		Otherwise, an IntegrityError is raised.
 		"""
 
-		clear()
 		biobanker = Biobanker("biobanker")
 
 		self._cursor.execute("""
@@ -133,13 +133,13 @@ class UserTests(SchemaTestCase):
 				('%s');
 		""" % biobanker.get_username(), "UniqueViolation")
 
+	@SchemaTestCase.isolated_test
 	def test_inserting_duplicate_researcher(self):
 		"""
 		Researchers must be unique.
 		Otherwise, an IntegrityError is raised.
 		"""
 
-		clear()
 		researcher = Researcher("researcher")
 
 		self._cursor.execute("""
@@ -161,13 +161,13 @@ class UserTests(SchemaTestCase):
 				('%s');
 		""" % researcher.get_username(), "UniqueViolation")
 
+	@SchemaTestCase.isolated_test
 	def test_inserting_duplicate_participant(self):
 		"""
 		Participants must be unique.
 		Otherwise, an IntegrityError is raised.
 		"""
 
-		clear()
 		participant = Participant("participant")
 
 		self._cursor.execute("""
@@ -189,12 +189,12 @@ class UserTests(SchemaTestCase):
 				('%s');
 		""" % participant.get_username(), "UniqueViolation")
 
+	@SchemaTestCase.isolated_test
 	def test_insert_user(self):
 		"""
 		Insert a single user into the database.
 		"""
 
-		clear()
 		participant = Participant("participant")
 
 		self._cursor.execute("""
@@ -216,12 +216,12 @@ class UserTests(SchemaTestCase):
 				users""")
 		self.assertEqual(self._cursor.rowcount, 1)
 
+	@SchemaTestCase.isolated_test
 	def test_delete_user(self):
 		"""
 		Delete a user from the database.
 		"""
 
-		clear()
 		participant = Participant("participant")
 
 		self._cursor.execute("""
@@ -255,12 +255,12 @@ class UserTests(SchemaTestCase):
 				users""")
 		self.assertEqual(self._cursor.rowcount, 0)
 
+	@SchemaTestCase.isolated_test
 	def test_delete_all_users(self):
 		"""
 		Delete all users from the database.
 		"""
 
-		clear()
 		participant = Participant("participant")
 
 		self._cursor.execute("""
@@ -293,12 +293,12 @@ class UserTests(SchemaTestCase):
 				users""")
 		self.assertEqual(self._cursor.rowcount, 0)
 
+	@SchemaTestCase.isolated_test
 	def test_insert_biobanker(self):
 		"""
 		Insert a biobanker into the database.
 		"""
 
-		clear()
 		biobanker = Biobanker("biobanker")
 
 		self._cursor.execute("""
@@ -322,13 +322,13 @@ class UserTests(SchemaTestCase):
 				users.user_id = biobankers.user_id""")
 		self.assertEqual(self._cursor.rowcount, 1)
 
+	@SchemaTestCase.isolated_test
 	def test_remove_biobanker_from_users(self):
 		"""
 		Remove a biobanker from the users table.
 		The user should also be removed from the biobankers table at the same time.
 		"""
 
-		clear()
 		biobanker = Biobanker("biobanker")
 
 		self._cursor.execute("""
@@ -362,13 +362,13 @@ class UserTests(SchemaTestCase):
 				biobankers""")
 		self.assertEqual(self._cursor.rowcount, 0)
 
+	@SchemaTestCase.isolated_test
 	def test_remove_biobanker_from_biobankers(self):
 		"""
 		Remove a biobanker from the biobankers table.
 		The user should also be removed from the users table at the same time.
 		"""
 
-		clear()
 		biobanker = Biobanker("biobanker")
 
 		self._cursor.execute("""
@@ -411,12 +411,12 @@ class UserTests(SchemaTestCase):
 				users""")
 		self.assertEqual(self._cursor.rowcount, 0)
 
+	@SchemaTestCase.isolated_test
 	def test_insert_researcher(self):
 		"""
 		Insert a researcher into the database.
 		"""
 
-		clear()
 		researcher = Researcher("researcher")
 
 		self._cursor.execute("""
@@ -439,13 +439,13 @@ class UserTests(SchemaTestCase):
 				users.user_id = researchers.user_id""")
 		self.assertEqual(self._cursor.rowcount, 1)
 
+	@SchemaTestCase.isolated_test
 	def test_remove_researcher_from_users(self):
 		"""
 		Remove a researcher from the users table.
 		The user should also be removed from the researchers table at the same time.
 		"""
 
-		clear()
 		researcher = Researcher("researcher")
 
 		self._cursor.execute("""
@@ -479,13 +479,13 @@ class UserTests(SchemaTestCase):
 				researchers""")
 		self.assertEqual(self._cursor.rowcount, 0)
 
+	@SchemaTestCase.isolated_test
 	def test_remove_researcher_from_researchers(self):
 		"""
 		Remove a researcher from the researchers table.
 		The user should also be removed from the users table at the same time.
 		"""
 
-		clear()
 		researcher = Researcher("researcher")
 
 		self._cursor.execute("""
@@ -528,12 +528,12 @@ class UserTests(SchemaTestCase):
 				users""")
 		self.assertEqual(self._cursor.rowcount, 0)
 
+	@SchemaTestCase.isolated_test
 	def test_insert_participant(self):
 		"""
 		Insert a participant into the database.
 		"""
 
-		clear()
 		participant = Participant("participant")
 
 		self._cursor.execute("""
@@ -556,13 +556,13 @@ class UserTests(SchemaTestCase):
 				users.user_id = participants.user_id""")
 		self.assertEqual(self._cursor.rowcount, 1)
 
+	@SchemaTestCase.isolated_test
 	def test_remove_participant_from_users(self):
 		"""
 		Remove a participant from the users table.
 		The user should also be removed from the participants table at the same time.
 		"""
 
-		clear()
 		participant = Participant("participant")
 
 		self._cursor.execute("""
@@ -596,13 +596,13 @@ class UserTests(SchemaTestCase):
 				participants""")
 		self.assertEqual(self._cursor.rowcount, 0)
 
+	@SchemaTestCase.isolated_test
 	def test_remove_participant_from_participants(self):
 		"""
 		Remove a participant from the participants table.
 		The user should also be removed from the users table at the same time.
 		"""
 
-		clear()
 		participant = Participant("participant")
 
 		self._cursor.execute("""
