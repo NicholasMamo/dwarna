@@ -33,7 +33,8 @@ class Researcher(User):
 
 class Study():
 
-	def __init__(self, name, description, homepage):
+	def __init__(self, id, name, description, homepage):
+		self._id = id
 		self._name = name
 		self._description = description
 		self._homepage = homepage
@@ -45,4 +46,4 @@ class Study():
 		return self._id
 
 	def get_insertion_string(self):
-		return "'%s', '%s', '%s'" % (self._name, self._description, self._homepage)
+		return "'%s', '%s', '%s', '%s'" % (self._id, self._name, self._description, self._homepage)
