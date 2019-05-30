@@ -6,6 +6,8 @@ cd "$parent_path" # go to the script path
 
 source ../variables.sh
 
+python3 tests/environment.py
+
 usage() {
 	echo -e "${HIGHLIGHT}Usage: sh $0 [-t <user|study>]${DEFAULT}";
 }

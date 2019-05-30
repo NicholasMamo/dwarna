@@ -63,3 +63,6 @@ def clear():
 
 	cursor.close()
 	con.close()
+
+if __name__ == "__main__":
+	create_testing_environment()

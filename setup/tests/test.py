@@ -22,7 +22,7 @@ class SchemaTestCase(unittest.TestCase):
 	@classmethod
 	def setUpClass(self):
 		"""
-		Connect with the database, create the schema and start the server.
+		Connect with the database and create the schema.
 		"""
 
 		create_testing_environment()
@@ -40,8 +40,8 @@ class SchemaTestCase(unittest.TestCase):
 		Connect with the database and save the cursor.
 		"""
 
-		self.reconnect()
 		super(SchemaTestCase, self).__init__(*args, **kwargs)
+		self.reconnect()
 
 	def reconnect(self):
 		"""
@@ -62,13 +62,20 @@ class SchemaTestCase(unittest.TestCase):
 		"""
 		Assert that the given SQL code fails with the given exception.
 		At the end, reconnect with the database.
+
+		:param sql: The SQL query to execute.
+		:type sql: str
+		:param exception_name: The expected exception name.
+		:type exception_name: str
 		"""
 
 		try:
 			self._cursor.execute(sql)
 		except Exception as e:
-			self.assertEqual(type(e).__name__, exception_name)
-		else:
-			self.fail("Did not raise exception %s" % exception_name)
+			try:
+				self.assertEqual(type(e).__name__, exception_name)
+			except AssertionError as a:
+				self.fail(f"""Did not raise exception {exception_name}\nRaised instead {type(e).__name__}:\n\t{e}
+				""")
 		finally:
 			self.reconnect()
