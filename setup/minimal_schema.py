@@ -106,17 +106,15 @@ def create_schema(database):
 
 			cursor.execute("""DROP TABLE IF EXISTS studies CASCADE;""")
 			cursor.execute("""CREATE TABLE studies (
-								study_id			SERIAL 			PRIMARY KEY,
+								study_id			VARCHAR(128)		PRIMARY KEY,
 								name				VARCHAR(256),
 								description			VARCHAR(1024),
-								homepage			VARCHAR(512),
-								address				VARCHAR(64)		UNIQUE
+								homepage			VARCHAR(512)
 			);""")
 			cursor.execute("""COMMENT ON COLUMN studies.study_id IS 'The study''s unique identifier';""")
 			cursor.execute("""COMMENT ON COLUMN studies.name IS 'The study''s name';""")
 			cursor.execute("""COMMENT ON COLUMN studies.description IS 'A description of what the study is about';""")
 			cursor.execute("""COMMENT ON COLUMN studies.homepage IS 'A URL from where participants can obtain more information about the study';""")
-			cursor.execute("""COMMENT ON COLUMN studies.address IS 'The study''s address on the blockchain';""")
 
 			"""
 			Create the relation table joining researchers with studies.
@@ -125,7 +123,7 @@ def create_schema(database):
 
 			cursor.execute("""DROP TABLE IF EXISTS studies_researchers;""")
 			cursor.execute("""CREATE TABLE studies_researchers (
-								study_id			INT				REFERENCES studies(study_id) ON DELETE CASCADE,
+								study_id			VARCHAR(128)	REFERENCES studies(study_id) ON DELETE CASCADE,
 								researcher_id		VARCHAR(64)		REFERENCES researchers(user_id) ON DELETE CASCADE
 			);""")
 
