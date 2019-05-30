@@ -10,6 +10,14 @@ To start, Dwarna, execute the `start.sh` script. It might be necessary to make t
 
 To install, Dwarna, execute the `install.sh` script. It might be necessary to make this script executable using `chmod +x install.sh`. The script installs Hyperledger Fabric and its dependencies.
 
+## Unit Tests
+
+To run the unit tests, execute the `tests.sh` script. It might be necessary to make this script executable using `chmod +x tests.sh`.
+
+### Command-Line Arguments
+
+-t - The test to run, one of _rest_, _schema_. To run the individual tests for each type, run the `tests.sh` scripts in the `rest` and `setup` directories. If no argument is given, all tests are run (optional).
+
 ## Directory Structure
 
 More specific `README.md` files are in each of the respective directories where necessary.
