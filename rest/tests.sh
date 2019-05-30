@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# to allow relative path calls
+parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P ) # get the script path
+cd "$parent_path" # go to the script path
+
 source ../variables.sh
 
 usage() {
@@ -25,10 +29,6 @@ general_tests() {
 	echo -e "${HIGHLIGHT}General Tests${DEFAULT}"
 	python3 -m unittest tests.test_general_functionality
 }
-
-# to allow relative path calls
-parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P ) # get the script path
-cd "$parent_path" # go to the script path
 
 if getopts "t:" o
 then
