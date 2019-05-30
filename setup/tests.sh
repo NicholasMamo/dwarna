@@ -9,12 +9,7 @@ source ../variables.sh
 python3 tests/environment.py
 
 usage() {
-	echo -e "${HIGHLIGHT}Usage: sh $0 [-t <user|study>]${DEFAULT}";
-}
-
-user_tests() {
-	echo -e "${HIGHLIGHT}User Schema Tests${DEFAULT}"
-	python3 -m unittest tests.test_user_schema
+	echo -e "${HIGHLIGHT}Usage: sh $0 [-t <study|user>]${DEFAULT}";
 }
 
 study_tests() {
@@ -22,14 +17,19 @@ study_tests() {
 	python3 -m unittest tests.test_study_schema
 }
 
+user_tests() {
+	echo -e "${HIGHLIGHT}User Schema Tests${DEFAULT}"
+	python3 -m unittest tests.test_user_schema
+}
+
 if getopts "t:" o
 then
 	case "${OPTARG}" in
-		user)
-			user_tests
-			;;
 		study)
 			study_tests
+			;;
+		user)
+			user_tests
 			;;
 		*)
 			echo -e "${HIGHLIGHT}Invalid argument${DEFAULT}"
@@ -37,6 +37,6 @@ then
 			;;
 	esac
 else
-	user_tests
 	study_tests
+	user_tests
 fi

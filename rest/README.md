@@ -18,4 +18,4 @@ The unit tests can be run using `./tests.sh`. It might be necessary to make this
 
 ### Command-Line Arguments
 
--t - The test to run, one of _user_, _study_, _general_, _consent_. If no argument is given, all tests are run (optional).
+-t - The test to run, one of _consent_, _general_, _study_, _user_. If no argument is given, all tests are run (optional).

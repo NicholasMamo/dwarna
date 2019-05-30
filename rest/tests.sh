@@ -7,7 +7,7 @@ cd "$parent_path" # go to the script path
 source ../variables.sh
 
 usage() {
-	echo -e "${HIGHLIGHT}Usage: sh $0 [-t <user|study|general|consent>]${DEFAULT}";
+	echo -e "${HIGHLIGHT}Usage: sh $0 [-t <consent|general|study|user>]${DEFAULT}";
 }
 
 consent_tests() {
@@ -15,9 +15,9 @@ consent_tests() {
 	python3 -m unittest tests.test_consent_management
 }
 
-user_tests() {
-	echo -e "${HIGHLIGHT}User Tests${DEFAULT}"
-	python3 -m unittest tests.test_user_management
+general_tests() {
+	echo -e "${HIGHLIGHT}General Tests${DEFAULT}"
+	python3 -m unittest tests.test_general_functionality
 }
 
 study_tests() {
@@ -25,25 +25,25 @@ study_tests() {
 	python3 -m unittest tests.test_study_management
 }
 
-general_tests() {
-	echo -e "${HIGHLIGHT}General Tests${DEFAULT}"
-	python3 -m unittest tests.test_general_functionality
+user_tests() {
+	echo -e "${HIGHLIGHT}User Tests${DEFAULT}"
+	python3 -m unittest tests.test_user_management
 }
 
 if getopts "t:" o
 then
 	case "${OPTARG}" in
-		user)
-			user_tests
-			;;
-		study)
-			study_tests
+		consent)
+			consent_tests
 			;;
 		general)
 			general_tests
 			;;
-		consent)
-			consent_tests
+		study)
+			study_tests
+			;;
+		user)
+			user_tests
 			;;
 		*)
 			echo -e "${HIGHLIGHT}Invalid argument${DEFAULT}"
@@ -51,8 +51,8 @@ then
 			;;
 	esac
 else
-	user_tests
-	study_tests
-	general_tests
 	consent_tests
+	general_tests
+	study_tests
+	user_tests
 fi
