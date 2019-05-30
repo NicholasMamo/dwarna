@@ -5,7 +5,13 @@
 # Go to the script directory.
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
-source ../variables.sh
+source variables.sh
+
+echo -e "${HIGHLIGHT}Installing Schema${DEFAULT}"
+cd setup
+./minimal_schema.py
+./oauth_schema.py
+cd ..
 
 # Install Hyperledger Fabric first.
 echo -e "${HIGHLIGHT}Installing Hyperledger Fabric${DEFAULT}"

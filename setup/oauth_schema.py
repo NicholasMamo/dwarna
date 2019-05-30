@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Create the database that stores access tokens.
 Implementation based on https://github.com/wndhydrnt/python-oauth2/blob/v1/oauth2/store/dbapi/mysql.py.

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Create the schema for the biobank.
 """
