@@ -12,7 +12,7 @@ import time
 import unittest
 import uuid
 
-from environment import *
+from .environment import *
 
 class SchemaTestCase(unittest.TestCase):
 	"""
@@ -27,13 +27,21 @@ class SchemaTestCase(unittest.TestCase):
 
 		create_testing_environment()
 
+	def __del__(self):
+		"""
+		At the end of the tests, close the PostgreSQL connection and cursor.
+		"""
+
+		self._cursor.close()
+		self._con.close()
+
 	def __init__(self, *args, **kwargs):
 		"""
 		Connect with the database and save the cursor.
 		"""
 
 		self.reconnect()
-		super(SchemaTest, self).__init__(*args, **kwargs)
+		super(SchemaTestCase, self).__init__(*args, **kwargs)
 
 	def reconnect(self):
 		"""
