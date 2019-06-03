@@ -11,6 +11,7 @@ fabric/.nvm
 
 fabric/fabric-scripts/hlfv12/composer/backup*
 
-# REST API changing files
+# REST API
 
 rest/tests/cards
+rest/config/db.py

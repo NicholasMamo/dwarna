@@ -10,7 +10,7 @@ oauth_database = "biobank_oauth"
 :vartype database: str
 """
 
-encryption_secret = b'ovihUaYHs1O-G7fTdSjgmpttJUYTdLrXWX2A9WH931s='
+encryption_secret = b'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 """
 :var encryption_secret: The secret key used to encrypt and decrypt.
 :vartype encryption_secret: bytes
