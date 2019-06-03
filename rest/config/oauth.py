@@ -26,9 +26,3 @@ token_expiry = 120
 :var token_expiry: How long (in seconds) access tokens should live before being retired.
 :vartype token_expiry: int
 """
-
-oauth_database = "biobank_oauth"
-"""
-:var database: The OAuth database used by default.
-:vartype database: str
-"""

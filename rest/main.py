@@ -37,7 +37,7 @@ from server.application import OAuthApplication
 from server.resource_server import ResourceServer
 from server.authorization_server import AuthorizationServer
 
-from config import oauth, rest, routes
+from config import blockchain, db, oauth, routes
 
 pid = None
 """
@@ -89,9 +89,9 @@ def start_auth_server(port, token_expiry, connection, oauth_connection):
 		The routes and their handler are also passed on as arguments.
 		"""
 		blockchain_handler = HyperledgerAPI(
-			rest.blockchain_host,
-			rest.blockchain_admin_port,
-			rest.blockchain_multiuser_port,
+			blockchain.host,
+			blockchain.admin_port,
+			blockchain.multiuser_port,
 			connection
 		)
 
