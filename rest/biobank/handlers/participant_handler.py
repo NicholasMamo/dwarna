@@ -42,8 +42,6 @@ class ParticipantHandler(UserHandler):
 
 		try:
 			username = self._sanitize(username)
-			name = self._sanitize(name)
-			email = self._sanitize(email)
 
 			if self._participant_exists(username):
 				raise user_exceptions.ParticipantExistsException()
