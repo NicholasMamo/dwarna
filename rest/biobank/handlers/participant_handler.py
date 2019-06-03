@@ -112,23 +112,50 @@ class ParticipantHandler(UserHandler):
 
 		return response
 
-	def get_participants(self, *args, **kwargs):
+	def get_participant(self, username=None, *args, **kwargs):
 		"""
-		Retrieve a list of all participants.
+		Filter participants using the given arguments.
+		If no arguments are given, all participants are returned.
 
-		:return: A response containing a list of participant objects and any errors that may arise.
+		:param username: The user's username.
+		:type username: str
+
+		:return: A response with any errors that may arise.
 		:rtype: :class:`oauth2.web.Response`
 		"""
 
-		rows = self._connector.select("""
-			SELECT user_id, name, email
-			FROM participants
-		""")
+		username = self._sanitize(username) if username is not None else username
 
-		total = self._connector.count("""
-			SELECT COUNT(*)
-			FROM participants
-		""")
+		if username is None:
+			rows = self._connector.select("""
+				SELECT
+					user_id, name, email
+				FROM
+					participants
+			""")
+
+			total = self._connector.count("""
+				SELECT COUNT(*)
+				FROM participants
+			""")
+		else:
+			rows = self._connector.select("""
+				SELECT
+					user_id, name, email
+				FROM
+					participants
+				WHERE
+					user_id = '%s'
+			""" % username)
+
+			total = self._connector.count("""
+				SELECT
+					COUNT(*)
+				FROM
+					participants
+				WHERE
+					user_id = '%s'
+			""")
 
 		response = Response()
 		response.status_code = 200

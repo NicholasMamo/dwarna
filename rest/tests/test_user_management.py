@@ -25,7 +25,7 @@ class UserManagementTest(BiobankTestCase):
 	"""
 
 	@BiobankTestCase.isolated_test
-	def no_test_create_biobanker(self):
+	def test_create_biobanker(self):
 		"""
 		Test creating a biobanker normally.
 		"""
@@ -35,7 +35,7 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 200)
 
 	@BiobankTestCase.isolated_test
-	def no_test_create_duplicate_biobanker(self):
+	def test_create_duplicate_biobanker(self):
 		"""
 		Test that creating a biobanker that already exists fails.
 		"""
@@ -49,7 +49,7 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual(body["exception"], user_exceptions.BiobankerExistsException.__name__)
 
 	@BiobankTestCase.isolated_test
-	def no_test_create_biobanker_with_taken_username(self):
+	def test_create_biobanker_with_taken_username(self):
 		"""
 		Test that creating a biobanker with a username that already exists fails.
 		"""
@@ -69,7 +69,7 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual(body["exception"], user_exceptions.UserExistsException.__name__)
 
 	@BiobankTestCase.isolated_test
-	def no_test_biobanker_sanitation(self):
+	def test_biobanker_sanitation(self):
 		"""
 		Test that the biobanker sanitation works.
 		"""
@@ -92,7 +92,7 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 200)
 
 	@BiobankTestCase.isolated_test
-	def no_test_get_biobankers(self):
+	def test_get_biobankers(self):
 		"""
 		Test getting a list of biobankers.
 		"""
@@ -118,11 +118,11 @@ class UserManagementTest(BiobankTestCase):
 		body = response.json()
 		self.assertEqual(len(body["data"]), 2)
 		self.assertEqual(body["total"], 2)
-		self.assertTrue({ "user_id": "luke" } in body["data"])
-		self.assertTrue({ "user_id": "tamara" } in body["data"])
+		self.assertTrue(any(user["user_id"] == "luke" for user in body["data"]))
+		self.assertTrue(any(user["user_id"] == "tamara" for user in body["data"]))
 
 	@BiobankTestCase.isolated_test
-	def no_test_get_removed_biobanker(self):
+	def test_get_removed_biobanker(self):
 		"""
 		Test getting one biobanker.
 		"""
@@ -134,7 +134,7 @@ class UserManagementTest(BiobankTestCase):
 		body = response.json()
 		self.assertEqual(len(body["data"]), 1)
 		self.assertEqual(body["total"], 1)
-		self.assertTrue({ "user_id": "luke" } in body["data"])
+		self.assertTrue(any(user["user_id"] == "luke" for user in body["data"]))
 
 		"""
 		Remove the biobanker and try fetching them again.
@@ -143,10 +143,10 @@ class UserManagementTest(BiobankTestCase):
 		response = self.send_request("DELETE", "biobanker", { "username": "luke" }, token)
 		response = self.send_request("GET", "get_biobankers", {}, token)
 		body = response.json()
-		self.assertTrue({ "user_id": "luke" } not in body["data"])
+		self.assertFalse(any(user["user_id"] == "luke" for user in body["data"]))
 
 	@BiobankTestCase.isolated_test
-	def no_test_only_biobankers_returned(self):
+	def test_only_biobankers_returned(self):
 		"""
 		Test that researchers and participants are not returned with biobankers.
 		"""
@@ -157,11 +157,11 @@ class UserManagementTest(BiobankTestCase):
 
 		response = self.send_request("GET", "get_biobankers", {}, token)
 		body = response.json()
-		self.assertTrue({ "user_id": "mariah" } not in body["data"])
-		self.assertTrue({ "user_id": "pete" } not in body["data"])
+		self.assertFalse(any(user["user_id"] == "mariah" for user in body["data"]))
+		self.assertFalse(any(user["user_id"] == "pete" for user in body["data"]))
 
 	@BiobankTestCase.isolated_test
-	def no_test_remove_inexistent_biobanker(self):
+	def test_remove_inexistent_biobanker(self):
 		"""
 		Test deleting an inexistent biobanker.
 		"""
@@ -174,7 +174,7 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual(body["exception"], user_exceptions.BiobankerDoesNotExistException.__name__)
 
 	@BiobankTestCase.isolated_test
-	def no_test_remove_biobanker(self):
+	def test_remove_biobanker(self):
 		"""
 		Test removing an existing biobanker.
 		"""
@@ -192,18 +192,18 @@ class UserManagementTest(BiobankTestCase):
 		"""
 		response = self.send_request("GET", "get_biobankers", {}, token)
 		body = response.json()
-		self.assertTrue({ "user_id": "matt" } in body["data"])
+		self.assertTrue(any(user["user_id"] == "matt" for user in body["data"]))
 
-		response = self.send_request("GET", "get_participants", {}, token)
+		response = self.send_request("GET", "participant", {}, token)
 		body = response.json()
 		self.assertTrue(any(user["user_id"] == "pete" for user in body["data"]))
 
 		response = self.send_request("GET", "get_researchers", {}, token)
 		body = response.json()
-		self.assertTrue({ "user_id": "tamara" } in body["data"])
+		self.assertTrue(any(user["user_id"] == "tamara" for user in body["data"]))
 
 	@BiobankTestCase.isolated_test
-	def no_test_biobanker_removal_sanitation(self):
+	def test_biobanker_removal_sanitation(self):
 		"""
 		Test that the biobanker removal sanitizes the input.
 		"""
@@ -239,23 +239,21 @@ class UserManagementTest(BiobankTestCase):
 		response = self.send_request("POST", "participant", { "username": "nick" }, token)
 		self.assertEqual(response.status_code, 200)
 
-		response = self.send_request("GET", "get_participants", {}, token)
-		data = response.json()["data"]
-		nick = [participant for participant in data if participant['user_id'] == 'nick'][0]
-		self.assertEqual(nick["name"], "")
-		self.assertEqual(nick["email"], "")
+		response = self.send_request("GET", "participant", {'username': 'nick'}, token)
+		data = response.json()["data"][0]
+		self.assertEqual(data["name"], "")
+		self.assertEqual(data["email"], "")
 
 		response = self.send_request("POST", "participant", { "username": "alt", "name": "Alternate", "email": "alt@um.edu.mt" }, token)
 		self.assertEqual(response.status_code, 200)
 
-		response = self.send_request("GET", "get_participants", {}, token)
-		data = response.json()["data"]
-		alt = [participant for participant in data if participant['user_id'] == 'alt'][0]
-		self.assertEqual(alt["name"], "Alternate")
-		self.assertEqual(alt["email"], "alt@um.edu.mt")
+		response = self.send_request("GET", "participant", {'username': 'alt'}, token)
+		data = response.json()["data"][0]
+		self.assertEqual(data["name"], "Alternate")
+		self.assertEqual(data["email"], "alt@um.edu.mt")
 
 	@BiobankTestCase.isolated_test
-	def no_test_create_duplicate_participant(self):
+	def test_create_duplicate_participant(self):
 		"""
 		Test that creating a participant that already exists fails.
 		"""
@@ -269,7 +267,7 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual(body["exception"], user_exceptions.ParticipantExistsException.__name__)
 
 	@BiobankTestCase.isolated_test
-	def no_test_create_participant_with_taken_username(self):
+	def test_create_participant_with_taken_username(self):
 		"""
 		Test that creating a participant with a username that already exists fails.
 		"""
@@ -289,7 +287,7 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual(body["exception"], user_exceptions.UserExistsException.__name__)
 
 	@BiobankTestCase.isolated_test
-	def no_test_participant_sanitation(self):
+	def test_participant_sanitation(self):
 		"""
 		Test that the participant sanitation works.
 		"""
@@ -312,7 +310,7 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 200)
 
 	@BiobankTestCase.isolated_test
-	def no_test_get_participants(self):
+	def test_get_participants(self):
 		"""
 		Test getting a list of participants.
 		"""
@@ -322,7 +320,7 @@ class UserManagementTest(BiobankTestCase):
 		"""
 		Initially there should be no participants.
 		"""
-		response = self.send_request("GET", "get_participants", {}, token)
+		response = self.send_request("GET", "participant", {}, token)
 		body = response.json()
 		self.assertEqual(len(body["data"]), 0)
 		self.assertEqual(body["total"], 0)
@@ -334,15 +332,15 @@ class UserManagementTest(BiobankTestCase):
 		response = self.send_request("POST", "participant", { "username": "luke" }, token)
 		response = self.send_request("POST", "participant", { "username": "tamara" }, token)
 
-		response = self.send_request("GET", "get_participants", {}, token)
+		response = self.send_request("GET", "participant", {}, token)
 		body = response.json()
 		self.assertEqual(len(body["data"]), 2)
 		self.assertEqual(body["total"], 2)
-		self.assertTrue({ "user_id": "luke" } in body["data"])
-		self.assertTrue({ "user_id": "tamara" } in body["data"])
+		self.assertTrue(any(user["user_id"] == "luke" for user in body["data"]))
+		self.assertTrue(any(user["user_id"] == "tamara" for user in body["data"]))
 
 	@BiobankTestCase.isolated_test
-	def no_test_get_removed_participant(self):
+	def test_get_removed_participant(self):
 		"""
 		Test getting one participant.
 		"""
@@ -350,23 +348,23 @@ class UserManagementTest(BiobankTestCase):
 		token = self._get_access_token(["create_participant", "view_participant", "remove_participant"])["access_token"]
 		response = self.send_request("POST", "participant", { "username": "luke" }, token)
 
-		response = self.send_request("GET", "get_participants", {}, token)
+		response = self.send_request("GET", "participant", {}, token)
 		body = response.json()
 		self.assertEqual(len(body["data"]), 1)
 		self.assertEqual(body["total"], 1)
-		self.assertTrue({ "user_id": "luke" } in body["data"])
+		self.assertTrue(any(user["user_id"] == "luke" for user in body["data"]))
 
 		"""
 		Remove the participant and try fetching them again.
 		"""
 
 		response = self.send_request("DELETE", "participant", { "username": "luke" }, token)
-		response = self.send_request("GET", "get_participants", {}, token)
+		response = self.send_request("GET", "participant", {}, token)
 		body = response.json()
-		self.assertTrue({ "user_id": "luke" } not in body["data"])
+		self.assertFalse(any(user["user_id"] == "luke" for user in body["data"]))
 
 	@BiobankTestCase.isolated_test
-	def no_test_only_participants_returned(self):
+	def test_only_participants_returned(self):
 		"""
 		Test that researchers and biobankers are not returned with participants.
 		"""
@@ -375,13 +373,13 @@ class UserManagementTest(BiobankTestCase):
 		response = self.send_request("POST", "biobanker", { "username": "pete", "password": "pwd" }, token)
 		response = self.send_request("POST", "researcher", { "username": "mariah", "password": "pwd" }, token)
 
-		response = self.send_request("GET", "get_participants", {}, token)
+		response = self.send_request("GET", "participant", {}, token)
 		body = response.json()
-		self.assertTrue({ "user_id": "mariah" } not in body["data"])
-		self.assertTrue({ "user_id": "pete" } not in body["data"])
+		self.assertFalse(any(user["user_id"] == "mariah" for user in body["data"]))
+		self.assertFalse(any(user["user_id"] == "pete" for user in body["data"]))
 
 	@BiobankTestCase.isolated_test
-	def no_test_remove_inexistent_participant(self):
+	def test_remove_inexistent_participant(self):
 		"""
 		Test deleting an inexistent participant.
 		"""
@@ -394,7 +392,7 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual(body["exception"], user_exceptions.ParticipantDoesNotExistException.__name__)
 
 	@BiobankTestCase.isolated_test
-	def no_test_remove_participant(self):
+	def test_remove_participant(self):
 		"""
 		Test removing an existing participant.
 		"""
@@ -410,9 +408,9 @@ class UserManagementTest(BiobankTestCase):
 		"""
 		Ensure that the other users were not deleted.
 		"""
-		response = self.send_request("GET", "get_participants", {}, token)
+		response = self.send_request("GET", "participant", {}, token)
 		body = response.json()
-		self.assertTrue({ "user_id": "matt" } in body["data"])
+		self.assertTrue(any(user["user_id"] == "matt" for user in body["data"]))
 
 		response = self.send_request("GET", "get_biobankers", {}, token)
 		body = response.json()
@@ -420,10 +418,10 @@ class UserManagementTest(BiobankTestCase):
 
 		response = self.send_request("GET", "get_researchers", {}, token)
 		body = response.json()
-		self.assertTrue({ "user_id": "tamara" } in body["data"])
+		self.assertTrue(any(user["user_id"] == "tamara" for user in body["data"]))
 
 	@BiobankTestCase.isolated_test
-	def no_test_create_researcher(self):
+	def test_create_researcher(self):
 		"""
 		Test creating a researcher normally.
 		"""
@@ -433,7 +431,7 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 200)
 
 	@BiobankTestCase.isolated_test
-	def no_test_create_duplicate_researcher(self):
+	def test_create_duplicate_researcher(self):
 		"""
 		Test that creating a researcher that already exists fails.
 		"""
@@ -447,7 +445,7 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual(body["exception"], user_exceptions.ResearcherExistsException.__name__)
 
 	@BiobankTestCase.isolated_test
-	def no_test_create_researcher_with_taken_username(self):
+	def test_create_researcher_with_taken_username(self):
 		"""
 		Test that creating a researcher with a username that already exists fails.
 		"""
@@ -467,7 +465,7 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual(body["exception"], user_exceptions.UserExistsException.__name__)
 
 	@BiobankTestCase.isolated_test
-	def no_test_researcher_sanitation(self):
+	def test_researcher_sanitation(self):
 		"""
 		Test that the researcher sanitation works.
 		"""
@@ -490,7 +488,7 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 200)
 
 	@BiobankTestCase.isolated_test
-	def no_test_get_researchers(self):
+	def test_get_researchers(self):
 		"""
 		Test getting a list of researchers.
 		"""
@@ -516,11 +514,11 @@ class UserManagementTest(BiobankTestCase):
 		body = response.json()
 		self.assertEqual(len(body["data"]), 2)
 		self.assertEqual(body["total"], 2)
-		self.assertTrue({ "user_id": "luke" } in body["data"])
-		self.assertTrue({ "user_id": "tamara" } in body["data"])
+		self.assertTrue(any(user["user_id"] == "luke" for user in body["data"]))
+		self.assertTrue(any(user["user_id"] == "tamara" for user in body["data"]))
 
 	@BiobankTestCase.isolated_test
-	def no_test_get_removed_researcher(self):
+	def test_get_removed_researcher(self):
 		"""
 		Test getting one researcher.
 		"""
@@ -532,7 +530,7 @@ class UserManagementTest(BiobankTestCase):
 		body = response.json()
 		self.assertEqual(len(body["data"]), 1)
 		self.assertEqual(body["total"], 1)
-		self.assertTrue({ "user_id": "luke" } in body["data"])
+		self.assertTrue(any(user["user_id"] == "luke" for user in body["data"]))
 
 		"""
 		Remove the researcher and try fetching them again.
@@ -541,10 +539,10 @@ class UserManagementTest(BiobankTestCase):
 		response = self.send_request("DELETE", "researcher", { "username": "luke" }, token)
 		response = self.send_request("GET", "get_researchers", {}, token)
 		body = response.json()
-		self.assertTrue({ "user_id": "luke" } not in body["data"])
+		self.assertFalse(any(user["user_id"] == "luke" for user in body["data"]))
 
 	@BiobankTestCase.isolated_test
-	def no_test_only_researchers_returned(self):
+	def test_only_researchers_returned(self):
 		"""
 		Test that biobankers and participants are not returned with researchers.
 		"""
@@ -555,11 +553,11 @@ class UserManagementTest(BiobankTestCase):
 
 		response = self.send_request("GET", "get_researchers", {}, token)
 		body = response.json()
-		self.assertTrue({ "user_id": "mariah" } not in body["data"])
-		self.assertTrue({ "user_id": "pete" } not in body["data"])
+		self.assertFalse(any(user["user_id"] == "mariah" for user in body["data"]))
+		self.assertFalse(any(user["user_id"] == "pete" for user in body["data"]))
 
 	@BiobankTestCase.isolated_test
-	def no_test_remove_inexistent_researcher(self):
+	def test_remove_inexistent_researcher(self):
 		"""
 		Test deleting an inexistent researcher.
 		"""
@@ -572,7 +570,7 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual(body["exception"], user_exceptions.ResearcherDoesNotExistException.__name__)
 
 	@BiobankTestCase.isolated_test
-	def no_test_remove_researcher(self):
+	def test_remove_researcher(self):
 		"""
 		Test removing an existing researcher.
 		"""
@@ -591,13 +589,13 @@ class UserManagementTest(BiobankTestCase):
 		"""
 		response = self.send_request("GET", "get_researchers", {}, token)
 		body = response.json()
-		self.assertTrue({ "user_id": "matt" } in body["data"])
+		self.assertTrue(any(user["user_id"] == "matt" for user in body["data"]))
 		self.assertFalse({ "user_id": "nick" } in body["data"])
 
 		response = self.send_request("GET", "get_biobankers", {}, token)
 		body = response.json()
 		self.assertTrue(any(user["user_id"] == "pete" for user in body["data"]))
 
-		response = self.send_request("GET", "get_participants", {}, token)
+		response = self.send_request("GET", "participant", {}, token)
 		body = response.json()
-		self.assertTrue({ "user_id": "tamara" } in body["data"])
+		self.assertTrue(any(user["user_id"] == "tamara" for user in body["data"]))

@@ -141,6 +141,12 @@ Routes related to participant management.
 """
 routes.update({
 	"/participant": {
+		"GET": {
+			"handler": participant_handler_class,
+			"function": participant_handler_class.get_participant,
+			"scopes": ["view_participant"],
+			"parameters": [],
+		},
 		"POST": {
 			"handler": participant_handler_class,
 			"function": participant_handler_class.create_participant,
@@ -152,7 +158,7 @@ routes.update({
 			"function": participant_handler_class.remove_participant_by_username,
 			"scopes": ["remove_participant"],
 			"parameters": ["username"],
-		}
+		},
 	}
 })
 
@@ -170,14 +176,6 @@ routes.update({
 			"handler": researcher_handler_class,
 			"function": researcher_handler_class.get_researchers,
 			"scopes": ["view_researcher"],
-			"parameters": [],
-		}
-	},
-	"/get_participants": {
-		"GET": {
-			"handler": participant_handler_class,
-			"function": participant_handler_class.get_participants,
-			"scopes": ["view_participant"],
 			"parameters": [],
 		}
 	}
