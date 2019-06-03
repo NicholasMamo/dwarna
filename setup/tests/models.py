@@ -13,22 +13,30 @@ class User(ABC):
 		return self._username
 
 	@abstractmethod
-	def get_insertion_string(self):
+	def get_user_insertion_string(self):
 		pass
 
 class Participant(User):
 
-	def get_insertion_string(self):
+	def __init__(self, username, name="", email=""):
+		super(Participant, self).__init__(username)
+		self._name = name
+		self._email = email
+
+	def get_user_insertion_string(self):
 		return "'%s', '%s'" % (self._username, "PARTICIPANT")
+
+	def get_participant_insertion_string(self):
+		return "'%s', '%s', '%s'" % (self._username, self._name, self._email)
 
 class Biobanker(User):
 
-	def get_insertion_string(self):
+	def get_user_insertion_string(self):
 		return "'%s', '%s'" % (self._username, "BIOBANKER")
 
 class Researcher(User):
 
-	def get_insertion_string(self):
+	def get_user_insertion_string(self):
 		return "'%s', '%s'" % (self._username, "RESEARCHER")
 
 class Study():

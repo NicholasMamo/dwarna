@@ -61,20 +61,20 @@ class StudyTests(SchemaTestCase):
 			VALUES
 				(%s), (%s), (%s), (%s);
 		""" % (
-			self._participant_1.get_insertion_string(),
-			self._participant_2.get_insertion_string(),
-			self._biobanker.get_insertion_string(),
-			self._researcher.get_insertion_string()
+			self._participant_1.get_user_insertion_string(),
+			self._participant_2.get_user_insertion_string(),
+			self._biobanker.get_user_insertion_string(),
+			self._researcher.get_user_insertion_string()
 		))
 
 		self._cursor.execute("""
 			INSERT INTO
-				participants (user_id)
+				participants (user_id, name, email)
 			VALUES
-				('%s'), ('%s');
+				(%s), (%s);
 		""" % (
-			self._participant_1.get_username(),
-			self._participant_2.get_username()
+			self._participant_1.get_participant_insertion_string(),
+			self._participant_2.get_participant_insertion_string()
 		))
 
 		self._cursor.execute("""

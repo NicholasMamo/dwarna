@@ -32,7 +32,7 @@ class UserTests(SchemaTestCase):
 		Test user data.
 		"""
 
-		participant = Participant("participant")
+		participant = Participant("participant", "name", "address")
 		biobanker = Biobanker("biobanker")
 		researcher = Researcher("researcher")
 
@@ -63,10 +63,10 @@ class UserTests(SchemaTestCase):
 		""" % researcher.get_username(), "ForeignKeyViolation")
 		self.assert_fail_sql("""
 			INSERT INTO
-				participants (user_id)
+				participants (user_id, name, email)
 			VALUES
-				('%s');
-		""" % participant.get_username(), "ForeignKeyViolation")
+				(%s);
+		""" % participant.get_participant_insertion_string(), "ForeignKeyViolation")
 
 	@SchemaTestCase.isolated_test
 	def test_user_type_enumeration(self):
@@ -89,21 +89,21 @@ class UserTests(SchemaTestCase):
 		This forces an IntegrityError.
 		"""
 
-		participant = Participant("participant")
+		participant = Participant("participant", "name", "address")
 
 		self._cursor.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
-		""" % participant.get_insertion_string())
+		""" % participant.get_user_insertion_string())
 
 		self.assert_fail_sql("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
-		""" % participant.get_insertion_string(), "UniqueViolation")
+		""" % participant.get_user_insertion_string(), "UniqueViolation")
 
 	@SchemaTestCase.isolated_test
 	def test_inserting_duplicate_biobanker(self):
@@ -119,7 +119,7 @@ class UserTests(SchemaTestCase):
 				users (user_id, role)
 			VALUES
 				(%s);
-		""" % biobanker.get_insertion_string())
+		""" % biobanker.get_user_insertion_string())
 		self._cursor.execute("""
 			INSERT INTO
 				biobankers (user_id)
@@ -147,7 +147,7 @@ class UserTests(SchemaTestCase):
 				users (user_id, role)
 			VALUES
 				(%s);
-		""" % researcher.get_insertion_string())
+		""" % researcher.get_user_insertion_string())
 		self._cursor.execute("""
 			INSERT INTO
 				researchers (user_id)
@@ -168,26 +168,26 @@ class UserTests(SchemaTestCase):
 		Otherwise, an IntegrityError is raised.
 		"""
 
-		participant = Participant("participant")
+		participant = Participant("participant", "name", "address")
 
 		self._cursor.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
-		""" % participant.get_insertion_string())
+		""" % participant.get_user_insertion_string())
 		self._cursor.execute("""
 			INSERT INTO
-				participants (user_id)
+				participants (user_id, name, email)
 			VALUES
-				('%s');
-		""" % participant.get_username())
+				(%s);
+		""" % participant.get_participant_insertion_string())
 		self.assert_fail_sql("""
 			INSERT INTO
-				participants (user_id)
+				participants (user_id, name, email)
 			VALUES
-				('%s');
-		""" % participant.get_username(), "UniqueViolation")
+				(%s);
+		""" % participant.get_participant_insertion_string(), "UniqueViolation")
 
 	@SchemaTestCase.isolated_test
 	def test_insert_user(self):
@@ -195,7 +195,7 @@ class UserTests(SchemaTestCase):
 		Insert a single user into the database.
 		"""
 
-		participant = Participant("participant")
+		participant = Participant("participant", "name", "address")
 
 		self._cursor.execute("""
 			SELECT *
@@ -208,7 +208,7 @@ class UserTests(SchemaTestCase):
 				users (user_id, role)
 			VALUES
 				(%s);
-		""" % participant.get_insertion_string())
+		""" % participant.get_user_insertion_string())
 
 		self._cursor.execute("""
 			SELECT *
@@ -222,7 +222,7 @@ class UserTests(SchemaTestCase):
 		Delete a user from the database.
 		"""
 
-		participant = Participant("participant")
+		participant = Participant("participant", "name", "address")
 
 		self._cursor.execute("""
 			SELECT *
@@ -235,7 +235,7 @@ class UserTests(SchemaTestCase):
 				users (user_id, role)
 			VALUES
 				(%s);
-		""" % participant.get_insertion_string())
+		""" % participant.get_user_insertion_string())
 
 		self._cursor.execute("""
 			SELECT *
@@ -261,7 +261,7 @@ class UserTests(SchemaTestCase):
 		Delete all users from the database.
 		"""
 
-		participant = Participant("participant")
+		participant = Participant("participant", "name", "address")
 
 		self._cursor.execute("""
 			SELECT *
@@ -274,7 +274,7 @@ class UserTests(SchemaTestCase):
 				users (user_id, role)
 			VALUES
 				(%s);
-		""" % participant.get_insertion_string())
+		""" % participant.get_user_insertion_string())
 
 		self._cursor.execute("""
 			SELECT *
@@ -306,7 +306,7 @@ class UserTests(SchemaTestCase):
 				users (user_id, role)
 			VALUES
 				(%s);
-		""" % biobanker.get_insertion_string())
+		""" % biobanker.get_user_insertion_string())
 		self._cursor.execute("""
 			INSERT INTO
 				biobankers (user_id)
@@ -336,7 +336,7 @@ class UserTests(SchemaTestCase):
 				users (user_id, role)
 			VALUES
 				(%s);
-		""" % biobanker.get_insertion_string())
+		""" % biobanker.get_user_insertion_string())
 		self._cursor.execute("""
 			INSERT INTO
 				biobankers (user_id)
@@ -376,7 +376,7 @@ class UserTests(SchemaTestCase):
 				users (user_id, role)
 			VALUES
 				(%s);
-		""" % biobanker.get_insertion_string())
+		""" % biobanker.get_user_insertion_string())
 		self._cursor.execute("""
 			INSERT INTO
 				biobankers (user_id)
@@ -424,7 +424,7 @@ class UserTests(SchemaTestCase):
 				users (user_id, role)
 			VALUES
 				(%s);
-		""" % researcher.get_insertion_string())
+		""" % researcher.get_user_insertion_string())
 		self._cursor.execute("""
 			INSERT INTO
 				researchers (user_id)
@@ -453,7 +453,7 @@ class UserTests(SchemaTestCase):
 				users (user_id, role)
 			VALUES
 				(%s);
-		""" % researcher.get_insertion_string())
+		""" % researcher.get_user_insertion_string())
 		self._cursor.execute("""
 			INSERT INTO
 				researchers (user_id)
@@ -493,7 +493,7 @@ class UserTests(SchemaTestCase):
 				users (user_id, role)
 			VALUES
 				(%s);
-		""" % researcher.get_insertion_string())
+		""" % researcher.get_user_insertion_string())
 		self._cursor.execute("""
 			INSERT INTO
 				researchers (user_id)
@@ -534,20 +534,20 @@ class UserTests(SchemaTestCase):
 		Insert a participant into the database.
 		"""
 
-		participant = Participant("participant")
+		participant = Participant("participant", "name", "address")
 
 		self._cursor.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
-		""" % participant.get_insertion_string())
+		""" % participant.get_user_insertion_string())
 		self._cursor.execute("""
 			INSERT INTO
-				participants (user_id)
+				participants (user_id, name, email)
 			VALUES
-				('%s');
-		""" % participant.get_username())
+				(%s);
+		""" % participant.get_participant_insertion_string())
 		self._cursor.execute("""
 			SELECT *
 			FROM
@@ -563,20 +563,20 @@ class UserTests(SchemaTestCase):
 		The user should also be removed from the participants table at the same time.
 		"""
 
-		participant = Participant("participant")
+		participant = Participant("participant", "name", "address")
 
 		self._cursor.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
-		""" % participant.get_insertion_string())
+		""" % participant.get_user_insertion_string())
 		self._cursor.execute("""
 			INSERT INTO
-				participants (user_id)
+				participants (user_id, name, email)
 			VALUES
-				('%s');
-		""" % participant.get_username())
+				(%s);
+		""" % participant.get_participant_insertion_string())
 
 		self._cursor.execute("""
 			DELETE FROM
@@ -603,20 +603,20 @@ class UserTests(SchemaTestCase):
 		The user should also be removed from the users table at the same time.
 		"""
 
-		participant = Participant("participant")
+		participant = Participant("participant", "name", "address")
 
 		self._cursor.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
-		""" % participant.get_insertion_string())
+		""" % participant.get_user_insertion_string())
 		self._cursor.execute("""
 			INSERT INTO
-				participants (user_id)
+				participants (user_id, name, email)
 			VALUES
-				('%s');
-		""" % participant.get_username())
+				(%s);
+		""" % participant.get_participant_insertion_string())
 
 		self._cursor.execute("""
 			SELECT *
