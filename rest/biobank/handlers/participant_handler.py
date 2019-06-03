@@ -16,11 +16,15 @@ class ParticipantHandler(UserHandler):
 	The participant handler class receives and handles requests that are related to participants.
 	"""
 
-	def create_participant(self, username, *args, **kwargs):
+	def create_participant(self, username, name="", email="", *args, **kwargs):
 		"""
 		Insert a participant into the database.
 
 		:param username: The participant's username.
+		:type username: str
+		:param username: The participant's name.
+		:type username: str
+		:param username: The participant's email.
 		:type username: str
 
 		:return: A response with any errors that may arise.
@@ -31,6 +35,8 @@ class ParticipantHandler(UserHandler):
 
 		try:
 			username = self._sanitize(username)
+			name = self._sanitize(name)
+			email = self._sanitize(email)
 			if self._participant_exists(username):
 				raise user_exceptions.ParticipantExistsException()
 			elif self._user_exists(username):
@@ -43,8 +49,8 @@ class ParticipantHandler(UserHandler):
 				VALUES ('%s', '%s');""" % (username, "PARTICIPANT"),
 				"""
 				INSERT INTO participants (
-					user_id)
-				VALUES ('%s');""" % (username),
+					user_id, name, email)
+				VALUES ('%s', '%s', '%s');""" % (username, name, email),
 			])
 
 			# TODO: Error-handling.
@@ -115,7 +121,7 @@ class ParticipantHandler(UserHandler):
 		"""
 
 		rows = self._connector.select("""
-			SELECT user_id
+			SELECT user_id, name, email
 			FROM participants
 		""")
 
