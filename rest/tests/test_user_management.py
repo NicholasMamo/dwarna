@@ -160,7 +160,8 @@ class UserManagementTest(BiobankTestCase):
 		self.assertTrue({ "user_id": "mariah" } not in body["data"])
 		self.assertTrue({ "user_id": "pete" } not in body["data"])
 
-	def remove_inexistent_biobanker(self):
+	@BiobankTestCase.isolated_test
+	def test_remove_inexistent_biobanker(self):
 		"""
 		Test deleting an inexistent biobanker.
 		"""

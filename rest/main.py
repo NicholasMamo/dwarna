@@ -37,7 +37,7 @@ from server.application import OAuthApplication
 from server.resource_server import ResourceServer
 from server.authorization_server import AuthorizationServer
 
-import config
+from config import oauth, rest, routes
 
 pid = None
 """
@@ -89,9 +89,9 @@ def start_auth_server(port, token_expiry, connection, oauth_connection):
 		The routes and their handler are also passed on as arguments.
 		"""
 		blockchain_handler = HyperledgerAPI(
-			config.blockchain_host,
-			config.blockchain_admin_port,
-			config.blockchain_multiuser_port,
+			rest.blockchain_host,
+			rest.blockchain_admin_port,
+			rest.blockchain_multiuser_port,
 			connection
 		)
 
@@ -99,7 +99,7 @@ def start_auth_server(port, token_expiry, connection, oauth_connection):
 		The route handlers are a set of classes that handle different requests.
 		"""
 		route_handlers = { handler_class: handler_class(connection, blockchain_handler)
-							for handler_class in config.handler_classes }
+							for handler_class in routes.handler_classes }
 		route_handlers[HyperledgerAPI] = blockchain_handler
 
 		resource_provider = ResourceServer(
@@ -107,7 +107,7 @@ def start_auth_server(port, token_expiry, connection, oauth_connection):
 			auth_code_store=PostgresqlAuthCodeStore(oauth_connection),
 			client_store=PostgresqlClientStore(oauth_connection),
 			token_generator=Uuid4(),
-			routes=config.routes,
+			routes=routes.routes,
 			route_handlers=route_handlers)
 
 		"""
@@ -122,8 +122,8 @@ def start_auth_server(port, token_expiry, connection, oauth_connection):
 
 		client_credentials_grant = CustomClientCredentialsGrant(
 			expires_in=token_expiry,
-			scopes=config.scopes,
-			default_scope=config.default_scope
+			scopes=oauth.scopes,
+			default_scope=oauth.default_scope
 		)
 		authorization_server.add_grant(client_credentials_grant)
 
@@ -137,7 +137,7 @@ def start_auth_server(port, token_expiry, connection, oauth_connection):
 	except KeyboardInterrupt:
 		httpd.server_close()
 
-def main(database, oauth_database, listen_port=None, token_expiry=config.token_expiry):
+def main(database, oauth_database, listen_port=None, token_expiry=oauth.token_expiry):
 	"""
 	Establish a connection with PostgreSQL and start the server.
 
@@ -168,8 +168,8 @@ def main(database, oauth_database, listen_port=None, token_expiry=config.token_e
 	home = expanduser("~")
 	with open(os.path.join(home, ".pgpass"), "r") as f:
 		host, port, _, username, password = f.readline().strip().split(":")
-	connection = config.handler_connector(database=database, host=host, username=username, password=password)
-	oauth_connection = config.handler_connector(database=oauth_database, host=host, username=username, password=password, cursor_factory=cursor)
+	connection = routes.handler_connector(database=database, host=host, username=username, password=password)
+	oauth_connection = routes.handler_connector(database=oauth_database, host=host, username=username, password=password, cursor_factory=cursor)
 
 	global pid
 	pid = os.getpid()

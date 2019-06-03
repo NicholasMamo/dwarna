@@ -8,24 +8,6 @@ from biobank.handlers.blockchain.api.hyperledger import HyperledgerAPI
 
 from connection.db_connection import PostgreSQLConnection
 
-token_expiry = 120
-"""
-:var token_expiry: How long (in seconds) access tokens should live before being retired.
-:vartype token_expiry: int
-"""
-
-database = "biobank"
-"""
-:var database: The database used by default.
-:vartype database: str
-"""
-
-oauth_database = "biobank_oauth"
-"""
-:var database: The OAuth database used by default.
-:vartype database: str
-"""
-
 generic_handler_class = PostgreSQLRouteHandler
 """
 :var generic_handler_class: The handler that receives route parameters and services generic requests.
@@ -352,42 +334,3 @@ routes.update({
 		}
 	},
 })
-
-"""
-Build the list of possible scopes from the routes.
-"""
-
-default_scope = "none"
-"""
-:var default_scope: The default scope of access tokens.
-	It should permit no data access whatsoever, except to functions that require no scopes.
-:vartype default_scope: str
-"""
-
-scopes = [ scope for route in routes.values()
-			for handler in route.values()
-			for scope in handler["scopes"] ]
-scopes.append(default_scope)
-scopes = list(set(scopes))
-"""
-:var scopes: All the possible scopes given by the authoization server.
-:vartype scopes: list
-"""
-
-blockchain_host = "http://localhost"
-"""
-:var blockchain_host: The URL where the Hyperledger Composer REST API is hosted.
-:vartype blockchain_host: str
-"""
-
-blockchain_admin_port = 3001
-"""
-:var blockchain_admin_port: The port where the Hyperledger Composer REST API listens to admin requests.
-:vartype blockchain_admin_port: int
-"""
-
-blockchain_multiuser_port = 3000
-"""
-:var blockchain_multiuser_port: The port where the Hyperledger Composer REST API listens to multi-user requests.
-:vartype blockchain_multiuser_port: int
-"""
