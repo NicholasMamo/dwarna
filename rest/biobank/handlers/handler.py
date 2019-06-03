@@ -4,7 +4,7 @@ Its job is to handle the given requests.
 """
 
 from abc import ABC, abstractmethod
-
+from cryptography.fernet import Fernet
 from datetime import datetime
 
 from .exceptions import general_exceptions, study_exceptions, user_exceptions
@@ -12,8 +12,17 @@ from .exceptions import general_exceptions, study_exceptions, user_exceptions
 from oauth2.web import Response
 
 import json
+import os
 import psycopg2
 import re
+import sys
+
+path = sys.path[0]
+path = os.path.join(path, "..", "..")
+if path not in sys.path:
+	sys.path.insert(1, path)
+
+from config import db
 
 class RouteHandler(ABC):
 	"""
@@ -56,6 +65,38 @@ class RouteHandler(ABC):
 		response.status_code = 404
 		response.body = json.dumps({ "error": "Page Not Found" })
 		return response
+
+	def _encrypt(self, string):
+		"""
+		Encrypt the given string.
+
+		The function looks for the encryption secret in the database configuration file.
+
+		:param string: The string to encrypt.
+		:type string: str
+
+		:return: The encrypted string.
+		:rtype: str
+		"""
+
+		f = Fernet(db.encryption_secret)
+		return f.encrypt(str.encode(string)).decode()
+
+	def _decrypt(self, string):
+		"""
+		Decrypt the given string.
+
+		The function looks for the encryption secret in the database configuration file.
+
+		:param string: The string to decrypt.
+		:type string: str
+
+		:return: The decrypted string.
+		:rtype: str
+		"""
+
+		f = Fernet(db.encryption_secret)
+		return f.decrypt(str.encode(string)).decode()
 
 class PostgreSQLRouteHandler(RouteHandler):
 	"""

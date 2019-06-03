@@ -3,7 +3,9 @@ The route handler to handle participant-related requests.
 """
 
 import json
+import os
 import psycopg2
+import sys
 import traceback
 
 from oauth2.web import Response
@@ -14,7 +16,12 @@ from .handler import UserHandler
 class ParticipantHandler(UserHandler):
 	"""
 	The participant handler class receives and handles requests that are related to participants.
+
+	:cvar encrypted_attributes: The attributes that should be stored encrypted.
+	:vartype encrypted_attributes: str
 	"""
+
+	encrypted_attributes = ['name', 'email']
 
 	def create_participant(self, username, name="", email="", *args, **kwargs):
 		"""
@@ -37,20 +44,31 @@ class ParticipantHandler(UserHandler):
 			username = self._sanitize(username)
 			name = self._sanitize(name)
 			email = self._sanitize(email)
+
 			if self._participant_exists(username):
 				raise user_exceptions.ParticipantExistsException()
 			elif self._user_exists(username):
 				raise user_exceptions.UserExistsException()
 
+			attributes = self._encrypt_participant({
+				'username': username,
+				'name': name,
+				'email': email,
+			})
+
 			self._connector.execute([
 				"""
-				INSERT INTO users (
-					user_id, role)
-				VALUES ('%s', '%s');""" % (username, "PARTICIPANT"),
+				INSERT INTO
+					users (user_id, role)
+				VALUES
+					('%s', '%s');
+				""" % (username, "PARTICIPANT"),
 				"""
-				INSERT INTO participants (
-					user_id, name, email)
-				VALUES ('%s', '%s', '%s');""" % (username, name, email),
+				INSERT INTO
+					participants (user_id, name, email)
+				VALUES
+					('%s', '%s', '%s');
+				""" % (username, attributes['name'], attributes['email']),
 			])
 
 			# TODO: Error-handling.
@@ -92,10 +110,11 @@ class ParticipantHandler(UserHandler):
 
 			self._connector.execute([
 				"""
-				DELETE FROM users
+				DELETE FROM
+					users
 				WHERE
-					user_id = '%s'
-					AND role = 'PARTICIPANT';""" % (username),
+					user_id = '%s' AND
+					role = 'PARTICIPANT';""" % (username),
 			])
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
@@ -135,8 +154,10 @@ class ParticipantHandler(UserHandler):
 			""")
 
 			total = self._connector.count("""
-				SELECT COUNT(*)
-				FROM participants
+				SELECT
+					COUNT(*)
+				FROM
+					participants
 			""")
 		else:
 			rows = self._connector.select("""
@@ -157,8 +178,42 @@ class ParticipantHandler(UserHandler):
 					user_id = '%s'
 			""")
 
+		decrypted_data = [ self._decrypt_participant(row) for row in rows ]
+
 		response = Response()
 		response.status_code = 200
 		response.add_header("Content-Type", "application/json")
-		response.body = json.dumps({ "data": rows, "total": total })
+		response.body = json.dumps({ "data": decrypted_data, "total": total })
 		return response
+
+	def _encrypt_participant(self, participant):
+		"""
+		Encrypt the given participant's data.
+
+		:param participant: The participant data to encrypt.
+		:type participant: dict
+
+		:return: The same participant, but with the updated encrypted attributes.
+		:rtype: dict
+		"""
+
+		encrypted = { attribute: self._encrypt(participant.get(attribute)) for attribute in ParticipantHandler.encrypted_attributes }
+		encrypted_participant = dict(participant)
+		encrypted_participant.update(encrypted)
+		return encrypted_participant
+
+	def _decrypt_participant(self, participant):
+		"""
+		Decrypt the given participant's data.
+
+		:param participant: The participant data to decrypt.
+		:type participant: dict
+
+		:return: The same participant, but with the updated decrypted attributes.
+		:rtype: dict
+		"""
+
+		decrypted = { attribute: self._decrypt(participant.get(attribute)) for attribute in ParticipantHandler.encrypted_attributes }
+		decrypted_participant = dict(participant)
+		decrypted_participant.update(decrypted)
+		return decrypted_participant

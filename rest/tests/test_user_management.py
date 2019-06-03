@@ -56,7 +56,7 @@ class UserManagementTest(BiobankTestCase):
 
 		token = self._get_access_token(["create_biobanker", "create_researcher", "create_participant"])["access_token"]
 		response = self.send_request("POST", "researcher", { "username": "jack" }, token)
-		response = self.send_request("POST", "participant", { "username": "mill", "password": "pwd" }, token)
+		response = self.send_request("POST", "participant", { "username": "mill" }, token)
 
 		response = self.send_request("POST", "biobanker", { "username": "jack" }, token)
 		body = response.json()
@@ -152,8 +152,8 @@ class UserManagementTest(BiobankTestCase):
 		"""
 
 		token = self._get_access_token(["create_biobanker", "view_biobanker", "create_researcher", "create_participant"])["access_token"]
-		response = self.send_request("POST", "participant", { "username": "pete", "password": "pwd" }, token)
-		response = self.send_request("POST", "researcher", { "username": "mariah", "password": "pwd" }, token)
+		response = self.send_request("POST", "participant", { "username": "pete" }, token)
+		response = self.send_request("POST", "researcher", { "username": "mariah" }, token)
 
 		response = self.send_request("GET", "get_biobankers", {}, token)
 		body = response.json()
@@ -181,7 +181,7 @@ class UserManagementTest(BiobankTestCase):
 		token = self._get_access_token(["create_biobanker", "view_biobanker", "remove_biobanker", "create_researcher", "view_researcher", "create_participant", "view_participant"])["access_token"]
 		self.send_request("POST", "biobanker", { "username": "nick" }, token)
 		self.send_request("POST", "biobanker", { "username": "matt" }, token)
-		self.send_request("POST", "participant", { "username": "pete", "password": "pwd" }, token)
+		self.send_request("POST", "participant", { "username": "pete" }, token)
 		self.send_request("POST", "researcher", { "username": "tamara" }, token)
 
 		response = self.send_request("DELETE", "biobanker", { "username": "nick" }, token)
@@ -274,7 +274,7 @@ class UserManagementTest(BiobankTestCase):
 
 		token = self._get_access_token(["create_biobanker", "create_researcher", "create_participant"])["access_token"]
 		response = self.send_request("POST", "researcher", { "username": "jack" }, token)
-		response = self.send_request("POST", "biobanker", { "username": "mill", "password": "pwd" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "mill" }, token)
 
 		response = self.send_request("POST", "participant", { "username": "jack" }, token)
 		body = response.json()
@@ -370,8 +370,8 @@ class UserManagementTest(BiobankTestCase):
 		"""
 
 		token = self._get_access_token(["create_biobanker", "create_researcher", "create_participant", "view_participant"])["access_token"]
-		response = self.send_request("POST", "biobanker", { "username": "pete", "password": "pwd" }, token)
-		response = self.send_request("POST", "researcher", { "username": "mariah", "password": "pwd" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "pete" }, token)
+		response = self.send_request("POST", "researcher", { "username": "mariah" }, token)
 
 		response = self.send_request("GET", "participant", {}, token)
 		body = response.json()
@@ -399,7 +399,7 @@ class UserManagementTest(BiobankTestCase):
 		token = self._get_access_token(["create_biobanker", "view_biobanker", "create_researcher", "view_researcher", "create_participant", "view_participant", "remove_participant"])["access_token"]
 		self.send_request("POST", "participant", { "username": "nick" }, token)
 		self.send_request("POST", "participant", { "username": "matt" }, token)
-		self.send_request("POST", "biobanker", { "username": "pete", "password": "pwd" }, token)
+		self.send_request("POST", "biobanker", { "username": "pete" }, token)
 		self.send_request("POST", "researcher", { "username": "tamara" }, token)
 
 		response = self.send_request("DELETE", "participant", { "username": "nick" }, token)
@@ -452,7 +452,7 @@ class UserManagementTest(BiobankTestCase):
 
 		token = self._get_access_token(["create_biobanker", "create_researcher", "create_participant"])["access_token"]
 		response = self.send_request("POST", "participant", { "username": "jack" }, token)
-		response = self.send_request("POST", "biobanker", { "username": "mill", "password": "pwd" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "mill" }, token)
 
 		response = self.send_request("POST", "researcher", { "username": "jack" }, token)
 		body = response.json()
@@ -548,8 +548,8 @@ class UserManagementTest(BiobankTestCase):
 		"""
 
 		token = self._get_access_token(["create_biobanker", "create_researcher", "view_researcher", "create_participant"])["access_token"]
-		response = self.send_request("POST", "biobanker", { "username": "pete", "password": "pwd" }, token)
-		response = self.send_request("POST", "participant", { "username": "mariah", "password": "pwd" }, token)
+		response = self.send_request("POST", "biobanker", { "username": "pete" }, token)
+		response = self.send_request("POST", "participant", { "username": "mariah" }, token)
 
 		response = self.send_request("GET", "get_researchers", {}, token)
 		body = response.json()
@@ -578,7 +578,7 @@ class UserManagementTest(BiobankTestCase):
 		token = self._get_access_token(["create_biobanker", "view_biobanker", "create_researcher", "view_researcher", "remove_researcher", "create_participant", "view_participant"])["access_token"]
 		self.send_request("POST", "researcher", { "username": "nick" }, token)
 		self.send_request("POST", "researcher", { "username": "matt" }, token)
-		self.send_request("POST", "biobanker", { "username": "pete", "password": "pwd" }, token)
+		self.send_request("POST", "biobanker", { "username": "pete" }, token)
 		self.send_request("POST", "participant", { "username": "tamara" }, token)
 
 		response = self.send_request("DELETE", "researcher", { "username": "nick" }, token)
