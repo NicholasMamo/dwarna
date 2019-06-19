@@ -519,7 +519,7 @@ class PostgreSQLRouteHandler(RouteHandler):
 		:rtype: dict
 		"""
 
-		encrypted = { attribute: self._encrypt(participant.get(attribute)) for attribute in PostgreSQLRouteHandler.encrypted_attributes }
+		encrypted = { attribute: self._encrypt(str(participant.get(attribute))) for attribute in PostgreSQLRouteHandler.encrypted_attributes }
 		encrypted_participant = dict(participant)
 		encrypted_participant.update(encrypted)
 		return encrypted_participant
