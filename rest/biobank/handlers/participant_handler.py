@@ -16,12 +16,7 @@ from .handler import UserHandler
 class ParticipantHandler(UserHandler):
 	"""
 	The participant handler class receives and handles requests that are related to participants.
-
-	:cvar encrypted_attributes: The attributes that should be stored encrypted.
-	:vartype encrypted_attributes: str
 	"""
-
-	encrypted_attributes = ['name', 'email']
 
 	def create_participant(self, username, name="", email="", *args, **kwargs):
 		"""
@@ -183,35 +178,3 @@ class ParticipantHandler(UserHandler):
 		response.add_header("Content-Type", "application/json")
 		response.body = json.dumps({ "data": decrypted_data, "total": total })
 		return response
-
-	def _encrypt_participant(self, participant):
-		"""
-		Encrypt the given participant's data.
-
-		:param participant: The participant data to encrypt.
-		:type participant: dict
-
-		:return: The same participant, but with the updated encrypted attributes.
-		:rtype: dict
-		"""
-
-		encrypted = { attribute: self._encrypt(participant.get(attribute)) for attribute in ParticipantHandler.encrypted_attributes }
-		encrypted_participant = dict(participant)
-		encrypted_participant.update(encrypted)
-		return encrypted_participant
-
-	def _decrypt_participant(self, participant):
-		"""
-		Decrypt the given participant's data.
-
-		:param participant: The participant data to decrypt.
-		:type participant: dict
-
-		:return: The same participant, but with the updated decrypted attributes.
-		:rtype: dict
-		"""
-
-		decrypted = { attribute: self._decrypt(participant.get(attribute)) for attribute in ParticipantHandler.encrypted_attributes }
-		decrypted_participant = dict(participant)
-		decrypted_participant.update(decrypted)
-		return decrypted_participant

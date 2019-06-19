@@ -28,11 +28,16 @@ class RouteHandler(ABC):
 	"""
 	The route handler receives request arguments and uses them to service requests.
 
+	:cvar encrypted_attributes: The attributes that should be stored encrypted.
+	:vartype encrypted_attributes: str
+
 	:ivar _connector: The connector that is used to access the data store.
 	:vartype _connector: :class:`connection.connection.Connection`
 	:ivar _blockchain_connector: The connector to the blockchain.
 	:vartype _blockchain_connector: :class:`biobank.blockchain.api.BlockchainAPI`
 	"""
+
+	encrypted_attributes = ['name', 'email']
 
 	def __init__(self, connector, blockchain_connector, *args, **kwargs):
 		"""
@@ -502,6 +507,38 @@ class PostgreSQLRouteHandler(RouteHandler):
 		)
 
 		return attribute_id["attribute_id"]
+
+	def _encrypt_participant(self, participant):
+		"""
+		Encrypt the given participant's data.
+
+		:param participant: The participant data to encrypt.
+		:type participant: dict
+
+		:return: The same participant, but with the updated encrypted attributes.
+		:rtype: dict
+		"""
+
+		encrypted = { attribute: self._encrypt(participant.get(attribute)) for attribute in PostgreSQLRouteHandler.encrypted_attributes }
+		encrypted_participant = dict(participant)
+		encrypted_participant.update(encrypted)
+		return encrypted_participant
+
+	def _decrypt_participant(self, participant):
+		"""
+		Decrypt the given participant's data.
+
+		:param participant: The participant data to decrypt.
+		:type participant: dict
+
+		:return: The same participant, but with the updated decrypted attributes.
+		:rtype: dict
+		"""
+
+		decrypted = { attribute: self._decrypt(participant.get(attribute)) for attribute in PostgreSQLRouteHandler.encrypted_attributes }
+		decrypted_participant = dict(participant)
+		decrypted_participant.update(decrypted)
+		return decrypted_participant
 
 class UserHandler(PostgreSQLRouteHandler):
 	"""
