@@ -22,6 +22,12 @@ Sometimes, it may be necessary to recreate the Dwarna blockchain. To do this, `c
 
 The script stops Hyperledger Fabric, tears down all Docker images, downloads them anew and starts up the blockchain again. The process will currently fail to complete if the backup folders exist. However, in this case, the Hyperledger Fabric blockchain would still be created from scratch.
 
+## Upgrading the Blockchain
+
+To upgrade the blockchain, `cd` to `dwarna-blockchain` directory and place the new file in the it. Then, run the command `composer network upgrade -c PeerAdmin@hlfv1 -n dwarna-blockchain -V {VERSION}`, replacing `{VERSION}` with the new version number. Finally, update the `start_network.sh` script, similarly updating the version number in the following line:
+
+    composer network start --networkName dwarna-blockchain --networkVersion {VERSION} --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file admin@dwarna-blockchain.card
+
 ## Backups
 
 Dwarna stores backups as volumes from the Docker images. The volumes are stored in the `fabric-scripts/hlfv12/composer/backup_*` directories. These directories are mounted automatically when the images start. The roles of these volumes are as follows:
