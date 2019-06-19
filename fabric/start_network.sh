@@ -43,7 +43,7 @@ composer card delete --card admin@dwarna-blockchain
 echo -e "${HIGHLIGHT}Installing Dwarna blockchain${DEFAULT}"
 composer network install --archiveFile dwarna-blockchain.bna --card PeerAdmin@hlfv1
 echo -e "${HIGHLIGHT}Starting Dwarna blockchain${DEFAULT}"
-composer network start --networkName dwarna-blockchain --networkVersion 0.1.2 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file admin@dwarna-blockchain.card
+composer network start --networkName dwarna-blockchain --networkVersion 0.1.3 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file admin@dwarna-blockchain.card
 echo -e "${HIGHLIGHT}Importing and re-exporting administrator card${DEFAULT}"
 composer card import --file admin@dwarna-blockchain.card --card admin@dwarna-blockchain
 composer network ping -c admin@dwarna-blockchain
