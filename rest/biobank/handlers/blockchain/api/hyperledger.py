@@ -483,12 +483,20 @@ class HyperledgerAPI(BlockchainAPI):
 		endpoint = f"{self._host}:{port}/api/queries/get_study_consents?{param_string}"
 		response = requests.get(endpoint, headers={ })
 
-		address_pattern = re.compile('\#(.+?)$')
+		"""
+		Sort the consent changes in descending order of timestamp to be certain of their validity.
+		"""
 		consent_changes = json.loads(response.content)
 		consent_changes = sorted(consent_changes, key=lambda change: change['timestamp'])[::-1]
 
+		address_pattern = re.compile('\#(.+?)$')
 		checked_participants, participants = [], []
 		for change in consent_changes:
+			"""
+			Go through each consent change, skipping those of participants that already been encountered.
+			In this way, if a participant most recently withdrew consent, past occurrences of them giving consent are ignored.
+			If the participant has given consent and they have not been encountered before, extract their address.
+			"""
 			participant = change['participant']
 			if change['status'] and participant not in checked_participants:
 				participants.extend(address_pattern.findall(participant))
