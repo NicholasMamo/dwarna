@@ -6,6 +6,7 @@ import base64
 import hashlib
 import json
 import os
+import re
 import requests
 import time
 import urllib
@@ -113,7 +114,7 @@ class HyperledgerAPI(BlockchainAPI):
 		"""
 
 		response = Response()
-		
+
 		if (not self._card_exists(username, False, *args, **kwargs)
 			and not self._card_exists(username, True, *args, **kwargs)):
 			"""
@@ -458,6 +459,45 @@ class HyperledgerAPI(BlockchainAPI):
 
 		pass
 
+	def get_study_participants(self, study_id, port=None, *args, **kwargs):
+		"""
+		Get a list of participant addresses of participants that have consented to participate in the study with the given ID.
+		The function checks only the last consent of each participant.
+
+		:param study_id: The unique ID of the study.
+		:type study_id: int
+		:param port: The port to use when issuing the identity.
+			By default, the request is made to the admin REST API endpoint.
+		:type port: int
+
+		:return: A list of participant addresses that have consented to participate in the study.
+		:rtype: list of str
+		"""
+
+		port = self._default_admin_port if port is None else port
+
+		params = {
+			"study_id": f"resource:org.consent.model.Study#{study_id}"
+		}
+		param_string = urllib.parse.urlencode(params)
+		endpoint = f"{self._host}:{port}/api/queries/get_study_consents?{param_string}"
+		response = requests.get(endpoint, headers={ })
+
+		address_pattern = re.compile('\#(.+?)$')
+		consent_changes = json.loads(response.content)
+		consent_changes = sorted(consent_changes, key=lambda change: change['timestamp'])[::-1]
+
+		checked_participants, participants = [], []
+		for change in consent_changes:
+			participant = change['participant']
+			if change['status'] and participant not in checked_participants:
+				participants.extend(address_pattern.findall(participant))
+
+			if participant not in checked_participants:
+				checked_participants.append(participant)
+
+		return participants
+
 	def get_consent_trail(self, study_id, username, access_token, port=None, *args, **kwargs):
 		"""
 		Get a user's consent trail for the one given study.
@@ -507,9 +547,12 @@ class HyperledgerAPI(BlockchainAPI):
 		"""
 
 		row = self._connector.select_one("""
-			SELECT address
-			FROM participants
-			WHERE user_id = '%s'
+			SELECT
+				address
+			FROM
+				participants
+			WHERE
+				user_id = '%s'
 		""" % (username))
 		address = row["address"]
 		return address

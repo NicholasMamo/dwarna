@@ -178,28 +178,26 @@ class ConsentHandler(PostgreSQLRouteHandler):
 
 		response = Response()
 
-
 		try:
 			if not self._study_exists(study_id):
 				raise study_exceptions.StudyDoesNotExistException()
 
-			study_address = self._get_study_address(study_id)
-
-			study = Study.load_study(study_address)
-			participants = study.functions.get_consenting_participants().call()
+			addresses = self._blockchain_connector.get_study_participants(study_id, *args, **kwargs)
 
 			"""
 			Get the information of all participants that consented to the use of their sample in the study.
 			"""
 			participants = self._connector.select("""
 				SELECT *
-				FROM participants
+				FROM
+					participants
 				WHERE
 					address IN ('%s')
-			""" % ("', '".join(participants)))
+			""" % ("', '".join(addresses)))
+			decrypted_data = [ self._decrypt_participant(participant) for participant in participants ]
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
-			response.body = json.dumps({ "data": participants })
+			response.body = json.dumps({ "data": decrypted_data })
 		except (
 			study_exceptions.StudyDoesNotExistException,
 		) as e:
