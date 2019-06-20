@@ -187,6 +187,64 @@ class Biobank_Admin {
 	}
 
 	/**
+	 * Encrypt the user's email address.
+	 *
+	 * @since	1.0.0
+	 * @param	string	$user_id	The user's ID.
+	 */
+	public function encrypt_email($user_id) {
+		global $wpdb;
+		$user = get_user_by("id", $user_id);
+
+		// TODO: Only encrypt the email address of participants.
+
+		require(plugin_dir_path(__FILE__) . "../includes/globals.php");
+		$nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
+		$cipherEmail = sodium_crypto_secretbox($user->data->user_email, $nonce, $encryptionKey);
+		$encodedEmail = base64_encode($nonce . $cipherEmail);
+
+		$wpdb->update(
+			'wp_users',
+			array(
+				'user_email' => $encodedEmail
+			),
+			array( 'ID' => $user_id ),
+			array(
+				'%s'
+			),
+			array( '%d' )
+		);
+	}
+
+	/**
+	 * Before sending an email, decrypt the user's email address if need be.
+	 *
+	 * @since	1.0.0
+	 * @param	string	args	The email's data.
+	 */
+	public function before_email($args) {
+		$user = get_user_by("email", $args['to']);
+
+		// TODO: Only decrypt the email address of participants.
+
+		require(plugin_dir_path(__FILE__) . "../includes/globals.php");
+		$decoded = base64_decode($user->data->user_email);
+		$cipherNonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
+		$cipherText = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
+		$email = sodium_crypto_secretbox_open($cipherText, $cipherNonce, $encryptionKey);
+
+		$new_wp_mail = array(
+			'to'          => $email,
+			'subject'     => $args['subject'],
+			'message'     => $args['message'],
+			'headers'     => $args['headers'],
+			'attachments' => $args['attachments'],
+		);
+
+		return $new_wp_mail;
+	}
+
+	/**
 	 * Refresh the page, prettifying the URL.
 	 * In the redirection, the GET parameters are stored in the session.
 	 * Use with caution.
