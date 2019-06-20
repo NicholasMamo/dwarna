@@ -15,3 +15,7 @@ fabric/fabric-scripts/hlfv12/composer/backup*
 
 rest/tests/cards
 rest/config/db.py
+
+# WordPress
+
+biobank-plugin/includes/globals.php
