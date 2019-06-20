@@ -190,7 +190,7 @@ def main(database, oauth_database, listen_port=None, token_expiry=oauth.token_ex
 	signal.signal(signal.SIGINT, sigint_handler)
 
 if __name__ == "__main__":
-	main(config.database, config.oauth_database, 7225)
+	main(db.database, db.oauth_database, 7225)
 	print("To test getting OAuth2 tokens:")
 	print("curl --ipv4 -v -X POST \\")
 	print("\t-d 'grant_type=client_credentials&client_id=abc&client_secret=xyz' \\")
