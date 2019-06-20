@@ -145,7 +145,6 @@ class ParticipantFormHandler extends UserFormHandler {
 					$user_data = array(
 						"ID" => "$id",
 						"user_login" => $input["username"],
-					    "user_login" => $input["username"],
 						"user_email" => $input["email"]
 					);
 
