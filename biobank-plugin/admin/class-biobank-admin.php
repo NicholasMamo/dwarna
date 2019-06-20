@@ -196,24 +196,27 @@ class Biobank_Admin {
 		global $wpdb;
 		$user = get_user_by("id", $user_id);
 
-		// TODO: Only encrypt the email address of participants.
+		if (in_array("participant", $user->roles)) {
+			/*
+			 * Only encrypt the email address of participants.
+			 */
+			require(plugin_dir_path(__FILE__) . "../includes/globals.php");
+			$nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
+			$cipherEmail = sodium_crypto_secretbox($user->data->user_email, $nonce, $encryptionKey);
+			$encodedEmail = base64_encode($nonce . $cipherEmail);
 
-		require(plugin_dir_path(__FILE__) . "../includes/globals.php");
-		$nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
-		$cipherEmail = sodium_crypto_secretbox($user->data->user_email, $nonce, $encryptionKey);
-		$encodedEmail = base64_encode($nonce . $cipherEmail);
-
-		$wpdb->update(
-			'wp_users',
-			array(
-				'user_email' => $encodedEmail
-			),
-			array( 'ID' => $user_id ),
-			array(
-				'%s'
-			),
-			array( '%d' )
-		);
+			$wpdb->update(
+				'wp_users',
+				array(
+					'user_email' => $encodedEmail
+				),
+				array( 'ID' => $user_id ),
+				array(
+					'%s'
+				),
+				array( '%d' )
+			);
+		}
 	}
 
 	/**
@@ -225,23 +228,28 @@ class Biobank_Admin {
 	public function before_email($args) {
 		$user = get_user_by("email", $args['to']);
 
-		// TODO: Only decrypt the email address of participants.
+		if (in_array("participant", $user->roles)) {
+			/*
+			 * Only decrypt the email address of participants.
+			 */
+			require(plugin_dir_path(__FILE__) . "../includes/globals.php");
+			$decoded = base64_decode($user->data->user_email);
+			$cipherNonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
+			$cipherText = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
+			$email = sodium_crypto_secretbox_open($cipherText, $cipherNonce, $encryptionKey);
 
-		require(plugin_dir_path(__FILE__) . "../includes/globals.php");
-		$decoded = base64_decode($user->data->user_email);
-		$cipherNonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
-		$cipherText = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
-		$email = sodium_crypto_secretbox_open($cipherText, $cipherNonce, $encryptionKey);
+			$new_wp_mail = array(
+				'to'          => $email,
+				'subject'     => $args['subject'],
+				'message'     => $args['message'],
+				'headers'     => $args['headers'],
+				'attachments' => $args['attachments'],
+			);
 
-		$new_wp_mail = array(
-			'to'          => $email,
-			'subject'     => $args['subject'],
-			'message'     => $args['message'],
-			'headers'     => $args['headers'],
-			'attachments' => $args['attachments'],
-		);
-
-		return $new_wp_mail;
+			return $new_wp_mail;
+		} else {
+			return $args;
+		}
 	}
 
 	/**
