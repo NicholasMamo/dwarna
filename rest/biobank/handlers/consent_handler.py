@@ -102,7 +102,10 @@ class ConsentHandler(PostgreSQLRouteHandler):
 			Consent should be the last thing that is saved.
 			The others can be saved with no consequence even if the consent fails.
 			"""
-			self._set_consent(study_id, username, True, *args, **kwargs)
+			thread = threading.Thread(target=self._set_consent, args=(study_id, username, True, *args), kwargs=kwargs)
+			thread.start()
+			self._threads.append(thread)
+			# self._set_consent(study_id, username, True, *args, **kwargs)
 
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
@@ -143,7 +146,10 @@ class ConsentHandler(PostgreSQLRouteHandler):
 		try:
 			username = self._sanitize(username)
 
-			self._set_consent(study_id, username, False, *args, **kwargs)
+			thread = threading.Thread(target=self._set_consent, args=(study_id, username, False, *args), kwargs=kwargs)
+			thread.start()
+			self._threads.append(thread)
+			# self._set_consent(study_id, username, False, *args, **kwargs)
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
 			response.body = json.dumps({ })
