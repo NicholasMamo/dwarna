@@ -240,7 +240,7 @@
 <span class="sd">		Set the consent of a participant.</span>
 
 <span class="sd">		:param study_id: The unique ID of the study.</span>
-<span class="sd">		:type study_id: int</span>
+<span class="sd">		:type study_id: str</span>
 <span class="sd">		:param username: The unique username of the participant.</span>
 <span class="sd">		:type username: str</span>
 
@@ -251,14 +251,16 @@
 		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
 
 		<span class="k">try</span><span class="p">:</span>
-			<span class="n">study_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
 			<span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
 
 			<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">			Consent should be the last thing that is saved.</span>
 <span class="sd">			The others can be saved with no consequence even if the consent fails.</span>
 <span class="sd">			&quot;&quot;&quot;</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_set_consent</span><span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+			<span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_consent</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">),</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span>
+			<span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">thread</span><span class="p">)</span>
+			<span class="c1"># self._set_consent(study_id, username, True, *args, **kwargs)</span>
 
 			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
 			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
@@ -286,7 +288,7 @@
 <span class="sd">		Withdraw the consent of a participant.</span>
 
 <span class="sd">		:param study_id: The unique ID of the study.</span>
-<span class="sd">		:type study_id: int</span>
+<span class="sd">		:type study_id: str</span>
 <span class="sd">		:param username: The unique username of the participant.</span>
 <span class="sd">		:type username: str</span>
 
@@ -297,10 +299,12 @@
 		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
 
 		<span class="k">try</span><span class="p">:</span>
-			<span class="n">study_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
 			<span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
 
-			<span class="bp">self</span><span class="o">.</span><span class="n">_set_consent</span><span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+			<span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_consent</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">),</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span>
+			<span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">thread</span><span class="p">)</span>
+			<span class="c1"># self._set_consent(study_id, username, False, *args, **kwargs)</span>
 			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
 			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
 			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="p">})</span>
@@ -324,7 +328,7 @@
 <span class="sd">		Get a list of participant which have given their consent to the given study.</span>
 
 <span class="sd">		:param study_id: The unique ID of the study.</span>
-<span class="sd">		:type study_id: int</span>
+<span class="sd">		:type study_id: str</span>
 
 <span class="sd">		:return: A response with any errors that may arise.</span>
 <span class="sd">			The body contains the studies.</span>
@@ -335,29 +339,26 @@
 
 		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
 
-		<span class="n">study_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
-
 		<span class="k">try</span><span class="p">:</span>
 			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_study_exists</span><span class="p">(</span><span class="n">study_id</span><span class="p">):</span>
 				<span class="k">raise</span> <span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyDoesNotExistException</span><span class="p">()</span>
 
-			<span class="n">study_address</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_study_address</span><span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
-
-			<span class="n">study</span> <span class="o">=</span> <span class="n">Study</span><span class="o">.</span><span class="n">load_study</span><span class="p">(</span><span class="n">study_address</span><span class="p">)</span>
-			<span class="n">participants</span> <span class="o">=</span> <span class="n">study</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">get_consenting_participants</span><span class="p">()</span><span class="o">.</span><span class="n">call</span><span class="p">()</span>
+			<span class="n">addresses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blockchain_connector</span><span class="o">.</span><span class="n">get_study_participants</span><span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 			<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">			Get the information of all participants that consented to the use of their sample in the study.</span>
 <span class="sd">			&quot;&quot;&quot;</span>
 			<span class="n">participants</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">				SELECT *</span>
-<span class="s2">				FROM participants</span>
+<span class="s2">				FROM</span>
+<span class="s2">					participants</span>
 <span class="s2">				WHERE</span>
 <span class="s2">					address IN (&#39;</span><span class="si">%s</span><span class="s2">&#39;)</span>
-<span class="s2">			&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s2">&quot;&#39;, &#39;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">participants</span><span class="p">)))</span>
+<span class="s2">			&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s2">&quot;&#39;, &#39;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">addresses</span><span class="p">)))</span>
+			<span class="n">decrypted_data</span> <span class="o">=</span> <span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decrypt_participant</span><span class="p">(</span><span class="n">participant</span><span class="p">)</span> <span class="k">for</span> <span class="n">participant</span> <span class="ow">in</span> <span class="n">participants</span> <span class="p">]</span>
 			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
 			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
-			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">participants</span> <span class="p">})</span>
+			<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">decrypted_data</span> <span class="p">})</span>
 		<span class="k">except</span> <span class="p">(</span>
 			<span class="n">study_exceptions</span><span class="o">.</span><span class="n">StudyDoesNotExistException</span><span class="p">,</span>
 		<span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -406,7 +407,7 @@
 <span class="sd">			&quot;&quot;&quot;</span>
 			<span class="n">studies</span> <span class="o">=</span> <span class="p">[]</span>
 			<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
-				<span class="n">study_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;study_id&quot;</span><span class="p">])</span>
+				<span class="n">study_id</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;study_id&quot;</span><span class="p">]</span>
 
 				<span class="n">consent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blockchain_connector</span><span class="o">.</span><span class="n">has_consent</span><span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 				<span class="k">if</span> <span class="n">consent</span><span class="p">:</span>
@@ -440,7 +441,7 @@
 <span class="sd">		Check whether the participant with the given username has consented to the use of his data in the given study.</span>
 
 <span class="sd">		:param study_id: The unique ID of the study.</span>
-<span class="sd">		:type study_id: int</span>
+<span class="sd">		:type study_id: str</span>
 <span class="sd">		:param username: The unique username of the participant.</span>
 <span class="sd">		:type username: str</span>
 
@@ -452,7 +453,6 @@
 		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
 
 		<span class="k">try</span><span class="p">:</span>
-			<span class="n">study_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
 			<span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
 
 			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_study_exists</span><span class="p">(</span><span class="n">study_id</span><span class="p">):</span>
@@ -563,7 +563,7 @@
 <span class="sd">		However, consent cannot be changed for inactive studies.</span>
 
 <span class="sd">		:param study_id: The unique ID of the study.</span>
-<span class="sd">		:type study_id: int</span>
+<span class="sd">		:type study_id: str</span>
 <span class="sd">		:param username: The unique username of the participant.</span>
 <span class="sd">		:type username: str</span>
 <span class="sd">		:param consent: The consent status.</span>

@@ -153,7 +153,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for main</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">The server that handles all requests to the backend.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -163,9 +165,10 @@
 <span class="kn">from</span> <span class="nn">oauth2.store.memory</span> <span class="k">import</span> <span class="n">ClientStore</span><span class="p">,</span> <span class="n">TokenStore</span>
 <span class="kn">from</span> <span class="nn">oauth2.tokengenerator</span> <span class="k">import</span> <span class="n">Uuid4</span>
 <span class="kn">from</span> <span class="nn">oauth2.web.wsgi</span> <span class="k">import</span> <span class="n">Application</span><span class="p">,</span> <span class="n">Request</span>
-
+<span class="kn">from</span> <span class="nn">threading</span> <span class="k">import</span> <span class="n">Thread</span>
 <span class="kn">from</span> <span class="nn">wsgiref.simple_server</span> <span class="k">import</span> <span class="n">make_server</span>
 
+<span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
@@ -179,6 +182,8 @@
 <span class="sd">Biobank-specific classes.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">threads.thread_manager</span> <span class="k">import</span> <span class="n">ThreadManager</span>
+
 <span class="kn">from</span> <span class="nn">biobank.handlers.blockchain.api.hyperledger</span> <span class="k">import</span> <span class="n">HyperledgerAPI</span>
 
 <span class="kn">from</span> <span class="nn">coauth.grants.grants</span> <span class="k">import</span> <span class="n">CustomClientCredentialsGrant</span>
@@ -189,7 +194,28 @@
 <span class="kn">from</span> <span class="nn">server.resource_server</span> <span class="k">import</span> <span class="n">ResourceServer</span>
 <span class="kn">from</span> <span class="nn">server.authorization_server</span> <span class="k">import</span> <span class="n">AuthorizationServer</span>
 
-<span class="kn">import</span> <span class="nn">config</span>
+<span class="kn">from</span> <span class="nn">config</span> <span class="k">import</span> <span class="n">blockchain</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">oauth</span><span class="p">,</span> <span class="n">routes</span>
+
+<span class="n">pid</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The PID of the REST server. Used in case it needs to be killed programmatically.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="setup_args"><a class="viewcode-back" href="../server.html#main.setup_args">[docs]</a><span class="k">def</span> <span class="nf">setup_args</span><span class="p">():</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Set up and get the list of command-line arguments.</span>
+
+<span class="sd">	Accepted arguments:</span>
+<span class="sd">		- -p --port		The port on which to serve the REST API, defaults to 7225.</span>
+
+<span class="sd">	:return: The command-line arguments.</span>
+<span class="sd">	:rtype: list</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Serve the REST API which controls the dynamic consent functionality.&quot;</span><span class="p">)</span>
+	<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="s2">&quot;--port&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&lt;Optional&gt; The port on which to serve the REST API, defaults to 7225.&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+	<span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+	<span class="k">return</span> <span class="n">args</span></div>
 
 <div class="viewcode-block" id="start_auth_server"><a class="viewcode-back" href="../server.html#main.start_auth_server">[docs]</a><span class="k">def</span> <span class="nf">start_auth_server</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">token_expiry</span><span class="p">,</span> <span class="n">connection</span><span class="p">,</span> <span class="n">oauth_connection</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
@@ -220,17 +246,26 @@
 <span class="sd">		The routes and their handler are also passed on as arguments.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="n">blockchain_handler</span> <span class="o">=</span> <span class="n">HyperledgerAPI</span><span class="p">(</span>
-			<span class="n">config</span><span class="o">.</span><span class="n">blockchain_host</span><span class="p">,</span>
-			<span class="n">config</span><span class="o">.</span><span class="n">blockchain_admin_port</span><span class="p">,</span>
-			<span class="n">config</span><span class="o">.</span><span class="n">blockchain_multiuser_port</span><span class="p">,</span>
+			<span class="n">blockchain</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+			<span class="n">blockchain</span><span class="o">.</span><span class="n">admin_port</span><span class="p">,</span>
+			<span class="n">blockchain</span><span class="o">.</span><span class="n">multiuser_port</span><span class="p">,</span>
 			<span class="n">connection</span>
 		<span class="p">)</span>
 
 		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Create a thread manager since some functionality uses threading.</span>
+<span class="sd">		This thread manager routinely checks for dead threads.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">thread_list</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="n">thread_manager</span> <span class="o">=</span> <span class="n">ThreadManager</span><span class="p">(</span><span class="n">thread_list</span><span class="p">)</span>
+		<span class="n">thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">thread_manager</span><span class="o">.</span><span class="n">run</span><span class="p">)</span>
+		<span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		The route handlers are a set of classes that handle different requests.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="n">route_handlers</span> <span class="o">=</span> <span class="p">{</span> <span class="n">handler_class</span><span class="p">:</span> <span class="n">handler_class</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">blockchain_handler</span><span class="p">)</span>
-							<span class="k">for</span> <span class="n">handler_class</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">handler_classes</span> <span class="p">}</span>
+		<span class="n">route_handlers</span> <span class="o">=</span> <span class="p">{</span> <span class="n">handler_class</span><span class="p">:</span> <span class="n">handler_class</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">blockchain_handler</span><span class="p">,</span> <span class="n">thread_list</span><span class="p">)</span>
+							<span class="k">for</span> <span class="n">handler_class</span> <span class="ow">in</span> <span class="n">routes</span><span class="o">.</span><span class="n">handler_classes</span> <span class="p">}</span>
 		<span class="n">route_handlers</span><span class="p">[</span><span class="n">HyperledgerAPI</span><span class="p">]</span> <span class="o">=</span> <span class="n">blockchain_handler</span>
 
 		<span class="n">resource_provider</span> <span class="o">=</span> <span class="n">ResourceServer</span><span class="p">(</span>
@@ -238,7 +273,7 @@
 			<span class="n">auth_code_store</span><span class="o">=</span><span class="n">PostgresqlAuthCodeStore</span><span class="p">(</span><span class="n">oauth_connection</span><span class="p">),</span>
 			<span class="n">client_store</span><span class="o">=</span><span class="n">PostgresqlClientStore</span><span class="p">(</span><span class="n">oauth_connection</span><span class="p">),</span>
 			<span class="n">token_generator</span><span class="o">=</span><span class="n">Uuid4</span><span class="p">(),</span>
-			<span class="n">routes</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">routes</span><span class="p">,</span>
+			<span class="n">routes</span><span class="o">=</span><span class="n">routes</span><span class="o">.</span><span class="n">routes</span><span class="p">,</span>
 			<span class="n">route_handlers</span><span class="o">=</span><span class="n">route_handlers</span><span class="p">)</span>
 
 		<span class="sd">&quot;&quot;&quot;</span>
@@ -253,8 +288,8 @@
 
 		<span class="n">client_credentials_grant</span> <span class="o">=</span> <span class="n">CustomClientCredentialsGrant</span><span class="p">(</span>
 			<span class="n">expires_in</span><span class="o">=</span><span class="n">token_expiry</span><span class="p">,</span>
-			<span class="n">scopes</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">scopes</span><span class="p">,</span>
-			<span class="n">default_scope</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">default_scope</span>
+			<span class="n">scopes</span><span class="o">=</span><span class="n">oauth</span><span class="o">.</span><span class="n">scopes</span><span class="p">,</span>
+			<span class="n">default_scope</span><span class="o">=</span><span class="n">oauth</span><span class="o">.</span><span class="n">default_scope</span>
 		<span class="p">)</span>
 		<span class="n">authorization_server</span><span class="o">.</span><span class="n">add_grant</span><span class="p">(</span><span class="n">client_credentials_grant</span><span class="p">)</span>
 
@@ -268,8 +303,7 @@
 	<span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
 		<span class="n">httpd</span><span class="o">.</span><span class="n">server_close</span><span class="p">()</span></div>
 
-<span class="n">pid</span> <span class="o">=</span> <span class="kc">None</span>
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../server.html#main.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">database</span><span class="p">,</span> <span class="n">oauth_database</span><span class="p">,</span> <span class="n">listen_port</span><span class="p">,</span> <span class="n">token_expiry</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">token_expiry</span><span class="p">):</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../server.html#main.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">database</span><span class="p">,</span> <span class="n">oauth_database</span><span class="p">,</span> <span class="n">listen_port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">token_expiry</span><span class="o">=</span><span class="n">oauth</span><span class="o">.</span><span class="n">token_expiry</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Establish a connection with PostgreSQL and start the server.</span>
 
@@ -277,26 +311,41 @@
 <span class="sd">	:type database: str</span>
 <span class="sd">	:param oauth_database: The name of the database to connect to for OAuth storage.</span>
 <span class="sd">	:type oauth_database: str</span>
-<span class="sd">	:param listen_port: The port on which the server listens.</span>
+<span class="sd">	:param listen_port: The port on which to serve the REST API.</span>
 <span class="sd">	:type listen_port: int</span>
 <span class="sd">	:param token_expiry: The time taken for an access token delivered by the authorization server to expire.</span>
 <span class="sd">		This should only be provided in testing environments.</span>
 <span class="sd">		Otherwise, the configuration should be updated.</span>
 <span class="sd">	:type token_expiry: int</span>
 <span class="sd">	&quot;&quot;&quot;</span>
-	<span class="k">global</span> <span class="n">pid</span>
 
-	<span class="c1"># get the connection details from the .pgpass file</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Get the listen port.</span>
+<span class="sd">	If it was not provided as an argument, it is sought as a command-line argument.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">if</span> <span class="n">listen_port</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+		<span class="n">args</span> <span class="o">=</span> <span class="n">setup_args</span><span class="p">()</span>
+		<span class="n">listen_port</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">port</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">port</span> <span class="k">else</span> <span class="mi">7225</span>
+
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Get the connection details from the .pgpass file.</span>
+<span class="sd">	Then, create connections to the server&#39;s database and to the OAuth 2.0 database.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
 	<span class="n">home</span> <span class="o">=</span> <span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">)</span>
 	<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">home</span><span class="p">,</span> <span class="s2">&quot;.pgpass&quot;</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
 		<span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+	<span class="n">connection</span> <span class="o">=</span> <span class="n">routes</span><span class="o">.</span><span class="n">handler_connector</span><span class="p">(</span><span class="n">database</span><span class="o">=</span><span class="n">database</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">)</span>
+	<span class="n">oauth_connection</span> <span class="o">=</span> <span class="n">routes</span><span class="o">.</span><span class="n">handler_connector</span><span class="p">(</span><span class="n">database</span><span class="o">=</span><span class="n">oauth_database</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span> <span class="n">cursor_factory</span><span class="o">=</span><span class="n">cursor</span><span class="p">)</span>
 
-	<span class="n">connection</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">handler_connector</span><span class="p">(</span><span class="n">database</span><span class="o">=</span><span class="n">database</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">)</span>
-	<span class="n">oauth_connection</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">handler_connector</span><span class="p">(</span><span class="n">database</span><span class="o">=</span><span class="n">oauth_database</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span> <span class="n">cursor_factory</span><span class="o">=</span><span class="n">cursor</span><span class="p">)</span>
+	<span class="k">global</span> <span class="n">pid</span>
+	<span class="n">pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
+
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Start the OAuth 2.0 server.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
 
 	<span class="n">auth_server</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">start_auth_server</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">listen_port</span><span class="p">,</span> <span class="n">token_expiry</span><span class="p">,</span> <span class="n">connection</span><span class="p">,</span> <span class="n">oauth_connection</span><span class="p">))</span>
 	<span class="n">auth_server</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-	<span class="n">pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
 
 	<span class="k">def</span> <span class="nf">sigint_handler</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
 		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Terminating servers...&quot;</span><span class="p">)</span>
@@ -307,7 +356,7 @@
 	<span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">sigint_handler</span><span class="p">)</span></div>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-	<span class="n">main</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">oauth_database</span><span class="p">,</span> <span class="mi">7225</span><span class="p">)</span>
+	<span class="n">main</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">oauth_database</span><span class="p">,</span> <span class="mi">7225</span><span class="p">)</span>
 	<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;To test getting OAuth2 tokens:&quot;</span><span class="p">)</span>
 	<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;curl --ipv4 -v -X POST </span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">)</span>
 	<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">-d &#39;grant_type=client_credentials&amp;client_id=abc&amp;client_secret=xyz&#39; </span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">)</span>

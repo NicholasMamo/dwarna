@@ -183,7 +183,7 @@
 Its job is to handle the given requests.</p>
 <dl class="class">
 <dt id="biobank.handlers.handler.PostgreSQLRouteHandler">
-<em class="property">class </em><code class="descclassname">biobank.handlers.handler.</code><code class="descname">PostgreSQLRouteHandler</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">biobank.handlers.handler.</code><code class="descname">PostgreSQLRouteHandler</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>threads</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class is based on PostgreSQL.
 It assumes that all the data is stored in a PostgerSQL database.</p>
 <p>The general workflow of handlers is as follows:</p>
@@ -268,6 +268,40 @@ It assumes that all the data is stored in a PostgerSQL database.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="biobank.handlers.handler.PostgreSQLRouteHandler._decrypt_participant">
+<code class="descname">_decrypt_participant</code><span class="sig-paren">(</span><em>participant</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler._decrypt_participant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler._decrypt_participant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decrypt the given participant’s data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>participant</strong> (<em>dict</em>) – The participant data to decrypt.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The same participant, but with the updated decrypted attributes.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="biobank.handlers.handler.PostgreSQLRouteHandler._encrypt_participant">
+<code class="descname">_encrypt_participant</code><span class="sig-paren">(</span><em>participant</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler._encrypt_participant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler._encrypt_participant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encrypt the given participant’s data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>participant</strong> (<em>dict</em>) – The participant data to encrypt.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The same participant, but with the updated encrypted attributes.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="biobank.handlers.handler.PostgreSQLRouteHandler._get_attribute_id">
 <code class="descname">_get_attribute_id</code><span class="sig-paren">(</span><em>name</em>, <em>type</em>, <em>constraints=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#PostgreSQLRouteHandler._get_attribute_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.PostgreSQLRouteHandler._get_attribute_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the unique ID of the attribute having the given details.</p>
@@ -294,7 +328,7 @@ It assumes that all the data is stored in a PostgerSQL database.</p>
 <dd><p>Get a list of attributes associated with the study identified by the given ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p>
+<dd class="field-odd"><p><strong>study_id</strong> (<em>str</em>) – The unique ID of the study.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A list of attribute objects.</p>
@@ -314,7 +348,7 @@ It assumes that all the data is stored in a PostgerSQL database.</p>
 <dd><p>Get a list of researchers associated with the study identified by the given ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p>
+<dd class="field-odd"><p><strong>study_id</strong> (<em>str</em>) – The unique ID of the study.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A list of researcher objects.</p>
@@ -336,7 +370,7 @@ A study is active if the date of execution is between its start and end dates.
 This operation is inclusive.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>study_id</strong> (<em>int</em>) – The study’s ID.</p>
+<dd class="field-odd"><p><strong>study_id</strong> (<em>str</em>) – The study’s ID.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A boolean indicating whether the study is active.</p>
@@ -450,7 +484,7 @@ This operation is inclusive.</p>
 <dd><p>Check whether a study with the given ID exists.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>study_id</strong> (<em>int</em>) – The study’s ID.</p>
+<dd class="field-odd"><p><strong>study_id</strong> (<em>str</em>) – The study’s ID.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A boolean indicating whether the study exists.</p>
@@ -532,13 +566,16 @@ Its purpose is to ensure that there is a link with the server.</p>
 
 <dl class="class">
 <dt id="biobank.handlers.handler.RouteHandler">
-<em class="property">class </em><code class="descclassname">biobank.handlers.handler.</code><code class="descname">RouteHandler</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#RouteHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.RouteHandler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">biobank.handlers.handler.</code><code class="descname">RouteHandler</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>threads</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#RouteHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.RouteHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>The route handler receives request arguments and uses them to service requests.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>encrypted_attributes</strong> (<em>str</em>) – The attributes that should be stored encrypted.</p></li>
 <li><p><strong>_connector</strong> (<a class="reference internal" href="connection.html#connection.connection.Connection" title="connection.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">connection.connection.Connection</span></code></a>) – The connector that is used to access the data store.</p></li>
 <li><p><strong>_blockchain_connector</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">biobank.blockchain.api.BlockchainAPI</span></code>) – The connector to the blockchain.</p></li>
+<li><p><strong>_threads</strong> – A list of threads, shared with the <code class="xref py py-class docutils literal notranslate"><span class="pre">async.thread_manager.ThreadManager</span></code>.
+The threads can be used to perform time-consuming operations asynchronously.</p></li>
 </ul>
 </dd>
 </dl>
@@ -561,7 +598,7 @@ Its purpose is to ensure that there is a link with the server.</p>
 
 <dl class="method">
 <dt id="biobank.handlers.handler.RouteHandler.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#RouteHandler.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.RouteHandler.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>threads</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#RouteHandler.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.RouteHandler.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the route handler, incorporating a connection with a store.
 This store can be both in memory or as a database.
 However, all route handlers need some form of connector to manage data.</p>
@@ -570,6 +607,8 @@ However, all route handlers need some form of connector to manage data.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>connector</strong> (<a class="reference internal" href="connection.html#connection.connection.Connection" title="connection.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">connection.connection.Connection</span></code></a>) – The connector that is used to access the data store.</p></li>
 <li><p><strong>blockchain_connector</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">biobank.blockchain.api.BlockchainAPI</span></code>) – The connector to the blockchain.</p></li>
+<li><p><strong>threads</strong> (<em>list</em>) – A list of threads, shared with the <code class="xref py py-class docutils literal notranslate"><span class="pre">async.thread_manager.ThreadManager</span></code>.
+The threads can be used to perform time-consuming operations asynchronously.</p></li>
 </ul>
 </dd>
 </dl>
@@ -581,11 +620,47 @@ However, all route handlers need some form of connector to manage data.</p>
 <dd><p>list of weak references to the object (if defined)</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="biobank.handlers.handler.RouteHandler._decrypt">
+<code class="descname">_decrypt</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#RouteHandler._decrypt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.RouteHandler._decrypt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decrypt the given string.</p>
+<p>The function looks for the encryption secret in the database configuration file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>string</strong> (<em>str</em>) – The string to decrypt.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The decrypted string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="biobank.handlers.handler.RouteHandler._encrypt">
+<code class="descname">_encrypt</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#RouteHandler._encrypt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.RouteHandler._encrypt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encrypt the given string.</p>
+<p>The function looks for the encryption secret in the database configuration file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>string</strong> (<em>str</em>) – The string to encrypt.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The encrypted string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="biobank.handlers.handler.UserHandler">
-<em class="property">class </em><code class="descclassname">biobank.handlers.handler.</code><code class="descname">UserHandler</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#UserHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.UserHandler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">biobank.handlers.handler.</code><code class="descname">UserHandler</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>threads</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/handler.html#UserHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.handler.UserHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>A handler that specializes in handling user requests.</p>
 </dd></dl>
 
@@ -594,7 +669,7 @@ However, all route handlers need some form of connector to manage data.</p>
 <p>The route handler to handle dynamic consent-related requests.</p>
 <dl class="class">
 <dt id="biobank.handlers.consent_handler.ConsentHandler">
-<em class="property">class </em><code class="descclassname">biobank.handlers.consent_handler.</code><code class="descname">ConsentHandler</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/consent_handler.html#ConsentHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.consent_handler.ConsentHandler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">biobank.handlers.consent_handler.</code><code class="descname">ConsentHandler</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>threads</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/consent_handler.html#ConsentHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.consent_handler.ConsentHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>The dynamic consent handler receives and handles requests that are related to participants giving or withdrawing their consent.</p>
 <dl class="method">
 <dt id="biobank.handlers.consent_handler.ConsentHandler._set_attribute_value">
@@ -626,7 +701,7 @@ However, consent cannot be changed for inactive studies.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p></li>
+<li><p><strong>study_id</strong> (<em>str</em>) – The unique ID of the study.</p></li>
 <li><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p></li>
 <li><p><strong>consent</strong> (<em>bool</em>) – The consent status.</p></li>
 </ul>
@@ -690,7 +765,7 @@ The studies are separated by IDs, and therefore the timeline can use it as a loo
 <dd><p>Get a list of participant which have given their consent to the given study.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p>
+<dd class="field-odd"><p><strong>study_id</strong> (<em>str</em>) – The unique ID of the study.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A response with any errors that may arise.
@@ -730,7 +805,7 @@ The body contains the studies.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p></li>
+<li><p><strong>study_id</strong> (<em>str</em>) – The unique ID of the study.</p></li>
 <li><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p></li>
 </ul>
 </dd>
@@ -750,7 +825,7 @@ The body contains the studies.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p></li>
+<li><p><strong>study_id</strong> (<em>str</em>) – The unique ID of the study.</p></li>
 <li><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p></li>
 </ul>
 </dd>
@@ -771,7 +846,7 @@ The body contains the consent status.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p></li>
+<li><p><strong>study_id</strong> (<em>str</em>) – The unique ID of the study.</p></li>
 <li><p><strong>username</strong> (<em>str</em>) – The unique username of the participant.</p></li>
 </ul>
 </dd>
@@ -792,15 +867,19 @@ The body contains the consent status.</p>
 <p>The route handler to handle participant-related requests.</p>
 <dl class="class">
 <dt id="biobank.handlers.participant_handler.ParticipantHandler">
-<em class="property">class </em><code class="descclassname">biobank.handlers.participant_handler.</code><code class="descname">ParticipantHandler</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/participant_handler.html#ParticipantHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.participant_handler.ParticipantHandler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">biobank.handlers.participant_handler.</code><code class="descname">ParticipantHandler</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>threads</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/participant_handler.html#ParticipantHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.participant_handler.ParticipantHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>The participant handler class receives and handles requests that are related to participants.</p>
 <dl class="method">
 <dt id="biobank.handlers.participant_handler.ParticipantHandler.create_participant">
-<code class="descname">create_participant</code><span class="sig-paren">(</span><em>username</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/participant_handler.html#ParticipantHandler.create_participant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.participant_handler.ParticipantHandler.create_participant" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create_participant</code><span class="sig-paren">(</span><em>username</em>, <em>name=''</em>, <em>email=''</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/participant_handler.html#ParticipantHandler.create_participant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.participant_handler.ParticipantHandler.create_participant" title="Permalink to this definition">¶</a></dt>
 <dd><p>Insert a participant into the database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The participant’s username.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The participant’s username.</p></li>
+<li><p><strong>username</strong> – The participant’s name.</p></li>
+<li><p><strong>username</strong> – The participant’s email.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A response with any errors that may arise.</p>
@@ -812,15 +891,19 @@ The body contains the consent status.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="biobank.handlers.participant_handler.ParticipantHandler.get_participants">
-<code class="descname">get_participants</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/participant_handler.html#ParticipantHandler.get_participants"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.participant_handler.ParticipantHandler.get_participants" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieve a list of all participants.</p>
+<dt id="biobank.handlers.participant_handler.ParticipantHandler.get_participant">
+<code class="descname">get_participant</code><span class="sig-paren">(</span><em>username=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/participant_handler.html#ParticipantHandler.get_participant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.participant_handler.ParticipantHandler.get_participant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter participants using the given arguments.
+If no arguments are given, all participants are returned.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A response containing a list of participant objects and any errors that may arise.</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The user’s username.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response with any errors that may arise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oauth2.web.Response</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -850,7 +933,7 @@ The body contains the consent status.</p>
 <p>The route handler to handle researcher-related requests.</p>
 <dl class="class">
 <dt id="biobank.handlers.researcher_handler.ResearcherHandler">
-<em class="property">class </em><code class="descclassname">biobank.handlers.researcher_handler.</code><code class="descname">ResearcherHandler</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/researcher_handler.html#ResearcherHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.researcher_handler.ResearcherHandler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">biobank.handlers.researcher_handler.</code><code class="descname">ResearcherHandler</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>threads</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/researcher_handler.html#ResearcherHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.researcher_handler.ResearcherHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>The researcher handler class receives and handles requests that are related to researchers.</p>
 <dl class="method">
 <dt id="biobank.handlers.researcher_handler.ResearcherHandler.create_researcher">
@@ -908,7 +991,7 @@ The body contains the consent status.</p>
 <p>The route handler to handle study-related requests.</p>
 <dl class="class">
 <dt id="biobank.handlers.study_handler.StudyHandler">
-<em class="property">class </em><code class="descclassname">biobank.handlers.study_handler.</code><code class="descname">StudyHandler</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/study_handler.html#StudyHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.study_handler.StudyHandler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">biobank.handlers.study_handler.</code><code class="descname">StudyHandler</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>threads</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/study_handler.html#StudyHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.study_handler.StudyHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>The study handler class receives and handles requests that are related to studies.</p>
 <dl class="method">
 <dt id="biobank.handlers.study_handler.StudyHandler._link_researchers">
@@ -917,7 +1000,7 @@ The body contains the consent status.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p></li>
+<li><p><strong>study_id</strong> (<em>str</em>) – The unique ID of the study.</p></li>
 <li><p><strong>researchers</strong> (<em>list</em>) – The list of researchers to link with the study.
 Each researcher is represented by their username.</p></li>
 </ul>
@@ -937,7 +1020,7 @@ Each researcher is represented by their username.</p></li>
 <dd><p>Unlink all researchers associated with the study identified by the given ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p>
+<dd class="field-odd"><p><strong>study_id</strong> (<em>str</em>) – The unique ID of the study.</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">handlers.exceptions.study_exceptions.StudyDoesNotExistException</span></code></p>
@@ -1117,7 +1200,7 @@ If a negative number is provided, all matching studies are retrieved.</p></li>
 <p>Defines the standard functions that a blockchain API should be able to handle.</p>
 <dl class="class">
 <dt id="biobank.handlers.blockchain.api.BlockchainAPI">
-<em class="property">class </em><code class="descclassname">biobank.handlers.blockchain.api.</code><code class="descname">BlockchainAPI</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api.html#BlockchainAPI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.BlockchainAPI" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">biobank.handlers.blockchain.api.</code><code class="descname">BlockchainAPI</code><span class="sig-paren">(</span><em>connector</em>, <em>blockchain_connector</em>, <em>threads</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api.html#BlockchainAPI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.BlockchainAPI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Classes that inherit from the blockchain API must implement its functionality.</p>
 <p>The class is meant to be a skeleton of functionality that they need to provide.
 Additional blockchain-specific parameters may be passed as <cite>args</cite> or <cite>kwargs</cite>.</p>
@@ -1477,6 +1560,28 @@ The consent changes relate the timestamp of the consent with the consent status.
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.get_study_participants">
+<code class="descname">get_study_participants</code><span class="sig-paren">(</span><em>study_id</em>, <em>port=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biobank/handlers/blockchain/api/hyperledger.html#HyperledgerAPI.get_study_participants"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.get_study_participants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of participant addresses of participants that have consented to participate in the study with the given ID.
+The function checks only the last consent of each participant.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>study_id</strong> (<em>int</em>) – The unique ID of the study.</p></li>
+<li><p><strong>port</strong> (<em>int</em>) – The port to use when issuing the identity.
+By default, the request is made to the admin REST API endpoint.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of participant addresses that have consented to participate in the study.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of str</p>
 </dd>
 </dl>
 </dd></dl>

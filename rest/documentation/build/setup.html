@@ -87,8 +87,8 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Setup</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-setup.minimal_schema">Schema</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-setup.oauth_schema">OAuth2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#schema">Schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#oauth2">OAuth2</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="biobank.html">Biobank Management</a></li>
@@ -162,30 +162,11 @@
             
   <div class="section" id="setup">
 <h1>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-setup.minimal_schema">
-<span id="schema"></span><h2>Schema<a class="headerlink" href="#module-setup.minimal_schema" title="Permalink to this headline">¶</a></h2>
-<p>Create the schema for the biobank.</p>
-<dl class="function">
-<dt id="setup.minimal_schema.create_schema">
-<code class="descclassname">setup.minimal_schema.</code><code class="descname">create_schema</code><span class="sig-paren">(</span><em>database</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/setup/minimal_schema.html#create_schema"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#setup.minimal_schema.create_schema" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create the schema in the given database.
-It is assumed that the database exists.
-This function can be used to create a test environment, refreshing the schema in just one database.</p>
-</dd></dl>
-
+<div class="section" id="schema">
+<h2>Schema<a class="headerlink" href="#schema" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-setup.oauth_schema">
-<span id="oauth2"></span><h2>OAuth2<a class="headerlink" href="#module-setup.oauth_schema" title="Permalink to this headline">¶</a></h2>
-<p>Create the database that stores access tokens.
-Implementation based on <a class="reference external" href="https://github.com/wndhydrnt/python-oauth2/blob/v1/oauth2/store/dbapi/mysql.py">https://github.com/wndhydrnt/python-oauth2/blob/v1/oauth2/store/dbapi/mysql.py</a>.</p>
-<dl class="function">
-<dt id="setup.oauth_schema.create_schema">
-<code class="descclassname">setup.oauth_schema.</code><code class="descname">create_schema</code><span class="sig-paren">(</span><em>database</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/setup/oauth_schema.html#create_schema"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#setup.oauth_schema.create_schema" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create the schema in the given database.
-It is assumed that the database exists.
-This function can be used to create a test environment, refreshing the schema in just one database.</p>
-</dd></dl>
-
+<div class="section" id="oauth2">
+<h2>OAuth2<a class="headerlink" href="#oauth2" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

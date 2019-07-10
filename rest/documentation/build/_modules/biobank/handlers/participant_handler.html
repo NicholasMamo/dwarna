@@ -158,7 +158,9 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 
 <span class="kn">from</span> <span class="nn">oauth2.web</span> <span class="k">import</span> <span class="n">Response</span>
@@ -171,11 +173,15 @@
 <span class="sd">	The participant handler class receives and handles requests that are related to participants.</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ParticipantHandler.create_participant"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.participant_handler.ParticipantHandler.create_participant">[docs]</a>	<span class="k">def</span> <span class="nf">create_participant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ParticipantHandler.create_participant"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.participant_handler.ParticipantHandler.create_participant">[docs]</a>	<span class="k">def</span> <span class="nf">create_participant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Insert a participant into the database.</span>
 
 <span class="sd">		:param username: The participant&#39;s username.</span>
+<span class="sd">		:type username: str</span>
+<span class="sd">		:param username: The participant&#39;s name.</span>
+<span class="sd">		:type username: str</span>
+<span class="sd">		:param username: The participant&#39;s email.</span>
 <span class="sd">		:type username: str</span>
 
 <span class="sd">		:return: A response with any errors that may arise.</span>
@@ -186,20 +192,31 @@
 
 		<span class="k">try</span><span class="p">:</span>
 			<span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+
 			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_participant_exists</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
 				<span class="k">raise</span> <span class="n">user_exceptions</span><span class="o">.</span><span class="n">ParticipantExistsException</span><span class="p">()</span>
 			<span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_exists</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
 				<span class="k">raise</span> <span class="n">user_exceptions</span><span class="o">.</span><span class="n">UserExistsException</span><span class="p">()</span>
 
+			<span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_encrypt_participant</span><span class="p">({</span>
+				<span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span>
+				<span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+				<span class="s1">&#39;email&#39;</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span>
+			<span class="p">})</span>
+
 			<span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span>
 				<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">				INSERT INTO users (</span>
-<span class="sd">					user_id, role)</span>
-<span class="sd">				VALUES (&#39;%s&#39;, &#39;%s&#39;);&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="s2">&quot;PARTICIPANT&quot;</span><span class="p">),</span>
+<span class="sd">				INSERT INTO</span>
+<span class="sd">					users (user_id, role)</span>
+<span class="sd">				VALUES</span>
+<span class="sd">					(&#39;%s&#39;, &#39;%s&#39;);</span>
+<span class="sd">				&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="s2">&quot;PARTICIPANT&quot;</span><span class="p">),</span>
 				<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">				INSERT INTO participants (</span>
-<span class="sd">					user_id)</span>
-<span class="sd">				VALUES (&#39;%s&#39;);&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">username</span><span class="p">),</span>
+<span class="sd">				INSERT INTO</span>
+<span class="sd">					participants (user_id, name, email)</span>
+<span class="sd">				VALUES</span>
+<span class="sd">					(&#39;%s&#39;, &#39;%s&#39;, &#39;%s&#39;);</span>
+<span class="sd">				&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;email&#39;</span><span class="p">]),</span>
 			<span class="p">])</span>
 
 			<span class="c1"># TODO: Error-handling.</span>
@@ -241,10 +258,11 @@
 
 			<span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span>
 				<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">				DELETE FROM users</span>
+<span class="sd">				DELETE FROM</span>
+<span class="sd">					users</span>
 <span class="sd">				WHERE</span>
-<span class="sd">					user_id = &#39;%s&#39;</span>
-<span class="sd">					AND role = &#39;PARTICIPANT&#39;;&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">username</span><span class="p">),</span>
+<span class="sd">					user_id = &#39;%s&#39; AND</span>
+<span class="sd">					role = &#39;PARTICIPANT&#39;;&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">username</span><span class="p">),</span>
 			<span class="p">])</span>
 			<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
 			<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
@@ -261,28 +279,59 @@
 
 		<span class="k">return</span> <span class="n">response</span></div>
 
-<div class="viewcode-block" id="ParticipantHandler.get_participants"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.participant_handler.ParticipantHandler.get_participants">[docs]</a>	<span class="k">def</span> <span class="nf">get_participants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ParticipantHandler.get_participant"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.participant_handler.ParticipantHandler.get_participant">[docs]</a>	<span class="k">def</span> <span class="nf">get_participant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		Retrieve a list of all participants.</span>
+<span class="sd">		Filter participants using the given arguments.</span>
+<span class="sd">		If no arguments are given, all participants are returned.</span>
 
-<span class="sd">		:return: A response containing a list of participant objects and any errors that may arise.</span>
+<span class="sd">		:param username: The user&#39;s username.</span>
+<span class="sd">		:type username: str</span>
+
+<span class="sd">		:return: A response with any errors that may arise.</span>
 <span class="sd">		:rtype: :class:`oauth2.web.Response`</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 
-		<span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">			SELECT user_id</span>
-<span class="s2">			FROM participants</span>
-<span class="s2">		&quot;&quot;&quot;</span><span class="p">)</span>
+		<span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">username</span><span class="p">)</span> <span class="k">if</span> <span class="n">username</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">username</span>
 
-		<span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">			SELECT COUNT(*)</span>
-<span class="s2">			FROM participants</span>
-<span class="s2">		&quot;&quot;&quot;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">username</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">				SELECT</span>
+<span class="s2">					user_id, name, email</span>
+<span class="s2">				FROM</span>
+<span class="s2">					participants</span>
+<span class="s2">			&quot;&quot;&quot;</span><span class="p">)</span>
+
+			<span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">				SELECT</span>
+<span class="s2">					COUNT(*)</span>
+<span class="s2">				FROM</span>
+<span class="s2">					participants</span>
+<span class="s2">			&quot;&quot;&quot;</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">				SELECT</span>
+<span class="s2">					user_id, name, email</span>
+<span class="s2">				FROM</span>
+<span class="s2">					participants</span>
+<span class="s2">				WHERE</span>
+<span class="s2">					user_id = &#39;</span><span class="si">%s</span><span class="s2">&#39;</span>
+<span class="s2">			&quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">username</span><span class="p">)</span>
+
+			<span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">				SELECT</span>
+<span class="s2">					COUNT(*)</span>
+<span class="s2">				FROM</span>
+<span class="s2">					participants</span>
+<span class="s2">				WHERE</span>
+<span class="s2">					user_id = &#39;</span><span class="si">%s</span><span class="s2">&#39;</span>
+<span class="s2">			&quot;&quot;&quot;</span><span class="p">)</span>
+
+		<span class="n">decrypted_data</span> <span class="o">=</span> <span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decrypt_participant</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span> <span class="p">]</span>
 
 		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
 		<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
 		<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
-		<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">rows</span><span class="p">,</span> <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="n">total</span> <span class="p">})</span>
+		<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">decrypted_data</span><span class="p">,</span> <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="n">total</span> <span class="p">})</span>
 		<span class="k">return</span> <span class="n">response</span></div></div>
 </pre></div>
 

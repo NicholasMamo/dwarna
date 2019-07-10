@@ -159,7 +159,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
-
+<span class="kn">from</span> <span class="nn">cryptography.fernet</span> <span class="k">import</span> <span class="n">Fernet</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
 
 <span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">general_exceptions</span><span class="p">,</span> <span class="n">study_exceptions</span><span class="p">,</span> <span class="n">user_exceptions</span>
@@ -167,20 +167,37 @@
 <span class="kn">from</span> <span class="nn">oauth2.web</span> <span class="k">import</span> <span class="n">Response</span>
 
 <span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">path</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+	<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">config</span> <span class="k">import</span> <span class="n">db</span>
 
 <div class="viewcode-block" id="RouteHandler"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.handler.RouteHandler">[docs]</a><span class="k">class</span> <span class="nc">RouteHandler</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	The route handler receives request arguments and uses them to service requests.</span>
 
+<span class="sd">	:cvar encrypted_attributes: The attributes that should be stored encrypted.</span>
+<span class="sd">	:vartype encrypted_attributes: str</span>
+
 <span class="sd">	:ivar _connector: The connector that is used to access the data store.</span>
 <span class="sd">	:vartype _connector: :class:`connection.connection.Connection`</span>
 <span class="sd">	:ivar _blockchain_connector: The connector to the blockchain.</span>
 <span class="sd">	:vartype _blockchain_connector: :class:`biobank.blockchain.api.BlockchainAPI`</span>
+<span class="sd">	:ivar _threads: A list of threads, shared with the :class:`async.thread_manager.ThreadManager`.</span>
+<span class="sd">					The threads can be used to perform time-consuming operations asynchronously.</span>
+<span class="sd">	:type _threads: list</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="RouteHandler.__init__"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.handler.RouteHandler.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connector</span><span class="p">,</span> <span class="n">blockchain_connector</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+	<span class="n">encrypted_attributes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="RouteHandler.__init__"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.handler.RouteHandler.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connector</span><span class="p">,</span> <span class="n">blockchain_connector</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Create the route handler, incorporating a connection with a store.</span>
 <span class="sd">		This store can be both in memory or as a database.</span>
@@ -190,10 +207,14 @@
 <span class="sd">		:type connector: :class:`connection.connection.Connection`</span>
 <span class="sd">		:param blockchain_connector: The connector to the blockchain.</span>
 <span class="sd">		:type blockchain_connector: :class:`biobank.blockchain.api.BlockchainAPI`</span>
+<span class="sd">		:param threads: A list of threads, shared with the :class:`async.thread_manager.ThreadManager`.</span>
+<span class="sd">						The threads can be used to perform time-consuming operations asynchronously.</span>
+<span class="sd">		:type threads: list</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 
 		<span class="bp">self</span><span class="o">.</span><span class="n">_connector</span> <span class="o">=</span> <span class="n">connector</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_blockchain_connector</span> <span class="o">=</span> <span class="n">blockchain_connector</span></div>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_blockchain_connector</span> <span class="o">=</span> <span class="n">blockchain_connector</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_threads</span> <span class="o">=</span> <span class="n">threads</span></div>
 
 <div class="viewcode-block" id="RouteHandler._404_page_not_found"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.handler.RouteHandler._404_page_not_found">[docs]</a>	<span class="k">def</span> <span class="nf">_404_page_not_found</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arguments</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
@@ -210,7 +231,39 @@
 		<span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
 		<span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">404</span>
 		<span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Page Not Found&quot;</span> <span class="p">})</span>
-		<span class="k">return</span> <span class="n">response</span></div></div>
+		<span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="RouteHandler._encrypt"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.handler.RouteHandler._encrypt">[docs]</a>	<span class="k">def</span> <span class="nf">_encrypt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Encrypt the given string.</span>
+
+<span class="sd">		The function looks for the encryption secret in the database configuration file.</span>
+
+<span class="sd">		:param string: The string to encrypt.</span>
+<span class="sd">		:type string: str</span>
+
+<span class="sd">		:return: The encrypted string.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">f</span> <span class="o">=</span> <span class="n">Fernet</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">encryption_secret</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">string</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RouteHandler._decrypt"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.handler.RouteHandler._decrypt">[docs]</a>	<span class="k">def</span> <span class="nf">_decrypt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Decrypt the given string.</span>
+
+<span class="sd">		The function looks for the encryption secret in the database configuration file.</span>
+
+<span class="sd">		:param string: The string to decrypt.</span>
+<span class="sd">		:type string: str</span>
+
+<span class="sd">		:return: The decrypted string.</span>
+<span class="sd">		:rtype: str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">f</span> <span class="o">=</span> <span class="n">Fernet</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">encryption_secret</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">string</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div></div>
 
 <div class="viewcode-block" id="PostgreSQLRouteHandler"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.handler.PostgreSQLRouteHandler">[docs]</a><span class="k">class</span> <span class="nc">PostgreSQLRouteHandler</span><span class="p">(</span><span class="n">RouteHandler</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
@@ -424,7 +477,7 @@
 <span class="sd">		Get a list of researchers associated with the study identified by the given ID.</span>
 
 <span class="sd">		:param study_id: The unique ID of the study.</span>
-<span class="sd">		:type study_id: int</span>
+<span class="sd">		:type study_id: str</span>
 
 <span class="sd">		:return: A list of researcher objects.</span>
 <span class="sd">		:rtype: list</span>
@@ -439,7 +492,7 @@
 <span class="s2">			SELECT researchers.*</span>
 <span class="s2">			FROM researchers, studies_researchers</span>
 <span class="s2">			WHERE</span>
-<span class="s2">				studies_researchers.&quot;study_id&quot; = </span><span class="si">%d</span><span class="s2"> AND</span>
+<span class="s2">				studies_researchers.&quot;study_id&quot; = &#39;</span><span class="si">%s</span><span class="s2">&#39; AND</span>
 <span class="s2">				studies_researchers.&quot;researcher_id&quot; = researchers.&quot;user_id&quot;</span>
 <span class="s2">		&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="p">))</span></div>
 
@@ -448,7 +501,7 @@
 <span class="sd">		Check whether a study with the given ID exists.</span>
 
 <span class="sd">		:param study_id: The study&#39;s ID.</span>
-<span class="sd">		:type study_id: int</span>
+<span class="sd">		:type study_id: str</span>
 
 <span class="sd">		:return: A boolean indicating whether the study exists.</span>
 <span class="sd">		:rtype: bool</span>
@@ -458,7 +511,7 @@
 <span class="s2">			SELECT *</span>
 <span class="s2">			FROM studies</span>
 <span class="s2">			WHERE</span>
-<span class="s2">				study_id = &#39;</span><span class="si">%d</span><span class="s2">&#39;</span>
+<span class="s2">				study_id = &#39;</span><span class="si">%s</span><span class="s2">&#39;</span>
 <span class="s2">			&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
 		<span class="p">)</span>
 		<span class="k">return</span> <span class="n">exists</span></div>
@@ -470,7 +523,7 @@
 <span class="sd">		This operation is inclusive.</span>
 
 <span class="sd">		:param study_id: The study&#39;s ID.</span>
-<span class="sd">		:type study_id: int</span>
+<span class="sd">		:type study_id: str</span>
 
 <span class="sd">		:return: A boolean indicating whether the study is active.</span>
 <span class="sd">		:rtype: bool</span>
@@ -482,7 +535,7 @@
 <span class="s2">			SELECT start_date, end_date</span>
 <span class="s2">			FROM studies</span>
 <span class="s2">			WHERE</span>
-<span class="s2">				study_id = &#39;</span><span class="si">%d</span><span class="s2">&#39;</span>
+<span class="s2">				study_id = &#39;</span><span class="si">%s</span><span class="s2">&#39;</span>
 <span class="s2">			&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">study_id</span><span class="p">)</span>
 		<span class="p">)</span>
 
@@ -499,7 +552,7 @@
 <span class="sd">		Get a list of attributes associated with the study identified by the given ID.</span>
 
 <span class="sd">		:param study_id: The unique ID of the study.</span>
-<span class="sd">		:type study_id: int</span>
+<span class="sd">		:type study_id: str</span>
 
 <span class="sd">		:return: A list of attribute objects.</span>
 <span class="sd">		:rtype: list</span>
@@ -514,7 +567,7 @@
 <span class="s2">			SELECT attributes.*</span>
 <span class="s2">			FROM attributes, studies_attributes</span>
 <span class="s2">			WHERE</span>
-<span class="s2">				studies_attributes.&quot;study_id&quot; = </span><span class="si">%d</span><span class="s2"> AND</span>
+<span class="s2">				studies_attributes.&quot;study_id&quot; = &#39;</span><span class="si">%s</span><span class="s2">&#39; AND</span>
 <span class="s2">				studies_attributes.&quot;attribute_id&quot; = attributes.&quot;attribute_id&quot;</span>
 <span class="s2">		&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">study_id</span><span class="p">,</span> <span class="p">))</span></div>
 
@@ -615,7 +668,39 @@
 <span class="sd">			&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="s2">&quot;{</span><span class="si">%s</span><span class="s2">}&quot;</span> <span class="o">%</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">constraints</span><span class="p">))</span>
 		<span class="p">)</span>
 
-		<span class="k">return</span> <span class="n">attribute_id</span><span class="p">[</span><span class="s2">&quot;attribute_id&quot;</span><span class="p">]</span></div></div>
+		<span class="k">return</span> <span class="n">attribute_id</span><span class="p">[</span><span class="s2">&quot;attribute_id&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="PostgreSQLRouteHandler._encrypt_participant"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.handler.PostgreSQLRouteHandler._encrypt_participant">[docs]</a>	<span class="k">def</span> <span class="nf">_encrypt_participant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">participant</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Encrypt the given participant&#39;s data.</span>
+
+<span class="sd">		:param participant: The participant data to encrypt.</span>
+<span class="sd">		:type participant: dict</span>
+
+<span class="sd">		:return: The same participant, but with the updated encrypted attributes.</span>
+<span class="sd">		:rtype: dict</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">encrypted</span> <span class="o">=</span> <span class="p">{</span> <span class="n">attribute</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_encrypt</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">participant</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attribute</span><span class="p">)))</span> <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">PostgreSQLRouteHandler</span><span class="o">.</span><span class="n">encrypted_attributes</span> <span class="p">}</span>
+		<span class="n">encrypted_participant</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">participant</span><span class="p">)</span>
+		<span class="n">encrypted_participant</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">encrypted</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">encrypted_participant</span></div>
+
+<div class="viewcode-block" id="PostgreSQLRouteHandler._decrypt_participant"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.handler.PostgreSQLRouteHandler._decrypt_participant">[docs]</a>	<span class="k">def</span> <span class="nf">_decrypt_participant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">participant</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Decrypt the given participant&#39;s data.</span>
+
+<span class="sd">		:param participant: The participant data to decrypt.</span>
+<span class="sd">		:type participant: dict</span>
+
+<span class="sd">		:return: The same participant, but with the updated decrypted attributes.</span>
+<span class="sd">		:rtype: dict</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">decrypted</span> <span class="o">=</span> <span class="p">{</span> <span class="n">attribute</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decrypt</span><span class="p">(</span><span class="n">participant</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attribute</span><span class="p">))</span> <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">PostgreSQLRouteHandler</span><span class="o">.</span><span class="n">encrypted_attributes</span> <span class="p">}</span>
+		<span class="n">decrypted_participant</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">participant</span><span class="p">)</span>
+		<span class="n">decrypted_participant</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">decrypted</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">decrypted_participant</span></div></div>
 
 <div class="viewcode-block" id="UserHandler"><a class="viewcode-back" href="../../../biobank.html#biobank.handlers.handler.UserHandler">[docs]</a><span class="k">class</span> <span class="nc">UserHandler</span><span class="p">(</span><span class="n">PostgreSQLRouteHandler</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>

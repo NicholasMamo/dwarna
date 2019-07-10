@@ -153,189 +153,64 @@
            <div itemprop="articleBody">
             
   <h1>Source code for tests.test</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Creates the setup for the tests.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">import</span> <span class="nn">functools</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">import</span> <span class="nn">signal</span>
+<span></span><span class="kn">import</span> <span class="nn">unittest</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
-<span class="n">path</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;../&quot;</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
-	<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
 
-<span class="kn">import</span> <span class="nn">main</span>
+<span class="kn">import</span> <span class="nn">biothings_client</span>
 
-<span class="kn">from</span> <span class="nn">biobank.handlers.exceptions</span> <span class="k">import</span> <span class="n">general_exceptions</span><span class="p">,</span> <span class="n">user_exceptions</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&quot;biothings_client </span><span class="si">{0}</span><span class="s1">&quot; loaded from &quot;</span><span class="si">{1}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">biothings_client</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span> <span class="n">biothings_client</span><span class="o">.</span><span class="vm">__file__</span><span class="p">))</span>
 
-<span class="kn">from</span> <span class="nn">.environment</span> <span class="k">import</span> <span class="o">*</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
 
-<div class="viewcode-block" id="retry"><a class="viewcode-back" href="../../tests.html#tests.test.retry">[docs]</a><span class="k">def</span> <span class="nf">retry</span><span class="p">(</span><span class="n">times</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">	A decorator function that keeps trying to get a result until it times out.</span>
-<span class="sd">	The function is useful in cases where results are not available immediately.</span>
-<span class="sd">	This case arises when the blockchain needs to be mined before getting a result.</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">gene</span> <span class="k">import</span> <span class="n">suite</span> <span class="k">as</span> <span class="n">gene_suite</span>
+    <span class="kn">from</span> <span class="nn">variant</span> <span class="k">import</span> <span class="n">suite</span> <span class="k">as</span> <span class="n">variant_suite</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">tests.gene</span> <span class="k">import</span> <span class="n">suite</span> <span class="k">as</span> <span class="n">gene_suite</span>
+    <span class="kn">from</span> <span class="nn">tests.variant</span> <span class="k">import</span> <span class="n">suite</span> <span class="k">as</span> <span class="n">variant_suite</span>
 
-<span class="sd">	:param times: The number of times that the function should be retried.</span>
-<span class="sd">		If the desired status is never received, the function returns the last output.</span>
-<span class="sd">	:type times: int</span>
+<div class="viewcode-block" id="TestBiothingsClient"><a class="viewcode-back" href="../../tests.html#tests.test.TestBiothingsClient">[docs]</a><span class="k">class</span> <span class="nc">TestBiothingsClient</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+<div class="viewcode-block" id="TestBiothingsClient.setUp"><a class="viewcode-back" href="../../tests.html#tests.test.TestBiothingsClient.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
 
-<span class="sd">	:return: The wrapped function.</span>
-<span class="sd">	:rtype: func</span>
-<span class="sd">	&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TestBiothingsClient.tearDown"><a class="viewcode-back" href="../../tests.html#tests.test.TestBiothingsClient.tearDown">[docs]</a>    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
 
-	<span class="k">def</span> <span class="nf">attempt</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		The function that takes care of attempts.</span>
+    <span class="k">def</span> <span class="nf">test_get_client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">gene_client</span> <span class="o">=</span> <span class="n">biothings_client</span><span class="o">.</span><span class="n">get_client</span><span class="p">(</span><span class="s2">&quot;gene&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">gene_client</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;MyGeneInfo&quot;</span><span class="p">)</span>
 
-<span class="sd">		:param function: The function to retry.</span>
-<span class="sd">		:type function: func</span>
-<span class="sd">		&quot;&quot;&quot;</span>
+        <span class="n">variant_client</span> <span class="o">=</span> <span class="n">biothings_client</span><span class="o">.</span><span class="n">get_client</span><span class="p">(</span><span class="s2">&quot;variant&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">variant_client</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;MyVariantInfo&quot;</span><span class="p">)</span>
 
-		<span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+        <span class="n">chem_client</span> <span class="o">=</span> <span class="n">biothings_client</span><span class="o">.</span><span class="n">get_client</span><span class="p">(</span><span class="s2">&quot;chem&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">chem_client</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;MyChemInfo&quot;</span><span class="p">)</span>
 
-		<span class="k">def</span> <span class="nf">wrapper_retry</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-			<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">			Retry the function a number of times.</span>
+        <span class="c1"># drug_client as an alias of chem_client</span>
+        <span class="n">drug_client</span> <span class="o">=</span> <span class="n">biothings_client</span><span class="o">.</span><span class="n">get_client</span><span class="p">(</span><span class="s2">&quot;drug&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">drug_client</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;MyChemInfo&quot;</span><span class="p">)</span>
 
-<span class="sd">			:param function: The function to retry.</span>
-<span class="sd">			:type function: func</span>
-<span class="sd">			:param status_code: The expected status that the function should return.</span>
-<span class="sd">				The status corresponds to an HTTP status code.</span>
-<span class="sd">			:type status_code: int</span>
-<span class="sd">			:param value: The desired return value.</span>
-<span class="sd">			:type: value</span>
+        <span class="n">disease_client</span> <span class="o">=</span> <span class="n">biothings_client</span><span class="o">.</span><span class="n">get_client</span><span class="p">(</span><span class="s2">&quot;disease&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">disease_client</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;MyDiseaseInfo&quot;</span><span class="p">)</span>
 
-<span class="sd">			:return: The response.</span>
-<span class="sd">			:rtype: :class:`requests.models.Response`</span>
-<span class="sd">			&quot;&quot;&quot;</span>
+        <span class="n">taxon_client</span> <span class="o">=</span> <span class="n">biothings_client</span><span class="o">.</span><span class="n">get_client</span><span class="p">(</span><span class="s2">&quot;taxon&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">taxon_client</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;MyTaxonInfo&quot;</span><span class="p">)</span></div>
 
-			<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">times</span><span class="p">):</span>
-				<span class="n">response</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-				<span class="k">if</span> <span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">status_code</span> <span class="ow">and</span>
-					<span class="p">(</span><span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">==</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;data&quot;</span><span class="p">])):</span>
-					<span class="k">break</span>
-				<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">suite</span><span class="p">():</span>
+    <span class="n">_biothings_suite</span> <span class="o">=</span> <span class="n">unittest</span><span class="o">.</span><span class="n">defaultTestLoader</span><span class="o">.</span><span class="n">loadTestsFromTestCase</span><span class="p">(</span><span class="n">TestBiothingsClient</span><span class="p">)</span>
+    <span class="n">_gene_suite</span> <span class="o">=</span> <span class="n">gene_suite</span><span class="p">()</span>
+    <span class="n">_variant_suite</span> <span class="o">=</span> <span class="n">variant_suite</span><span class="p">()</span>
+    <span class="n">_total_suite</span> <span class="o">=</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestSuite</span><span class="p">()</span>
+    <span class="n">_total_suite</span><span class="o">.</span><span class="n">addTest</span><span class="p">(</span><span class="n">_biothings_suite</span><span class="p">)</span>
+    <span class="n">_total_suite</span><span class="o">.</span><span class="n">addTest</span><span class="p">(</span><span class="n">_gene_suite</span><span class="p">)</span>
+    <span class="n">_total_suite</span><span class="o">.</span><span class="n">addTest</span><span class="p">(</span><span class="n">_variant_suite</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_total_suite</span>
 
-			<span class="k">return</span> <span class="n">response</span>
-
-		<span class="k">return</span> <span class="n">wrapper_retry</span>
-
-	<span class="k">return</span> <span class="n">attempt</span></div>
-
-<div class="viewcode-block" id="BiobankTestCase"><a class="viewcode-back" href="../../tests.html#tests.test.BiobankTestCase">[docs]</a><span class="k">class</span> <span class="nc">BiobankTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">	Test the schema.</span>
-<span class="sd">	&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="BiobankTestCase.setUpClass"><a class="viewcode-back" href="../../tests.html#tests.test.BiobankTestCase.setUpClass">[docs]</a>	<span class="nd">@classmethod</span>
-	<span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		Connect with the database, create the schema and start the server.</span>
-<span class="sd">		&quot;&quot;&quot;</span>
-
-		<span class="n">create_testing_environment</span><span class="p">()</span>
-		<span class="n">main</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">TEST_DATABASE</span><span class="p">,</span> <span class="n">TEST_OAUTH_DATABASE</span><span class="p">,</span> <span class="n">PORT</span><span class="p">)</span>
-		<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># wait so as not to overload the server with requests</span></div>
-
-<div class="viewcode-block" id="BiobankTestCase.tearDownClass"><a class="viewcode-back" href="../../tests.html#tests.test.BiobankTestCase.tearDownClass">[docs]</a>	<span class="nd">@classmethod</span>
-	<span class="k">def</span> <span class="nf">tearDownClass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		At the end of the tests, stop the server.</span>
-<span class="sd">		&quot;&quot;&quot;</span>
-
-		<span class="k">if</span> <span class="n">main</span><span class="o">.</span><span class="n">pid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">main</span><span class="o">.</span><span class="n">pid</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="BiobankTestCase._get_access_token"><a class="viewcode-back" href="../../tests.html#tests.test.BiobankTestCase._get_access_token">[docs]</a>	<span class="k">def</span> <span class="nf">_get_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scopes</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="s2">&quot;admin&quot;</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		Fetch the access token.</span>
-
-<span class="sd">		:param scopes: The list of scopes that are required.</span>
-<span class="sd">		:type scopes: list</span>
-<span class="sd">		:param user_id: The user on whose behalf an access token will be fetched.</span>
-<span class="sd">		:type user_id: str</span>
-
-<span class="sd">		:return: The access token to be used throughout the tests.</span>
-<span class="sd">		:rtype: dict</span>
-<span class="sd">		&quot;&quot;&quot;</span>
-
-		<span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-			<span class="s2">&quot;grant_type&quot;</span><span class="p">:</span> <span class="s2">&quot;client_credentials&quot;</span><span class="p">,</span>
-			<span class="s2">&quot;client_id&quot;</span><span class="p">:</span> <span class="n">CLIENT_ID</span><span class="p">,</span>
-			<span class="s2">&quot;client_secret&quot;</span><span class="p">:</span> <span class="n">CLIENT_SECRET</span><span class="p">,</span>
-			<span class="s2">&quot;scope&quot;</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">scopes</span><span class="p">),</span>
-			<span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span>
-		<span class="p">}</span>
-
-		<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;http://localhost:</span><span class="si">%d</span><span class="s1">/token&#39;</span> <span class="o">%</span> <span class="n">PORT</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
-		<span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="BiobankTestCase.send_volatile_request"><a class="viewcode-back" href="../../tests.html#tests.test.BiobankTestCase.send_volatile_request">[docs]</a>	<span class="k">def</span> <span class="nf">send_volatile_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">access_token</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		Send a volatile request to the backend.</span>
-<span class="sd">		A volatile request is one whose return value is expected to change over time.</span>
-<span class="sd">		The request is retried until the desired value is returned, or until some time passes.</span>
-
-<span class="sd">		:param method: The method to use when sending the request - usually POST or GET.</span>
-<span class="sd">		:type method: str</span>
-<span class="sd">		:param endpoint: The endpoint to which to make the request.</span>
-<span class="sd">		:type endpoint: str</span>
-<span class="sd">		:param data: The data to send along with the request.</span>
-<span class="sd">		:type data: dict</span>
-<span class="sd">		:param access_token: The access token to use to retrieve protected resources.</span>
-<span class="sd">		:type access_token: str</span>
-<span class="sd">		:param status_code: The expected status that the function should return.</span>
-<span class="sd">			The status corresponds to an HTTP status code.</span>
-<span class="sd">			By default, the function expects the request to succeed.</span>
-<span class="sd">		:type status_code: int</span>
-<span class="sd">		:param value: The desired return value.</span>
-<span class="sd">		:type: value</span>
-
-<span class="sd">		:return: The response.</span>
-<span class="sd">		:rtype: :class:`requests.models.Response`</span>
-<span class="sd">		&quot;&quot;&quot;</span>
-
-		<span class="n">volatile_request</span> <span class="o">=</span> <span class="n">retry</span><span class="p">(</span><span class="n">times</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
-		<span class="k">return</span> <span class="n">volatile_request</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">send_request</span><span class="p">)(</span><span class="n">status_code</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">access_token</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="BiobankTestCase.send_request"><a class="viewcode-back" href="../../tests.html#tests.test.BiobankTestCase.send_request">[docs]</a>	<span class="k">def</span> <span class="nf">send_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">access_token</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		Send a request to the backend.</span>
-
-<span class="sd">		:param method: The method to use when sending the request - usually POST or GET.</span>
-<span class="sd">		:type method: str</span>
-<span class="sd">		:param endpoint: The endpoint to which to make the request.</span>
-<span class="sd">		:type endpoint: str</span>
-<span class="sd">		:param data: The data to send along with the request.</span>
-<span class="sd">		:type data: dict</span>
-<span class="sd">		:param access_token: The access token to use to retrieve protected resources.</span>
-<span class="sd">		:type access_token: str</span>
-
-<span class="sd">		:return: The response.</span>
-<span class="sd">		:rtype: :class:`requests.models.Response`</span>
-<span class="sd">		&quot;&quot;&quot;</span>
-
-		<span class="n">method_handler</span> <span class="o">=</span> <span class="p">{</span>
-			<span class="s2">&quot;POST&quot;</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">,</span>
-			<span class="s2">&quot;GET&quot;</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">,</span>
-			<span class="s2">&quot;DELETE&quot;</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">delete</span><span class="p">,</span>
-			<span class="s2">&quot;PUT&quot;</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">put</span><span class="p">,</span>
-		<span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
-
-		<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">access_token</span> <span class="p">}</span>
-
-		<span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;GET&quot;</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">method_handler</span><span class="p">(</span><span class="s1">&#39;http://localhost:</span><span class="si">%d</span><span class="s1">/</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">PORT</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">),</span> <span class="n">params</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">method_handler</span><span class="p">(</span><span class="s1">&#39;http://localhost:</span><span class="si">%d</span><span class="s1">/</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">PORT</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">),</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span></div></div>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TextTestRunner</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">suite</span><span class="p">())</span>
 </pre></div>
 
            </div>

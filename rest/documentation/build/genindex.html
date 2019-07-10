@@ -161,7 +161,6 @@
  | <a href="#A"><strong>A</strong></a>
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
- | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
@@ -240,17 +239,23 @@
 </li>
       <li><a href="biobank.html#biobank.handlers.handler.PostgreSQLRouteHandler._attribute_id_exists">_attribute_id_exists() (biobank.handlers.handler.PostgreSQLRouteHandler method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="biobank.html#biobank.handlers.handler.PostgreSQLRouteHandler._biobanker_exists">_biobanker_exists() (biobank.handlers.handler.PostgreSQLRouteHandler method)</a>
 </li>
       <li><a href="biobank.html#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI._card_exists">_card_exists() (biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="biobank.html#biobank.handlers.handler.PostgreSQLRouteHandler._create_attribute">_create_attribute() (biobank.handlers.handler.PostgreSQLRouteHandler method)</a>
 </li>
       <li><a href="biobank.html#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI._create_participant">_create_participant() (biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI method)</a>
 </li>
-      <li><a href="tests.html#tests.test.BiobankTestCase._get_access_token">_get_access_token() (tests.test.BiobankTestCase method)</a>
+      <li><a href="biobank.html#biobank.handlers.handler.RouteHandler._decrypt">_decrypt() (biobank.handlers.handler.RouteHandler method)</a>
+</li>
+      <li><a href="biobank.html#biobank.handlers.handler.PostgreSQLRouteHandler._decrypt_participant">_decrypt_participant() (biobank.handlers.handler.PostgreSQLRouteHandler method)</a>
+</li>
+      <li><a href="biobank.html#biobank.handlers.handler.RouteHandler._encrypt">_encrypt() (biobank.handlers.handler.RouteHandler method)</a>
+</li>
+      <li><a href="biobank.html#biobank.handlers.handler.PostgreSQLRouteHandler._encrypt_participant">_encrypt_participant() (biobank.handlers.handler.PostgreSQLRouteHandler method)</a>
 </li>
       <li><a href="biobank.html#biobank.handlers.handler.PostgreSQLRouteHandler._get_attribute_id">_get_attribute_id() (biobank.handlers.handler.PostgreSQLRouteHandler method)</a>
 </li>
@@ -340,33 +345,21 @@
 </li>
       <li><a href="biobank.html#module-biobank.handlers.exceptions.study_exceptions">biobank.handlers.exceptions.study_exceptions (module)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="biobank.html#module-biobank.handlers.exceptions.user_exceptions">biobank.handlers.exceptions.user_exceptions (module)</a>
 </li>
       <li><a href="biobank.html#module-biobank.handlers.handler">biobank.handlers.handler (module)</a>
 </li>
       <li><a href="biobank.html#module-biobank.handlers.participant_handler">biobank.handlers.participant_handler (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="biobank.html#module-biobank.handlers.researcher_handler">biobank.handlers.researcher_handler (module)</a>
 </li>
       <li><a href="biobank.html#module-biobank.handlers.study_handler">biobank.handlers.study_handler (module)</a>
 </li>
-      <li><a href="server.html#config.biobanker_handler_class">biobanker_handler_class (in module config)</a>
-</li>
       <li><a href="biobank.html#biobank.handlers.exceptions.user_exceptions.BiobankerDoesNotExistException">BiobankerDoesNotExistException</a>
 </li>
       <li><a href="biobank.html#biobank.handlers.exceptions.user_exceptions.BiobankerExistsException">BiobankerExistsException</a>
-</li>
-      <li><a href="tests.html#tests.test.BiobankTestCase">BiobankTestCase (class in tests.test)</a>
-</li>
-      <li><a href="server.html#config.blockchain_admin_port">blockchain_admin_port (in module config)</a>
-</li>
-      <li><a href="server.html#config.blockchain_handler_class">blockchain_handler_class (in module config)</a>
-</li>
-      <li><a href="server.html#config.blockchain_host">blockchain_host (in module config)</a>
-</li>
-      <li><a href="server.html#config.blockchain_multiuser_port">blockchain_multiuser_port (in module config)</a>
 </li>
       <li><a href="biobank.html#biobank.handlers.blockchain.api.BlockchainAPI">BlockchainAPI (class in biobank.handlers.blockchain.api)</a>
 </li>
@@ -376,12 +369,6 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="tests.html#tests.environment.clear">clear() (in module tests.environment)</a>
-</li>
-      <li><a href="tests.html#tests.environment.CLIENT_ID">CLIENT_ID (in module tests.environment)</a>
-</li>
-      <li><a href="tests.html#tests.environment.CLIENT_SECRET">CLIENT_SECRET (in module tests.environment)</a>
-</li>
       <li><a href="connection.html#connection.db_connection.PostgreSQLConnection.close">close() (connection.db_connection.PostgreSQLConnection method)</a>
 </li>
       <li><a href="coauth.html#module-coauth">coauth (module)</a>
@@ -404,12 +391,10 @@
 </li>
       <li><a href="connection.html#module-connection.db_connection">connection.db_connection (module)</a>
 </li>
-      <li><a href="server.html#config.consent_handler_class">consent_handler_class (in module config)</a>
+      <li><a href="biobank.html#biobank.handlers.consent_handler.ConsentHandler">ConsentHandler (class in biobank.handlers.consent_handler)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="biobank.html#biobank.handlers.consent_handler.ConsentHandler">ConsentHandler (class in biobank.handlers.consent_handler)</a>
-</li>
       <li><a href="connection.html#connection.db_connection.PostgreSQLConnection.copy">copy() (connection.db_connection.PostgreSQLConnection method)</a>
 </li>
       <li><a href="connection.html#connection.db_connection.PostgreSQLConnection.count">count() (connection.db_connection.PostgreSQLConnection method)</a>
@@ -424,12 +409,6 @@
       </ul></li>
       <li><a href="biobank.html#biobank.handlers.researcher_handler.ResearcherHandler.create_researcher">create_researcher() (biobank.handlers.researcher_handler.ResearcherHandler method)</a>
 </li>
-      <li><a href="setup.html#setup.minimal_schema.create_schema">create_schema() (in module setup.minimal_schema)</a>
-
-      <ul>
-        <li><a href="setup.html#setup.oauth_schema.create_schema">(in module setup.oauth_schema)</a>
-</li>
-      </ul></li>
       <li><a href="biobank.html#biobank.handlers.blockchain.api.BlockchainAPI.create_study">create_study() (biobank.handlers.blockchain.api.BlockchainAPI method)</a>
 
       <ul>
@@ -438,25 +417,11 @@
         <li><a href="biobank.html#biobank.handlers.study_handler.StudyHandler.create_study">(biobank.handlers.study_handler.StudyHandler method)</a>
 </li>
       </ul></li>
-      <li><a href="tests.html#tests.environment.create_testing_environment">create_testing_environment() (in module tests.environment)</a>
-</li>
       <li><a href="connection.html#connection.db_connection.PostgreSQLConnection.cursor">cursor() (connection.db_connection.PostgreSQLConnection method)</a>
 </li>
       <li><a href="coauth.html#coauth.grants.grants.CustomClientCredentialsGrant">CustomClientCredentialsGrant (class in coauth.grants.grants)</a>
 </li>
       <li><a href="coauth.html#coauth.grants.grants.CustomClientCredentialsHandler">CustomClientCredentialsHandler (class in coauth.grants.grants)</a>
-</li>
-  </ul></td>
-</tr></table>
-
-<h2 id="D">D</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="server.html#config.database">database (in module config)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="server.html#config.default_scope">default_scope (in module config)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -486,8 +451,6 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="server.html#config.generic_handler_class">generic_handler_class (in module config)</a>
-</li>
       <li><a href="biobank.html#biobank.handlers.study_handler.StudyHandler.get_active_studies">get_active_studies() (biobank.handlers.study_handler.StudyHandler method)</a>
 </li>
       <li><a href="biobank.html#biobank.handlers.consent_handler.ConsentHandler.get_attributes">get_attributes() (biobank.handlers.consent_handler.ConsentHandler method)</a>
@@ -502,12 +465,12 @@
         <li><a href="biobank.html#biobank.handlers.consent_handler.ConsentHandler.get_consent_trail">(biobank.handlers.consent_handler.ConsentHandler method)</a>
 </li>
       </ul></li>
-      <li><a href="biobank.html#biobank.handlers.participant_handler.ParticipantHandler.get_participants">get_participants() (biobank.handlers.participant_handler.ParticipantHandler method)</a>
+      <li><a href="biobank.html#biobank.handlers.participant_handler.ParticipantHandler.get_participant">get_participant() (biobank.handlers.participant_handler.ParticipantHandler method)</a>
+</li>
+      <li><a href="biobank.html#biobank.handlers.consent_handler.ConsentHandler.get_participants_by_study">get_participants_by_study() (biobank.handlers.consent_handler.ConsentHandler method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="biobank.html#biobank.handlers.consent_handler.ConsentHandler.get_participants_by_study">get_participants_by_study() (biobank.handlers.consent_handler.ConsentHandler method)</a>
-</li>
       <li><a href="biobank.html#biobank.handlers.researcher_handler.ResearcherHandler.get_researchers">get_researchers() (biobank.handlers.researcher_handler.ResearcherHandler method)</a>
 </li>
       <li><a href="biobank.html#biobank.handlers.study_handler.StudyHandler.get_studies">get_studies() (biobank.handlers.study_handler.StudyHandler method)</a>
@@ -524,6 +487,8 @@
 </li>
       <li><a href="biobank.html#biobank.handlers.study_handler.StudyHandler.get_study_by_id">get_study_by_id() (biobank.handlers.study_handler.StudyHandler method)</a>
 </li>
+      <li><a href="biobank.html#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.get_study_participants">get_study_participants() (biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI method)</a>
+</li>
       <li><a href="biobank.html#biobank.handlers.consent_handler.ConsentHandler.give_consent">give_consent() (biobank.handlers.consent_handler.ConsentHandler method)</a>
 </li>
   </ul></td>
@@ -534,14 +499,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="server.html#server.resource_server.ResourceServer.handle_request">handle_request() (server.resource_server.ResourceServer method)</a>
 </li>
-      <li><a href="server.html#config.handler_classes">handler_classes (in module config)</a>
-</li>
-      <li><a href="server.html#config.handler_connector">handler_connector (in module config)</a>
-</li>
       <li><a href="biobank.html#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.has_card">has_card() (biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="biobank.html#biobank.handlers.blockchain.api.BlockchainAPI.has_consent">has_consent() (biobank.handlers.blockchain.api.BlockchainAPI method)</a>
 
       <ul>
@@ -550,6 +509,8 @@
         <li><a href="biobank.html#biobank.handlers.consent_handler.ConsentHandler.has_consent">(biobank.handlers.consent_handler.ConsentHandler method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="biobank.html#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI">HyperledgerAPI (class in biobank.handlers.blockchain.api.hyperledger)</a>
 </li>
   </ul></td>
@@ -592,12 +553,10 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="server.html#config.oauth_database">oauth_database (in module config)</a>
+      <li><a href="server.html#server.application.OAuthApplication">OAuthApplication (class in server.application)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="server.html#server.application.OAuthApplication">OAuthApplication (class in server.application)</a>
-</li>
       <li><a href="coauth.html#coauth.oauth_request_handler.OAuthRequestHandler">OAuthRequestHandler (class in coauth.oauth_request_handler)</a>
 </li>
   </ul></td>
@@ -606,17 +565,15 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="server.html#config.participant_handler_class">participant_handler_class (in module config)</a>
-</li>
       <li><a href="biobank.html#biobank.handlers.exceptions.user_exceptions.ParticipantDoesNotExistException">ParticipantDoesNotExistException</a>
 </li>
       <li><a href="biobank.html#biobank.handlers.exceptions.user_exceptions.ParticipantExistsException">ParticipantExistsException</a>
 </li>
       <li><a href="biobank.html#biobank.handlers.participant_handler.ParticipantHandler">ParticipantHandler (class in biobank.handlers.participant_handler)</a>
 </li>
-      <li><a href="biobank.html#biobank.handlers.handler.PostgreSQLRouteHandler.ping">ping() (biobank.handlers.handler.PostgreSQLRouteHandler method)</a>
+      <li><a href="server.html#main.pid">pid (in module main)</a>
 </li>
-      <li><a href="tests.html#tests.environment.PORT">PORT (in module tests.environment)</a>
+      <li><a href="biobank.html#biobank.handlers.handler.PostgreSQLRouteHandler.ping">ping() (biobank.handlers.handler.PostgreSQLRouteHandler method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -646,23 +603,17 @@
 </li>
       <li><a href="biobank.html#biobank.handlers.study_handler.StudyHandler.remove_study">remove_study() (biobank.handlers.study_handler.StudyHandler method)</a>
 </li>
-      <li><a href="server.html#config.researcher_handler_class">researcher_handler_class (in module config)</a>
-</li>
-      <li><a href="biobank.html#biobank.handlers.exceptions.user_exceptions.ResearcherDoesNotExistException">ResearcherDoesNotExistException</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="biobank.html#biobank.handlers.exceptions.user_exceptions.ResearcherDoesNotExistException">ResearcherDoesNotExistException</a>
+</li>
       <li><a href="biobank.html#biobank.handlers.exceptions.user_exceptions.ResearcherExistsException">ResearcherExistsException</a>
 </li>
       <li><a href="biobank.html#biobank.handlers.researcher_handler.ResearcherHandler">ResearcherHandler (class in biobank.handlers.researcher_handler)</a>
 </li>
       <li><a href="server.html#server.resource_server.ResourceServer">ResourceServer (class in server.resource_server)</a>
 </li>
-      <li><a href="tests.html#tests.test.retry">retry() (in module tests.test)</a>
-</li>
       <li><a href="biobank.html#biobank.handlers.handler.RouteHandler">RouteHandler (class in biobank.handlers.handler)</a>
-</li>
-      <li><a href="server.html#config.routes">routes (in module config)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -674,15 +625,9 @@
 </li>
       <li><a href="coauth.html#coauth.token_store.postgresql_token_store.PostgresqlAccessTokenStore.save_token">save_token() (coauth.token_store.postgresql_token_store.PostgresqlAccessTokenStore method)</a>
 </li>
-      <li><a href="server.html#config.scopes">scopes (in module config)</a>
-</li>
       <li><a href="connection.html#connection.db_connection.PostgreSQLConnection.select">select() (connection.db_connection.PostgreSQLConnection method)</a>
 </li>
       <li><a href="connection.html#connection.db_connection.PostgreSQLConnection.select_one">select_one() (connection.db_connection.PostgreSQLConnection method)</a>
-</li>
-      <li><a href="tests.html#tests.test.BiobankTestCase.send_request">send_request() (tests.test.BiobankTestCase method)</a>
-</li>
-      <li><a href="tests.html#tests.test.BiobankTestCase.send_volatile_request">send_volatile_request() (tests.test.BiobankTestCase method)</a>
 </li>
       <li><a href="server.html#module-server">server (module)</a>
 </li>
@@ -692,25 +637,21 @@
 </li>
       <li><a href="server.html#module-server.exceptions.request_exceptions">server.exceptions.request_exceptions (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="server.html#module-server.resource_server">server.resource_server (module)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="biobank.html#biobank.handlers.blockchain.api.BlockchainAPI.set_consent">set_consent() (biobank.handlers.blockchain.api.BlockchainAPI method)</a>
 
       <ul>
         <li><a href="biobank.html#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.set_consent">(biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI method)</a>
 </li>
       </ul></li>
-      <li><a href="setup.html#module-setup.minimal_schema">setup.minimal_schema (module)</a>
+      <li><a href="tests.html#tests.test.TestBiothingsClient.setUp">setUp() (tests.test.TestBiothingsClient method)</a>
 </li>
-      <li><a href="setup.html#module-setup.oauth_schema">setup.oauth_schema (module)</a>
-</li>
-      <li><a href="tests.html#tests.test.BiobankTestCase.setUpClass">setUpClass() (tests.test.BiobankTestCase class method)</a>
+      <li><a href="server.html#main.setup_args">setup_args() (in module main)</a>
 </li>
       <li><a href="server.html#main.start_auth_server">start_auth_server() (in module main)</a>
-</li>
-      <li><a href="server.html#config.study_handler_class">study_handler_class (in module config)</a>
 </li>
       <li><a href="biobank.html#biobank.handlers.exceptions.study_exceptions.StudyDoesNotExistException">StudyDoesNotExistException</a>
 </li>
@@ -726,21 +667,15 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="tests.html#tests.test.BiobankTestCase.tearDownClass">tearDownClass() (tests.test.BiobankTestCase class method)</a>
+      <li><a href="tests.html#tests.test.TestBiothingsClient.tearDown">tearDown() (tests.test.TestBiothingsClient method)</a>
 </li>
-      <li><a href="tests.html#tests.environment.TEST_DATABASE">TEST_DATABASE (in module tests.environment)</a>
-</li>
-      <li><a href="tests.html#tests.environment.TEST_OAUTH_DATABASE">TEST_OAUTH_DATABASE (in module tests.environment)</a>
+      <li><a href="tests.html#tests.test.TestBiothingsClient">TestBiothingsClient (class in tests.test)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="tests.html#module-tests.environment">tests.environment (module)</a>
-</li>
       <li><a href="tests.html#module-tests.test">tests.test (module)</a>
 </li>
       <li><a href="biobank.html#biobank.handlers.handler.PostgreSQLRouteHandler.to_binary">to_binary() (biobank.handlers.handler.PostgreSQLRouteHandler method)</a>
-</li>
-      <li><a href="server.html#config.token_expiry">token_expiry (in module config)</a>
 </li>
   </ul></td>
 </tr></table>

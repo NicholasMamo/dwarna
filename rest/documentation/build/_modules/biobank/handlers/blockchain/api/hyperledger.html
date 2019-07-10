@@ -163,6 +163,7 @@
 <span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">urllib</span>
@@ -270,7 +271,7 @@
 <span class="sd">		&quot;&quot;&quot;</span>
 
 		<span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
-		
+
 		<span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_card_exists</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 			<span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_card_exists</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)):</span>
 			<span class="sd">&quot;&quot;&quot;</span>
@@ -615,6 +616,53 @@
 
 		<span class="k">pass</span></div>
 
+<div class="viewcode-block" id="HyperledgerAPI.get_study_participants"><a class="viewcode-back" href="../../../../../biobank.html#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.get_study_participants">[docs]</a>	<span class="k">def</span> <span class="nf">get_study_participants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Get a list of participant addresses of participants that have consented to participate in the study with the given ID.</span>
+<span class="sd">		The function checks only the last consent of each participant.</span>
+
+<span class="sd">		:param study_id: The unique ID of the study.</span>
+<span class="sd">		:type study_id: int</span>
+<span class="sd">		:param port: The port to use when issuing the identity.</span>
+<span class="sd">			By default, the request is made to the admin REST API endpoint.</span>
+<span class="sd">		:type port: int</span>
+
+<span class="sd">		:return: A list of participant addresses that have consented to participate in the study.</span>
+<span class="sd">		:rtype: list of str</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_admin_port</span> <span class="k">if</span> <span class="n">port</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">port</span>
+
+		<span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+			<span class="s2">&quot;study_id&quot;</span><span class="p">:</span> <span class="n">f</span><span class="s2">&quot;resource:org.consent.model.Study#</span><span class="si">{study_id}</span><span class="s2">&quot;</span>
+		<span class="p">}</span>
+		<span class="n">param_string</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+		<span class="n">endpoint</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self._host}</span><span class="s2">:</span><span class="si">{port}</span><span class="s2">/api/queries/get_study_consents?</span><span class="si">{param_string}</span><span class="s2">&quot;</span>
+		<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span> <span class="p">})</span>
+
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Sort the consent changes in descending order of timestamp to be certain of their validity.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">consent_changes</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+		<span class="n">consent_changes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">consent_changes</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">change</span><span class="p">:</span> <span class="n">change</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">])[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+		<span class="n">address_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;\#(.+?)$&#39;</span><span class="p">)</span>
+		<span class="n">checked_participants</span><span class="p">,</span> <span class="n">participants</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">change</span> <span class="ow">in</span> <span class="n">consent_changes</span><span class="p">:</span>
+			<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			Go through each consent change, skipping those of participants that already been encountered.</span>
+<span class="sd">			In this way, if a participant most recently withdrew consent, past occurrences of them giving consent are ignored.</span>
+<span class="sd">			If the participant has given consent and they have not been encountered before, extract their address.</span>
+<span class="sd">			&quot;&quot;&quot;</span>
+			<span class="n">participant</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s1">&#39;participant&#39;</span><span class="p">]</span>
+			<span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">participant</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">checked_participants</span><span class="p">:</span>
+				<span class="n">participants</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">address_pattern</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">participant</span><span class="p">))</span>
+
+			<span class="k">if</span> <span class="n">participant</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">checked_participants</span><span class="p">:</span>
+				<span class="n">checked_participants</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">participant</span><span class="p">)</span>
+
+		<span class="k">return</span> <span class="n">participants</span></div>
+
 <div class="viewcode-block" id="HyperledgerAPI.get_consent_trail"><a class="viewcode-back" href="../../../../../biobank.html#biobank.handlers.blockchain.api.hyperledger.HyperledgerAPI.get_consent_trail">[docs]</a>	<span class="k">def</span> <span class="nf">get_consent_trail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">access_token</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Get a user&#39;s consent trail for the one given study.</span>
@@ -664,9 +712,12 @@
 <span class="sd">		&quot;&quot;&quot;</span>
 
 		<span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector</span><span class="o">.</span><span class="n">select_one</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">			SELECT address</span>
-<span class="s2">			FROM participants</span>
-<span class="s2">			WHERE user_id = &#39;</span><span class="si">%s</span><span class="s2">&#39;</span>
+<span class="s2">			SELECT</span>
+<span class="s2">				address</span>
+<span class="s2">			FROM</span>
+<span class="s2">				participants</span>
+<span class="s2">			WHERE</span>
+<span class="s2">				user_id = &#39;</span><span class="si">%s</span><span class="s2">&#39;</span>
 <span class="s2">		&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">username</span><span class="p">))</span>
 		<span class="n">address</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">]</span>
 		<span class="k">return</span> <span class="n">address</span></div></div>

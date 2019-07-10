@@ -19,3 +19,7 @@ rest/config/db.py
 # WordPress
 
 biobank-plugin/includes/globals.php
+
+# Documentation
+
+rest/documentation/build
