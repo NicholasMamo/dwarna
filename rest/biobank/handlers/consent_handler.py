@@ -105,7 +105,6 @@ class ConsentHandler(PostgreSQLRouteHandler):
 			thread = threading.Thread(target=self._set_consent, args=(study_id, username, True, *args), kwargs=kwargs)
 			thread.start()
 			self._threads.append(thread)
-			# self._set_consent(study_id, username, True, *args, **kwargs)
 
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
@@ -149,7 +148,7 @@ class ConsentHandler(PostgreSQLRouteHandler):
 			thread = threading.Thread(target=self._set_consent, args=(study_id, username, False, *args), kwargs=kwargs)
 			thread.start()
 			self._threads.append(thread)
-			# self._set_consent(study_id, username, False, *args, **kwargs)
+
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
 			response.body = json.dumps({ })
