@@ -14,7 +14,7 @@ import uuid
 
 from functools import wraps
 
-path = sys.path[0]
+path = os.path.dirname(os.path.realpath(__file__))
 path = os.path.join(path, "../")
 if path not in sys.path:
 	sys.path.insert(1, path)
@@ -23,7 +23,7 @@ import main
 
 from biobank.handlers.exceptions import general_exceptions, user_exceptions
 
-from .environment import *
+from tests.environment import *
 
 def retry(times=10):
 	"""
