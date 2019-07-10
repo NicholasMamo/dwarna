@@ -35,11 +35,14 @@ class RouteHandler(ABC):
 	:vartype _connector: :class:`connection.connection.Connection`
 	:ivar _blockchain_connector: The connector to the blockchain.
 	:vartype _blockchain_connector: :class:`biobank.blockchain.api.BlockchainAPI`
+	:ivar _threads: A list of threads, shared with the :class:`async.thread_manager.ThreadManager`.
+					The threads can be used to perform time-consuming operations asynchronously.
+	:type _threads: list
 	"""
 
 	encrypted_attributes = ['name', 'email']
 
-	def __init__(self, connector, blockchain_connector, *args, **kwargs):
+	def __init__(self, connector, blockchain_connector, threads, *args, **kwargs):
 		"""
 		Create the route handler, incorporating a connection with a store.
 		This store can be both in memory or as a database.
@@ -49,10 +52,14 @@ class RouteHandler(ABC):
 		:type connector: :class:`connection.connection.Connection`
 		:param blockchain_connector: The connector to the blockchain.
 		:type blockchain_connector: :class:`biobank.blockchain.api.BlockchainAPI`
+		:param threads: A list of threads, shared with the :class:`async.thread_manager.ThreadManager`.
+						The threads can be used to perform time-consuming operations asynchronously.
+		:type threads: list
 		"""
 
 		self._connector = connector
 		self._blockchain_connector = blockchain_connector
+		self._threads = threads
 
 	def _404_page_not_found(self, arguments):
 		"""

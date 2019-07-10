@@ -10,7 +10,7 @@ from oauth2.grant import RefreshToken
 from oauth2.store.memory import ClientStore, TokenStore
 from oauth2.tokengenerator import Uuid4
 from oauth2.web.wsgi import Application, Request
-
+from threading import Thread
 from wsgiref.simple_server import make_server
 
 import argparse
@@ -26,6 +26,8 @@ from psycopg2.extensions import cursor
 """
 Biobank-specific classes.
 """
+
+from threads.thread_manager import ThreadManager
 
 from biobank.handlers.blockchain.api.hyperledger import HyperledgerAPI
 
@@ -96,9 +98,18 @@ def start_auth_server(port, token_expiry, connection, oauth_connection):
 		)
 
 		"""
+		Create a thread manager since some functionality uses threading.
+		This thread manager routinely checks for dead threads.
+		"""
+		thread_list = []
+		thread_manager = ThreadManager(thread_list)
+		thread = Thread(target=thread_manager.run)
+		thread.start()
+
+		"""
 		The route handlers are a set of classes that handle different requests.
 		"""
-		route_handlers = { handler_class: handler_class(connection, blockchain_handler)
+		route_handlers = { handler_class: handler_class(connection, blockchain_handler, thread_list)
 							for handler_class in routes.handler_classes }
 		route_handlers[HyperledgerAPI] = blockchain_handler
 
