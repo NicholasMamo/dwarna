@@ -197,6 +197,7 @@ class Biobank {
 		$this->loader->add_action( 'admin_post_consent_form', $consent_form_handler, 'update_consent' );
 
 		$this->loader->add_action( 'user_register', $plugin_admin, 'encrypt_email' );
+		$this->loader->add_action( 'profile_update', $plugin_admin, 'encrypt_email' );
 		$this->loader->add_action( 'wp_mail', $plugin_admin, 'before_email' );
 	}
 
