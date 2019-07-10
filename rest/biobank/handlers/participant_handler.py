@@ -6,6 +6,7 @@ import json
 import os
 import psycopg2
 import sys
+import threading
 import traceback
 
 from oauth2.web import Response
@@ -65,7 +66,9 @@ class ParticipantHandler(UserHandler):
 			])
 
 			# TODO: Error-handling.
-			hyperledger_response = self._blockchain_connector.create_participant(username)
+			thread = threading.Thread(target=self._blockchain_connector.create_participant, args=(username, ))
+			thread.start()
+			self._threads.append(thread)
 
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
