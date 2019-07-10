@@ -20,6 +20,7 @@ import os
 import sys
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(os.path.join(sys.path[0], "../.."))
+sys.path.append(os.path.join(sys.path[0], "../../.."))
 import config
 
 # sys.path.insert(1, os.path.join(sys.path[0], "."))
