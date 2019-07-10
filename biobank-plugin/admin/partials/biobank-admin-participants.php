@@ -10,6 +10,7 @@
  * @subpackage Biobank/admin/partials
  */
 
+require(plugin_dir_path(__FILE__) . "../../includes/globals.php");
 require_once(plugin_dir_path(__FILE__) . "ui/buttons.php");
 require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 
@@ -30,6 +31,18 @@ $action = isset($_GET["action"]) ? $_GET["action"] : "create";
  */
 $username = isset($_GET["username"]) ? $_GET["username"] : "";
 $user = get_user_by("login", $username);
+if ($user) {
+	/*
+	 * If a user was provided, decrypt their email address.
+	 */
+
+	$decoded = base64_decode($user->user_email);
+	$cipherNonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
+	$cipherText = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
+	$email = sodium_crypto_secretbox_open($cipherText, $cipherNonce, $encryptionKey);
+	$user->user_email = $email;
+}
+
 $action = $user ? $action : "create";
 
 /*
