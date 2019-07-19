@@ -320,7 +320,7 @@ routes.update({
 			"handler": blockchain_handler_class,
 			"function": blockchain_handler_class.get_card,
 			"scopes": ["change_card"],
-			"parameters": ["username", "temp"],
+			"parameters": ["username", "temp", 'study_id'],
 		}
 	},
 	"/save_cred_card": {
