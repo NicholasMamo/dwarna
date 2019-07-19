@@ -13,7 +13,6 @@ var OAuth2Strategy = require('passport-oauth2')
 	, InternalOAuthError = require('passport-oauth2').InternalOAuthError
 	, APIError = require('./errors/apierror');
 
-
 /**
  * `Strategy` constructor.
  *
