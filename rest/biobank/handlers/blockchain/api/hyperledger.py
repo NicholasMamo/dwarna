@@ -210,7 +210,7 @@ class HyperledgerAPI(BlockchainAPI):
 
 		return response
 
-	def save_cred_card(self, username, card, *args, **kwargs):
+	def save_cred_card(self, address, card, *args, **kwargs):
 		"""
 		Save the user's exported Hyperledger Composer business card.
 		This card is saved into the credential field.
@@ -219,8 +219,8 @@ class HyperledgerAPI(BlockchainAPI):
 		The creation of the credentials card invalidates the temporary card.
 		Therefore this card is set to empty.
 
-		:param username: The participant's unique username.
-		:type username: str
+		:param address: The participant's unique UUID.
+		:type address: str
 		:param card: The card to save.
 		:type card: str
 
@@ -232,17 +232,17 @@ class HyperledgerAPI(BlockchainAPI):
 
 		response = Response()
 
-		username = username.decode() # the username is decoded since it is coming from a binary multi-part form.
+		address = address.decode() # the username is decoded since it is coming from a binary multi-part form.
 
 		self._connector.execute("""
 			UPDATE
-				public.participants
+				participant_identities
 			SET
 				temp_card = null,
 				cred_card = %s
 			WHERE
-				user_id = '%s';
-		""" % (self.to_binary(card), username))
+				address = '%s';
+		""" % (self.to_binary(card), address))
 
 		response.status_code = 200
 		return response
