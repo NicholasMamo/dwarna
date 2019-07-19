@@ -96,17 +96,19 @@ class HyperledgerAPI(BlockchainAPI):
 			""" % (self.to_binary(card), address, username)])
 		return response
 
-	def has_card(self, username, temp, *args, **kwargs):
+	def has_card(self, username, temp, study_id, *args, **kwargs):
 		"""
 		Check whether the participant with the given username has a card.
 
 		:param username: The participant's unique username.
 		:type username: str
 		:param temp: A boolean indicating whether the query should look at the temporary card.
-			If it is set to false, the credential-ready card is queried instead.
-
-			The boolean is actually provided as a string and converted.
+					 If it is set to false, the credential-ready card is queried instead.
+					 The boolean is actually provided as a string and converted.
 		:type temp: str
+		:param study_id: The ID of the study that is being considered.
+						 Depending on the configuration, an identity will be sought for the participant used for this study.
+		:type study_id: str
 
 		:return: A response containing a boolean indicating whether the participant has a card.
 			Any errors that may arise are included.
