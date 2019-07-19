@@ -121,10 +121,10 @@ function loadCard(study_id) {
 					 */
 					if (response) {
 			 			console.log("Getting credentials card");
-			 			importCard(false);
+			 			importCard(false, study_id);
 					} else {
 						console.log("Getting temporary card");
-						importCard(true);
+						importCard(true, study_id);
 			 		}
 				});
 			}
@@ -136,23 +136,24 @@ function loadCard(study_id) {
 /**
  * When a card is found, load it and import it into the authenticated user's wallet.
  *
- * @param	{boolean} temp - A boolean indicating whether the temporary or credentials card is being loaded.
+ * @param	{boolean}	temp - A boolean indicating whether the temporary or credentials card is being loaded.
+ * @param	{int}		study_id - The study ID that is being loaded.
  */
-function importCard(temp) {
+function importCard(temp, study_id) {
 	var request = new XMLHttpRequest();
 	var access_token = decodeURIComponent(getCookie("access_token"));
 	access_token = access_token.substring(2, access_token.indexOf("."));
 	/*
 	 * Get the requested card from the backend.
 	 */
-	request.open("GET", `${ajax_base_path}get_card.php?temp=${temp ? "true" : "false"}`, true);
+	request.open("GET", `${ajax_base_path}get_card.php?temp=${temp ? "true" : "false"}&study_id=${study_id}`, true);
 	request.onreadystatechange = function(){
 		if(this.readyState == 4) {
 			if(this.status == 200) {
 				var blob = new Blob([this.response], {type: "application/octet-stream"});
-				var cardData = blob;
+				var card_data = blob;
 				const file = new File(
-					[cardData], "card.card",
+					[card_data], "card.card",
 					{type: "application/octet-stream", lastModified: Date.now()}
 				);
 
