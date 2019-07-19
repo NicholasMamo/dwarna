@@ -8,15 +8,22 @@ import json
 import os
 import re
 import requests
+import sys
 import time
 import urllib
 import uuid
+
+path = sys.path[0]
+path = os.path.join(path, "..", "..", '..')
+if path not in sys.path:
+	sys.path.insert(1, path)
 
 from oauth2.web import Response
 
 import psycopg2
 
 from . import BlockchainAPI
+from config import blockchain
 
 class HyperledgerAPI(BlockchainAPI):
 	"""
@@ -117,15 +124,15 @@ class HyperledgerAPI(BlockchainAPI):
 
 		response = Response()
 
-		if (not self._card_exists(username, False, *args, **kwargs)
-			and not self._card_exists(username, True, *args, **kwargs)):
+		if (not self._card_exists(username, False, study_id, *args, **kwargs)
+			and not self._card_exists(username, True, study_id, *args, **kwargs)):
 			"""
 			If the research partner has neither card, then re-create the participant.
 			"""
 			self.create_participant(username)
 
 		temp = temp.lower() == "true"
-		exists = self._card_exists(username, temp, *args, **kwargs)
+		exists = self._card_exists(username, temp, study_id, *args, **kwargs)
 
 		response.status_code = 200
 		response.add_header("Content-Type", "application/json")
@@ -314,7 +321,7 @@ class HyperledgerAPI(BlockchainAPI):
 		})
 		return response.content
 
-	def _card_exists(self, username, temp, *args, **kwargs):
+	def _card_exists(self, username, temp, study_id=None, *args, **kwargs):
 		"""
 		Check whether the given card exists for the user with the given username.
 		The query checks that the card is not empty.
@@ -323,8 +330,11 @@ class HyperledgerAPI(BlockchainAPI):
 		:param username: The participant's unique username.
 		:type username: str
 		:param temp: A boolean indicating whether the query should look at the temporary card.
-			If it is set to false, the credential-ready card is queried instead.
+					 If it is set to false, the credential-ready card is queried instead.
 		:type temp: bool
+		:param study_id: The ID of the study that is being considered.
+						 Depending on the configuration, an identity will be sought for the participant used for this study.
+		:type study_id: str
 
 		:return: A boolean indicating whether the given card exists for the user with the given username.
 		:rtype: bool
@@ -332,17 +342,27 @@ class HyperledgerAPI(BlockchainAPI):
 
 		card_name = "temp" if temp else "cred"
 		card_name = "%s_card" % card_name
-		row = self._connector.select_one("""
-			SELECT %s
-			FROM participants
-			WHERE user_id = '%s'
+		rows = self._connector.select("""
+			SELECT
+				%s
+			FROM
+				participant_identities
+			WHERE
+				participant_id = '%s'
 		""" % (card_name, username))
 
-		"""
-		The card exists if it is not `None`.
-		"""
-		card_data = row[card_name]
-		return card_data is not None
+		if not blockchain.multi_card:
+			"""
+			If the server is running in single card mode, the card exists if it is not `None`.
+			If the participant has no identities, then obviously they have no card.
+			"""
+			if len(rows):
+				card_data = rows[0][card_name]
+				return card_data is not None
+		else:
+			pass
+
+		return False
 
 	"""
 	Studies.
