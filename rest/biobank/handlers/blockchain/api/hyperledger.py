@@ -94,13 +94,12 @@ class HyperledgerAPI(BlockchainAPI):
 		card = response.content
 		self._connector.execute([
 			"""
-			UPDATE
-				participants
-			SET
-				temp_card = %s, address = '%s'
-			WHERE
-				user_id = '%s'
-			""" % (self.to_binary(card), address, username)])
+			INSERT INTO
+				participant_identities(
+					participant_id, address, temp_card)
+			VALUES
+				('%s', '%s', %s)
+			""" % (username, address, self.to_binary(card))])
 		return response
 
 	def has_card(self, username, temp, study_id, *args, **kwargs):
@@ -140,7 +139,7 @@ class HyperledgerAPI(BlockchainAPI):
 
 		return response
 
-	def get_card(self, username, temp, *args, **kwargs):
+	def get_card(self, username, temp, study_id, *args, **kwargs):
 		"""
 		Get the given participant's network business card.
 
@@ -163,14 +162,24 @@ class HyperledgerAPI(BlockchainAPI):
 		temp = temp.lower() == "true"
 		card_name = "temp" if temp else "cred"
 		card_name = "%s_card" % card_name
-		row = self._connector.select_one("""
+		rows = self._connector.select("""
 			SELECT
-				%s
+				%s, address
 			FROM
-				participants
+				participant_identities
 			WHERE
-				user_id = '%s'
-		""" % (card_name, username))
+				participant_id = '%s' AND
+				%s IS NOT NULL
+		""" % (card_name, username, card_name))
+
+		if not blockchain.multi_card:
+			"""
+			If the server is running in single card mode, return the first card.
+			"""
+
+			row = rows[0]
+		else:
+			pass
 
 		"""
 		The response is a :class:`memoryview` object.
@@ -188,12 +197,12 @@ class HyperledgerAPI(BlockchainAPI):
 
 			self._connector.execute("""
 				UPDATE
-					public.participants
+					participant_identities
 				SET
 					temp_card = null
 				WHERE
-					user_id = '%s';
-			""" % (username))
+					address = '%s';
+			""" % (row['address']))
 
 		response.status_code = 200
 		response.add_header("Content-Type", "application/octet-stream")
