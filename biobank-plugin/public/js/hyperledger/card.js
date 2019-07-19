@@ -209,7 +209,16 @@ function exportCard(access_token) {
 				var blob = new Blob([this.response], {type: "application/octet-stream"});
 				var card = blob;
 
-				saveCard(card);
+				var reader = new FileReader();
+				reader.addEventListener("loadend", function() {
+					JSZip.loadAsync(reader.result).then(function (zip) {
+						return zip.file('metadata.json').async("text");
+				    }).then(function (data) {
+						var metadata = JSON.parse(data);
+						return metadata.userName;
+					});
+				});
+				reader.readAsArrayBuffer(blob);
 			} else if(this.responseText != "") {
 				console.log(this.responseText);
 			}
