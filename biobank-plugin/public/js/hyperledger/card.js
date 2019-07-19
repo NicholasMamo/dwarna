@@ -31,22 +31,24 @@ const ajax_base_path = `${host}/wordpress/wp-content/plugins/biobank-plugin/publ
 * When the document loads, check import the user's card.
 */
 jQuery(document).ready(function(){
-	jQuery.get(`${ajax_base_path}get_username.php`).then(function(response) {
-		if (response) {
-			console.log("Loading card");
-			username = response;
-			loadCard();
-		} else {
-			/*
-			 * If the user is not logged in, check if they have an access token.
-			 * If they do, clear that token and refresh the page for the change to take effect.
-			 */
-			if (getCookie(hyperledger_access_token)) {
-				setCookie(hyperledger_access_token, "", 0);
-				location.reload();
+	if (false) {
+		jQuery.get(`${ajax_base_path}get_username.php`).then(function(response) {
+			if (response) {
+				console.log("Loading card");
+				username = response;
+				loadCard();
+			} else {
+				/*
+				 * If the user is not logged in, check if they have an access token.
+				 * If they do, clear that token and refresh the page for the change to take effect.
+				 */
+				if (getCookie(hyperledger_access_token)) {
+					setCookie(hyperledger_access_token, "", 0);
+					location.reload();
+				}
 			}
-		}
-	});
+		});
+	}
 });
 
 /**
