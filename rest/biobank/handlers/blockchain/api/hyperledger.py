@@ -133,7 +133,7 @@ class HyperledgerAPI(BlockchainAPI):
 
 	def get_card(self, username, temp, *args, **kwargs):
 		"""
-		Get the given participant's actual, credential-ready business card.
+		Get the given participant's network business card.
 
 		:param username: The participant's unique username.
 		:type username: str
