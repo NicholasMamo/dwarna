@@ -87,6 +87,25 @@ def create_schema(database):
 			cursor.execute("""COMMENT ON COLUMN participants.name IS 'The participant''s name';""")
 			cursor.execute("""COMMENT ON COLUMN participants.user_id IS 'The participant''s email address';""")
 
+			# drop the participants' identities table if it exists
+			cursor.execute("""DROP TABLE IF EXISTS participant_identities CASCADE;""")
+			"""
+			Create the table that links participants with their blockchain identities.
+			When a user is deleted, their corresponding participant-specific data should also be removed.
+			"""
+			cursor.execute("""CREATE TABLE participant_identities (
+								participant_id		VARCHAR(64)		UNIQUE		REFERENCES participants(user_id)		ON DELETE CASCADE,
+								address				VARCHAR(128)	UNIQUE,
+								temp_card			BYTEA,
+								cred_card			BYTEA
+			);""")
+
+			# explain the columns
+			cursor.execute("""COMMENT ON COLUMN participant_identities.participant_id IS 'The participant''s unique identifier, links to the ''participants'' table''s primary key';""")
+			cursor.execute("""COMMENT ON COLUMN participant_identities.address IS 'The participant''s address on the Hyperledger Fabric blockchain';""")
+			cursor.execute("""COMMENT ON COLUMN participant_identities.temp_card IS 'The participant''s Hyperledger card, created when their identity is issued; they need to import it into the wallet in order to get a credential-ready version';""")
+			cursor.execute("""COMMENT ON COLUMN participant_identities.cred_card IS 'The participant''s credential-ready Hyperledger card, created when the temporary card is imported, pinged and assigned credentials';""")
+
 			# drop the biobankers table if it exists
 			cursor.execute("""DROP TABLE IF EXISTS biobankers CASCADE;""")
 			"""
