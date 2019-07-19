@@ -35,7 +35,7 @@ $refresh = (isset($_GET["return"]) && $_GET["return"] == "update_consent");
 // $non_consented_studies = array_diff($all_studies, $consented_studies); // get the study IDs of studies that the participant has not consented to
 
 ?>
-<div class='biobank-consent'>
+<div class='biobank-consent container'>
 
 	<?php
 	if (isset($error) && ! empty($error)) {
