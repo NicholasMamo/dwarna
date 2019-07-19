@@ -25,14 +25,14 @@ $refresh = (isset($_GET["return"]) && $_GET["return"] == "update_consent");
  * Get the list of active studies that the user has consented to.
  * Only retain the study IDs.
  */
-$participant_studies = $consent_handler->get_studies_by_participant();
-$error = isset($participant_studies->error) && ! empty($participant_studies->error) ? $participant_studies->error : $error;
-
-$consented_studies = array();
-foreach ($participant_studies->data as $study) {
-	array_push($consented_studies, $study->study->study_id);
-}
-$non_consented_studies = array_diff($all_studies, $consented_studies); // get the study IDs of studies that the participant has not consented to
+// $participant_studies = $consent_handler->get_studies_by_participant();
+// $error = isset($participant_studies->error) && ! empty($participant_studies->error) ? $participant_studies->error : $error;
+//
+// $consented_studies = array();
+// foreach ($participant_studies->data as $study) {
+// 	array_push($consented_studies, $study->study->study_id);
+// }
+// $non_consented_studies = array_diff($all_studies, $consented_studies); // get the study IDs of studies that the participant has not consented to
 
 ?>
 <div class='biobank-consent'>
@@ -53,22 +53,17 @@ $non_consented_studies = array_diff($all_studies, $consented_studies); // get th
 	}
 	?>
 
-	<form class="<?= $this->plugin_name ?>-form" id="consent_form" method="post" name="consent_form" action=<?php echo esc_url(admin_url("admin-post.php")); ?>>
-		<input type="hidden" name="action" value="consent_form">
-		<?php wp_nonce_field("consent_form", "consent_nonce"); ?>
+	<?php
+	// foreach ($participant_studies->data as $study) {
+		// $consent = true;
+		// include(plugin_dir_path(__FILE__) . "components/study.php");
+	// }
+	?>
 
-		<?php foreach ($participant_studies->data as $study) {
-			$consent = true;
-			include(plugin_dir_path(__FILE__) . "components/study.php");
-		} ?>
-
-		<?php foreach ($active_studies->data as $study) {
-			$consent = false;
-			if (in_array($study->study->study_id, $non_consented_studies)) {
-				include(plugin_dir_path(__FILE__) . "components/study.php");
-			}
-		} ?>
-
-		<input type = "submit" class = "primary" />
-	</form>
+	<?php foreach ($active_studies->data as $study) {
+		$consent = false;
+		// if (in_array($study->study->study_id, $non_consented_studies)) {
+		include(plugin_dir_path(__FILE__) . "components/study.php");
+		// }
+	} ?>
 </div>
