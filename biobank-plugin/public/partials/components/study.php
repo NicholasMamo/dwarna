@@ -1,9 +1,12 @@
-<h4><a href='#study-<?= $study->study->study_id ?>' data-toggle="collapse"
-	   role="button" aria-expanded="false" aria-controls="collapseExample">
-	   <?= $study->study->name ?>
-    </a></h4>
 <form class="<?= $this->plugin_name ?>-form" id="consent-form-<?= $study->study->study_id ?>"
 	  method="post" name="consent_form" action=<?php echo esc_url(admin_url("admin-post.php")); ?>>
+	<h4>
+		<a href='#study-<?= $study->study->study_id ?>' data-toggle="collapse"
+		   role="button" aria-expanded="false" aria-controls="collapseExample"
+		   onclick='getCard(this, <?= $study->study->study_id ?>)'>
+		   <?= $study->study->name ?>
+		</a>
+	</h4>
 	<input type="hidden" name="action" value="consent_form">
 	<?php wp_nonce_field("consent_form", "consent_nonce"); ?>
 
