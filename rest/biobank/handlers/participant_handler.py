@@ -65,11 +65,6 @@ class ParticipantHandler(UserHandler):
 				""" % (username, attributes['name'], attributes['email']),
 			])
 
-			# TODO: Error-handling.
-			thread = threading.Thread(target=self._blockchain_connector.create_participant, args=(username, ))
-			thread.start()
-			self._threads.append(thread)
-
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
 			response.body = json.dumps({ })
