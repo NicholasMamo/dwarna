@@ -422,7 +422,7 @@ class HyperledgerAPI(BlockchainAPI):
 		:type port: int
 		"""
 
-		address = self._get_participant_address(username)
+		address = self._get_participant_address(username, study_id)
 
 		port = self._default_multiuser_port if port is None else port
 		endpoint = f"{self._host}:{port}/api/org.consent.model.Consent"
@@ -462,7 +462,7 @@ class HyperledgerAPI(BlockchainAPI):
 		:rtype: bool
 		"""
 
-		address = self._get_participant_address(username)
+		address = self._get_participant_address(username, study_id)
 		port = self._default_multiuser_port if port is None else port
 
 		params = {
@@ -556,7 +556,7 @@ class HyperledgerAPI(BlockchainAPI):
 			The consent changes relate the timestamp of the consent with the consent status.
 		:rtype: dict
 		"""
-		address = self._get_participant_address(username)
+		address = self._get_participant_address(username, study_id)
 		port = self._default_multiuser_port if port is None else port
 
 		params = {
@@ -574,24 +574,30 @@ class HyperledgerAPI(BlockchainAPI):
 		}
 		return consent_changes
 
-	def _get_participant_address(self, username):
+	def _get_participant_address(self, username, study_id):
 		"""
 		Get the participant's address.
 
 		:param username: The participant's username.
 		:type username: str
+		:param study_id: The unique ID of the study.
+		:type study_id: int
 
 		:return: The participant's address on the blockchain.
 		:rtype: str
 		"""
 
-		row = self._connector.select_one("""
-			SELECT
-				address
-			FROM
-				participants
-			WHERE
-				user_id = '%s'
-		""" % (username))
+		if not blockchain.multi_card:
+			row = self._connector.select_one("""
+				SELECT
+					address
+				FROM
+					participant_identities
+				WHERE
+					participant_id = '%s'
+			""" % (username))
+		else:
+			pass
+
 		address = row["address"]
 		return address
