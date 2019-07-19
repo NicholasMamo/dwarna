@@ -23,6 +23,7 @@ def create_schema(database):
 		# get the connection details from the .pgpass file
 		home = expanduser("~")
 		with open(os.path.join(home, ".pgpass"), "r") as f:
+			# TODO: Uses the credentials from only the first line.
 			host, port, _, username, password = f.readline().strip().split(":")
 			# establish a connection
 			con = psycopg2.connect(dbname=database, user=username, host=host, password=password)
@@ -72,25 +73,19 @@ def create_schema(database):
 			# drop the participants table if it exists
 			cursor.execute("""DROP TABLE IF EXISTS participants CASCADE;""")
 			"""
-			Create the participants table
-			When a user is deleted, their corresponding participant-specific data should also be removed
+			Create the participants table.
+			When a user is deleted, their corresponding participant-specific data should also be removed.
 			"""
 			cursor.execute("""CREATE TABLE participants (
 								user_id				VARCHAR(64)		UNIQUE		REFERENCES users(user_id)		ON DELETE CASCADE,
 								name				VARCHAR(256),
-								email				VARCHAR(256),
-								temp_card			BYTEA,
-								cred_card			BYTEA,
-								address				VARCHAR(128)	UNIQUE
+								email				VARCHAR(256)
 			);""")
 
 			# explain the columns
 			cursor.execute("""COMMENT ON COLUMN participants.user_id IS 'The participant''s unique identifier, links to the ''users'' table''s primary key';""")
 			cursor.execute("""COMMENT ON COLUMN participants.name IS 'The participant''s name';""")
 			cursor.execute("""COMMENT ON COLUMN participants.user_id IS 'The participant''s email address';""")
-			cursor.execute("""COMMENT ON COLUMN participants.temp_card IS 'The participant''s Hyperledger card, created when their identity is issued; they need to import it into the wallet in order to get a credential-ready version';""")
-			cursor.execute("""COMMENT ON COLUMN participants.cred_card IS 'The participant''s credential-ready Hyperledger card, created when the temporary card is imported, pinged and assigned credentials';""")
-			cursor.execute("""COMMENT ON COLUMN participants.address IS 'The participant''s address on the Hyperledger Fabric blockchain';""")
 
 			# drop the biobankers table if it exists
 			cursor.execute("""DROP TABLE IF EXISTS biobankers CASCADE;""")
