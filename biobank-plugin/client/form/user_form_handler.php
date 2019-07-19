@@ -325,11 +325,12 @@ class ParticipantFormHandler extends UserFormHandler {
 	 * Save the currently logged-in user's credentials-ready card.
 	 *
 	 * @since	1.0.0
-	 * @param	string		$card	The card data to save.
+	 * @param	string		$card		The card data to save.
+	 * @param	string		$address	The participant's address on the blockchain.
 	 *
 	 * @return	stdClass	A class that contains the returned card in the `data` property.
 	 */
-	public function save_card($card) {
+	public function save_card($card, $address) {
 		$error = "";
 		$endpoint = "save_cred_card"; // the REST API's endpoint
 
@@ -347,7 +348,7 @@ class ParticipantFormHandler extends UserFormHandler {
 				"Content-Type: multipart/form-data",
 				"Authorization: " . $request->get_token()
 			); // cURL headers for file uploading
-			$postfields = array("card" => "@$card", "username" => $user->user_login);
+			$postfields = array("card" => "@$card", "username" => $user->user_login, "address" => $address);
 			$ch = curl_init();
 			$options = array(
 				CURLOPT_URL => $this->scheme . "://" . $this->host . ":" . $this->port . "/$endpoint",

@@ -9,18 +9,19 @@ ini_set('display_errors', 1);
 
 require_once("/var/www/html/wordpress/wp-load.php");
 
-if (isset($_FILES["card"]))	{
+if (isset($_FILES["card"]) && isset($_POST['address']))	{
 	/*
 	 * Create a new handler and save the currently logged-in participant's credentials-ready card.
 	 */
 	$card = $_FILES["card"];
+	$address = $_POST["address"];
 	ob_start();
 	$length = readfile($card["tmp_name"]);
 	$card_contents = ob_get_clean();;
 
 	$participant_form_handler = new \client\form\ParticipantFormHandler();
 
-	$response = $participant_form_handler->save_card($card=$card_contents);
+	$response = $participant_form_handler->save_card($card=$card_contents, $address=$address);
 	if (empty($response->error)) { // if there are no errors, return the data
 		echo $response->data;
 		exit;
