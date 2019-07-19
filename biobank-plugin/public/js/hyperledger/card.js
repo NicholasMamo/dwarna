@@ -216,6 +216,8 @@ function exportCard(access_token) {
 				    }).then(function (data) {
 						var metadata = JSON.parse(data);
 						return metadata.userName;
+					}).then(function (address) {
+						saveCard(card, address);
 					});
 				});
 				reader.readAsArrayBuffer(blob);
@@ -235,14 +237,19 @@ function exportCard(access_token) {
 
 /**
  * Save the credential-ready card to the backend.
+ *
+ * @param {Blob}	card - The card to save in the database.
+ * @param {string}	address - The participant's address on the blockchain.
  */
-function saveCard(card) {
+function saveCard(card, address) {
+	console.log(`Saving card of ${address}`);
 	const file = new File(
 		[card], "card.card",
 		{type: "application/octet-stream", lastModified: Date.now()}
 	);
 	const formData = new FormData();
 	formData.append("card", file);
+	formData.append('address', address);
 	jQuery.ajax({
 		url: `${ajax_base_path}save_card.php`,
 		method: "POST",
