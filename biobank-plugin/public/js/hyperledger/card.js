@@ -31,7 +31,7 @@ const ajax_base_path = `${host}/wordpress/wp-content/plugins/biobank-plugin/publ
 * When the document loads, check import the user's card.
 */
 jQuery(document).ready(function(){
-	if (false) {
+	if (window.location.pathname.indexOf('trail') > 0) {
 		jQuery.get(`${ajax_base_path}get_username.php`).then(function(response) {
 			if (response) {
 				console.log("Loading card");
