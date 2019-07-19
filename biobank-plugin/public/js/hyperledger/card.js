@@ -76,7 +76,7 @@ function getCard(element, study_id) {
 			*/
 			if (response) {
 				username = response;
-				loadCard();
+				loadCard(study_id);
 			} else {
 				/*
 				 * If the user is not logged in, check if they have an access token.
@@ -94,8 +94,10 @@ function getCard(element, study_id) {
 /**
  * Load the user's card if they have one.
  * This card allows them to make requests to the Hyperledger API.
+ *
+ * @param {int}		study_id - The study ID that is being loaded.
  */
-function loadCard() {
+function loadCard(study_id) {
 	var access_token = decodeURIComponent(getCookie(hyperledger_access_token));
 	access_token = access_token.substring(2, access_token.indexOf("."));
 
@@ -112,7 +114,7 @@ function loadCard() {
 					exportCard(access_token);
 				});
 			} else {
-				jQuery.get(`${ajax_base_path}has_card.php?temp=false`).then(function(response) {
+				jQuery.get(`${ajax_base_path}has_card.php?temp=false&study_id=${study_id}`).then(function(response) {
 					/*
 					 * If the user has a credential card, load it.
 					 * Otherwise, import the temporary card.
