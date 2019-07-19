@@ -234,11 +234,12 @@ class ParticipantFormHandler extends UserFormHandler {
 	 * Check whether the currently-logged in user has a temporary card.
 	 *
 	 * @since	1.0.0
-	 * @param	boolean		$temp	A boolean that indicates whether the card is temporary or credentials-ready.
+	 * @param	boolean		$temp		A boolean that indicates whether the card is temporary or credentials-ready.
+	 * @param	int			$study_id	The ID of the study related to the card will be checked.
 	 *
 	 * @return	stdClass	A class that contains the returned boolean in the `data` property.
 	 */
-	public function has_card($temp) {
+	public function has_card($temp, $study_id) {
 		$error = "";
 		$endpoint = "has_card"; // the REST API's endpoint
 
@@ -253,6 +254,7 @@ class ParticipantFormHandler extends UserFormHandler {
 			$request = new \client\Request($this->scheme, $this->host, $this->port);
 			$request->add_parameter("username", $user->user_login);
 			$request->add_parameter("temp", $temp);
+			$request->add_parameter("study_id", $study_id);
 
 			/*
 			 * Process the response
