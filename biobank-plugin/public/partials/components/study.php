@@ -19,8 +19,11 @@
 				<label for="<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>">Participate</label>
 			</div>
 			<div class='col-md-7'>
-				<input name='<?= $this->plugin_name ?>[study][<?= $study->study->study_id ?>][consent]' type='hidden' value='0'>
-				<input id = '<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>' name = '<?= $this->plugin_name ?>[study][<?= $study->study->study_id ?>][consent]' type = 'checkbox' <?= $consent === True ? "checked" : "" ?>>
+				<input name='<?= $this->plugin_name ?>[study][study_id]'
+					   type='hidden' value='<?= $study->study->study_id ?>'>
+				<input id = '<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>'
+					   name = '<?= $this->plugin_name ?>[study][consent]'
+					   type = 'checkbox' <?= $consent === True ? "checked" : "" ?>>
 			</div>
 		</div>
 
