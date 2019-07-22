@@ -37,3 +37,17 @@ Dwarna stores backups as volumes from the Docker images. The volumes are stored 
 - `backup_peer` - the volume from the peer, stores the ledger data.
 
 Apart from these volumes, the administrator card needs to be re-used. Dwarna looks for this card in the `dwarna-blockchain` directory.
+
+## Passport
+
+The passport files are located in `node/passport-local-wordpress`.
+Most changes will need to be made to the `lib/strategy.js` file.
+To install, first export the NPM global path and set the NPM prefix.
+Then, install globally, which saves the files in the specified directory.
+
+	npm config set prefix '~/.npm-global'
+	export PATH=~/npm-global/bin:$PATH
+	npm install -g node/passport-local-wordpress/
+
+Any debugging is printed in the same terminal as where the network is started.
+To debug the OAuth2 passport scheme, use the files in the `node/passport-local-wordpress/node_modules/passport-oauth2/` directory.
