@@ -16,7 +16,7 @@ multiuser_port = 3000
 :vartype multiuser_port: int
 """
 
-multi_card = False
+multi_card = True
 """
 :var multi_card: A flag that determines whether a multi-card workflow is followed.
 				 If set to true, then each participant will have one identity for each study that they ever participate in.
