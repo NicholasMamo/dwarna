@@ -105,6 +105,21 @@ class Biobank_Public {
 	}
 
 	/**
+	 * On page initialization, check whether the action is linked to any handler.
+	 * If it is, delegate the processing to that function.
+	 * Otherwise do nothing.
+	 *
+	 * The function looks for the action in the GET parameters.
+	 *
+	 * @since	1.0.0
+	 * @access	public
+	 */
+	public function init() {
+		$this->is_authorized();
+		$action = $_GET['action'] ?? NULL;
+	}
+
+	/**
 	 * Register the shortcodes that appear in the public-facing side of the site.
 	 *
 	 * @since    1.0.0
