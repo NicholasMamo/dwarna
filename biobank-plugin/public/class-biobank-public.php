@@ -161,6 +161,9 @@ class Biobank_Public {
 	 * If they are not authorized, redirect them to authorize themselves.
 	 *
 	 * The function checks that the user is a participant.
+	 *
+	 * @since	1.0.0
+	 * @access	public
 	 */
 	public function is_authorized() {
 		include(plugin_dir_path(__FILE__) . "../includes/globals.php");
