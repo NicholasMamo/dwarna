@@ -87,7 +87,7 @@ function loadCard(study_id) {
 					console.log(typeof(response));
 					console.log("System pinged");
 					console.log("Getting already-imported card");
-					exportCard(access_token);
+					exportCard(access_token, study_id);
 				});
 			} else {
 				jQuery.get(`${ajax_base_path}has_card.php?temp=false&study_id=${study_id}`).then(function(response) {
@@ -150,7 +150,7 @@ function importCard(temp, study_id) {
 					console.log("Card imported")
 					ping().then(function(response) {
 						console.log("System pinged");
-						exportCard(access_token);
+						exportCard(access_token, study_id);
 					});
 				});
 			} else if(this.responseText != "") {
@@ -172,8 +172,9 @@ function importCard(temp, study_id) {
  *
  * @param	{string} access_token - The user's Hyperledger access token.
  *									This token is stored as a cookie.
+ * @param	{int}		study_id - The study ID that is being loaded.
  */
-function exportCard(access_token) {
+function exportCard(access_token, study_id) {
 	var request = new XMLHttpRequest();
 	request.open("GET", `${host}:${hyperldger_port}/api/wallet/card/export`, true);
 	request.setRequestHeader("X-Access-Token", access_token);
@@ -193,7 +194,32 @@ function exportCard(access_token) {
 						var metadata = JSON.parse(data);
 						return metadata.userName;
 					}).then(function (address) {
-						saveCard(card, address);
+						saveCard(card, address).then(() => {
+							console.log("Card saved");
+							/*
+							 * Load the consent status.
+							 */
+							var access_token = decodeURIComponent(getCookie(hyperledger_access_token));
+							access_token = access_token.substring(2, access_token.indexOf("."));
+
+							var param_string = 'study_id=' + encodeURIComponent(`resource:org.consent.model.Study#${study_id}`);
+							param_string = param_string + '&username=' + encodeURIComponent(`resource:org.consent.model.ResearchParticipant#${address}`);
+							jQuery.ajax({
+								url: `${host}:${hyperldger_port}/api/queries/has_consent?${param_string}`,
+								method: "GET",
+								type: "GET",
+								headers: {
+									'X-Access-Token': access_token,
+								},
+							}).then(function(response) {
+								if (response.length) {
+									var consent = response[0];
+									if (consent.status) {
+										jQuery(`#biobank-study-${study_id}`).prop('checked', true);
+									}
+								}
+							});
+						});
 					});
 				});
 				reader.readAsArrayBuffer(blob);
@@ -226,7 +252,7 @@ function saveCard(card, address) {
 	const formData = new FormData();
 	formData.append("card", file);
 	formData.append('address', address);
-	jQuery.ajax({
+	return jQuery.ajax({
 		url: `${ajax_base_path}save_card.php`,
 		method: "POST",
 		type: "POST",
@@ -234,8 +260,6 @@ function saveCard(card, address) {
 		data: formData,
 		processData: false,
 		contentType: false,
-	}).then(function(response) {
-		console.log("Card saved")
 	});
 }
 
