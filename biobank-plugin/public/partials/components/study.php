@@ -23,7 +23,7 @@
 					   type='hidden' value='<?= $study->study->study_id ?>'>
 				<input id = '<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>'
 					   name = '<?= $this->plugin_name ?>[study][consent]'
-					   type = 'checkbox' <?= $consent === True ? "checked" : "" ?>>
+					   type = 'checkbox'>
 			</div>
 		</div>
 
