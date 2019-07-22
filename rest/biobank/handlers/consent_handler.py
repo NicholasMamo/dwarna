@@ -355,7 +355,8 @@ class ConsentHandler(PostgreSQLRouteHandler):
 			"""
 			command = """
 				SELECT *
-				FROM studies
+				FROM
+					studies
 				"""
 
 			rows = self._connector.select(command)
