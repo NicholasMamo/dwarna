@@ -120,59 +120,36 @@ class ConsentFormHandler extends StudyHandler {
 	 */
 	public function update_consent() {
 		$error = "";
-		$give_endpoint = "give_consent";
-		$withdraw_endpoint = "withdraw_consent";
-
 		if(isset($_POST["consent_nonce"]) && wp_verify_nonce($_POST["consent_nonce"], "consent_form")) {
 			/*
-			 * For security purposes, ensure that the user can indeed update studies
+			 * For security purposes, ensure that the user can indeed update consent.
 			 */
 			if (current_user_can("update_consent") && isset($_POST["biobank"])) {
+				/*
+				 * If the user has the necessary permissions, save the consent data to the session.
+				 */
 				$input = $_POST["biobank"];
-				$studies = isset($input["study"]) ? $input["study"] : array();
-
-				$body = new \stdClass();
-
-				$username = wp_get_current_user()->user_login;
+				$study = isset($input["study"]) ? $input["study"] : array();
+				$_SESSION['study_id'] = $study['study_id'];
+				$_SESSION['consent'] = $study['consent'] == 'on';
 
 				/*
-				 * Go through each study and update the consent.
+				 * Then, redirect them to authorization endpoint.
 				 */
-				foreach ($studies as $study_id => $study_data) {
-					$request = new \client\Request($this->scheme, $this->host, $this->port);
-					$request->add_parameter("study_id", $study_id);
-					$request->add_parameter("username", $username);
-					$request->add_parameter("access_token", $this->get_blockchain_access_token());
-
-					/*
-					 * There are two routes to consent.
-					 * Either the participant gives it, or they withdraw it.
-					 */
-					if (isset($study_data["consent"]) && $study_data["consent"] == "on") {
-						$request->add_parameter("attributes", $study_data["attributes"]);
-						$response = $request->send_post_request($give_endpoint);
-						if (! is_wp_error($response)) {
-							$response_body = json_decode($response["body"]);
-							$error = isset($response_body->error) ? $response_body->error : $error;
-						} else {
-							$error = "WordPress could not reach the backend";
-						}
-					} else {
-						$response = $request->send_post_request($withdraw_endpoint);
-						if (! is_wp_error($response)) {
-							$response_body = json_decode($response["body"]);
-							$error = isset($response_body->error) ? $response_body->error : $error;
-						} else {
-							$error = "WordPress could not reach the backend";
-						}
-					}
-				}
-
+				include(plugin_dir_path(__FILE__) . "../../includes/globals.php");
+				wp_redirect($auth_url);
+				exit;
 			}
 		}
 
+		/*
+		 * If something goes wrong, redirect back with an error.
+		 */
 		$error = urlencode($error);
 		wp_redirect(get_site_url() . "/index.php/biobank-consent?error=$error&return=" . __FUNCTION__);
+		exit;
+	}
+
 	}
 
 	/**
