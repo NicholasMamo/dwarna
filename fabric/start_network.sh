@@ -19,7 +19,7 @@ export COMPOSER_PROVIDERS='{
         "clientSecret": "41e0b81ec1d89ccaf238565b50263251",
         "authPath": "/auth/local-wordpress",
         "callbackURL": "/auth/local-wordpress/callback",
-        "successRedirect": "http://localhost/wordpress?authorized=true",
+        "successRedirect": "http://localhost/wordpress?authorized=true&action=save_consent",
         "failureRedirect": "/"
     }
 }'
