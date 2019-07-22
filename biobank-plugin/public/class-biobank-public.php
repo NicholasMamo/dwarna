@@ -117,6 +117,13 @@ class Biobank_Public {
 	public function init() {
 		$this->is_authorized();
 		$action = $_GET['action'] ?? NULL;
+		if ($action) {
+			switch ($action) {
+				case 'save_consent':
+					(new \client\form\ConsentFormHandler())->save_consent();
+					break;
+			}
+		}
 	}
 
 	/**
@@ -231,6 +238,19 @@ class Biobank_Public {
 			}
 		}
 		return $items;
+	}
+
+	/**
+	 * Get the blockchain solution's access token.
+	 * It is assumed that this access token is stored in a cookie.
+	 */
+	public function get_blockchain_access_token() {
+		require(plugin_dir_path(__FILE__) . "../includes/globals.php");
+		$access_token = $_COOKIE[$blockchain_access_token];
+		// A Hyperledger Composer access token looks like this:
+		// s:05xpfhY0HIrDzs53FeqgYJ47oP5swGnZLsvHD2aWAwN52trpfPCEViJaTcSQ9LfC.Q1kYwi0cRB9T47G/fN0RzDXyLoh0hb1XDqnKMkkh40A
+		$access_token = substr($access_token, 2, strpos($access_token, '.') - 2);
+		return $access_token;
 	}
 
 }

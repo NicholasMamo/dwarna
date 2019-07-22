@@ -150,6 +150,63 @@ class ConsentFormHandler extends StudyHandler {
 		exit;
 	}
 
+	/**
+	 * Save the consent and redirect back to the study.
+	 *
+	 * @since	1.0.0
+	 * @access	public
+	 */
+	public function save_consent() {
+		if (isset($_GET['authorized']) &&
+			isset($_SESSION['study_id']) &&
+			isset($_SESSION['consent'])
+		) {
+			$error = '';
+			$give_endpoint = "give_consent";
+			$withdraw_endpoint = "withdraw_consent";
+
+			/*
+			 * Create a new request with the study and user information.
+			 */
+			$body = new \stdClass();
+			$request = new \client\Request($this->scheme, $this->host, $this->port);
+			$request->add_parameter("study_id", $_SESSION['study_id']);
+			$request->add_parameter("username", wp_get_current_user()->user_login);
+			$request->add_parameter("access_token", $this->get_blockchain_access_token());
+			$consent = $_SESSION['consent'];
+
+			/*
+			 * Unset the consumed session information.
+			 */
+			unset($_SESSION['study_id']);
+			unset($_SESSION['consent']);
+
+			/*
+			 * There are two routes to consent.
+			 * Either the participant gives it, or they withdraw it.
+			 */
+			if ($consent) {
+				$response = $request->send_post_request($give_endpoint);
+				if (! is_wp_error($response)) {
+					$response_body = json_decode($response["body"]);
+					$error = isset($response_body->error) ? $response_body->error : $error;
+				} else {
+					$error = "WordPress could not reach the backend";
+				}
+			} else {
+				$response = $request->send_post_request($withdraw_endpoint);
+				if (! is_wp_error($response)) {
+					$response_body = json_decode($response["body"]);
+					$error = isset($response_body->error) ? $response_body->error : $error;
+				} else {
+					$error = "WordPress could not reach the backend";
+				}
+			}
+		}
+
+		include(plugin_dir_path(__FILE__) . "../../includes/globals.php");
+		wp_redirect(get_site_url() . "/{$plugin_pages['biobank-consent']['wp_info']['post_name']}");
+		exit;
 	}
 
 	/**
