@@ -21,19 +21,6 @@ foreach ($active_studies->data as $study) {
 $error = isset($defaults->error) && ! empty($defaults->error) ? $defaults->error : $error;
 $refresh = (isset($_GET["return"]) && $_GET["return"] == "update_consent");
 
-/*
- * Get the list of active studies that the user has consented to.
- * Only retain the study IDs.
- */
-// $participant_studies = $consent_handler->get_studies_by_participant();
-// $error = isset($participant_studies->error) && ! empty($participant_studies->error) ? $participant_studies->error : $error;
-//
-// $consented_studies = array();
-// foreach ($participant_studies->data as $study) {
-// 	array_push($consented_studies, $study->study->study_id);
-// }
-// $non_consented_studies = array_diff($all_studies, $consented_studies); // get the study IDs of studies that the participant has not consented to
-
 ?>
 <div class='biobank-consent container'>
 
@@ -53,17 +40,7 @@ $refresh = (isset($_GET["return"]) && $_GET["return"] == "update_consent");
 	}
 	?>
 
-	<?php
-	// foreach ($participant_studies->data as $study) {
-		// $consent = true;
-		// include(plugin_dir_path(__FILE__) . "components/study.php");
-	// }
-	?>
-
 	<?php foreach ($active_studies->data as $study) {
-		$consent = false;
-		// if (in_array($study->study->study_id, $non_consented_studies)) {
 		include(plugin_dir_path(__FILE__) . "components/study.php");
-		// }
 	} ?>
 </div>
