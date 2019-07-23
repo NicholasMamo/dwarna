@@ -100,7 +100,7 @@ class HyperledgerAPI(BlockchainAPI):
 			VALUES
 				('%s', '%s', %s)
 			""" % (username, address, self.to_binary(card))])
-		return response
+		return address
 
 	def has_card(self, username, temp, study_id, *args, **kwargs):
 		"""
