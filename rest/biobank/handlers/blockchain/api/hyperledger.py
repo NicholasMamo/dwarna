@@ -182,8 +182,31 @@ class HyperledgerAPI(BlockchainAPI):
 				rows = self._connector.select(query)
 				row = rows[0]
 		else:
-			pass
+			study_participants = self.get_all_study_participants(study_id)
+			valid_rows = [ row for row in rows if row['address'] in study_participants ]
+			if len(valid_rows):
+				"""
+				If the server is running in multi-card mode, check whether the user has ever consented to this study.
+				If they have, return the corresponding card.
+				"""
+				row = valid_rows[0]
+			else:
+				"""
+				If the research partner has never consented to the study, issue a new identity.
 				Then, return the newly-created card.
+				"""
+
+				address = self.create_participant(username)
+				query = """
+					SELECT
+						temp_card, address
+					FROM
+						participant_identities
+					WHERE
+						address = '%s'
+				""" % (address)
+				rows = self._connector.select(query)
+				row = rows[0]
 
 		"""
 		The response is a :class:`memoryview` object.
