@@ -279,7 +279,7 @@ routes.update({
 			"handler": consent_handler_class,
 			"function": consent_handler_class.give_consent,
 			"scopes": ["update_consent"],
-			"parameters": ["study_id", "username"],
+			"parameters": ["study_id", "address"],
 			"self_only": True
 		}
 	},
@@ -288,7 +288,7 @@ routes.update({
 			"handler": consent_handler_class,
 			"function": consent_handler_class.withdraw_consent,
 			"scopes": ["update_consent"],
-			"parameters": ["study_id", "username"],
+			"parameters": ["study_id", "address"],
 			"self_only": True
 		}
 	},
@@ -297,7 +297,7 @@ routes.update({
 			"handler": consent_handler_class,
 			"function": consent_handler_class.has_consent,
 			"scopes": ["view_consent"],
-			"parameters": ["study_id", "username"],
+			"parameters": ["study_id", "address"],
 			"self_only": True
 		}
 	},

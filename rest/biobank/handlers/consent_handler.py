@@ -80,14 +80,14 @@ class ConsentHandler(PostgreSQLRouteHandler):
 
 		return response
 
-	def give_consent(self, study_id, username, *args, **kwargs):
+	def give_consent(self, study_id, address, *args, **kwargs):
 		"""
 		Set the consent of a participant.
 
 		:param study_id: The unique ID of the study.
 		:type study_id: str
-		:param username: The unique username of the participant.
-		:type username: str
+		:param address: The unique address of the participant on the blockchain.
+		:type address: str
 
 		:return: A response with any errors that may arise.
 		:rtype: :class:`oauth2.web.Response`
@@ -96,13 +96,11 @@ class ConsentHandler(PostgreSQLRouteHandler):
 		response = Response()
 
 		try:
-			username = self._sanitize(username)
-
 			"""
 			Consent should be the last thing that is saved.
 			The others can be saved with no consequence even if the consent fails.
 			"""
-			thread = threading.Thread(target=self._set_consent, args=(study_id, username, True, *args), kwargs=kwargs)
+			thread = threading.Thread(target=self._set_consent, args=(study_id, address, True, *args), kwargs=kwargs)
 			thread.start()
 			self._threads.append(thread)
 
@@ -114,6 +112,7 @@ class ConsentHandler(PostgreSQLRouteHandler):
 				study_exceptions.MissingAttributesException,
 				study_exceptions.StudyDoesNotExistException,
 				study_exceptions.StudyExpiredException,
+				user_exceptions.ParticipantAddressDoesNotExistException,
 				user_exceptions.ParticipantDoesNotExistException
 			) as e:
 			response.status_code = 500
@@ -127,14 +126,14 @@ class ConsentHandler(PostgreSQLRouteHandler):
 
 		return response
 
-	def withdraw_consent(self, study_id, username, *args, **kwargs):
+	def withdraw_consent(self, study_id, address, *args, **kwargs):
 		"""
 		Withdraw the consent of a participant.
 
 		:param study_id: The unique ID of the study.
 		:type study_id: str
-		:param username: The unique username of the participant.
-		:type username: str
+		:param address: The unique address of the participant on the blockchain.
+		:type address: str
 
 		:return: A response with any errors that may arise.
 		:rtype: :class:`oauth2.web.Response`
@@ -143,9 +142,7 @@ class ConsentHandler(PostgreSQLRouteHandler):
 		response = Response()
 
 		try:
-			username = self._sanitize(username)
-
-			thread = threading.Thread(target=self._set_consent, args=(study_id, username, False, *args), kwargs=kwargs)
+			thread = threading.Thread(target=self._set_consent, args=(study_id, address, False, *args), kwargs=kwargs)
 			thread.start()
 			self._threads.append(thread)
 
@@ -155,6 +152,7 @@ class ConsentHandler(PostgreSQLRouteHandler):
 		except (
 			study_exceptions.StudyDoesNotExistException,
 			study_exceptions.StudyExpiredException,
+			user_exceptions.ParticipantAddressDoesNotExistException,
 			user_exceptions.ParticipantDoesNotExistException
 			) as e:
 			response.status_code = 500
@@ -401,7 +399,7 @@ class ConsentHandler(PostgreSQLRouteHandler):
 
 		return response
 
-	def _set_consent(self, study_id, username, consent, *args, **kwargs):
+	def _set_consent(self, study_id, address, consent, *args, **kwargs):
 		"""
 		Set a user's consent to the given study.
 		A consent is created if it does not exist.
@@ -409,8 +407,8 @@ class ConsentHandler(PostgreSQLRouteHandler):
 
 		:param study_id: The unique ID of the study.
 		:type study_id: str
-		:param username: The unique username of the participant.
-		:type username: str
+		:param address: The unique address of the participant on the blockchain.
+		:type address: str
 		:param consent: The consent status.
 		:type consent: bool
 
@@ -421,15 +419,15 @@ class ConsentHandler(PostgreSQLRouteHandler):
 		if not self._study_exists(study_id):
 			raise study_exceptions.StudyDoesNotExistException()
 
-		if not self._participant_exists(username):
-			raise user_exceptions.ParticipantDoesNotExistException()
+		if not self._participant_address_exists(address):
+			raise user_exceptions.ParticipantAddressDoesNotExistException()
 
 		"""
 		Set the consent accordingly.
 		Do not commit transactions do not change the state of the consent.
 		"""
-		if (consent != self._blockchain_connector.has_consent(study_id, username, *args, **kwargs)):
-			self._blockchain_connector.set_consent(study_id, username, consent, *args, **kwargs)
+		if (consent != self._blockchain_connector.has_consent(study_id, address, *args, **kwargs)):
+			self._blockchain_connector.set_consent(study_id, address, consent, *args, **kwargs)
 
 	def _set_attribute_value(self, attribute_id, username, value):
 		"""
