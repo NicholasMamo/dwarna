@@ -514,6 +514,39 @@ class HyperledgerAPI(BlockchainAPI):
 
 		pass
 
+	def get_all_study_participants(self, study_id, port=None, *args, **kwargs):
+		"""
+		Get a list of participant addresses of participants that have consented to participate in the study with the given ID.
+
+		:param study_id: The unique ID of the study.
+		:type study_id: int
+		:param port: The port to use when issuing the identity.
+			By default, the request is made to the admin REST API endpoint.
+		:type port: int
+
+		:return: A list of participant addresses that have consented to participate in the study.
+		:rtype: list of str
+		"""
+
+		port = self._default_admin_port if port is None else port
+
+		params = {
+			"study_id": f"resource:org.consent.model.Study#{study_id}"
+		}
+		param_string = urllib.parse.urlencode(params)
+		endpoint = f"{self._host}:{port}/api/queries/get_study_consents?{param_string}"
+		response = requests.get(endpoint, headers={ })
+
+		"""
+		Sort the consent changes in descending order of timestamp to be certain of their validity.
+		"""
+		consent_changes = json.loads(response.content)
+		consent_changes = sorted(consent_changes, key=lambda change: change['timestamp'])[::-1]
+
+		address_pattern = re.compile('\#(.+?)$')
+		participants = [ address_pattern.findall(consent_change['participant'])[0] for consent_change in consent_changes ]
+		return list(set(participants))
+
 	def get_study_participants(self, study_id, port=None, *args, **kwargs):
 		"""
 		Get a list of participant addresses of participants that have consented to participate in the study with the given ID.
