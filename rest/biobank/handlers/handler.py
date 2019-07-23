@@ -296,6 +296,28 @@ class PostgreSQLRouteHandler(RouteHandler):
 
 		return (row is not None and len(row) > 0)
 
+	def _participant_address_exists(self, address):
+		"""
+		Check whether a participant address exists.
+
+		:param address: The participant's address on the blockchain.
+		:type address: str
+
+		:return: A boolean indicating whether the participant exists or not.
+		:rtype: bool
+		"""
+
+		row = self._connector.select_one("""
+			SELECT *
+			FROM
+				participant_identities
+			WHERE
+				address = '%s'
+			""" % (address)
+		)
+
+		return (row is not None and len(row) > 0)
+
 	def _researcher_exists(self, username):
 		"""
 		Check whether a researcher with the given username exists.
