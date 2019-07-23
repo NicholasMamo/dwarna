@@ -14,6 +14,7 @@ fabric/fabric-scripts/hlfv12/composer/backup*
 # REST API
 
 rest/tests/cards
+rest/config/blockchain.py
 rest/config/db.py
 
 # WordPress
