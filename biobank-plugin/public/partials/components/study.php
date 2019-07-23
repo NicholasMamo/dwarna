@@ -19,6 +19,9 @@
 				<label for="<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>">Participate</label>
 			</div>
 			<div class='col-md-7'>
+				<input id='<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>-address'
+					   name='<?= $this->plugin_name ?>[address]'
+					   type='hidden' value=''>
 				<input name='<?= $this->plugin_name ?>[study][study_id]'
 					   type='hidden' value='<?= $study->study->study_id ?>'>
 				<input id = '<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>'
