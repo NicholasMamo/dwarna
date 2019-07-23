@@ -177,8 +177,8 @@ function exportCard(access_token, study_id) {
 						var metadata = JSON.parse(data);
 						return metadata.userName;
 					}).then(function (address) {
+						jQuery(`#biobank-study-${study_id}-address`).val(address);
 						saveCard(card, address).then(() => {
-							console.log("Card saved");
 							/*
 							 * Load the consent status.
 							 */
