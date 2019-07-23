@@ -654,7 +654,17 @@ class HyperledgerAPI(BlockchainAPI):
 					participant_id = '%s'
 			""" % (username))
 		else:
-			pass
+			rows = self._connector.select("""
+				SELECT
+					address
+				FROM
+					participant_identities
+				WHERE
+					participant_id = '%s'
+			""" % (username))
+			study_participants = self.get_all_study_participants(study_id)
+			valid_rows = [ row for row in rows if row['address'] in study_participants ]
+			row = valid_rows[0]
 
 		address = row["address"]
 		return address
