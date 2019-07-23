@@ -181,7 +181,7 @@ class HyperledgerAPI(BlockchainAPI):
 		elif not blockchain.multi_card:
 			if len(rows):
 				"""
-				If the server is running in single card mode, return the first card.
+				If the participant never consented to participate in this study, fetch the first identity if there is one.
 				"""
 				row = rows[0]
 			else:
