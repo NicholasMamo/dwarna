@@ -123,13 +123,6 @@ class HyperledgerAPI(BlockchainAPI):
 
 		response = Response()
 
-		if (not self._card_exists(username, False, study_id, *args, **kwargs)
-			and not self._card_exists(username, True, study_id, *args, **kwargs)):
-			"""
-			If the research partner has neither card, then re-create the participant.
-			"""
-			self.create_participant(username)
-
 		temp = temp.lower() == "true"
 		exists = self._card_exists(username, temp, study_id, *args, **kwargs)
 
@@ -162,7 +155,7 @@ class HyperledgerAPI(BlockchainAPI):
 		temp = temp.lower() == "true"
 		card_name = "temp" if temp else "cred"
 		card_name = "%s_card" % card_name
-		rows = self._connector.select("""
+		query = """
 			SELECT
 				%s, address
 			FROM
@@ -170,16 +163,27 @@ class HyperledgerAPI(BlockchainAPI):
 			WHERE
 				participant_id = '%s' AND
 				%s IS NOT NULL
-		""" % (card_name, username, card_name))
+		""" % (card_name, username, card_name)
+
+		rows = self._connector.select(query)
 
 		if not blockchain.multi_card:
-			"""
-			If the server is running in single card mode, return the first card.
-			"""
-
-			row = rows[0]
+			if len(rows):
+				"""
+				If the server is running in single card mode, return the first card.
+				"""
+				row = rows[0]
+			else:
+				"""
+				If the research partner has no cards whatsoever, then create an identity for them.
+				Then, return the newly-created card.
+				"""
+				self.create_participant(username)
+				rows = self._connector.select(query)
+				row = rows[0]
 		else:
 			pass
+				Then, return the newly-created card.
 
 		"""
 		The response is a :class:`memoryview` object.
