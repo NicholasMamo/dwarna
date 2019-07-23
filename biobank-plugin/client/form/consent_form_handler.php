@@ -132,6 +132,7 @@ class ConsentFormHandler extends StudyHandler {
 				$study = isset($input["study"]) ? $input["study"] : array();
 				$_SESSION['study_id'] = $study['study_id'];
 				$_SESSION['consent'] = $study['consent'] == 'on';
+				$_SESSION['address'] = $input['address'];
 
 				/*
 				 * Then, redirect them to authorization endpoint.
@@ -171,7 +172,7 @@ class ConsentFormHandler extends StudyHandler {
 			$body = new \stdClass();
 			$request = new \client\Request($this->scheme, $this->host, $this->port);
 			$request->add_parameter("study_id", $_SESSION['study_id']);
-			$request->add_parameter("username", wp_get_current_user()->user_login);
+			$request->add_parameter("address", $_SESSION['address']);
 			$request->add_parameter("access_token", $this->get_blockchain_access_token());
 			$consent = $_SESSION['consent'];
 
