@@ -84,8 +84,8 @@ class HyperledgerAPI(BlockchainAPI):
 		:param username: The participant's unique username.
 		:type username: str
 
-		:return: The API response.
-		:rtype: :class:`requests.models.Response`
+		:return: The user's address on the blockchain.
+		:rtype: str
 		"""
 
 		address = str(uuid.uuid4())
@@ -401,16 +401,16 @@ class HyperledgerAPI(BlockchainAPI):
 	Consent.
 	"""
 
-	def set_consent(self, study_id, username, consent, access_token, port=None, *args, **kwargs):
+	def set_consent(self, study_id, address, consent, access_token, port=None, *args, **kwargs):
 		"""
 		Set a user's consent to the given study.
 
-		The consent ID is generated using the study's ID, the participant's username and the timestamp.
+		The consent ID is generated using the study's ID, the participant's address on the blockchain and the timestamp.
 
 		:param study_id: The unique ID of the study.
 		:type study_id: int
-		:param username: The unique username of the participant.
-		:type username: str
+		:param address: The unique address of the participant on the blockchain.
+		:type address: str
 		:param consent: The consent status.
 		:type consent: bool
 		:param access_token: The participant's access token.
@@ -421,8 +421,6 @@ class HyperledgerAPI(BlockchainAPI):
 			By default, the request is made to the multi-user REST API endpoint.
 		:type port: int
 		"""
-
-		address = self._get_participant_address(username, study_id)
 
 		port = self._default_multiuser_port if port is None else port
 		endpoint = f"{self._host}:{port}/api/org.consent.model.Consent"
@@ -443,14 +441,14 @@ class HyperledgerAPI(BlockchainAPI):
 
 		return response.content
 
-	def has_consent(self, study_id, username, access_token, port=None, *args, **kwargs):
+	def has_consent(self, study_id, address, access_token, port=None, *args, **kwargs):
 		"""
-		Check whether the participant with the given username has consented to the use of his data in the given study.
+		Check whether the participant with the given blockchain address has consented to the use of his data in the given study.
 
 		:param study_id: The unique ID of the study.
 		:type study_id: int
-		:param username: The unique username of the participant.
-		:type username: str
+		:param address: The unique address of the participant on the blockchain.
+		:type address: str
 		:param access_token: The participant's access token.
 			This is the access token that is given upon authenticating with Hyperledger Compose.
 		:type access_token: str
@@ -462,7 +460,6 @@ class HyperledgerAPI(BlockchainAPI):
 		:rtype: bool
 		"""
 
-		address = self._get_participant_address(username, study_id)
 		port = self._default_multiuser_port if port is None else port
 
 		params = {
