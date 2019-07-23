@@ -77,36 +77,19 @@ function loadCard(study_id) {
 	var access_token = decodeURIComponent(getCookie(hyperledger_access_token));
 	access_token = access_token.substring(2, access_token.indexOf("."));
 
-	var request = new XMLHttpRequest();
-	request.open("GET", `${host}:${hyperldger_port}/api/wallet/card`, true);
-	request.setRequestHeader("X-Access-Token", access_token);
-	request.onreadystatechange = function() {
-		if(this.readyState == 4) {
-			if (this.status == 200) {
-				ping().then(function(response) {
-					console.log(typeof(response));
-					console.log("System pinged");
-					console.log("Getting already-imported card");
-					exportCard(access_token, study_id);
-				});
-			} else {
-				jQuery.get(`${ajax_base_path}has_card.php?temp=false&study_id=${study_id}`).then(function(response) {
-					/*
-					 * If the user has a credential card, load it.
-					 * Otherwise, import the temporary card.
-					 */
-					if (response) {
-			 			console.log("Getting credentials card");
-			 			importCard(false, study_id);
-					} else {
-						console.log("Getting temporary card");
-						importCard(true, study_id);
-			 		}
-				});
-			}
+	jQuery.get(`${ajax_base_path}has_card.php?temp=false&study_id=${study_id}`).then(function(response) {
+		/*
+		 * If the user has a credential card, load it.
+		 * Otherwise, import the temporary card.
+		 */
+		if (response) {
+			console.log("Getting credentials card");
+			importCard(false, study_id);
+		} else {
+			console.log("Getting temporary card");
+			importCard(true, study_id);
 		}
-	}
-	request.send(null);
+	});
 }
 
 /**
