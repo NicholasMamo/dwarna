@@ -380,7 +380,7 @@ class HyperledgerAPI(BlockchainAPI):
 		card_name = "%s_card" % card_name
 		rows = self._connector.select("""
 			SELECT
-				%s
+				address, %s
 			FROM
 				participant_identities
 			WHERE
@@ -396,7 +396,16 @@ class HyperledgerAPI(BlockchainAPI):
 				card_data = rows[0][card_name]
 				return card_data is not None
 		else:
-			pass
+			"""
+			If the server is running in multi-card mode, the card exists if the user has a card that is linked to a study.
+			In other words, a card is only valid if the user has given consent to a study.
+			"""
+			if len(rows):
+				study_participants = self.get_all_study_participants(study_id)
+				valid_rows = [ row for row in rows if row['address'] in study_participants ]
+				if len(valid_rows):
+					card_data = valid_rows[0][card_name]
+					return card_data is not None
 
 		return False
 
