@@ -42,6 +42,14 @@ class ParticipantDoesNotExistException(Exception):
 	def __init__(self, message="Participant does not exist"):
 		super(ParticipantDoesNotExistException, self).__init__(message)
 
+class ParticipantAddressDoesNotExistException(Exception):
+	"""
+	An exception that indicates that a participant address that is sought does not exist.
+	"""
+
+	def __init__(self, message="Participant address does not exist"):
+		super(ParticipantAddressDoesNotExistException, self).__init__(message)
+
 class ResearcherExistsException(Exception):
 	"""
 	An exception that indicates that a researcher that is being added already exists.
