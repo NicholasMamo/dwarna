@@ -150,6 +150,75 @@ class ConsentFormHandler extends StudyHandler {
 	}
 
 	/**
+	 * Set the consent and accompanying attributes for a user.
+	 *
+	 * @since	1.0.0
+	 * @access	public
+	 */
+	public function update_consent() {
+		$error = "";
+		$input = $_POST["biobank"];
+		$study = isset($input["study"]) ? $input["study"] : array();
+
+		if(isset($_POST["consent_nonce"]) && wp_verify_nonce($_POST["consent_nonce"], "consent_form")) {
+			/*
+			 * For security purposes, ensure that the user can indeed update consent.
+			 */
+			if (current_user_can("update_consent") && isset($_POST["biobank"])) {
+				$error = '';
+				$give_endpoint = "give_consent";
+				$withdraw_endpoint = "withdraw_consent";
+
+				/*
+				 * Create a new request with the study and user information.
+				 */
+				$body = new \stdClass();
+				$request = new \client\Request($this->scheme, $this->host, $this->port);
+				$request->add_parameter("study_id", $study['study_id']);
+				$request->add_parameter("address", $input['address']);
+				$request->add_parameter("access_token", $this->get_blockchain_access_token());
+
+				$consent = $study['consent'] == 'on';
+
+				/*
+				 * There are two routes to consent.
+				 * Either the participant gives it, or they withdraw it.
+				 */
+				if ($consent) {
+					$response = $request->send_post_request($give_endpoint);
+					if (! is_wp_error($response)) {
+						$response_body = json_decode($response["body"]);
+						$error = isset($response_body->error) ? $response_body->error : $error;
+					} else {
+						$error = "WordPress could not reach the backend";
+					}
+				} else {
+					$response = $request->send_post_request($withdraw_endpoint);
+					if (! is_wp_error($response)) {
+						$response_body = json_decode($response["body"]);
+						$error = isset($response_body->error) ? $response_body->error : $error;
+					} else {
+						$error = "WordPress could not reach the backend";
+					}
+				}
+			}
+		}
+
+		/*
+		 * If something goes wrong, redirect back with an error.
+		 */
+		if (isset($study['study_id'])) {
+			$error = urlencode($error);
+			wp_redirect(get_site_url() . "/index.php/biobank-study?study={$study['study_id']}error=$error&return=" . __FUNCTION__);
+			exit;
+		} else {
+			$error = urlencode($error);
+			wp_redirect(get_site_url() . "/index.php/biobank-consent?study={$study['study_id']}error=$error&return=" . __FUNCTION__);
+			exit;
+		}
+	}
+
+	/**
 	 * Save the consent and redirect back to the study.
 	 *
 	 * @since	1.0.0
