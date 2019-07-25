@@ -80,141 +80,182 @@ function loadCard(study_id) {
 		 * If the user has a credential card, load it.
 		 * Otherwise, import the temporary card.
 		 */
-		if (response) {
-			console.log("Getting credentials card");
-			importCard(false, study_id);
-		} else {
-			console.log("Getting temporary card");
-			importCard(true, study_id);
-		}
+		console.log(`Getting ${response ? 'credentials' : 'temporary'} card`);
+		downloadCard(response, study_id).then((card) => {
+			console.log('Card fetched');
+			return importCard(card);
+		}).then((response) => {
+			console.log("Card imported")
+			return ping();
+		}).then((response) => {
+			console.log("System pinged");
+			exportCard(access_token, study_id).then((card) => {
+				getAddress(card).then((address) => {
+					jQuery(`#biobank-study-${study_id}-address`).val(address);
+					return address;
+				}).then((address) => {
+					console.log(address);
+					jQuery('#biobank-study').val(study_id);
+					jQuery('#study-form').submit();
+					/*
+					 * Load the consent status.
+					 */
+					var access_token = decodeURIComponent(getCookie(hyperledger_access_token));
+					access_token = access_token.substring(2, access_token.indexOf("."));
+
+					var param_string = 'study_id=' + encodeURIComponent(`resource:org.consent.model.Study#${study_id}`);
+					param_string = param_string + '&username=' + encodeURIComponent(`resource:org.consent.model.ResearchParticipant#${address}`);
+					jQuery.ajax({
+						url: `${host}:${hyperldger_port}/api/queries/has_consent?${param_string}`,
+						method: "GET",
+						type: "GET",
+						headers: {
+							'X-Access-Token': access_token,
+						},
+					}).then(function(response) {
+						if (response.length) {
+							var consent = response[0];
+							if (consent.status) {
+								jQuery(`#biobank-study-${study_id}`).prop('checked', true);
+							}
+						}
+					});
+				});
+			});
+		});
 	});
 }
 
 /**
- * When a card is found, load it and import it into the authenticated user's wallet.
+ * Download the card from the backend.
  *
- * @param	{boolean}	temp - A boolean indicating whether the temporary or credentials card is being loaded.
+ * @param	{boolean}	temp - A boolean indicating whether the temporary or credentials card is being downloaded.
  * @param	{int}		study_id - The study ID that is being loaded.
  */
-function importCard(temp, study_id) {
+function downloadCard(temp, study_id) {
 	var request = new XMLHttpRequest();
 	var access_token = decodeURIComponent(getCookie("access_token"));
 	access_token = access_token.substring(2, access_token.indexOf("."));
-	/*
-	 * Get the requested card from the backend.
-	 */
-	request.open("GET", `${ajax_base_path}get_card.php?temp=${temp ? "true" : "false"}&study_id=${study_id}`, true);
-	request.onreadystatechange = function(){
-		if(this.readyState == 4) {
-			if(this.status == 200) {
-				var blob = new Blob([this.response], {type: "application/octet-stream"});
-				var card_data = blob;
-				const file = new File(
-					[card_data], "card.card",
-					{type: "application/octet-stream", lastModified: Date.now()}
-				);
+	return new Promise((resolve, reject) => {
+		/*
+		 * Get the requested card from the backend.
+		 */
+		request.onreadystatechange = function() {
+			if (request.readyState == 2) {
+				if (request.status == 200) {
+					request.responseType = "blob";
+				} else {
+					request.responseType = "text";
+				}
+			}
 
-				const formData = new FormData();
-				formData.append("card", file);
-				jQuery.ajax({
-					url: `${host}:${hyperldger_port}/api/wallet/import?name=card`,
-					method: "POST",
-					type: "POST",
-					cache: false,
-					data: formData,
-					processData: false,
-					contentType: false,
-					headers: {
-						"X-Access-Token": access_token,
-					},
-				}).then(function(response) {
-					console.log("Card imported")
-					ping().then(function(response) {
-						console.log("System pinged");
-						exportCard(access_token, study_id);
-					});
-				});
-			} else if(this.responseText != "") {
-				console.log(this.responseText);
-			}
-		} else if(this.readyState == 2) {
-			if (this.status == 200) {
-				this.responseType = "blob";
+			if (request.readyState !== 4) { return; }
+
+			if (request.status >= 200 && request.status < 300) {
+				resolve(request.response)
 			} else {
-				this.responseType = "text";
+				reject({
+					status: request.status,
+					statusText: request.statusText
+				});
 			}
-		}
-	};
-	request.send(null);
+		};
+
+		request.open("GET", `${ajax_base_path}get_card.php?temp=${temp ? "true" : "false"}&study_id=${study_id}`);
+		request.send();
+	});
+}
+
+/**
+ * Import the downloaded card into the backend.
+ *
+ * @param {Object}	card - The card that is being imported to the Hyperledger Composer wallet.
+ */
+function importCard(card) {
+	var card_data = new Blob([card], {type: "application/octet-stream"});
+	const file = new File(
+		[card_data], "card.card",
+		{type: "application/octet-stream", lastModified: Date.now()}
+	);
+
+	var access_token = decodeURIComponent(getCookie("access_token"));
+	access_token = access_token.substring(2, access_token.indexOf("."));
+
+	const formData = new FormData();
+	formData.append("card", file);
+	return jQuery.ajax({
+		url: `${host}:${hyperldger_port}/api/wallet/import?name=card`,
+		method: "POST",
+		type: "POST",
+		cache: false,
+		data: formData,
+		processData: false,
+		contentType: false,
+		headers: {
+			"X-Access-Token": access_token,
+		},
+	});
 }
 
 /**
  * Export the user's card.
  *
- * @param	{string} access_token - The user's Hyperledger access token.
- *									This token is stored as a cookie.
- * @param	{int}		study_id - The study ID that is being loaded.
+ * @param	{int}	study_id - The study ID that is being loaded.
  */
-function exportCard(access_token, study_id) {
+function exportCard(study_id) {
 	var request = new XMLHttpRequest();
-	request.open("GET", `${host}:${hyperldger_port}/api/wallet/card/export`, true);
-	request.setRequestHeader("X-Access-Token", access_token);
-	request.onreadystatechange = function(){
-		if(this.readyState == 4) {
-			if(this.status == 200) {
-				console.log("Card exported");
+	var access_token = decodeURIComponent(getCookie(hyperledger_access_token));
+	access_token = access_token.substring(2, access_token.indexOf("."));
 
-				var blob = new Blob([this.response], {type: "application/octet-stream"});
-				var card = blob;
-
-				var reader = new FileReader();
-				reader.addEventListener("loadend", function() {
-					JSZip.loadAsync(reader.result).then(function (zip) {
-						return zip.file('metadata.json').async("text");
-				    }).then(function (data) {
-						var metadata = JSON.parse(data);
-						return metadata.userName;
-					}).then(function (address) {
-						jQuery(`#biobank-study-${study_id}-address`).val(address);
-						saveCard(card, address).then(() => {
-							/*
-							 * Load the consent status.
-							 */
-							var access_token = decodeURIComponent(getCookie(hyperledger_access_token));
-							access_token = access_token.substring(2, access_token.indexOf("."));
-
-							var param_string = 'study_id=' + encodeURIComponent(`resource:org.consent.model.Study#${study_id}`);
-							param_string = param_string + '&username=' + encodeURIComponent(`resource:org.consent.model.ResearchParticipant#${address}`);
-							jQuery.ajax({
-								url: `${host}:${hyperldger_port}/api/queries/has_consent?${param_string}`,
-								method: "GET",
-								type: "GET",
-								headers: {
-									'X-Access-Token': access_token,
-								},
-							}).then(function(response) {
-								/*
-								 * When the card is saved, redirect to the authentication endpoint.
-								 */
-								jQuery('#biobank-study').val(study_id);
-								jQuery('#study-form').submit();
-							});
-						});
-					});
-				});
-				reader.readAsArrayBuffer(blob);
-			} else if(this.responseText != "") {
-				console.log(this.responseText);
+	return new Promise((resolve, reject) => {
+		request.onreadystatechange = function() {
+			if (request.readyState == 2) {
+				if (request.status == 200) {
+					request.responseType = "blob";
+				} else {
+					request.responseType = "text";
+				}
 			}
-		} else if(this.readyState == 2) {
-			if (this.status == 200) {
-				this.responseType = "blob";
+
+			if (request.readyState !== 4) { return; }
+
+			if (request.status >= 200 && request.status < 300) {
+				resolve(request.response)
 			} else {
-				this.responseType = "text";
+				reject({
+					status: request.status,
+					statusText: request.statusText
+				});
 			}
-		}
-	};
-	request.send(null);
+		};
+
+		request.open("GET", `${host}:${hyperldger_port}/api/wallet/card/export`, true);
+		request.setRequestHeader("X-Access-Token", access_token);
+		request.send();
+	});
+}
+
+/**
+ *
+ * @param {Blob}	card - The card to save in the database.
+ *
+ * @return {Promise}
+ */
+function getAddress(card) {
+	var card = new Blob([card], {type: "application/octet-stream"});
+
+	var reader = new FileReader();
+	return new Promise((resolve, reject) => {
+		reader.addEventListener("loadend", function() {
+			JSZip.loadAsync(reader.result).then(function (zip) {
+				return zip.file('metadata.json').async("text");
+			}).then(function (data) {
+				var metadata = JSON.parse(data);
+				return resolve(metadata.userName);
+			})
+		});
+		reader.readAsArrayBuffer(card);
+	});
 }
 
 /**
@@ -225,6 +266,9 @@ function exportCard(access_token, study_id) {
  */
 function saveCard(card, address) {
 	console.log(`Saving card of ${address}`);
+
+	var card = new Blob([card], {type: "application/octet-stream"});
+
 	const file = new File(
 		[card], "card.card",
 		{type: "application/octet-stream", lastModified: Date.now()}
