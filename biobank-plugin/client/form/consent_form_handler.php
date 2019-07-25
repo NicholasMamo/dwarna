@@ -113,12 +113,12 @@ class ConsentFormHandler extends StudyHandler {
 	}
 
 	/**
-	 * Set the consent and accompanying attributes for a user.
+	 * Authenticate the user so that they consent to a study.
 	 *
 	 * @since	1.0.0
 	 * @access	public
 	 */
-	public function update_consent() {
+	public function authenticate() {
 		$error = "";
 		if(isset($_POST["consent_nonce"]) && wp_verify_nonce($_POST["consent_nonce"], "consent_form")) {
 			/*
@@ -131,8 +131,6 @@ class ConsentFormHandler extends StudyHandler {
 				$input = $_POST["biobank"];
 				$study = isset($input["study"]) ? $input["study"] : array();
 				$_SESSION['study_id'] = $study['study_id'];
-				$_SESSION['consent'] = $study['consent'] == 'on';
-				$_SESSION['address'] = $input['address'];
 
 				/*
 				 * Then, redirect them to authorization endpoint.
