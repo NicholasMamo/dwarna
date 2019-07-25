@@ -119,8 +119,8 @@ class Biobank_Public {
 		$action = $_GET['action'] ?? NULL;
 		if ($action) {
 			switch ($action) {
-				case 'save_consent':
-					(new \client\form\ConsentFormHandler())->save_consent();
+				case 'consent':
+					// (new \client\form\ConsentFormHandler())->save_consent();
 					break;
 			}
 		}
