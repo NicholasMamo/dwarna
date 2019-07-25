@@ -35,36 +35,34 @@ const ajax_base_path = `${host}/wordpress/wp-content/plugins/biobank-plugin/publ
  * @param {int}		study_id - The study ID that is being loaded.
  */
 function getCard(element, study_id) {
-	if (jQuery(element).attr('aria-expanded') == 'false') {
-		/*
-		 * Whenever a study is opened, get the card.
-		 * Otherwise, do nothing.
-		 */
-		console.log(`Getting card for study ${study_id}`);
+	/*
+	 * Whenever a study is opened, get the card.
+	 * Otherwise, do nothing.
+	 */
+	console.log(`Getting card for study ${study_id}`);
 
-		jQuery.get(`${ajax_base_path}get_username.php`).then(function(response) {
+	jQuery.get(`${ajax_base_path}get_username.php`).then(function(response) {
+		/*
+		* First get the user's username.
+		* TODO: Check the user role as well.
+		*
+		* If the user is logged in, check whether they have a temporary card for this study.
+		* If they do not, a new card is created instead.
+		*/
+		if (response) {
+			username = response;
+			loadCard(study_id);
+		} else {
 			/*
-			* First get the user's username.
-			* TODO: Check the user role as well.
-			*
-			* If the user is logged in, check whether they have a temporary card for this study.
-			* If they do not, a new card is created instead.
-			*/
-			if (response) {
-				username = response;
-				loadCard(study_id);
-			} else {
-				/*
-				 * If the user is not logged in, check if they have an access token.
-				 * If they do, clear that token and refresh the page for the change to take effect.
-				 */
-				if (getCookie(hyperledger_access_token)) {
-					setCookie(hyperledger_access_token, "", 0);
-					location.reload();
-				}
+			 * If the user is not logged in, check if they have an access token.
+			 * If they do, clear that token and refresh the page for the change to take effect.
+			 */
+			if (getCookie(hyperledger_access_token)) {
+				setCookie(hyperledger_access_token, "", 0);
+				location.reload();
 			}
-		});
-	}
+		}
+	});
 }
 
 /**
