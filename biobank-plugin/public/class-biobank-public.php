@@ -116,6 +116,16 @@ class Biobank_Public {
 	 */
 	public function init() {
 		$this->is_authorized();
+
+		/*
+		 * If there is no set study ID in the session, then redirect to the homepage.
+		 * TODO: Check for the study ID in the parameter, and handle consent another way (maybe authenticate and then refresh).
+		 */
+		if (strpos($_SERVER['REQUEST_URI'], 'biobank-study') && ! isset($_SESSION['study_id'])) {
+			wp_redirect(get_site_url());
+			exit;
+		}
+
 		$action = $_GET['action'] ?? NULL;
 		if ($action) {
 			switch ($action) {
