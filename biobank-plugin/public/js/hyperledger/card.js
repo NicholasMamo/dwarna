@@ -193,12 +193,11 @@ function exportCard(access_token, study_id) {
 									'X-Access-Token': access_token,
 								},
 							}).then(function(response) {
-								if (response.length) {
-									var consent = response[0];
-									if (consent.status) {
-										jQuery(`#biobank-study-${study_id}`).prop('checked', true);
-									}
-								}
+								/*
+								 * When the card is saved, redirect to the authentication endpoint.
+								 */
+								jQuery('#biobank-study').val(study_id);
+								jQuery('#study-form').submit();
 							});
 						});
 					});
