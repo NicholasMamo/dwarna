@@ -10,7 +10,6 @@
 	<input type="hidden" name="action" value="consent_form">
 	<?php wp_nonce_field("consent_form", "consent_nonce"); ?>
 
-
 	<div id='study-<?= $study->study->study_id ?>' class='collapse'>
 		<p class="biobank-description"><?= $study->study->description ?></p>
 		<p class="biobank-homepage"><a href="<?= $study->study->homepage ?>" target="_blank">Read more</a></p>

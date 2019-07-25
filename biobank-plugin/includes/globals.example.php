@@ -93,6 +93,19 @@ $plugin_pages = array(
 			"participant", "administrator",
 		)
 	),
+	"biobank-study" => array(
+		"wp_info" => array(
+			"post_title" => "Study",
+			"post_content" => "[biobank-study]",
+			"post_name" => "biobank-study",
+			"post_status" => "publish",
+			"post_author" => 1,
+			"post_type" => "page",
+		),
+		"permissions" => array(
+			"participant", "administrator",
+		)
+	),
 	"biobank-trail" => array(
 		"wp_info" => array(
 			"post_title" => "Consent Trail",
