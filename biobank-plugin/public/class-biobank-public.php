@@ -159,6 +159,35 @@ class Biobank_Public {
 	}
 
 	/**
+	 * Show the study page.
+	 *
+	 * @since    1.0.0
+	 * @access	public
+	 */
+	public function display_study() {
+		/*
+		 * This view should only be displayed if the user is logged in, they are a participant and there is a study stored in the session.
+		 */
+		if (\is_user_logged_in()) {
+			$user = wp_get_current_user();
+			$role = $user->roles[0];
+			if ($role == "participant") {
+				if (isset($_SESSION['study_id']) &&
+					isset($_GET['action']) && $_GET['action'] == 'consent') {
+					wp_enqueue_script( $this->plugin_name . "-hyperledger-card", plugin_dir_url( __FILE__ ) . 'js/hyperledger/card.js', array( 'jquery' ), $this->version, false );
+					
+					/*
+					 * TODO: Create a new function.
+					 */
+					$studies = (new \client\form\ConsentFormHandler())->get_active_studies();
+					$study = $studies->data[0];
+					include_once(plugin_dir_path(__FILE__) . "partials/components/study.php");
+				}
+			}
+		}
+	}
+
+	/**
 	 * Show the consent form page.
 	 *
 	 * @since    1.0.0
