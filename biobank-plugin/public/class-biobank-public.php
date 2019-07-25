@@ -134,6 +134,7 @@ class Biobank_Public {
 	 */
 	public function register_shortcodes() {
 		add_shortcode("biobank-consent", array($this, "display_consent_form"));
+		add_shortcode("biobank-study", array($this, "display_study"));
 		add_shortcode("biobank-trail", array($this, "display_consent_trail"));
 	}
 
