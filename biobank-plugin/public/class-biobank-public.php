@@ -185,13 +185,17 @@ class Biobank_Public {
 				if (isset($_SESSION['study_id']) &&
 					isset($_GET['action']) && $_GET['action'] == 'consent') {
 					wp_enqueue_script( $this->plugin_name . "-hyperledger-card", plugin_dir_url( __FILE__ ) . 'js/hyperledger/card.js', array( 'jquery' ), $this->version, false );
-					
+
 					/*
 					 * TODO: Create a new function.
 					 */
 					$studies = (new \client\form\ConsentFormHandler())->get_active_studies();
-					$study = $studies->data[0];
-					include_once(plugin_dir_path(__FILE__) . "partials/components/study.php");
+					foreach ($studies->data as $study) {
+						if ($study->study->study_id == $_SESSION['study_id']) {
+							include_once(plugin_dir_path(__FILE__) . "partials/components/study.php");
+							break;
+						}
+					}
 				}
 			}
 		}
