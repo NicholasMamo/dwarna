@@ -10,6 +10,7 @@ source variables.sh
 echo -e "${HIGHLIGHT}Installing Schema${DEFAULT}"
 cd setup
 ./minimal_schema.py
+echo -e "${HIGHLIGHT}Installing OAuth 2.0 Schema${DEFAULT}"
 ./oauth_schema.py
 cd ..
 
