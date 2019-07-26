@@ -27,6 +27,34 @@ const host = `${window.location.protocol}//${window.location.hostname}`;
  */
 const ajax_base_path = `${host}/wordpress/wp-content/plugins/biobank-plugin/public/ajax/`;
 
+/*
+ * If there is a consent field, load its value.
+ */
+jQuery('.study-consent').ready(() => {
+	var study_id = jQuery('input[name="biobank[study][study_id]"]').val();
+	var access_token = decodeURIComponent(getCookie("access_token"));
+	access_token = access_token.substring(2, access_token.indexOf("."));
+	ping().then((response) => {
+		exportCard(access_token, study_id).then((card) => {
+			getAddress(card).then((address) => {
+				jQuery(`#biobank-study-${study_id}-address`).val(address);
+				return address;
+			}).then((address) => {
+				saveCard(card, address).then((response) => {
+					loadConsent(study_id, address).then(function(response) {
+						if (response.length) {
+							var consent = response[0];
+							if (consent.status) {
+								jQuery(`#biobank-study-${study_id}`).prop('checked', true);
+							}
+						}
+					});
+				});
+			});
+		});
+	});
+})
+
 /**
  * Get the user's card for the study.
  * This card allows them to make requests to the Hyperledger API for this particular study.
