@@ -135,6 +135,8 @@ function loadCard(study_id) {
  *
  * @param	{boolean}	temp - A boolean indicating whether the temporary or credentials card is being downloaded.
  * @param	{int}		study_id - The study ID that is being loaded.
+ *
+ * @return {object} The card promise response.
  */
 function downloadCard(temp, study_id) {
 	var request = new XMLHttpRequest();
@@ -174,6 +176,8 @@ function downloadCard(temp, study_id) {
  * Import the downloaded card into the backend.
  *
  * @param {Object}	card - The card that is being imported to the Hyperledger Composer wallet.
+ *
+ * @return {object} The card import promise response.
  */
 function importCard(card) {
 	var card_data = new Blob([card], {type: "application/octet-stream"});
@@ -205,6 +209,8 @@ function importCard(card) {
  * Export the user's card.
  *
  * @param	{int}	study_id - The study ID that is being loaded.
+ *
+ * @return {object} The card promise response.
  */
 function exportCard(study_id) {
 	var request = new XMLHttpRequest();
@@ -243,7 +249,7 @@ function exportCard(study_id) {
  *
  * @param {Blob}	card - The card to save in the database.
  *
- * @return {Promise}
+ * @return {object} The address promise response.
  */
 function getAddress(card) {
 	var card = new Blob([card], {type: "application/octet-stream"});
@@ -267,6 +273,8 @@ function getAddress(card) {
  *
  * @param {Blob}	card - The card to save in the database.
  * @param {string}	address - The participant's address on the blockchain.
+ *
+ * @return {object} The card promise response.
  */
 function saveCard(card, address) {
 	console.log(`Saving card of ${address}`);
@@ -294,7 +302,7 @@ function saveCard(card, address) {
 /**
  * Ping the imported card to exchange the secret for credentials.
  *
- * @return	{object} The ping response.
+ * @return	{object} The ping promise response.
  */
 function ping() {
 	console.log("Pinging card");
