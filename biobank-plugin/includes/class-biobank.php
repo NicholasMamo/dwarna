@@ -220,7 +220,23 @@ class Biobank {
 		$this->loader->add_action( 'init', $plugin_public, 'init' );
 
 		$this->loader->add_filter( 'wp_get_nav_menu_items', $plugin_public, 'set_menu_visibility', 10, 3 );
+		$this->loader->add_filter('http_api_curl', $this, 'set_curl_timeout', 10, 3);
 
+	}
+
+	/**
+	 * Set the cURL timeout.
+	 *
+	 * This fixes timeouts when fetching the card from the backend.
+	 *
+	 * @since	1.0.0
+	 *
+	 */
+	public function set_curl_timeout($handle, $r, $url) {
+		$timeout = 30;
+		curl_setopt( $handle, CURLOPT_CONNECTTIMEOUT, $timeout );
+		curl_setopt( $handle, CURLOPT_TIMEOUT, $timeout );
+		return $handle;
 	}
 
 	/**
