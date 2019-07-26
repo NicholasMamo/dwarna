@@ -319,6 +319,30 @@ function ping() {
 }
 
 /**
+ * Load the consent status of the user from the current card.
+ *
+ * @param {int}		study_id - The study for which the consent status will be loaded.
+ * @param {string}	address - The participant's address.
+ *
+ * @return {object} The consent promise response.
+ */
+function loadConsent(study_id, address) {
+	var access_token = decodeURIComponent(getCookie(hyperledger_access_token));
+	access_token = access_token.substring(2, access_token.indexOf("."));
+
+	var param_string = 'study_id=' + encodeURIComponent(`resource:org.consent.model.Study#${study_id}`);
+	param_string = param_string + '&username=' + encodeURIComponent(`resource:org.consent.model.ResearchParticipant#${address}`);
+	return jQuery.ajax({
+		url: `${host}:${hyperldger_port}/api/queries/has_consent?${param_string}`,
+		method: "GET",
+		type: "GET",
+		headers: {
+			'X-Access-Token': access_token,
+		},
+	});
+}
+
+/**
 * Get the value of the cookie having the given name.
 * Based on https://stackoverflow.com/a/1599291/1771724
 *
