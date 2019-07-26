@@ -109,7 +109,7 @@ function loadCard(study_id) {
 		 * Otherwise, import the temporary card.
 		 */
 		console.log(`Getting ${response ? 'credentials' : 'temporary'} card`);
-		downloadCard(response, study_id).then((card) => {
+		downloadCard(!response, study_id).then((card) => {
 			console.log('Card fetched');
 			return importCard(card);
 		}).then((response) => {
@@ -120,38 +120,14 @@ function loadCard(study_id) {
 			exportCard(access_token, study_id).then((card) => {
 				getAddress(card).then((address) => {
 					jQuery(`#biobank-study-${study_id}-address`).val(address);
-					return address;
-				}).then((address) => {
-					console.log(address);
-					jQuery('#biobank-study').val(study_id);
-					jQuery('#study-form').submit();
-					/*
-					 * Load the consent status.
-					 */
-					var access_token = decodeURIComponent(getCookie(hyperledger_access_token));
-					access_token = access_token.substring(2, access_token.indexOf("."));
-
-					var param_string = 'study_id=' + encodeURIComponent(`resource:org.consent.model.Study#${study_id}`);
-					param_string = param_string + '&username=' + encodeURIComponent(`resource:org.consent.model.ResearchParticipant#${address}`);
-					jQuery.ajax({
-						url: `${host}:${hyperldger_port}/api/queries/has_consent?${param_string}`,
-						method: "GET",
-						type: "GET",
-						headers: {
-							'X-Access-Token': access_token,
-						},
-					}).then(function(response) {
-						if (response.length) {
-							var consent = response[0];
-							if (consent.status) {
-								jQuery(`#biobank-study-${study_id}`).prop('checked', true);
-							}
-						}
+					saveCard(card, address).then((address) => {
+						jQuery('#biobank-study').val(study_id);
+						jQuery('#study-form').submit();
 					});
 				});
 			});
 		});
-	});
+	})
 }
 
 /**
