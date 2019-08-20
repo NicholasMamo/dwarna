@@ -278,14 +278,14 @@ class ConsentHandler(PostgreSQLRouteHandler):
 
 		return response
 
-	def has_consent(self, study_id, username, *args, **kwargs):
+	def has_consent(self, study_id, address, *args, **kwargs):
 		"""
-		Check whether the participant with the given username has consented to the use of his data in the given study.
+		Check whether the participant with the given address has consented to the use of his data in the given study.
 
 		:param study_id: The unique ID of the study.
 		:type study_id: str
-		:param username: The unique username of the participant.
-		:type username: str
+		:param address: The unique address of the participant.
+		:type address: str
 
 		:return: A response with any errors that may arise.
 			The body contains the consent status.
@@ -295,22 +295,20 @@ class ConsentHandler(PostgreSQLRouteHandler):
 		response = Response()
 
 		try:
-			username = self._sanitize(username)
-
 			if not self._study_exists(study_id):
 				raise study_exceptions.StudyDoesNotExistException()
 
-			if not self._participant_exists(username):
-				raise user_exceptions.ParticipantDoesNotExistException()
+			if not self._participant_address_exists(address):
+				raise user_exceptions.ParticipantAddressDoesNotExistException()
 
-			consent = self._blockchain_connector.has_consent(study_id, username, *args, **kwargs)
+			consent = self._blockchain_connector.has_consent(study_id, address, *args, **kwargs)
 
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
 			response.body = json.dumps({ "data": consent })
 		except (
 			study_exceptions.StudyDoesNotExistException,
-			user_exceptions.ParticipantDoesNotExistException
+			user_exceptions.ParticipantAddressDoesNotExistException
 		) as e:
 			response.status_code = 500
 			response.add_header("Content-Type", "application/json")
