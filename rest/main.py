@@ -149,7 +149,7 @@ def start_auth_server(port, token_expiry, connection, oauth_connection):
 	except KeyboardInterrupt:
 		httpd.server_close()
 
-def main(database, oauth_database, listen_port=None, token_expiry=oauth.token_expiry):
+def main(database, oauth_database, listen_port=None, single_card=None, token_expiry=oauth.token_expiry):
 	"""
 	Establish a connection with PostgreSQL and start the server.
 
@@ -159,23 +159,27 @@ def main(database, oauth_database, listen_port=None, token_expiry=oauth.token_ex
 	:type oauth_database: str
 	:param listen_port: The port on which to serve the REST API.
 	:type listen_port: int
+	:param single_card: A boolean indicating whether the server should run in single-card mode.
+	:type single_card: bool
 	:param token_expiry: The time taken for an access token delivered by the authorization server to expire.
 		This should only be provided in testing environments.
 		Otherwise, the configuration should be updated.
 	:type token_expiry: int
 	"""
 
-	args = setup_args()
-
 	"""
 	Get the listen port.
 	If it was not provided as an argument, it is sought as a command-line argument.
 	"""
 	if listen_port is None:
+		args = setup_args()
 		listen_port = args.port[0] if args.port else 7225
 
-	if args.single_card:
+	if single_card is None:
+		args = setup_args()
 		blockchain.multi_card = False
+	else:
+		blockchain.multi_card = single_card
 
 	"""
 	Get the connection details from the .pgpass file.
