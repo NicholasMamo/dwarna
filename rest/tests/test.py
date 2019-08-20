@@ -90,7 +90,7 @@ class BiobankTestCase(unittest.TestCase):
 		"""
 
 		create_testing_environment()
-		main.main(TEST_DATABASE, TEST_OAUTH_DATABASE, PORT)
+		main.main(TEST_DATABASE, TEST_OAUTH_DATABASE, PORT, single_card=False)
 		time.sleep(1) # wait so as not to overload the server with requests
 
 	@classmethod
