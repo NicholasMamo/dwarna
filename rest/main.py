@@ -59,6 +59,7 @@ def setup_args():
 
 	parser = argparse.ArgumentParser(description="Serve the REST API which controls the dynamic consent functionality.")
 	parser.add_argument("-p", "--port", nargs="+", type=str, help="<Optional> The port on which to serve the REST API, defaults to 7225.", required=False)
+	parser.add_argument("--single-card", help="Run the server in single-card mode.", action="store_true")
 	args = parser.parse_args()
 	return args
 
@@ -164,13 +165,17 @@ def main(database, oauth_database, listen_port=None, token_expiry=oauth.token_ex
 	:type token_expiry: int
 	"""
 
+	args = setup_args()
+
 	"""
 	Get the listen port.
 	If it was not provided as an argument, it is sought as a command-line argument.
 	"""
 	if listen_port is None:
-		args = setup_args()
 		listen_port = args.port[0] if args.port else 7225
+
+	if args.single_card:
+		blockchain.multi_card = False
 
 	"""
 	Get the connection details from the .pgpass file.
