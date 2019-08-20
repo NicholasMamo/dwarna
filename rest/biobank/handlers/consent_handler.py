@@ -96,10 +96,12 @@ class ConsentHandler(PostgreSQLRouteHandler):
 		response = Response()
 
 		try:
-			"""
-			Consent should be the last thing that is saved.
-			The others can be saved with no consequence even if the consent fails.
-			"""
+			if not self._study_exists(study_id):
+				raise study_exceptions.StudyDoesNotExistException()
+
+			if not self._participant_address_exists(address):
+				raise user_exceptions.ParticipantAddressDoesNotExistException()
+
 			thread = threading.Thread(target=self._set_consent, args=(study_id, address, True, *args), kwargs=kwargs)
 			thread.start()
 			self._threads.append(thread)
@@ -142,6 +144,12 @@ class ConsentHandler(PostgreSQLRouteHandler):
 		response = Response()
 
 		try:
+			if not self._study_exists(study_id):
+				raise study_exceptions.StudyDoesNotExistException()
+
+			if not self._participant_address_exists(address):
+				raise user_exceptions.ParticipantAddressDoesNotExistException()
+
 			thread = threading.Thread(target=self._set_consent, args=(study_id, address, False, *args), kwargs=kwargs)
 			thread.start()
 			self._threads.append(thread)
