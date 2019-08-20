@@ -24,6 +24,9 @@ export COMPOSER_PROVIDERS='{
     }
 }'
 
+# Sometimes, the path is not enough
+# In this case, run `npm config set prefix ~/.npm-global/bin/`
+
 export PATH=~/.npm-global/bin:$PATH
 export FABRIC_VERSION=hlfv12
 source ~/.nvm/nvm.sh
@@ -49,6 +52,8 @@ composer card import --file admin@dwarna-blockchain.card --card admin@dwarna-blo
 composer network ping -c admin@dwarna-blockchain
 composer card export -c admin@dwarna-blockchain
 cd ..
+
+# In case of module errors, `cd` to the global module and `npm rebuild --unsafe-prem`.
 
 echo -e "${HIGHLIGHT}Starting multi-user Hyperledger Composer REST API${DEFAULT}"
 composer-rest-server -c admin@dwarna-blockchain -m true &
