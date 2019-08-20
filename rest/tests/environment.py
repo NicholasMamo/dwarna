@@ -82,6 +82,7 @@ def clear():
 	con = get_connection()
 	cursor = con.cursor() # fetch the cursor
 
+	cursor.execute("DELETE FROM participant_identities")
 	cursor.execute("DELETE FROM users")
 	cursor.execute("DELETE FROM studies")
 	con.commit()
