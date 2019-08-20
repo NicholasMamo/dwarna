@@ -19,6 +19,8 @@ from oauth2.web import Response
 from .exceptions import general_exceptions, study_exceptions, user_exceptions
 from .handler import PostgreSQLRouteHandler
 
+from config import blockchain
+
 class ConsentHandler(PostgreSQLRouteHandler):
 	"""
 	The dynamic consent handler receives and handles requests that are related to participants giving or withdrawing their consent.
@@ -247,10 +249,24 @@ class ConsentHandler(PostgreSQLRouteHandler):
 			"""
 			command = """
 				SELECT *
-				FROM studies
+				FROM
+					studies
 				"""
 
 			rows = self._connector.select(command)
+
+			"""
+			Get all of the participant's addresses.
+			"""
+			identities = self._connector.select("""
+				SELECT
+					address
+				FROM
+					participant_identities
+				WHERE
+					participant_id = '%s'
+			""" % (username))
+			addresses = [ identity['address'] for identity in identities ]
 
 			"""
 			Check the participant's consent status and only retain the study if they consented.
@@ -259,7 +275,16 @@ class ConsentHandler(PostgreSQLRouteHandler):
 			for row in rows:
 				study_id = row["study_id"]
 
-				consent = self._blockchain_connector.has_consent(study_id, username, *args, **kwargs)
+				"""
+				Get a list of addresses associated with the study.
+				"""
+				study_addresses = self._blockchain_connector.get_study_participants(study_id, *args, **kwargs)
+				address = list(set(study_addresses).intersection(set(addresses)))
+				if not len(address):
+					continue
+
+				address = address[0]
+				consent = self._blockchain_connector.has_consent(study_id, address, *args, **kwargs)
 				if consent:
 					studies.append(row)
 
