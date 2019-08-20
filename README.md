@@ -42,7 +42,6 @@ The REST API.
 
 The setup scripts to construct the database schema for the REST API and associated tests.
 
-
 ## Dependencies
 
 - REST API
