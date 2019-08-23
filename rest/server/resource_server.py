@@ -30,13 +30,15 @@ class ResourceServer(Provider):
 	The resource server receives requests from an application and services them.
 	An important component of the resource server is its validation of requests.
 
+	:ivar _connector: The connector that is used to access the data store.
+	:vartype _connector: :class:`connection.connection.Connection`
 	:ivar _routes: A list of routes, associated handles and scopes
 	:vartype _routes: dict of dicts
 	:ivar _route_handlers: The objects that are used to handle requests for different routes.
 	:vartype _route_handlers: dict
 	"""
 
-	def __init__(self, access_token_store, auth_code_store, client_store, token_generator,
+	def __init__(self, connection, access_token_store, auth_code_store, client_store, token_generator,
 		routes, route_handlers):
 		"""
 		Create the resource server based on :class:`oauth2.Provider`.
@@ -71,6 +73,8 @@ class ResourceServer(Provider):
 
 		The provided route handler contains the functions that handle each route.
 
+		:param _connection: The connector that is used to access the data store.
+		:type _connection: :class:`connection.connection.Connection`
 		:param access_token_store: Store for all access tokens.
 		:type access_token_store: :class:`oauth2.store.AccessTokenStore`
 		:param auth_token_store: Store for all authorization tokens.
@@ -87,6 +91,7 @@ class ResourceServer(Provider):
 
 		super(ResourceServer, self).__init__(access_token_store, auth_code_store, client_store, token_generator)
 
+		self._connector = connection
 		self._routes = routes
 		self._route_handlers = route_handlers
 

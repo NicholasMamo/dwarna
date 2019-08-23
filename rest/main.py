@@ -115,6 +115,7 @@ def start_auth_server(port, token_expiry, connection, oauth_connection):
 		route_handlers[HyperledgerAPI] = blockchain_handler
 
 		resource_provider = ResourceServer(
+			connection=connection,
 			access_token_store=token_store,
 			auth_code_store=PostgresqlAuthCodeStore(oauth_connection),
 			client_store=PostgresqlClientStore(oauth_connection),
