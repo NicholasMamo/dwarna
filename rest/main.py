@@ -176,11 +176,15 @@ def main(database, oauth_database, listen_port=None, single_card=None, token_exp
 		args = setup_args()
 		listen_port = args.port[0] if args.port else 7225
 
+	"""
+	Get the card operation mode.
+	If it was not provided as an argument, it is sought as a command-line argument.
+	"""
 	if single_card is None:
 		args = setup_args()
-		blockchain.multi_card = False
+		blockchain.multi_card = not args.single_card
 	else:
-		blockchain.multi_card = single_card
+		blockchain.multi_card = not single_card
 
 	"""
 	Get the connection details from the .pgpass file.
