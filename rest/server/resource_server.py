@@ -314,7 +314,12 @@ class ResourceServer(Provider):
 				WHERE
 					address = '%s'
 			""" % (parameters.get('address')))
-			if identity['username'] != request_maker:
+
+			"""
+			The check is only made if the identity exists.
+			If it does not, then the API endpoints will take care of the issue.
+			"""
+			if identity and identity['username'] != request_maker:
 				return False
 
 		return True
