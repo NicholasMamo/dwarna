@@ -294,8 +294,28 @@ class ResourceServer(Provider):
 
 		token = self.access_token_store.fetch_by_token(access_token) # Fetch the token
 		request_maker = token.user_id
+
+		"""
+		If a username is provided, check that that token's user is the same as the username argument.
+		"""
 		if ("username" in parameters and parameters.get("username") != request_maker):
 			return False
+
+		"""
+		If an address is provided, check who the address belongs to.
+		If the token's user is trying to use the address of another user, return negative.
+		"""
+		if ("address" in parameters):
+			identity = self._connector.select_one("""
+				SELECT
+					participant_id AS username
+				FROM
+					participant_identities
+				WHERE
+					address = '%s'
+			""" % (parameters.get('address')))
+			if identity['username'] != request_maker:
+				return False
 
 		return True
 
