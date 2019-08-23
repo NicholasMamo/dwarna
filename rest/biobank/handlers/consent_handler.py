@@ -201,9 +201,11 @@ class ConsentHandler(PostgreSQLRouteHandler):
 			Get the information of all participants that consented to the use of their sample in the study.
 			"""
 			participants = self._connector.select("""
-				SELECT *
+				SELECT
+					participants.*
 				FROM
-					participants
+					participant_identities JOIN participants
+						ON participant_identities.participant_id = participants.user_id
 				WHERE
 					address IN ('%s')
 			""" % ("', '".join(addresses)))
