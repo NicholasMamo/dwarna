@@ -160,11 +160,12 @@ class ConsentManagementTest(BiobankTestCase):
 		:rtype: str
 		"""
 
+		token = self._get_access_token(["change_card"], participant)["access_token"]
 		response = self.send_request("GET", "get_card", {
 			"username": f"p{participant}",
 			"study_id": study_id,
 			"temp": True
-		}, ConsentManagementTest.token)
+		}, token)
 		self.assertEqual(response.status_code, 200)
 		self.save_card(response.content, f"p{participant}.card")
 
@@ -201,7 +202,7 @@ class ConsentManagementTest(BiobankTestCase):
 	Actual tests.
 	"""
 
-	def no_test_give_consent_of_inexistent_participant(self):
+	def test_give_consent_of_inexistent_participant(self):
 		"""
 		Test giving basic consent when the participant does not exist.
 		"""
@@ -217,7 +218,7 @@ class ConsentManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], user_exceptions.ParticipantAddressDoesNotExistException.__name__)
 
-	def no_test_give_consent_to_inexistent_study(self):
+	def test_give_consent_to_inexistent_study(self):
 		"""
 		Test giving basic consent when the study does not exist.
 		"""
@@ -237,7 +238,7 @@ class ConsentManagementTest(BiobankTestCase):
 
 		self.stop_rest(2323)
 
-	def no_test_give_consent(self):
+	def test_give_consent(self):
 		"""
 		Test giving basic consent.
 		"""
@@ -265,7 +266,7 @@ class ConsentManagementTest(BiobankTestCase):
 
 		self.stop_rest(2323)
 
-	def no_test_withdraw_consent_if_participant_does_not_exist(self):
+	def test_withdraw_consent_if_participant_does_not_exist(self):
 		"""
 		Test withdrawing basic consent when the participant does not exist.
 		"""
@@ -281,7 +282,7 @@ class ConsentManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], user_exceptions.ParticipantAddressDoesNotExistException.__name__)
 
-	def no_test_withdraw_consent_to_inexistent_study(self):
+	def test_withdraw_consent_to_inexistent_study(self):
 		"""
 		Test withdrawing basic consent when the study does not exist.
 		"""
@@ -301,7 +302,7 @@ class ConsentManagementTest(BiobankTestCase):
 
 		self.stop_rest(2323)
 
-	def no_test_withdraw_consent(self):
+	def test_withdraw_consent(self):
 		"""
 		Test withdrawing consent.
 		"""
@@ -329,7 +330,7 @@ class ConsentManagementTest(BiobankTestCase):
 
 		self.stop_rest(2323)
 
-	def no_test_give_and_withdraw_consent(self):
+	def test_give_and_withdraw_consent(self):
 		"""
 		Test withdrawing consent after giving it.
 		"""
@@ -409,7 +410,7 @@ class ConsentManagementTest(BiobankTestCase):
 
 		self.stop_rest(2323)
 
-	def no_test_check_consent_of_inexistent_participant(self):
+	def test_check_consent_of_inexistent_participant(self):
 		"""
 		Consent cannot be checked if the participant does not exist.
 		"""
@@ -425,7 +426,7 @@ class ConsentManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], user_exceptions.ParticipantAddressDoesNotExistException.__name__)
 
-	def no_test_check_consent_of_inexistent_study(self):
+	def test_check_consent_of_inexistent_study(self):
 		"""
 		Consent cannot be checked if the study does not exist.
 		"""
@@ -445,7 +446,7 @@ class ConsentManagementTest(BiobankTestCase):
 
 		self.stop_rest(2323)
 
-	def no_test_default_consent(self):
+	def test_default_consent(self):
 		"""
 		By default, there should be no consent.
 		"""
@@ -523,7 +524,6 @@ class ConsentManagementTest(BiobankTestCase):
 			"access_token": token,
 			"port": 2323,
 		}, token)
-		print(response.__dict__)
 		self.assertEqual(response.status_code, 200)
 		body = response.json()["data"]
 		self.assertEqual(len(body), 1)
@@ -561,13 +561,12 @@ class ConsentManagementTest(BiobankTestCase):
 
 		self.stop_rest(2323)
 
-	def no_test_get_participants_from_inexistent_study(self):
+	def test_get_participants_from_inexistent_study(self):
 		"""
 		Test getting the participants from an inexistent study.
 		"""
 
 		token = self._get_access_token(["update_consent", "view_consent"], "admin")["access_token"]
-
 		response = self.send_request("GET", "get_participants_by_study", {
 			"study_id": "!" + ConsentManagementTest._study_ids[0],
 		}, token)
@@ -575,19 +574,23 @@ class ConsentManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], study_exceptions.StudyDoesNotExistException.__name__)
 
-	def no_test_give_consent_on_behalf(self):
+	def test_give_consent_on_behalf(self):
 		"""
 		Test that giving consent on behalf of someone fails.
 		"""
 
+		p2322_address = self.start_rest(2322, 2322, ConsentManagementTest._study_ids[1])
+		p2323_address = self.start_rest(2323, 2323, ConsentManagementTest._study_ids[1])
+
 		p2322_token = self._get_access_token(["update_consent", "view_consent"], "p2322")["access_token"]
+		p2323_token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
 
 		"""
 		Give consent for `p2323`.
 		"""
 		response = self.send_request("POST", "give_consent", {
 			"study_id": ConsentManagementTest._study_ids[0],
-			"username": "p2323",
+			"address": p2323_address,
 			"access_token": None,
 			"port": 2323,
 		}, p2322_token)
@@ -595,19 +598,26 @@ class ConsentManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 401)
 		self.assertEqual(body["exception"], request_exceptions.UnauthorizedDataAccessException.__name__)
 
-	def no_test_withdraw_consent_on_behalf(self):
+		self.stop_rest(2322)
+		self.stop_rest(2323)
+
+	def test_withdraw_consent_on_behalf(self):
 		"""
 		Test that withdrawing consent on behalf of someone fails.
 		"""
 
+		p2322_address = self.start_rest(2322, 2322, ConsentManagementTest._study_ids[1])
+		p2323_address = self.start_rest(2323, 2323, ConsentManagementTest._study_ids[1])
+
 		p2322_token = self._get_access_token(["update_consent", "view_consent"], "p2322")["access_token"]
+		p2323_token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
 
 		"""
 		Withdraw consent for `p2323`.
 		"""
 		response = self.send_request("POST", "withdraw_consent", {
 			"study_id": ConsentManagementTest._study_ids[0],
-			"username": "p2323",
+			"address": p2323_address,
 			"access_token": None,
 			"port": 2323,
 		}, p2322_token)
@@ -615,19 +625,26 @@ class ConsentManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 401)
 		self.assertEqual(body["exception"], request_exceptions.UnauthorizedDataAccessException.__name__)
 
-	def no_test_check_consent_on_behalf(self):
+		self.stop_rest(2322)
+		self.stop_rest(2323)
+
+	def test_check_consent_on_behalf(self):
 		"""
 		Test that checking consent on behalf of someone fails.
 		"""
 
+		p2322_address = self.start_rest(2322, 2322, ConsentManagementTest._study_ids[1])
+		p2323_address = self.start_rest(2323, 2323, ConsentManagementTest._study_ids[1])
+
 		p2322_token = self._get_access_token(["update_consent", "view_consent"], "p2322")["access_token"]
+		p2323_token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
 
 		"""
 		Check consent of `p2323`.
 		"""
 		response = self.send_request("GET", "has_consent", {
 			"study_id": ConsentManagementTest._study_ids[0],
-			"username": "p2323",
+			"address": p2323_address,
 			"access_token": None,
 			"port": 2323,
 		}, p2322_token)
@@ -635,30 +652,44 @@ class ConsentManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 401)
 		self.assertEqual(body["exception"], request_exceptions.UnauthorizedDataAccessException.__name__)
 
-	def no_test_get_participants_consented_studies_on_behalf(self):
+		self.stop_rest(2322)
+		self.stop_rest(2323)
+
+	def test_get_participants_consented_studies_on_behalf(self):
 		"""
 		Test that getting the studies that another participant consented to fails.
 		"""
 
-		token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
+		p2322_address = self.start_rest(2322, 2322, ConsentManagementTest._study_ids[1])
+		p2323_address = self.start_rest(2323, 2323, ConsentManagementTest._study_ids[1])
+
+		p2322_token = self._get_access_token(["update_consent", "view_consent"], "p2322")["access_token"]
+		p2323_token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
 
 		response = self.send_request("GET", "get_studies_by_participant", {
 			"username": "p2322",
 			"access_token": "None",
 			"port": 2322,
-		}, token)
+		}, p2323_token)
 		body = response.json()
 		self.assertEqual(response.status_code, 401)
 		self.assertEqual(body["exception"], request_exceptions.UnauthorizedDataAccessException.__name__)
 
-	def no_test_get_study_participants(self):
+		self.stop_rest(2322)
+		self.stop_rest(2323)
+
+	def test_get_study_participants(self):
 		"""
 		Test getting the participants that have consented to the use of their samples in a study.
 		"""
 
-		token = self._get_access_token(["update_consent", "view_consent"], "admin")["access_token"]
+		p2322_address = self.start_rest(2322, 2322, ConsentManagementTest._study_ids[1])
+		p2323_address = self.start_rest(2323, 2323, ConsentManagementTest._study_ids[1])
+
 		p2322_token = self._get_access_token(["update_consent", "view_consent"], "p2322")["access_token"]
 		p2323_token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
+
+		token = self._get_access_token(["update_consent", "view_consent"], "admin")["access_token"]
 
 		"""
 		Assert that there are no participants in the study yet.
@@ -677,7 +708,7 @@ class ConsentManagementTest(BiobankTestCase):
 
 		response = self.send_request("POST", "give_consent", {
 			"study_id": ConsentManagementTest._study_ids[3],
-			"username": "p2322",
+			"address": p2322_address,
 			"access_token": None,
 			"port": 2322,
 		}, p2322_token)
@@ -685,7 +716,7 @@ class ConsentManagementTest(BiobankTestCase):
 
 		response = self.send_volatile_request("GET", "has_consent", {
 			"study_id": ConsentManagementTest._study_ids[3],
-			"username": "p2322",
+			"address": p2322_address,
 			"access_token": "None",
 			"port": 2322,
 		}, p2322_token, value=True)
@@ -699,7 +730,7 @@ class ConsentManagementTest(BiobankTestCase):
 
 		response = self.send_request("POST", "give_consent", {
 			"study_id": ConsentManagementTest._study_ids[3],
-			"username": "p2323",
+			"address": p2323_address,
 			"access_token": None,
 			"port": 2323,
 		}, p2323_token)
@@ -707,7 +738,7 @@ class ConsentManagementTest(BiobankTestCase):
 
 		response = self.send_volatile_request("GET", "has_consent", {
 			"study_id": ConsentManagementTest._study_ids[3],
-			"username": "p2323",
+			"address": p2323_address,
 			"access_token": "None",
 			"port": 2323,
 		}, p2323_token, value=True)
@@ -733,7 +764,7 @@ class ConsentManagementTest(BiobankTestCase):
 
 		response = self.send_request("POST", "withdraw_consent", {
 			"study_id": ConsentManagementTest._study_ids[3],
-			"username": "p2322",
+			"address": p2322_address,
 			"access_token": None,
 			"port": 2322,
 		}, p2322_token)
@@ -741,7 +772,7 @@ class ConsentManagementTest(BiobankTestCase):
 
 		response = self.send_volatile_request("GET", "has_consent", {
 			"study_id": ConsentManagementTest._study_ids[3],
-			"username": "p2322",
+			"address": p2322_address,
 			"access_token": "None",
 			"port": 2322,
 		}, p2322_token, value=False)
@@ -755,7 +786,7 @@ class ConsentManagementTest(BiobankTestCase):
 
 		response = self.send_request("POST", "withdraw_consent", {
 			"study_id": ConsentManagementTest._study_ids[3],
-			"username": "p2323",
+			"address": p2323_address,
 			"access_token": None,
 			"port": 2323,
 		}, p2323_token)
@@ -763,7 +794,7 @@ class ConsentManagementTest(BiobankTestCase):
 
 		response = self.send_volatile_request("GET", "has_consent", {
 			"study_id": ConsentManagementTest._study_ids[3],
-			"username": "p2323",
+			"address": p2323_address,
 			"access_token": "None",
 			"port": 2323,
 		}, p2323_token, value=False)
@@ -788,7 +819,7 @@ class ConsentManagementTest(BiobankTestCase):
 
 		response = self.send_request("POST", "give_consent", {
 			"study_id": ConsentManagementTest._study_ids[3],
-			"username": "p2323",
+			"address": p2323_address,
 			"access_token": None,
 			"port": 2323,
 		}, p2323_token)
@@ -796,7 +827,7 @@ class ConsentManagementTest(BiobankTestCase):
 
 		response = self.send_volatile_request("GET", "has_consent", {
 			"study_id": ConsentManagementTest._study_ids[3],
-			"username": "p2323",
+			"address": p2323_address,
 			"access_token": "None",
 			"port": 2323,
 		}, p2323_token, value=True)
@@ -814,3 +845,6 @@ class ConsentManagementTest(BiobankTestCase):
 		body = response.json()
 		self.assertEqual(response.status_code, 200)
 		self.assertTrue(any(user["user_id"] == "p2323" for user in body["data"]))
+
+		self.stop_rest(2322)
+		self.stop_rest(2323)
