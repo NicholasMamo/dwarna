@@ -2,7 +2,6 @@
 Test the dynamic consent management functionality in the backend.
 """
 
-import json
 import os
 import sys
 
@@ -11,9 +10,7 @@ path = os.path.join(path, "../")
 if path not in sys.path:
 	sys.path.insert(1, path)
 
-import main
-
-from biobank.handlers.exceptions import general_exceptions, study_exceptions, user_exceptions
+from biobank.handlers.exceptions import study_exceptions, user_exceptions
 from server.exceptions import request_exceptions
 
 from .environment import *
@@ -23,6 +20,11 @@ from .test import BiobankTestCase, rest_context
 class ConsentManagementTest(BiobankTestCase):
 	"""
 	Test the dynamic consent management functionality of the biobank backend.
+
+	:cvar _study_ids: A list of study IDs that are used in the test cases.
+	:vartype _study_ids: list of str
+	:cvar token: The administration token used in the tests.
+	:vartype token: str
 	"""
 
 	_study_ids = []
