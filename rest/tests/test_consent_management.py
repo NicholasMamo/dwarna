@@ -195,7 +195,7 @@ class ConsentManagementTest(BiobankTestCase):
 		:type port: int
 		"""
 
-		cmd = f"kill $( lsof -i:{port} -t )"
+		cmd = f"kill -2 $( lsof -i:{port} -t )"
 		proc = subprocess.check_output(["bash", "-i", "-c", cmd])
 
 	"""
