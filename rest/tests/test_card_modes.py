@@ -36,3 +36,31 @@ class CardModeTest(BiobankTestCase):
 		create_testing_environment()
 		main.main(TEST_DATABASE, TEST_OAUTH_DATABASE, PORT, single_card=single_card)
 		time.sleep(1) # wait so as not to overload the server with requests
+
+class SingleCardModeTest(CardModeTest):
+	"""
+	Tests for the single-card mode.
+	"""
+
+	@classmethod
+	@BiobankTestCase.isolated_test
+	def setUpClass(self):
+		"""
+		Create the REST API in single-card mode.
+		"""
+
+		super(SingleCardModeTest, self).setUpClass(True)
+
+class MultiCardModeTest(CardModeTest):
+	"""
+	Tests for the multi-card mode.
+	"""
+
+	@classmethod
+	@BiobankTestCase.isolated_test
+	def setUpClass(self):
+		"""
+		Create the REST API in multi-card mode.
+		"""
+
+		super(MultiCardModeTest, self).setUpClass(False)
