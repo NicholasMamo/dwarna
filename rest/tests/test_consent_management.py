@@ -2,21 +2,14 @@
 Test the dynamic consent management functionality in the backend.
 """
 
-from datetime import datetime, timedelta
 import json
 import os
-import signal
-import subprocess
 import sys
-import time
-import zipfile
 
 path = sys.path[0]
 path = os.path.join(path, "../")
 if path not in sys.path:
 	sys.path.insert(1, path)
-
-from psycopg2 import InternalError
 
 import main
 
@@ -25,17 +18,12 @@ from server.exceptions import request_exceptions
 
 from .environment import *
 
-from .test import BiobankTestCase
+from .test import BiobankTestCase, rest_context
 
 class ConsentManagementTest(BiobankTestCase):
 	"""
 	Test the dynamic consent management functionality of the biobank backend.
-
-	:cvar _subprocesses: A list of running subprocesses.
-	:vartype _subprocesses: list
 	"""
-
-	_subprocesses = []
 
 	_study_ids = []
 
@@ -123,86 +111,11 @@ class ConsentManagementTest(BiobankTestCase):
 
 		super(ConsentManagementTest, self).tearDownClass()
 
-		for proc in ConsentManagementTest._subprocesses:
-			pid = proc.pid
-			proc.kill()
-			out, _ = proc.communicate()
-			proc.wait()
-
-	def save_card(self, card, card_name, dir="cards"):
-		"""
-		Save the provided card to a file.
-
-		:param card: The card data to save.
-		:type card: bytes
-		:param card_name: The target filename.
-		:type card_name: str
-		:param dir: The target directory, relative to this script.
-		:type dir: str
-		"""
-
-		script_dir = os.path.dirname(os.path.realpath(__file__))
-		with open(os.path.join(script_dir, dir, card_name), "wb") as f:
-			f.write(card)
-
-	def start_rest(self, participant, port, study_id):
-		"""
-		Start the REST API using the given card name.
-
-		:param participant: The participant for whom the REST API will start.
-		:type: participant: str
-		:param port: The port where to open the REST API.
-		:type port: int
-		:param study_id: The ID of the study which the REST API should handle.
-		:type study_id: int
-
-		:return: The user's address on the blockchain.
-		:rtype: str
-		"""
-
-		token = self._get_access_token(["change_card"], participant)["access_token"]
-		response = self.send_request("GET", "get_card", {
-			"username": f"p{participant}",
-			"study_id": study_id,
-			"temp": True
-		}, token)
-		self.assertEqual(response.status_code, 200)
-		self.save_card(response.content, f"p{participant}.card")
-
-		card_name = f"p{participant}.card"
-		script_dir = os.path.dirname(os.path.realpath(__file__))
-		proc = subprocess.Popen([
-				"bash", os.path.join(script_dir, "start_rest.sh"),
-				card_name, str(port)
-			], close_fds=True)
-		ConsentManagementTest._subprocesses.append(proc)
-		pid = proc.pid
-
-		address = ''
-		with zipfile.ZipFile(os.path.join(script_dir, 'cards', card_name), 'r') as zip:
-			with zip.open('metadata.json') as metadata:
-				data = metadata.readline()
-				address = json.loads(data)['userName']
-
-		time.sleep(10)
-		return address
-
-	def stop_rest(self, port):
-		"""
-		Stop the REST API being served on the given port.
-
-		:param port: The port where the REST API is running.
-		:type port: int
-		"""
-
-		cmd = f"kill -2 $( lsof -i:{port} -t )"
-		proc = subprocess.check_output(["bash", "-i", "-c", cmd])
-
 	"""
 	Actual tests.
 	"""
 
-	def test_give_consent_of_inexistent_participant(self):
+	def no_test_give_consent_of_inexistent_participant(self):
 		"""
 		Test giving basic consent when the participant does not exist.
 		"""

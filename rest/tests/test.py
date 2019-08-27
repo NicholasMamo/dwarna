@@ -7,10 +7,12 @@ import json
 import os
 import requests
 import signal
+import subprocess
 import sys
 import time
 import unittest
 import uuid
+import zipfile
 
 from functools import wraps
 
@@ -225,3 +227,146 @@ class BiobankTestCase(unittest.TestCase):
 			return method_handler('http://localhost:%d/%s' % (PORT, endpoint), params=data, headers=headers)
 		else:
 			return method_handler('http://localhost:%d/%s' % (PORT, endpoint), json=data, headers=headers)
+
+class rest_context(BiobankTestCase):
+	"""
+	The REST context class creates a new Hyperledger Composer REST API to service requests.
+
+	The class takes care of starting and stopping the Hyperledger Composer REST API.
+	This REST API is used instead of starting a multi-user Hyperledger Composer REST API.
+	This is not possible because the user cannot authenticate themselves.
+	Instead, a REST API server is created just for them.
+
+	:ivar _participant: The participant on whose behalf the REST API will be started.
+	:vartype _participant: str or int
+	:ivar _port: The port where the REST API will be started.
+	:vartype _port: int
+	:ivar _study_id: The study ID for which the card will be fetched.
+					 This card is used to start the Hyperledger Composer REST API.
+	:vartype _study_id: str
+	:ivar _subprocess: The subprocess that is running the Hyperledger Composer REST API.
+	:vartype _subprocess: :class:`subprocess.Popen`
+	"""
+
+	def __init__(self, participant, port, study_id):
+		"""
+		Create the REST API context.
+		This context represents the participant for whom to serve the REST API.
+
+		:param participant: The participant on whose behalf the REST API will be started.
+		:type participant: str or int
+		:param port: The port where the REST API will be started.
+		:type port: int
+		:param study_id: The study ID for which the card will be fetched.
+						 This card is used to start the Hyperledger Composer REST API.
+		:type study_id: str
+		"""
+
+		self._participant = participant
+		self._port = port
+		self._study_id = study_id
+
+	def __enter__(self):
+		"""
+		When the context is opened, run the REST API.
+		"""
+
+		return self.start_rest(self._participant, self._port, self._study_id)
+
+	def __exit__(self, type, value, traceback):
+		"""
+		When the context is closed, stop the REST API.
+		"""
+
+		self.stop_rest(self._port)
+
+	def start_rest(self, participant, port, study_id):
+		"""
+		Start the REST API using the given card name.
+
+		:param participant: The participant for whom the REST API will start.
+		:type: participant: str
+		:param port: The port where to open the REST API.
+		:type port: int
+		:param study_id: The ID of the study which the REST API should handle.
+		:type study_id: int
+
+		:return: The user's address on the blockchain.
+		:rtype: str
+		"""
+
+		"""
+		Get an access token from the biobank REST API to change their card.
+		Then, get the card for the study and save it to disk.
+		"""
+		token = self._get_access_token(["change_card"], participant)["access_token"]
+		response = self.send_request("GET", "get_card", {
+			"username": f"p{participant}",
+			"study_id": study_id,
+			"temp": True
+		}, token)
+		card_name = f"p{participant}.card"
+		self.save_card(response.content, card_name)
+
+		"""
+		Create a new Hyperledger Composer REST API that is served using the participant's card.
+		"""
+		script_dir = os.path.dirname(os.path.realpath(__file__))
+		proc = subprocess.Popen([
+				"bash", os.path.join(script_dir, "start_rest.sh"),
+				card_name, str(port)
+			], close_fds=True)
+		self._subprocess = proc
+
+		"""
+		Read the card and unzip it.
+		From the `metadata.json` file, extract  the participant's address.
+		"""
+		address = ''
+		with zipfile.ZipFile(os.path.join(script_dir, 'cards', card_name), 'r') as zip:
+			with zip.open('metadata.json') as metadata:
+				data = metadata.readline()
+				address = json.loads(data)['userName']
+
+		"""
+		Wait for the REST API to start.
+		"""
+		time.sleep(10)
+		return address
+
+	def stop_rest(self, port):
+		"""
+		Stop the REST API being served on the given port.
+
+		:param port: The port where to the REST API is being served.
+		:type port: int
+		"""
+
+		"""
+		Send an interrupt signal to the Hyperledger Composer REST API.
+		"""
+		cmd = f"kill -2 $( lsof -i:{port} -t )"
+		proc = subprocess.check_output(["bash", "-i", "-c", cmd])
+
+		"""
+		Kill the bash script that started the Hyperledger Composer REST API.
+		"""
+		self._subprocess.kill()
+		out, _ = self._subprocess.communicate()
+		self._subprocess.wait()
+
+	def save_card(self, card, card_name, dir="cards"):
+		"""
+		Save the provided card to a file.
+
+		:param card: The card data to save.
+		:type card: bytes
+		:param card_name: The target filename.
+		:type card_name: str
+		:param dir: The target directory, relative to this script.
+		:type dir: str
+		"""
+
+		script_dir = os.path.dirname(os.path.realpath(__file__))
+		with open(os.path.join(script_dir, dir, card_name), "wb") as f:
+			f.write(card)
