@@ -23,13 +23,9 @@ class ConsentManagementTest(BiobankTestCase):
 
 	:cvar _study_ids: A list of study IDs that are used in the test cases.
 	:vartype _study_ids: list of str
-	:cvar token: The administration token used in the tests.
-	:vartype token: str
 	"""
 
 	_study_ids = []
-
-	token = ''
 
 	@classmethod
 	@BiobankTestCase.isolated_test
@@ -40,9 +36,24 @@ class ConsentManagementTest(BiobankTestCase):
 		"""
 
 		super(ConsentManagementTest, self).setUpClass()
+		self.seed()
+
+	@classmethod
+	def tearDownClass(self):
+		"""
+		At the end of the tests, stop the server and kill all subprocesses.
+		"""
+
+		super(ConsentManagementTest, self).tearDownClass()
+
+	@classmethod
+	def seed(self):
+		"""
+		Seed the database before tests.
+		"""
 
 		self = ConsentManagementTest()
-		ConsentManagementTest.token = self._get_access_token(
+		token = self._get_access_token(
 			["change_card", "create_study", "view_study", "create_participant"])["access_token"]
 
 		ConsentManagementTest._study_ids = [
@@ -61,7 +72,7 @@ class ConsentManagementTest(BiobankTestCase):
 			"name": "ALS",
 			"description": "ALS Study",
 			"homepage": "http://um.edu.mt",
-		}, ConsentManagementTest.token)
+		}, token)
 		self.assertEqual(response.status_code, 200)
 
 		response = self.send_request("POST", "study", {
@@ -69,7 +80,7 @@ class ConsentManagementTest(BiobankTestCase):
 			"name": "Diabetes",
 			"description": "Diabetes study",
 			"homepage": "http://um.edu.mt",
-		}, ConsentManagementTest.token)
+		}, token)
 		self.assertEqual(response.status_code, 200)
 
 		response = self.send_request("POST", "study", {
@@ -77,7 +88,7 @@ class ConsentManagementTest(BiobankTestCase):
 			"name": "Thalassemia",
 			"description": "Thalassemia study",
 			"homepage": "http://um.edu.mt",
-		}, ConsentManagementTest.token)
+		}, token)
 		self.assertEqual(response.status_code, 200)
 
 		response = self.send_request("POST", "study", {
@@ -85,13 +96,13 @@ class ConsentManagementTest(BiobankTestCase):
 			"name": "Thalassemia",
 			"description": "Thalassemia study",
 			"homepage": "http://um.edu.mt",
-		}, ConsentManagementTest.token)
+		}, token)
 		self.assertEqual(response.status_code, 200)
 
-		response = self.send_volatile_request("GET", "study", { "study_id": ConsentManagementTest._study_ids[0] }, ConsentManagementTest.token)
-		response = self.send_volatile_request("GET", "study", { "study_id": ConsentManagementTest._study_ids[1] }, ConsentManagementTest.token)
-		response = self.send_volatile_request("GET", "study", { "study_id": ConsentManagementTest._study_ids[2] }, ConsentManagementTest.token)
-		response = self.send_volatile_request("GET", "study", { "study_id": ConsentManagementTest._study_ids[3] }, ConsentManagementTest.token)
+		response = self.send_volatile_request("GET", "study", { "study_id": ConsentManagementTest._study_ids[0] }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": ConsentManagementTest._study_ids[1] }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": ConsentManagementTest._study_ids[2] }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": ConsentManagementTest._study_ids[3] }, token)
 
 		"""
 		Create two participants - `p2322` and `p2323`.
@@ -102,16 +113,8 @@ class ConsentManagementTest(BiobankTestCase):
 				"username": f"p{participant}",
 				"name": participant,
 				"email": f"participant@test.com"
-			}, ConsentManagementTest.token)
+			}, token)
 			self.assertEqual(response.status_code, 200)
-
-	@classmethod
-	def tearDownClass(self):
-		"""
-		At the end of the tests, stop the server and kill all subprocesses.
-		"""
-
-		super(ConsentManagementTest, self).tearDownClass()
 
 	"""
 	Actual tests.
