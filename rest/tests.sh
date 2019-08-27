@@ -7,7 +7,12 @@ cd "$parent_path" # go to the script path
 source ../variables.sh
 
 usage() {
-	echo -e "${HIGHLIGHT}Usage: sh $0 [-t <consent|general|study|user>]${DEFAULT}";
+	echo -e "${HIGHLIGHT}Usage: sh $0 [-t <card|consent|general|study|user>]${DEFAULT}";
+}
+
+card_tests() {
+	echo -e "${HIGHLIGHT}Consent Tests${DEFAULT}"
+	python3 -m unittest tests.test_card_modes
 }
 
 consent_tests() {
@@ -33,6 +38,9 @@ user_tests() {
 if getopts "t:" o
 then
 	case "${OPTARG}" in
+		card)
+			card_tests
+			;;
 		consent)
 			consent_tests
 			;;
@@ -51,6 +59,7 @@ then
 			;;
 	esac
 else
+	card_tests
 	consent_tests
 	general_tests
 	study_tests
