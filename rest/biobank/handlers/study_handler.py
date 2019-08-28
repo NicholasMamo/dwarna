@@ -383,12 +383,12 @@ class StudyHandler(PostgreSQLRouteHandler):
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
 			response.body = json.dumps({
-				"data": [
-					{
+				"data": {
+					study['study_id']: {
 						"study": study,
 						"researchers": self._get_study_researchers(study["study_id"]),
 					} for study in rows
-				],
+				},
 				"total": total,
 			})
 		except Exception as e:
