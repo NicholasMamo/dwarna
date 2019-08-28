@@ -31,9 +31,9 @@
   ],
   "main": "./lib",
   "dependencies": {
-    "express": "^4.16.4",
+    "express": "^4.17.1",
     "passport-http-bearer": "^1.0.1",
-    "passport-oauth2": "^1.4.0"
+    "passport-oauth2": "^1.5.0"
   },
   "devDependencies": {
     "make-node": "0.3.x",
