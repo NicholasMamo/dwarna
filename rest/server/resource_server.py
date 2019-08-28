@@ -234,7 +234,7 @@ class ResourceServer(Provider):
 			multipart_data = decoder.MultipartDecoder(request_body, env.get("CONTENT_TYPE", ""))
 
 			request_body = {}
-			name_pattern = re.compile(b"name=\"(.+)?\"")
+			name_pattern = re.compile(b"name=\"(.+?)\"")
 			for part in multipart_data.parts:
 				name = name_pattern.findall(part.headers.get(b"Content-Disposition"))[0].decode()
 				content = part.content
