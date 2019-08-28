@@ -1,3 +1,24 @@
+<ul>
+<?php
+foreach ($timeline as $timestamp => $changes) {
+?>
+	<li><?= DateTime::createFromFormat("U", $timestamp)->format("jS M Y \a\\t H:i") ?>
+		<ul>
+	<?php
+		$changes = (array) $changes;
+		foreach ($changes as $study_id => $consent) {
+	?>
+			<li>
+				<?= $consent == 1 ? "Give to" : "Withdraw from" ?> <?= $studies->data->$study_id->study->name ?>
+			</li>
+	<?php
+		}
+	?>
+		</ul>
+	</li>
+<?php } ?>
+</ul>
+
 <form class="<?= $this->plugin_name ?>-form" id="consent-form-<?= $study->study->study_id ?>"
 	  method="post" name="consent_form" action=<?php echo esc_url(admin_url("admin-post.php")); ?>>
 	<h4><?= $study->study->name ?></h4>

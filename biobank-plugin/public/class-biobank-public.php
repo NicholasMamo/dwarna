@@ -188,6 +188,15 @@ class Biobank_Public {
 					isset($_GET['action']) && $_GET['action'] == 'consent') {
 					wp_enqueue_script( $this->plugin_name . "-hyperledger-card", plugin_dir_url( __FILE__ ) . 'js/hyperledger/card.js', array( 'jquery' ), $this->version, false );
 
+					$consent_handler = new \client\form\ConsentFormHandler();
+					$trail = $consent_handler->get_consent_trail();
+					$error = '';
+					$error = isset($trail->error) && ! empty($trail->error) ? $trail->error : $error;
+
+					$studies = (array) $trail->studies;
+					$timeline = (array) $trail->timeline;
+					ksort($timeline);
+
 					/*
 					 * TODO: Create a new function.
 					 */
