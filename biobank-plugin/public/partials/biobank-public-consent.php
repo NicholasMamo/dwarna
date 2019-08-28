@@ -8,22 +8,6 @@ $refresh = (isset($_GET["return"]) && $_GET["return"] == "update_consent");
 ?>
 <div class='biobank-consent container'>
 
-	<?php
-	if (isset($error) && ! empty($error)) {
-	?>
-	<div class="error">
-		<?= $error ?>
-	</div>
-	<?php
-	} else if ($refresh) {
-	?>
-	<div class="error">
-		Consent will be confirmed soon
-	</div>
-	<?php
-	}
-	?>
-
 	<form id='study-form' method="post" name="consent_form"
 		  action=<?php echo esc_url(admin_url("admin-post.php")); ?>>
 		<input type="hidden" name="action" value="study_form">

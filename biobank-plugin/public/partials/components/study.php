@@ -1,3 +1,19 @@
+<?php
+if (isset($error) && ! empty($error)) {
+?>
+<div class="error">
+	<?= $error ?>
+</div>
+<?php
+} else if (isset($_GET['return']) && $_GET['return'] = 'update_consent') {
+?>
+<div class="error">
+	Consent will be confirmed soon
+</div>
+<?php
+}
+?>
+
 <ul>
 <?php
 foreach ($timeline as $timestamp => $changes) {
