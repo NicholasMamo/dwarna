@@ -105,19 +105,6 @@ $plugin_pages = array(
 		"permissions" => array(
 			"participant", "administrator",
 		)
-	),
-	"biobank-trail" => array(
-		"wp_info" => array(
-			"post_title" => "Consent Trail",
-			"post_content" => "[biobank-trail]",
-			"post_name" => "biobank-trail",
-			"post_status" => "publish",
-			"post_author" => 1,
-			"post_type" => "page",
-		),
-		"permissions" => array(
-			"participant", "administrator",
-		)
 	)
 );
 
