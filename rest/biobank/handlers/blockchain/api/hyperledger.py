@@ -630,6 +630,10 @@ class HyperledgerAPI(BlockchainAPI):
 		:rtype: dict
 		"""
 		address = self._get_participant_address(username, study_id)
+
+		if address is None:
+			return {}
+
 		port = self._default_multiuser_port if port is None else port
 
 		params = {
@@ -657,7 +661,7 @@ class HyperledgerAPI(BlockchainAPI):
 		:type study_id: int
 
 		:return: The participant's address on the blockchain.
-		:rtype: str
+		:rtype: str or None
 		"""
 
 		if not blockchain.multi_card:
@@ -680,7 +684,10 @@ class HyperledgerAPI(BlockchainAPI):
 			""" % (username))
 			study_participants = self.get_all_study_participants(study_id)
 			valid_rows = [ row for row in rows if row['address'] in study_participants ]
-			row = valid_rows[0]
+			row = valid_rows[0] if len(valid_rows) else None
 
-		address = row["address"]
-		return address
+		if row is not None:
+			address = row["address"]
+			return address
+		else:
+			return None
