@@ -2,9 +2,11 @@
 Test the different card modes of the biobank REST API.
 """
 
+import json
 import os
 import sys
 import time
+import zipfile
 
 from abc import ABC, abstractmethod
 
@@ -50,6 +52,7 @@ class CardModeTest(BiobankTestCase):
 		"""
 		Seed the database before tests.
 		"""
+
 		self = BiobankTestCase()
 		token = self._get_access_token(
 		["change_card", "create_study", "view_study", "create_participant"])["access_token"]
@@ -100,6 +103,25 @@ class CardModeTest(BiobankTestCase):
 			}, token)
 			self.assertEqual(response.status_code, 200)
 
+	"""
+	Actual tests.
+	"""
+
+	@abstractmethod
+	def test_get_address(self):
+		"""
+		Test getting an address from the backend.
+		"""
+
+		pass
+
+	@abstractmethod
+	def test_different_studies_addresses(self):
+		"""
+		Test how getting addresses for different studies differs depending on the card mode.
+		"""
+
+		pass
 
 class SingleCardModeTest(CardModeTest):
 	"""
@@ -115,6 +137,76 @@ class SingleCardModeTest(CardModeTest):
 
 		super(SingleCardModeTest, self).setUpClass(True)
 
+	def test_get_address(self):
+		"""
+		Test getting an address from the backend.
+		"""
+
+		with rest_context(2323, 2323, CardModeTest._study_ids[0]) as address:
+			self.assertTrue(len(address))
+
+	def test_different_studies_addresses(self):
+		"""
+		Test that requesting the addresses for different studies returns the same address.
+		"""
+
+		with rest_context(2323, 2323, CardModeTest._study_ids[0]) as address_1:
+			token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
+			response = self.send_request("POST", "give_consent", {
+				"study_id": CardModeTest._study_ids[0],
+				"address": address_1,
+				"access_token": None,
+				"port": 2323,
+			}, token)
+			self.assertEqual(response.status_code, 200)
+
+			"""
+			Wait for the consent to be effected.
+			"""
+
+			response = self.send_volatile_request("GET", "has_consent", {
+				"study_id": CardModeTest._study_ids[0],
+				"address": address_1,
+				"access_token": "None",
+				"port": 2323,
+			}, token, value=True)
+			body = response.json()
+			self.assertEqual(response.status_code, 200)
+			self.assertTrue(body["data"])
+
+			"""
+			Fetch the card for a different study and ensure that the address is the same.
+			"""
+			token = self._get_access_token(["change_card"], "p2323")["access_token"]
+			response = self.send_request("GET", "get_card", {
+				"username": "p2323",
+				"study_id": CardModeTest._study_ids[1],
+				"temp": False,
+			}, token)
+			card = response.content
+
+			"""
+			Save it temporarily.
+			"""
+			script_dir = os.path.dirname(os.path.realpath(__file__))
+			with open(os.path.join(script_dir, "cards", "temp.card"), "wb") as f:
+				f.write(card)
+
+			"""
+			Read the card and unzip it.
+			From the `metadata.json` file, extract  the participant's address.
+			"""
+			path = os.path.join(script_dir, 'cards', 'temp.card')
+			with zipfile.ZipFile(path, 'r') as zip:
+				with zip.open('metadata.json') as metadata:
+					data = metadata.readline()
+					address_2 = json.loads(data)['userName']
+
+					"""
+					Check that the addresses are the same.
+					"""
+					self.assertEqual(address_1, address_2)
+
 class MultiCardModeTest(CardModeTest):
 	"""
 	Tests for the multi-card mode.
@@ -128,3 +220,73 @@ class MultiCardModeTest(CardModeTest):
 		"""
 
 		super(MultiCardModeTest, self).setUpClass(False)
+
+	def test_get_address(self):
+		"""
+		Test getting an address from the backend.
+		"""
+
+		with rest_context(2323, 2323, CardModeTest._study_ids[0]) as address:
+			self.assertTrue(len(address))
+
+	def test_different_studies_addresses(self):
+		"""
+		Test that requesting the addresses for different studies returns different addresses.
+		"""
+
+		with rest_context(2323, 2323, CardModeTest._study_ids[0]) as address_1:
+			token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
+			response = self.send_request("POST", "give_consent", {
+				"study_id": CardModeTest._study_ids[0],
+				"address": address_1,
+				"access_token": None,
+				"port": 2323,
+			}, token)
+			self.assertEqual(response.status_code, 200)
+
+			"""
+			Wait for the consent to be effected.
+			"""
+
+			response = self.send_volatile_request("GET", "has_consent", {
+				"study_id": CardModeTest._study_ids[0],
+				"address": address_1,
+				"access_token": "None",
+				"port": 2323,
+			}, token, value=True)
+			body = response.json()
+			self.assertEqual(response.status_code, 200)
+			self.assertTrue(body["data"])
+
+			"""
+			Fetch the card for a different study and ensure that the address is the same.
+			"""
+			token = self._get_access_token(["change_card"], "p2323")["access_token"]
+			response = self.send_request("GET", "get_card", {
+				"username": "p2323",
+				"study_id": CardModeTest._study_ids[1],
+				"temp": False,
+			}, token)
+			card = response.content
+
+			"""
+			Save it temporarily.
+			"""
+			script_dir = os.path.dirname(os.path.realpath(__file__))
+			with open(os.path.join(script_dir, "cards", "temp.card"), "wb") as f:
+				f.write(card)
+
+			"""
+			Read the card and unzip it.
+			From the `metadata.json` file, extract  the participant's address.
+			"""
+			path = os.path.join(script_dir, 'cards', 'temp.card')
+			with zipfile.ZipFile(path, 'r') as zip:
+				with zip.open('metadata.json') as metadata:
+					data = metadata.readline()
+					address_2 = json.loads(data)['userName']
+
+					"""
+					Check that the addresses are the same.
+					"""
+					self.assertNotEqual(address_1, address_2)
