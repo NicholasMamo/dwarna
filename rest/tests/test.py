@@ -326,10 +326,21 @@ class rest_context(BiobankTestCase):
 		From the `metadata.json` file, extract  the participant's address.
 		"""
 		address = ''
-		with zipfile.ZipFile(os.path.join(script_dir, 'cards', card_name), 'r') as zip:
+		path = os.path.join(script_dir, 'cards', card_name)
+		with zipfile.ZipFile(path, 'r') as zip:
 			with zip.open('metadata.json') as metadata:
 				data = metadata.readline()
 				address = json.loads(data)['userName']
+
+		"""
+		Save the card to establish that the card has been used.
+		Although it is saved as a credential card, it cannot be re-used.
+		This is used to emulate authentication, which is impossible from the test cases.
+		"""
+		with open(path, 'rb') as card:
+			response = self.send_request("POST", "save_cred_card", {
+				"address": address,
+			}, token, files={'card': ('card', card)})
 
 		"""
 		Wait for the REST API to start.
