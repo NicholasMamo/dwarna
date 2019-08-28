@@ -209,11 +209,11 @@ class ConsentFormHandler extends StudyHandler {
 		 */
 		if (isset($study['study_id'])) {
 			$error = urlencode($error);
-			wp_redirect(get_site_url() . "/index.php/biobank-study?study={$study['study_id']}error=$error&return=" . __FUNCTION__);
+			wp_redirect(get_site_url() . "/index.php/biobank-study?action=consent&study={$study['study_id']}error=$error&return=" . __FUNCTION__);
 			exit;
 		} else {
 			$error = urlencode($error);
-			wp_redirect(get_site_url() . "/index.php/biobank-consent?study={$study['study_id']}error=$error&return=" . __FUNCTION__);
+			wp_redirect(get_site_url() . "/index.php/biobank-consent?action=consent&study={$study['study_id']}error=$error&return=" . __FUNCTION__);
 			exit;
 		}
 	}
