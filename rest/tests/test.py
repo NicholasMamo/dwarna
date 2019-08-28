@@ -197,7 +197,7 @@ class BiobankTestCase(unittest.TestCase):
 		volatile_request = retry(times=60)
 		return volatile_request(self.send_request)(status_code, value, method, endpoint, data, access_token)
 
-	def send_request(self, method, endpoint, data, access_token):
+	def send_request(self, method, endpoint, data, access_token, files=None):
 		"""
 		Send a request to the backend.
 
@@ -226,7 +226,10 @@ class BiobankTestCase(unittest.TestCase):
 		if method.upper() == "GET":
 			return method_handler('http://localhost:%d/%s' % (PORT, endpoint), params=data, headers=headers)
 		else:
-			return method_handler('http://localhost:%d/%s' % (PORT, endpoint), json=data, headers=headers)
+			if files is not None:
+				return method_handler('http://localhost:%d/%s' % (PORT, endpoint), data=data, headers=headers, files=files)
+			else:
+				return method_handler('http://localhost:%d/%s' % (PORT, endpoint), json=data, headers=headers)
 
 class rest_context(BiobankTestCase):
 	"""
