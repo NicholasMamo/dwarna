@@ -8,9 +8,11 @@ foreach ($timeline as $timestamp => $changes) {
 		$changes = (array) $changes;
 		foreach ($changes as $study_id => $consent) {
 	?>
+			<?php if ($study_id == $study->study->study_id) { ?>
 			<li>
 				<?= $consent == 1 ? "Give to" : "Withdraw from" ?> <?= $studies->data->$study_id->study->name ?>
 			</li>
+			<?php } ?>
 	<?php
 		}
 	?>
