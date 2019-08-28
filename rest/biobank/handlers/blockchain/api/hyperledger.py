@@ -210,6 +210,11 @@ class HyperledgerAPI(BlockchainAPI):
 			rows = self._connector.select(query)
 			row = rows[0]
 
+			"""
+			Update the card name since the temp card will be returned now.
+			"""
+			card_name = 'temp_card'
+
 		"""
 		The response is a :class:`memoryview` object.
 		Therefore before it is returned, it is converted into a `bytes` string.
