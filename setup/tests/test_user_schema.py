@@ -39,11 +39,10 @@ class UserTests(SchemaTestCase):
 		"""
 		The database should be empty by now
 		"""
-		self._cursor.execute("""
+		self.assertFalse(self._connection.execute("""
 			SELECT *
 			FROM
-				users""")
-		self.assertEqual(self._cursor.rowcount, 0)
+				users"""))
 
 		"""
 		Therefore biobankers, researchers and participants cannot be inserted
@@ -91,7 +90,7 @@ class UserTests(SchemaTestCase):
 
 		participant = Participant("participant", "name", "address")
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
@@ -114,13 +113,13 @@ class UserTests(SchemaTestCase):
 
 		biobanker = Biobanker("biobanker")
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
 		""" % biobanker.get_user_insertion_string())
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				biobankers (user_id)
 			VALUES
@@ -142,13 +141,13 @@ class UserTests(SchemaTestCase):
 
 		researcher = Researcher("researcher")
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
 		""" % researcher.get_user_insertion_string())
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				researchers (user_id)
 			VALUES
@@ -170,13 +169,13 @@ class UserTests(SchemaTestCase):
 
 		participant = Participant("participant", "name", "address")
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
 		""" % participant.get_user_insertion_string())
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				participants (user_id, name, email)
 			VALUES
@@ -197,24 +196,22 @@ class UserTests(SchemaTestCase):
 
 		participant = Participant("participant", "name", "address")
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
-				users""")
-		self.assertEqual(self._cursor.rowcount, 0)
+				users"""))
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
 		""" % participant.get_user_insertion_string())
 
-		self._cursor.execute("""
-			SELECT *
+		self.assertEqual(self._connection.count("""
+			SELECT COUNT(*)
 			FROM
-				users""")
-		self.assertEqual(self._cursor.rowcount, 1)
+				users"""), 1)
 
 	@SchemaTestCase.isolated_test
 	def test_delete_user(self):
@@ -224,36 +221,34 @@ class UserTests(SchemaTestCase):
 
 		participant = Participant("participant", "name", "address")
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
-				users""")
-		self.assertEqual(self._cursor.rowcount, 0)
+				users"""))
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
 		""" % participant.get_user_insertion_string())
 
-		self._cursor.execute("""
-			SELECT *
+		self.assertEqual(self._connection.count("""
+			SELECT COUNT(*)
 			FROM
-				users""")
-		self.assertEqual(self._cursor.rowcount, 1)
+				users"""), 1)
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			DELETE FROM
 				users
 			WHERE
 				user_id = '%s'
 		""" % participant.get_username())
-		self._cursor.execute("""
-			SELECT *
+
+		self.assertEqual(self._connection.count("""
+			SELECT COUNT(*)
 			FROM
-				users""")
-		self.assertEqual(self._cursor.rowcount, 0)
+				users"""), 0)
 
 	@SchemaTestCase.isolated_test
 	def test_delete_all_users(self):
@@ -263,35 +258,33 @@ class UserTests(SchemaTestCase):
 
 		participant = Participant("participant", "name", "address")
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
-				users""")
-		self.assertEqual(self._cursor.rowcount, 0)
+				users"""))
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
 		""" % participant.get_user_insertion_string())
 
-		self._cursor.execute("""
-			SELECT *
+		self.assertEqual(self._connection.count("""
+			SELECT COUNT(*)
 			FROM
-				users""")
-		self.assertEqual(self._cursor.rowcount, 1)
+				users"""), 1)
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			DELETE FROM
 				users
 			WHERE TRUE;
 		""")
-		self._cursor.execute("""
+
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
-				users""")
-		self.assertEqual(self._cursor.rowcount, 0)
+				users"""))
 
 	@SchemaTestCase.isolated_test
 	def test_insert_biobanker(self):
@@ -301,26 +294,26 @@ class UserTests(SchemaTestCase):
 
 		biobanker = Biobanker("biobanker")
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
 		""" % biobanker.get_user_insertion_string())
-		self._cursor.execute("""
+
+		self._connection.execute("""
 			INSERT INTO
 				biobankers (user_id)
 			VALUES
 				('%s');
 		""" % biobanker.get_username())
 
-		self._cursor.execute("""
-			SELECT *
+		self.assertEqual(self._connection.count("""
+			SELECT COUNT(*)
 			FROM
 				users, biobankers
 			WHERE
-				users.user_id = biobankers.user_id""")
-		self.assertEqual(self._cursor.rowcount, 1)
+				users.user_id = biobankers.user_id"""), 1)
 
 	@SchemaTestCase.isolated_test
 	def test_remove_biobanker_from_users(self):
@@ -331,36 +324,35 @@ class UserTests(SchemaTestCase):
 
 		biobanker = Biobanker("biobanker")
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
 		""" % biobanker.get_user_insertion_string())
-		self._cursor.execute("""
+
+		self._connection.execute("""
 			INSERT INTO
 				biobankers (user_id)
 			VALUES
 				('%s');
 		""" % biobanker.get_username())
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			DELETE FROM
 				users
 			WHERE
 				user_id = '%s'""" % biobanker.get_username())
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
-				biobankers""")
-		self.assertEqual(self._cursor.rowcount, 0)
+				biobankers"""))
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
-				biobankers""")
-		self.assertEqual(self._cursor.rowcount, 0)
+				users"""))
 
 	@SchemaTestCase.isolated_test
 	def test_remove_biobanker_from_biobankers(self):
@@ -371,45 +363,43 @@ class UserTests(SchemaTestCase):
 
 		biobanker = Biobanker("biobanker")
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
 		""" % biobanker.get_user_insertion_string())
-		self._cursor.execute("""
+
+		self._connection.execute("""
 			INSERT INTO
 				biobankers (user_id)
 			VALUES
 				('%s');
 		""" % biobanker.get_username())
 
-		self._cursor.execute("""
-			SELECT *
+		self.assertEqual(self._connection.count("""
+			SELECT COUNT(*)
 			FROM
 				users, biobankers
 			WHERE
-				users.user_id = biobankers.user_id""")
-		self.assertEqual(self._cursor.rowcount, 1)
+				users.user_id = biobankers.user_id"""), 1)
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			DELETE FROM
 				biobankers
 			WHERE
 				user_id = '%s'
 		""" % biobanker.get_username())
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
-				biobankers""")
-		self.assertEqual(self._cursor.rowcount, 0)
+				biobankers"""))
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
-				users""")
-		self.assertEqual(self._cursor.rowcount, 0)
+				users"""))
 
 	@SchemaTestCase.isolated_test
 	def test_insert_researcher(self):
@@ -419,25 +409,26 @@ class UserTests(SchemaTestCase):
 
 		researcher = Researcher("researcher")
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
 		""" % researcher.get_user_insertion_string())
-		self._cursor.execute("""
+
+		self._connection.execute("""
 			INSERT INTO
 				researchers (user_id)
 			VALUES
 				('%s');
 		""" % researcher.get_username())
-		self._cursor.execute("""
-			SELECT *
+
+		self.assertEqual(self._connection.count("""
+			SELECT COUNT(*)
 			FROM
 				users, researchers
 			WHERE
-				users.user_id = researchers.user_id""")
-		self.assertEqual(self._cursor.rowcount, 1)
+				users.user_id = researchers.user_id"""), 1)
 
 	@SchemaTestCase.isolated_test
 	def test_remove_researcher_from_users(self):
@@ -448,36 +439,35 @@ class UserTests(SchemaTestCase):
 
 		researcher = Researcher("researcher")
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
 		""" % researcher.get_user_insertion_string())
-		self._cursor.execute("""
+
+		self._connection.execute("""
 			INSERT INTO
 				researchers (user_id)
 			VALUES
 				('%s');
 		""" % researcher.get_username())
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			DELETE FROM
 				users
 			WHERE
 				user_id = '%s'""" % researcher.get_username())
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
-				researchers""")
-		self.assertEqual(self._cursor.rowcount, 0)
+				researchers"""))
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
-				researchers""")
-		self.assertEqual(self._cursor.rowcount, 0)
+				users"""))
 
 	@SchemaTestCase.isolated_test
 	def test_remove_researcher_from_researchers(self):
@@ -488,45 +478,43 @@ class UserTests(SchemaTestCase):
 
 		researcher = Researcher("researcher")
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
 		""" % researcher.get_user_insertion_string())
-		self._cursor.execute("""
+
+		self._connection.execute("""
 			INSERT INTO
 				researchers (user_id)
 			VALUES
 				('%s');
 		""" % researcher.get_username())
 
-		self._cursor.execute("""
-			SELECT *
+		self.assertEqual(self._connection.count("""
+			SELECT COUNT(*)
 			FROM
 				users, researchers
 			WHERE
-				users.user_id = researchers.user_id""")
-		self.assertEqual(self._cursor.rowcount, 1)
+				users.user_id = researchers.user_id"""), 1)
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			DELETE FROM
 				researchers
 			WHERE
 				user_id = '%s'
 		""" % researcher.get_username())
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
-				researchers""")
-		self.assertEqual(self._cursor.rowcount, 0)
+				researchers"""))
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
-				users""")
-		self.assertEqual(self._cursor.rowcount, 0)
+				users"""))
 
 	@SchemaTestCase.isolated_test
 	def test_insert_participant(self):
@@ -536,25 +524,26 @@ class UserTests(SchemaTestCase):
 
 		participant = Participant("participant", "name", "address")
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
 		""" % participant.get_user_insertion_string())
-		self._cursor.execute("""
+
+		self._connection.execute("""
 			INSERT INTO
 				participants (user_id, name, email)
 			VALUES
 				(%s);
 		""" % participant.get_participant_insertion_string())
-		self._cursor.execute("""
-			SELECT *
+
+		self.assertEqual(self._connection.count("""
+			SELECT COUNT(*)
 			FROM
 				users, participants
 			WHERE
-				users.user_id = participants.user_id""")
-		self.assertEqual(self._cursor.rowcount, 1)
+				users.user_id = participants.user_id"""), 1)
 
 	@SchemaTestCase.isolated_test
 	def test_remove_participant_from_users(self):
@@ -565,36 +554,35 @@ class UserTests(SchemaTestCase):
 
 		participant = Participant("participant", "name", "address")
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
 		""" % participant.get_user_insertion_string())
-		self._cursor.execute("""
+
+		self._connection.execute("""
 			INSERT INTO
 				participants (user_id, name, email)
 			VALUES
 				(%s);
 		""" % participant.get_participant_insertion_string())
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			DELETE FROM
 				users
 			WHERE
 				user_id = '%s'""" % participant.get_username())
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
-				participants""")
-		self.assertEqual(self._cursor.rowcount, 0)
+				participants"""))
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
-				participants""")
-		self.assertEqual(self._cursor.rowcount, 0)
+				users"""))
 
 	@SchemaTestCase.isolated_test
 	def test_remove_participant_from_participants(self):
@@ -605,42 +593,40 @@ class UserTests(SchemaTestCase):
 
 		participant = Participant("participant", "name", "address")
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
 				(%s);
 		""" % participant.get_user_insertion_string())
-		self._cursor.execute("""
+
+		self._connection.execute("""
 			INSERT INTO
 				participants (user_id, name, email)
 			VALUES
 				(%s);
 		""" % participant.get_participant_insertion_string())
 
-		self._cursor.execute("""
-			SELECT *
+		self.assertEqual(self._connection.count("""
+			SELECT COUNT(*)
 			FROM
 				users, participants
 			WHERE
-				users.user_id = participants.user_id""")
-		self.assertEqual(self._cursor.rowcount, 1)
+				users.user_id = participants.user_id"""), 1)
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			DELETE FROM
 				participants
 			WHERE
 				user_id = '%s'
 		""" % participant.get_username())
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
-				participants""")
-		self.assertEqual(self._cursor.rowcount, 0)
+				participants"""))
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
-				users""")
-		self.assertEqual(self._cursor.rowcount, 0)
+				users"""))
