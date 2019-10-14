@@ -55,7 +55,7 @@ class StudyTests(SchemaTestCase):
 		Insert the sample data into the database.
 		First, insert the users.
 		"""
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				users (user_id, role)
 			VALUES
@@ -67,7 +67,7 @@ class StudyTests(SchemaTestCase):
 			self._researcher.get_user_insertion_string()
 		))
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				participants (user_id, name, email)
 			VALUES
@@ -77,14 +77,14 @@ class StudyTests(SchemaTestCase):
 			self._participant_2.get_participant_insertion_string()
 		))
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				researchers (user_id)
 			VALUES
 				('%s');
 		""" % self._researcher.get_username())
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				biobankers (user_id)
 			VALUES
@@ -94,17 +94,12 @@ class StudyTests(SchemaTestCase):
 		"""
 		Secondly, create a simple study and fetch its ID
 		"""
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				studies (study_id, name, description, homepage)
 			VALUES
 				(%s);
 		""" % self._study.get_insertion_string());
-
-		"""
-		Save this basic data to return to it later after SQL failure tests.
-		"""
-		self._con.commit()
 
 	def isolated_test(test):
 		"""
@@ -169,16 +164,15 @@ class StudyTests(SchemaTestCase):
 		Test adding a researcher to a study.
 		"""
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
 				studies_researchers
 			WHERE
 				researcher_id = '%s';
-		""" % self._researcher.get_username())
-		self.assertEqual(self._cursor.rowcount, 0)
+		""" % self._researcher.get_username()))
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				studies_researchers(study_id, researcher_id)
 			VALUES
@@ -187,14 +181,13 @@ class StudyTests(SchemaTestCase):
 			self._study.get_id(), self._researcher.get_username()
 		))
 
-		self._cursor.execute("""
-			SELECT *
+		self.assertEqual(self._connection.count("""
+			SELECT COUNT(*)
 			FROM
 				studies_researchers
 			WHERE
 				researcher_id = '%s';
-		""" % self._researcher.get_username())
-		self.assertEqual(self._cursor.rowcount, 1)
+		""" % self._researcher.get_username()), 1)
 
 	@isolated_test
 	def test_remove_researcher_from_study(self):
@@ -202,7 +195,7 @@ class StudyTests(SchemaTestCase):
 		Test that removing a researcher from a study does not remove either the study nor the researcher, but only the link.
 		"""
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				studies_researchers(study_id, researcher_id)
 			VALUES
@@ -211,20 +204,19 @@ class StudyTests(SchemaTestCase):
 			self._study.get_id(), self._researcher.get_username()
 		))
 
-		self._cursor.execute("""
-			SELECT *
+		self.assertEqual(self._connection.count("""
+			SELECT COUNT(*)
 			FROM
 				studies_researchers
 			WHERE
 				researcher_id = '%s';
-		""" % self._researcher.get_username())
-		self.assertEqual(self._cursor.rowcount, 1)
+		""" % self._researcher.get_username()), 1)
 
 		"""
 		Delete the link.
 		"""
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			DELETE FROM
 				studies_researchers
 			WHERE
@@ -234,36 +226,34 @@ class StudyTests(SchemaTestCase):
 			self._study.get_id(), self._researcher.get_username()
 		))
 
-		self._cursor.execute("""
+
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
 				studies_researchers
 			WHERE
 				researcher_id = '%s';
-		""" % self._researcher.get_username())
-		self.assertEqual(self._cursor.rowcount, 0)
+		""" % self._researcher.get_username()))
 
 		"""
 		Ensure that the researcher and the study have not been removed.
 		"""
 
-		self._cursor.execute("""
-			SELECT *
+		self.assertEqual(self._connection.count("""
+			SELECT COUNT(*)
 			FROM
 				studies
 			WHERE
 				study_id = '%s';
-		""" % self._study.get_id())
-		self.assertEqual(self._cursor.rowcount, 1)
+		""" % self._study.get_id()), 1)
 
-		self._cursor.execute("""
-			SELECT *
+		self.assertEqual(self._connection.count("""
+			SELECT COUNT(*)
 			FROM
 				researchers
 			WHERE
 				user_id = '%s';
-		""" % self._researcher.get_username())
-		self.assertEqual(self._cursor.rowcount, 1)
+		""" % self._researcher.get_username()), 1)
 
 	@isolated_test
 	def test_add_researcher_to_nonexistent_study(self):
@@ -286,7 +276,7 @@ class StudyTests(SchemaTestCase):
 		Test that removing a researcher removes their links, but not the studies.
 		"""
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				studies_researchers(study_id, researcher_id)
 			VALUES
@@ -295,56 +285,52 @@ class StudyTests(SchemaTestCase):
 			self._study.get_id(), self._researcher.get_username()
 		))
 
-		self._cursor.execute("""
-			SELECT *
+		self.assertEqual(self._connection.count("""
+			SELECT COUNT(*)
 			FROM
 				studies_researchers
 			WHERE
 				researcher_id = '%s';
-		""" % self._researcher.get_username())
-		self.assertEqual(self._cursor.rowcount, 1)
+		""" % self._researcher.get_username()), 1)
 
 		"""
 		Delete the researcher.
 		"""
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			DELETE FROM
 				researchers
 			WHERE
 				user_id = '%s'
 		""" % self._researcher.get_username())
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
 				researchers
 			WHERE
 				user_id = '%s';
-		""" % self._researcher.get_username())
-		self.assertEqual(self._cursor.rowcount, 0)
+		""" % self._researcher.get_username()))
 
 		"""
 		Ensure that the link no longer exists, but that the study exists.
 		"""
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
 				studies_researchers
 			WHERE
 				researcher_id = '%s';
-		""" % self._researcher.get_username())
-		self.assertEqual(self._cursor.rowcount, 0)
+		""" % self._researcher.get_username()))
 
-		self._cursor.execute("""
+		self.assertTrue(self._connection.exists("""
 			SELECT *
 			FROM
 				studies
 			WHERE
 				study_id = '%s';
-		""" % self._study.get_id())
-		self.assertEqual(self._cursor.rowcount, 1)
+		""" % self._study.get_id()))
 
 	@isolated_test
 	def test_cascading_deletion_user(self):
@@ -352,7 +338,7 @@ class StudyTests(SchemaTestCase):
 		Test that removing a user who is a researcher removes their links, but not the studies.
 		"""
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				studies_researchers(study_id, researcher_id)
 			VALUES
@@ -361,65 +347,60 @@ class StudyTests(SchemaTestCase):
 			self._study.get_id(), self._researcher.get_username()
 		))
 
-		self._cursor.execute("""
+		self.assertTrue(self._connection.exists("""
 			SELECT *
 			FROM
 				studies_researchers
 			WHERE
 				researcher_id = '%s';
-		""" % self._researcher.get_username())
-		self.assertEqual(self._cursor.rowcount, 1)
+		""" % self._researcher.get_username()))
 
 		"""
 		Delete the researcher.
 		"""
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			DELETE FROM
 				users
 			WHERE
 				user_id = '%s'
 		""" % self._researcher.get_username())
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
 				users
 			WHERE
 				user_id = '%s';
-		""" % self._researcher.get_username())
-		self.assertEqual(self._cursor.rowcount, 0)
+		""" % self._researcher.get_username()))
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
 				researchers
 			WHERE
 				user_id = '%s';
-		""" % self._researcher.get_username())
-		self.assertEqual(self._cursor.rowcount, 0)
+		""" % self._researcher.get_username()))
 
 		"""
 		Ensure that the link no longer exists, but that the study exists.
 		"""
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
 				studies_researchers
 			WHERE
 				researcher_id = '%s';
-		""" % self._researcher.get_username())
-		self.assertEqual(self._cursor.rowcount, 0)
+		""" % self._researcher.get_username()))
 
-		self._cursor.execute("""
+		self.assertTrue(self._connection.exists("""
 			SELECT *
 			FROM
 				studies
 			WHERE
 				study_id = '%s';
-		""" % self._study.get_id())
-		self.assertEqual(self._cursor.rowcount, 1)
+		""" % self._study.get_id()))
 
 	@isolated_test
 	def test_cascading_deletion_study(self):
@@ -427,7 +408,7 @@ class StudyTests(SchemaTestCase):
 		Test that removing a study removes their links, but not the researchers.
 		"""
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			INSERT INTO
 				studies_researchers(study_id, researcher_id)
 			VALUES
@@ -436,53 +417,49 @@ class StudyTests(SchemaTestCase):
 			self._study.get_id(), self._researcher.get_username()
 		))
 
-		self._cursor.execute("""
+		self.assertTrue(self._connection.exists("""
 			SELECT *
 			FROM
 				studies_researchers
 			WHERE
 				researcher_id = '%s';
-		""" % self._researcher.get_username())
-		self.assertEqual(self._cursor.rowcount, 1)
+		""" % self._researcher.get_username()))
 
 		"""
 		Delete the study.
 		"""
 
-		self._cursor.execute("""
+		self._connection.execute("""
 			DELETE FROM
 				studies
 			WHERE
 				study_id = '%s'
 		""" % self._study.get_id())
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
 				studies
 			WHERE
 				study_id = '%s';
-		""" % self._study.get_id())
-		self.assertEqual(self._cursor.rowcount, 0)
+		""" % self._study.get_id()))
 
 		"""
 		Ensure that the link no longer exists, but that the study exists.
 		"""
 
-		self._cursor.execute("""
+		self.assertFalse(self._connection.exists("""
 			SELECT *
 			FROM
 				studies_researchers
 			WHERE
 				researcher_id = '%s';
-		""" % self._researcher.get_username())
-		self.assertEqual(self._cursor.rowcount, 0)
+		""" % self._researcher.get_username()))
 
-		self._cursor.execute("""
+		self.assertTrue(self._connection.exists("""
 			SELECT *
 			FROM
 				researchers
 			WHERE
 				user_id = '%s';
-		""" % self._researcher.get_username())
-		self.assertEqual(self._cursor.rowcount, 1)
+		""" % self._researcher.get_username()))
