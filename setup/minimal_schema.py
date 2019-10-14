@@ -30,7 +30,6 @@ def create_schema(database):
 	:type database: str
 	"""
 	try:
-		# get the connection details from the .pgpass file
 		connection = PostgreSQLConnection.connect(database)
 
 		"""
@@ -152,7 +151,7 @@ def create_schema(database):
 		# explain the columns
 		connection.execute("""COMMENT ON COLUMN studies_researchers.study_id IS 'The study''s unique identifier, links to the ''studies'' table''s primary key';""")
 		connection.execute("""COMMENT ON COLUMN studies_researchers.researcher_id IS 'The researcher''s unique identifier, links to the ''researchers'' table''s primary key';""")
-		
+
 		"""
 		When a user is removed from the users table, the deletion effect cascades.
 		However, the inverse is not true.
