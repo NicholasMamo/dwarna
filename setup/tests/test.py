@@ -16,6 +16,13 @@ from functools import wraps
 
 from .environment import *
 
+path = sys.path[0]
+rest_path = os.path.join(path, "..", "..", "rest")
+if rest_path not in sys.path:
+	sys.path.insert(1, rest_path)
+
+from connection.db_connection import PostgreSQLConnection
+
 class SchemaTestCase(unittest.TestCase):
 	"""
 	Test the schema.
@@ -34,8 +41,7 @@ class SchemaTestCase(unittest.TestCase):
 		At the end of the tests, close the PostgreSQL connection and cursor.
 		"""
 
-		self._cursor.close()
-		self._con.close()
+		self._connection.close()
 
 	def __init__(self, *args, **kwargs):
 		"""
@@ -43,7 +49,7 @@ class SchemaTestCase(unittest.TestCase):
 		"""
 
 		super(SchemaTestCase, self).__init__(*args, **kwargs)
-		self.reconnect()
+		self._connection = PostgreSQLConnection.connect(TEST_DATABASE)
 
 	def isolated_test(test):
 		"""
@@ -77,15 +83,7 @@ class SchemaTestCase(unittest.TestCase):
 		Reconnect to the test database.
 		"""
 
-		try:
-			# get the connection details from the .pgpass file
-			home = expanduser("~")
-			with open(os.path.join(home, ".pgpass"), "r") as f:
-				host, port, _, username, password = f.readline().strip().split(":")
-				self._con = psycopg2.connect(dbname=TEST_DATABASE, user=username, host=host, password=password)
-				self._cursor = self._con.cursor()
-		except Exception as e:
-			print(e)
+		self._connection.reconnect()
 
 	def assert_fail_sql(self, sql, exception_name):
 		"""
@@ -99,7 +97,7 @@ class SchemaTestCase(unittest.TestCase):
 		"""
 
 		try:
-			self._cursor.execute(sql)
+			self._connection.execute(sql)
 		except Exception as e:
 			try:
 				self.assertEqual(type(e).__name__, exception_name)
