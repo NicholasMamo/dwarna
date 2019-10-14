@@ -143,7 +143,8 @@ class GeneralTimedFunctionalityTest(BiobankTestCase):
 		"""
 
 		create_testing_environment()
-		main.main(TEST_DATABASE, TEST_OAUTH_DATABASE, PORT, 1)
+		# NOTE: The optional parameters are all provided since the bash script and argparse do not go well together. (See https://stackoverflow.com/questions/18325211/argparse-fails-when-called-from-unittest-test)
+		main.main(TEST_DATABASE, TEST_OAUTH_DATABASE, PORT, single_card=True, token_expiry=4)
 		time.sleep(2) # NOTE: Needed to give time for other test servers to shutdown, or for this one to start
 
 	@BiobankTestCase.isolated_test
@@ -161,6 +162,6 @@ class GeneralTimedFunctionalityTest(BiobankTestCase):
 		"""
 		Wait one second for the token to expire.
 		"""
-		time.sleep(2)
+		time.sleep(4)
 		response = self.send_request("POST", "participant", { "username": "matt" }, token)
 		self.assertEqual(response.status_code, 401)
