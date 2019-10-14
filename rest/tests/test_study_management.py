@@ -372,25 +372,25 @@ class StudyManagementTest(BiobankTestCase):
 		body = response.json()["data"]
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(len(body), 1)
-		self.assertEqual(body[0]["study"]["study_id"], study_ids[0])
+		self.assertEqual(body[study_ids[0]]["study"]["study_id"], study_ids[0])
 
 		response = self.send_request("GET", "get_active_studies", { "search": "ALS" }, token)
 		body = response.json()["data"]
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(len(body), 1)
-		self.assertEqual(body[0]["study"]["study_id"], study_ids[0])
+		self.assertEqual(body[study_ids[0]]["study"]["study_id"], study_ids[0])
 
 		response = self.send_request("GET", "get_studies", { "search": "als study", "case_sensitive": False }, token)
 		body = response.json()["data"]
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(len(body), 1)
-		self.assertEqual(body[0]["study"]["study_id"], study_ids[0])
+		self.assertEqual(body[study_ids[0]]["study"]["study_id"], study_ids[0])
 
 		response = self.send_request("GET", "get_active_studies", { "search": "als study", "case_sensitive": False }, token)
 		body = response.json()["data"]
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(len(body), 1)
-		self.assertEqual(body[0]["study"]["study_id"], study_ids[0])
+		self.assertEqual(body[study_ids[0]]["study"]["study_id"], study_ids[0])
 
 		response = self.send_request("GET", "get_studies", { "search": "als study", "case_sensitive": True }, token)
 		body = response.json()["data"]
