@@ -190,11 +190,8 @@ def main(database, oauth_database, listen_port=None, single_card=None, token_exp
 	Get the connection details from the .pgpass file.
 	Then, create connections to the server's database and to the OAuth 2.0 database.
 	"""
-	home = expanduser("~")
-	with open(os.path.join(home, ".pgpass"), "r") as f:
-		host, port, _, username, password = f.readline().strip().split(":")
-	connection = routes.handler_connector(database=database, host=host, username=username, password=password)
-	oauth_connection = routes.handler_connector(database=oauth_database, host=host, username=username, password=password, cursor_factory=cursor)
+	connection = routes.handler_connector.connect(database)
+	oauth_connection = routes.handler_connector.connect(oauth_database, cursor_factory=cursor)
 
 	global pid
 	pid = os.getpid()
