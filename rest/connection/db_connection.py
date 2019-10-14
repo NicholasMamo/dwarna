@@ -2,6 +2,9 @@
 Database interfaces using the base connection class.
 """
 
+import os
+from os.path import expanduser
+
 import psycopg2
 import psycopg2.extras
 
@@ -51,6 +54,38 @@ class PostgreSQLConnection(object):
 		self._password = password
 		self._cursor_factory = cursor_factory
 		self.reconnect()
+
+	@staticmethod
+	def connect(database, *args, **kwargs):
+		"""
+		Connect to the given database by looking for the credentials in the .pgpass file.
+
+		Additional arguments to the :class:`connection.db_connection.PostgreSQLConnection` can be passed.
+
+		:param database: The name of the database to connect to.
+		:type database: str
+
+		:return: The database connection.
+		:rtype: :class:`connection.db_connection.PostgreSQLConnection`
+		"""
+
+		home = expanduser("~")
+		with open(os.path.join(home, ".pgpass"), "r") as file:
+			"""
+			Go through each line in the .pgpass file.
+			Extract the connection details from the line.
+			"""
+			for i, line in enumerate(file):
+				host, port, db, username, password = line.strip().split(":")
+
+				"""
+				If the line belongs to the requested database, create the connection.
+				Then, return immediately.
+				"""
+				if db == database:
+					return PostgreSQLConnection(db, host, username, password, *args, **kwargs)
+
+		# TODO: what if it fails?
 
 	def reconnect(self):
 		"""
