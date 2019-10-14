@@ -19,6 +19,8 @@ class PostgreSQLConnection(object):
 	:vartype _username: str
 	:ivar _password: The password used to connect to the database
 	:vartype _password: str
+	:ivar _con: The connection to the PostgreSQL database.
+	:vartype _con: :class:`psycopg2.extensions.connection`
 	:ivar _cursor_factory: The type of cursors to create.
 		The RealDictCursor factory is the default one.
 		This factory returns associative arrays (`dict` instances) from queries.
