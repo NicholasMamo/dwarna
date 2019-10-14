@@ -30,7 +30,7 @@ const ajax_base_path = `${host}/wordpress/wp-content/plugins/biobank-plugin/publ
 /*
  * If there is a consent field, load its value.
  */
-jQuery('.study-consent').ready(() => {
+jQuery('.study-consent').length && jQuery('.study-consent').ready(() => {
 	var study_id = jQuery('input[name="biobank[study][study_id]"]').val();
 	var access_token = decodeURIComponent(getCookie("access_token"));
 	access_token = access_token.substring(2, access_token.indexOf("."));
