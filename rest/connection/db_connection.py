@@ -11,7 +11,7 @@ import psycopg2.extras
 from .connection import Connection
 from .exceptions import connection_exceptions
 
-class PostgreSQLConnection(object):
+class PostgreSQLConnection(Connection):
 	"""
 	The connection to the PostgreSQL database.
 
