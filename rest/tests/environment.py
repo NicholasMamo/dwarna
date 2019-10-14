@@ -12,7 +12,6 @@ setup_path = os.path.join(path, "..", "..")
 if setup_path not in sys.path:
 	sys.path.insert(1, setup_path)
 
-
 from connection.db_connection import PostgreSQLConnection
 from setup import minimal_schema, oauth_schema
 
@@ -41,8 +40,6 @@ CLIENT_SECRET = "xyz"
 The client's secret.
 """
 
-cursor, con = None, None
-
 def create_testing_environment():
 	"""
 	Create a testing environment so that the actual database is not altered.
@@ -60,7 +57,7 @@ def create_testing_environment():
 		connection.execute("CREATE DATABASE %s" % TEST_DATABASE)
 	minimal_schema.create_schema(TEST_DATABASE)
 
-	exists = connection.exists("""SELECT 1 FROM pg_database WHERE datname = '%s'""" % TEST_DATABASE)
+	exists = connection.exists("""SELECT 1 FROM pg_database WHERE datname = '%s'""" % TEST_OAUTH_DATABASE)
 	print("Database has to be created" if not exists else "Database already exists")
 	if (not exists):
 		connection.execute("CREATE DATABASE %s" % TEST_OAUTH_DATABASE)
