@@ -9,6 +9,7 @@ import psycopg2
 import psycopg2.extras
 
 from .connection import Connection
+from .exceptions import connection_exceptions
 
 class PostgreSQLConnection(object):
 	"""
@@ -85,7 +86,7 @@ class PostgreSQLConnection(object):
 				if db == database:
 					return PostgreSQLConnection(db, host, username, password, *args, **kwargs)
 
-		# TODO: what if it fails?
+		raise connection_exceptions.CredentialsNotFoundException(database)
 
 	def reconnect(self):
 		"""
