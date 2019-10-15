@@ -189,13 +189,22 @@ class Biobank_Public {
 					wp_enqueue_script( $this->plugin_name . "-hyperledger-card", plugin_dir_url( __FILE__ ) . 'js/hyperledger/card.js', array( 'jquery' ), $this->version, false );
 
 					$consent_handler = new \client\form\ConsentFormHandler();
-					$trail = $consent_handler->get_consent_trail();
 					$error = '';
-					$error = isset($trail->error) && ! empty($trail->error) ? $trail->error : $error;
 
+					/*
+					 * Load the timeline in chronological order.
+					 */
+					$trail = $consent_handler->get_consent_trail();
+					$error = isset($trail->error) && ! empty($trail->error) ? $trail->error : $error;
 					$studies = (array) $trail->studies;
 					$timeline = (array) $trail->timeline;
 					ksort($timeline);
+
+					/*
+					 * Load the quiz.
+					 */
+					$contents = file_get_contents(plugin_dir_path(__FILE__) . 'data/quiz.json');
+					$quiz = json_decode($contents);
 
 					/*
 					 * TODO: Create a new function.
