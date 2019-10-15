@@ -40,6 +40,10 @@
 	overflow: auto;
 }
 
+#biobank-quiz {
+	display: none;
+}
+
 #biobank-quiz .biobank-question .biobank-quiz-question-explanation {
 	display: none;
 }
