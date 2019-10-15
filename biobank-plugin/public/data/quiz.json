@@ -1,0 +1,22 @@
+[
+	{
+		"question": 	"If I proceed with this consent update, will my sample at the biobank be used for a new study?",
+		"answer": 		"yes",
+		"explanation":	"no"
+	},
+	{
+		"question": 	"Is it possible to withdraw my consent at any time?",
+		"answer": 		"yes",
+		"explanation":	"no"
+	},
+	{
+		"question": 	"Will my identity be kept private?",
+		"answer": 		"yes",
+		"explanation":	"no"
+	},
+	{
+		"question": 	"Is the original consent form which I had signed at the biobank still valid?",
+		"answer": 		"yes",
+		"explanation":	"no"
+	}
+]
