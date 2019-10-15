@@ -3,34 +3,45 @@
  */
 jQuery('#biobank-quiz input[type="radio"]').change((event) => {
 	/*
-	 * Get the user's choice and the actual answer.
-	 */
-	var choice = jQuery(event.target);
-	var answer = jQuery(choice).closest('.biobank-question')
-							   .find('input[type="hidden"]')
-							   .val();
-
-	/*
 	 * Mark the question as correct or incorrect.
 	 */
-	if (choice.val() == answer) {
-		choice.closest('.biobank-question')
-			  .removeClass('incorrect');
+	var question = jQuery(event.target).closest('.biobank-question');
+	if (isCorrect(question)) {
+		question.removeClass('incorrect');
 	} else {
-		choice.closest('.biobank-question')
-			  .addClass('incorrect');
+		question.addClass('incorrect');
 	}
 
 	/*
 	 * Disable the submit button if there are any incorrect questions.
 	 */
 	if (jQuery('.biobank-question.incorrect').length) {
-		choice.closest('form')
-			  .find('input[type="submit"]')
-			  .attr('disabled', true);
+		question.closest('form')
+				.find('input[type="submit"]')
+				.attr('disabled', true);
 	} else {
-		choice.closest('form')
-			  .find('input[type="submit"]')
-			  .attr('disabled', null);
+		jQuery('.biobank-question').each((index, question) => {
+			console.log(question);
+		})
+
+		question.closest('form')
+				.find('input[type="submit"]')
+				.attr('disabled', null);
 	}
 });
+
+/**
+ * Check whether the question in the given element is correct.
+ *
+ * @param {object}		question - The question DOM element.
+ * @return {boolean}	A boolean indicating whether the question is marked correctly.
+ */
+function isCorrect(question) {
+	/*
+	 * Get the user's choice and the actual answer.
+	 */
+	var choice = jQuery(question).find('input:checked');
+	var answer = jQuery(question).find('input[type="hidden"]')
+								 .val();
+	return choice.val() == answer;
+}
