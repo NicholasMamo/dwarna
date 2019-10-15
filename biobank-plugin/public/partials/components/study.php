@@ -44,7 +44,7 @@ if (isset($error) && ! empty($error)) {
 
 	<div class='row'>
 		<div class='col-md-7 offset-md-5'>
-			<input type = "submit" class = "btn btn-primary float-left" />
+			<input type = "submit" class = "btn btn-primary float-left" disabled />
 		</div>
 	</div>
 </form>
