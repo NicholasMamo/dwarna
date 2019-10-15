@@ -1,8 +1,8 @@
-<div id ='quiz'>
+<div id ='biobank-quiz'>
 	<?php foreach ($quiz as $i => $question) { ?>
-	<div class='question'>
-		<div class='row mx-1'><?= $question->question ?></div>
-		<div class='row explanation'><?= $question->explanation ?></div>
+	<div class='biobank-question'>
+		<div class='row mx-1 biobank-quiz-question'><?= $question->question ?></div>
+		<div class='row biobank-quiz-question-explanation'><?= $question->explanation ?></div>
 		<input type='hidden' value='<?= $question->answer ?>'>
 		<div class='row mx-3 mb-2'>
 			<div class='col-md-6 text-center'>

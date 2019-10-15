@@ -1,12 +1,12 @@
 /*
  * Whenever any value of the quiz changes, check that it is correct.
  */
-jQuery('#quiz input[type="radio"]').change((event) => {
+jQuery('#biobank-quiz input[type="radio"]').change((event) => {
 	/*
 	 * Get the user's choice and the actual answer.
 	 */
 	var choice = jQuery(event.target);
-	var answer = jQuery(choice).closest('.question')
+	var answer = jQuery(choice).closest('.biobank-question')
 							   .find('input[type="hidden"]')
 							   .val();
 
@@ -14,10 +14,10 @@ jQuery('#quiz input[type="radio"]').change((event) => {
 	 * Mark the question as correct or incorrect.
 	 */
 	if (choice.val() == answer) {
-		choice.closest('.question')
+		choice.closest('.biobank-question')
 			  .removeClass('incorrect');
 	} else {
-		choice.closest('.question')
+		choice.closest('.biobank-question')
 			  .addClass('incorrect');
 	}
 });
