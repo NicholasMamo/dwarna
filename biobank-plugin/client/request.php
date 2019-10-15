@@ -151,7 +151,7 @@ class Request {
 	 *
 	 * @since	1.0.0
 	 * @access	public
-	 * @return	array	The array containing a list of parameterr.
+	 * @return	array	The array containing a list of parameters.
 	 */
 	public function get_parameters() {
 		return $this->body;
