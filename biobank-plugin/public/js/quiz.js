@@ -20,4 +20,17 @@ jQuery('#biobank-quiz input[type="radio"]').change((event) => {
 		choice.closest('.biobank-question')
 			  .addClass('incorrect');
 	}
+
+	/*
+	 * Disable the submit button if there are any incorrect questions.
+	 */
+	if (jQuery('.biobank-question.incorrect').length) {
+		choice.closest('form')
+			  .find('input[type="submit"]')
+			  .attr('disabled', true);
+	} else {
+		choice.closest('form')
+			  .find('input[type="submit"]')
+			  .attr('disabled', null);
+	}
 });
