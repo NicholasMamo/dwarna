@@ -30,3 +30,10 @@
 	 */
 
 })( jQuery );
+
+/**
+ * If there is a study name when the page loads, make it the title.
+ */
+jQuery('#study-name') && jQuery('#study-name').ready(() => {
+	jQuery('h1').text(jQuery('#study-name').val());
+})

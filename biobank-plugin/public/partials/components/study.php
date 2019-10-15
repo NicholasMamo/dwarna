@@ -14,7 +14,7 @@ if (isset($error) && ! empty($error)) {
 }
 ?>
 
-<input type='hidden' value='<?= $study->study->name ?>' />
+<input id='study-name' type='hidden' value='<?= $study->study->name ?>' />
 
 <form class="<?= $this->plugin_name ?>-form" id="consent-form-<?= $study->study->study_id ?>"
 	  method="post" name="consent_form" action=<?php echo esc_url(admin_url("admin-post.php")); ?>>
