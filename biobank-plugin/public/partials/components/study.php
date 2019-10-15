@@ -23,7 +23,9 @@ if (isset($error) && ! empty($error)) {
 
 	<p class="biobank-description"><?= $study->study->description ?></p>
 	<p class="biobank-homepage"><a href="<?= $study->study->homepage ?>" target="_blank">Read more</a></p>
+	<?php include_once(plugin_dir_path(__FILE__) . '/quiz.php') ?>
 	<div class='row'>
+
 		<div class='col-md-5 text-md-right'>
 			<label for="<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>">Participate</label>
 		</div>
@@ -39,6 +41,7 @@ if (isset($error) && ! empty($error)) {
 				   type = 'checkbox'>
 		</div>
 	</div>
+
 	<div class='row'>
 		<div class='col-md-7 offset-md-5'>
 			<input type = "submit" class = "btn btn-primary float-left" />
@@ -48,4 +51,4 @@ if (isset($error) && ! empty($error)) {
 
 <h2>Consent trail</h2>
 
-<?php include_once(dirname(realpath(__FILE__)) . '/consent-trail.php') ?>
+<?php include_once(plugin_dir_path(__FILE__) . '/consent-trail.php') ?>
