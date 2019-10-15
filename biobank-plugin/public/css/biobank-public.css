@@ -39,3 +39,11 @@
 	max-height: 30vh;
 	overflow: auto;
 }
+
+#biobank-quiz .biobank-question .biobank-quiz-question-explanation {
+	display: none;
+}
+
+#biobank-quiz .biobank-question.incorrect .biobank-quiz-question-explanation {
+	display: initial;
+}
