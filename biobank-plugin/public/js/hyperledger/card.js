@@ -44,8 +44,17 @@ jQuery('.study-consent').length && jQuery('.study-consent').ready(() => {
 					loadConsent(study_id, address).then(function(response) {
 						if (response.length) {
 							var consent = response[0];
+
+							/*
+							 * If the research partner can only withdraw consent, hide the quiz and enable the submit button.
+							 * Otherwise, show the quiz and leave the submit button disabled.
+							 */
 							if (consent.status) {
 								jQuery(`#biobank-study-${study_id}`).prop('checked', true);
+								jQuery('form').find('input[type="submit"]')
+											  .attr('disabled', null);
+							} else {
+								jQuery('#biobank-quiz').show();
 							}
 						}
 					});
