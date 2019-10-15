@@ -193,6 +193,11 @@ class StudyFormHandler extends StudyHandler {
 					$error = (string) $validation_check;
 				} else {
 					/*
+					 * Sanitize the study.
+					 */
+					$input = $this->sanitize_study($input);
+
+					/*
 					 * Create a request and fetch the response
 					 */
 					$request = new \client\Request($this->scheme, $this->host, $this->port);
@@ -260,6 +265,11 @@ class StudyFormHandler extends StudyHandler {
 				if (! $validation_check->is_successful()) {
 					$error = (string) $validation_check;
 				} else {
+					/*
+					 * Sanitize the study.
+					 */
+					$input = $this->sanitize_study($input);
+
 					/*
 					 * Create a request and fetch the response
 					 */
@@ -341,6 +351,25 @@ class StudyFormHandler extends StudyHandler {
 		$error = urlencode($error);
 		wp_redirect(admin_url("admin.php") . "?page=biobank_studies&error=$error&redirect=remove");
 
+	}
+
+	/**
+	 * Sanitize the study.
+	 *
+	 * @since	1.0.0
+	 * @access	private
+	 * @param	array	$study The study input array.
+	 * @return	array	The array containing the sanitized study.
+	 */
+	private function sanitize_study($study) {
+		/*
+		 * If the study homepage does not start with a protocol, add it.
+		 */
+		if (! preg_match('/https?:\/\//', $study['homepage'])) {
+			$study['homepage'] = "https://{$study['homepage']}";
+		}
+
+		return $study;
 	}
 
 }
