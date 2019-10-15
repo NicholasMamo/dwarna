@@ -34,3 +34,8 @@
 .biobank-form .error {
 	color: #B2000D;
 }
+
+#biobank-consent-trail {
+	max-height: 30vh;
+	overflow: auto;
+}
