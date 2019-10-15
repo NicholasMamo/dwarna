@@ -6,11 +6,13 @@
 		<input type='hidden' value='<?= $question->answer ?>'>
 		<div class='row mx-3 mb-2'>
 			<div class='col-md-6 text-center'>
-				<input id="biobank-question-<?= $i ?>-yes" class='radio' value='yes' type='radio'>
+				<input id="biobank-question-<?= $i ?>-yes" class='radio'
+					   name="biobank-question-<?= $i ?>" value='yes' type='radio'>
 				<label for="biobank-question-<?= $i ?>-yes">Yes</label>
 			</div>
 			<div class='col-md-6 text-center'>
-				<input id="biobank-question-<?= $i ?>-no" class='radio' value='no' type='radio'>
+				<input id="biobank-question-<?= $i ?>-no" class='radio'
+					   name="biobank-question-<?= $i ?>" value='no' type='radio'>
 				<label for="biobank-question-<?= $i ?>-no">No</label>
 			</div>
 		</div>
