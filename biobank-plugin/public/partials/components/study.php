@@ -14,34 +14,10 @@ if (isset($error) && ! empty($error)) {
 }
 ?>
 
-<div id='biobank-consent-trail'>
-	<ul>
-	<?php
-	foreach ($timeline as $timestamp => $changes) {
-	?>
-		<li><?= DateTime::createFromFormat("U", $timestamp)->format("jS M Y \a\\t H:i") ?>
-			<ul>
-		<?php
-			$changes = (array) $changes;
-			foreach ($changes as $study_id => $consent) {
-		?>
-				<?php if ($study_id == $study->study->study_id) { ?>
-				<li>
-					<?= $consent == 1 ? "Give to" : "Withdraw from" ?> <?= $studies->data->$study_id->study->name ?>
-				</li>
-				<?php } ?>
-		<?php
-			}
-		?>
-			</ul>
-		</li>
-	<?php } ?>
-	</ul>
-</div>
+<input type='hidden' value='<?= $study->study->name ?>' />
 
 <form class="<?= $this->plugin_name ?>-form" id="consent-form-<?= $study->study->study_id ?>"
 	  method="post" name="consent_form" action=<?php echo esc_url(admin_url("admin-post.php")); ?>>
-	<h4><?= $study->study->name ?></h4>
 	<input type="hidden" name="action" value="consent_form">
 	<?php wp_nonce_field("consent_form", "consent_nonce"); ?>
 
@@ -69,3 +45,7 @@ if (isset($error) && ! empty($error)) {
 		</div>
 	</div>
 </form>
+
+<h2>Consent trail</h2>
+
+<?php include_once(dirname(realpath(__FILE__)) . '/consent-trail.php') ?>
