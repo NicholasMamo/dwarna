@@ -203,6 +203,7 @@ class Biobank_Public {
 					/*
 					 * Load the quiz.
 					 */
+					wp_enqueue_script( $this->plugin_name . "-quiz", plugin_dir_url( __FILE__ ) . 'js/quiz.js', array( 'jquery' ), $this->version, false );
 					$contents = file_get_contents(plugin_dir_path(__FILE__) . 'data/quiz.json');
 					$quiz = json_decode($contents);
 
