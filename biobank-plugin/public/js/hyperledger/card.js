@@ -27,6 +27,18 @@ const host = `${window.location.protocol}//${window.location.hostname}`;
  */
 const ajax_base_path = `${host}/wordpress/wp-content/plugins/biobank-plugin/public/ajax/`;
 
+/**
+ * Sleep for a number of milliseconds.
+ *
+ * From: https://stackoverflow.com/a/39914235
+ *
+ * @param {int}			ms - The number of milliseconds to sleep.
+ * @return {Promise}	A promise which does nothing after sleeping.
+ */
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 /*
  * If there is a consent field, load its value.
  */
