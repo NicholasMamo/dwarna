@@ -349,7 +349,7 @@ function ping() {
  *
  * @return {object} The consent promise response.
  */
-function loadConsent(study_id, address) {
+async function loadConsent(study_id, address) {
 	var access_token = decodeURIComponent(getCookie(hyperledger_access_token));
 	access_token = access_token.substring(2, access_token.indexOf("."));
 
