@@ -53,15 +53,16 @@ jQuery('.study-consent').length && jQuery('.study-consent').ready(() => {
 				return address;
 			}).then((address) => {
 				saveCard(card, address).then((response) => {
-					loadConsent(study_id, address).then(function(response) {
+					loadConsent(study_id, address).then(async function(response) {
+						var consent = false;
 						if (response.length) {
-							var consent = response[0];
+							consent = response[0].status;
 
 							/*
 							 * If the research partner can only withdraw consent, hide the quiz and enable the submit button.
 							 * Otherwise, show the quiz and leave the submit button disabled.
 							 */
-							if (consent.status) {
+							if (consent) {
 								jQuery(`#biobank-study-${study_id}`).prop('checked', true);
 								jQuery('form').find('input[type="submit"]')
 											  .attr('disabled', null);
@@ -69,6 +70,35 @@ jQuery('.study-consent').length && jQuery('.study-consent').ready(() => {
 								jQuery('#biobank-quiz').show();
 							}
 						} else {
+							jQuery('#biobank-quiz').show();
+						}
+
+						for (var i = 0; i < 5; i++) {
+							await sleep(1000);
+							new_consent = await loadConsent(study_id, address).then(async function(response) {
+								if (response.length) {
+									return response[0];
+								}
+							});
+							new_consent = new_consent.status;
+
+							if (consent != new_consent) {
+								consent = new_consent;
+								break;
+							}
+						}
+
+						/*
+						 * If the research partner can only withdraw consent, hide the quiz and enable the submit button.
+						 * Otherwise, show the quiz and leave the submit button disabled.
+						 */
+						if (consent) {
+							jQuery(`#biobank-study-${study_id}`).prop('checked', true);
+							jQuery('form').find('input[type="submit"]')
+										  .attr('disabled', null);
+							jQuery('#biobank-quiz').hide();
+						} else {
+							jQuery(`#biobank-study-${study_id}`).prop('checked', false);
 							jQuery('#biobank-quiz').show();
 						}
 					});
