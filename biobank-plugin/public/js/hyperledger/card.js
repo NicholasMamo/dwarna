@@ -54,6 +54,10 @@ jQuery('.study-consent').length && jQuery('.study-consent').ready(() => {
 			}).then((address) => {
 				saveCard(card, address).then((response) => {
 					loadConsent(study_id, address).then(async function(response) {
+						/*
+						 * Get the initial consent from the blockchain.
+						 * Depending on the consent, show or hide the quiz and enable or disable the form.
+						 */
 						var consent = false;
 						if (response.length) {
 							consent = response[0].status;
@@ -73,33 +77,43 @@ jQuery('.study-consent').length && jQuery('.study-consent').ready(() => {
 							jQuery('#biobank-quiz').show();
 						}
 
+						/*
+						 * After loading the consent, keep looking in case the last consent change has not been mined.
+						 */
 						for (var i = 0; i < 5; i++) {
+							/*
+							 * Consent changes are loaded every second.
+							 */
 							await sleep(1000);
 							new_consent = await loadConsent(study_id, address).then(async function(response) {
 								if (response.length) {
-									return response[0];
+									return response[0].status;
 								}
 							});
-							new_consent = new_consent.status;
 
+							/*
+							 * If the consent changed, update the quiz and the form.
+							 * This time, all of the form's components have to be updated.
+							 * In this way, the old setup is overriden.
+							 */
 							if (consent != new_consent) {
 								consent = new_consent;
+
+								/*
+								 * If the research partner can only withdraw consent, hide the quiz and enable the submit button.
+								 * Otherwise, show the quiz and leave the submit button disabled.
+								 */
+								if (consent) {
+									jQuery(`#biobank-study-${study_id}`).prop('checked', true);
+									jQuery('form').find('input[type="submit"]')
+												  .attr('disabled', null);
+									jQuery('#biobank-quiz').hide();
+								} else {
+									jQuery(`#biobank-study-${study_id}`).prop('checked', false);
+									jQuery('#biobank-quiz').show();
+								}
 								break;
 							}
-						}
-
-						/*
-						 * If the research partner can only withdraw consent, hide the quiz and enable the submit button.
-						 * Otherwise, show the quiz and leave the submit button disabled.
-						 */
-						if (consent) {
-							jQuery(`#biobank-study-${study_id}`).prop('checked', true);
-							jQuery('form').find('input[type="submit"]')
-										  .attr('disabled', null);
-							jQuery('#biobank-quiz').hide();
-						} else {
-							jQuery(`#biobank-study-${study_id}`).prop('checked', false);
-							jQuery('#biobank-quiz').show();
 						}
 					});
 				});
