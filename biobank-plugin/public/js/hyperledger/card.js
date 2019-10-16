@@ -68,13 +68,15 @@ jQuery('.study-consent').length && jQuery('.study-consent').ready(() => {
 							} else {
 								jQuery('#biobank-quiz').show();
 							}
+						} else {
+							jQuery('#biobank-quiz').show();
 						}
 					});
 				});
 			});
 		});
 	});
-})
+});
 
 /**
  * Get the user's card for the study.
