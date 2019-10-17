@@ -57,7 +57,7 @@ class Biobank_Activator {
      *
      * @since    1.0.0
 	 * @access   protected
-	 * @var      array		$biobanker_capabilities    The list of pages that are created by the biobank plugin.
+	 * @var      array		$pages    The list of pages that are created by the biobank plugin.
      */
     protected static $pages = array();
 
