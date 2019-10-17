@@ -1,9 +1,9 @@
-$(document).ready(() => {
+jQuery(document).ready(() => {
 	/*
 	 * When the document loads, add click behavior to the recipient removal button.
 	 */
-	$('.recipient .icon-remove').on('click', (event) => {
-		$(event.currentTarget).closest('.recipient').remove();
+	jQuery('.recipient .icon-remove').on('click', (event) => {
+		jQuery(event.currentTarget).closest('.recipient').remove();
 	});
 });
 
@@ -11,11 +11,11 @@ $(document).ready(() => {
  * When the recipient field receives input, check if the email address has ended.
  * If it has, reset the field and add the email address as a new recipient.
  */
-$('#recipient').on('input', (event) => {
+jQuery('#recipient').on('input', (event) => {
 	/*
 	 * Get the value and the last inputted character.
 	 */
-	var value = $('#recipient').val();
+	var value = jQuery('#recipient').val();
 	var last = value.slice(-1);
 
 	/*
@@ -27,7 +27,7 @@ $('#recipient').on('input', (event) => {
 		 * Then, reset the field and add the recipient.
 		 */
 		value = value.slice(0, -1);
-		$('#recipient').val('');
+		jQuery('#recipient').val('');
 
 		/*
 		 * If the assumed email address is not empty, proceed to add the email address as a recipient.
@@ -42,12 +42,12 @@ $('#recipient').on('input', (event) => {
  * When the recipient field loses focus, check whether the input is an email address.
  * If it is, add as a recipient.
  */
-$('#recipient').on('blur', (event) => {
+jQuery('#recipient').on('blur', (event) => {
 	/*
 	 * Get the value.
 	 */
-	var value = $('#recipient').val();
-	var email_pattern = /^[0-9a-z.]+@[0-9a-z]+(\.[a-z]+)+$/gi;
+	var value = jQuery('#recipient').val();
+	var email_pattern = /^[0-9a-z.]+@[0-9a-z]+(\.[a-z]+)+jQuery/gi;
 
 	/*
 	 * If the input is an email address, add the email address as a recipient.
@@ -56,7 +56,7 @@ $('#recipient').on('blur', (event) => {
 		/*
 		 * Then, reset the field and add the recipient.
 		 */
-		$('#recipient').val('');
+		jQuery('#recipient').val('');
 		addRecipient(value);
 	}
 });
@@ -66,18 +66,18 @@ $('#recipient').on('blur', (event) => {
  * The recipient is made of a hidden input value, the email address as text and a removal button.
  */
 function addRecipient(email) {
-	var input = $('<input>').attr('type', 'hidden')
+	var input = jQuery('<input>').attr('type', 'hidden')
 							.attr('name', 'recipient[]')
 							.val(email);
-	var remove = $("<span>").addClass('fa fa-times-circle icon-remove')
+	var remove = jQuery("<span>").addClass('fa fa-times-circle icon-remove')
 							.on('click', (event) => {
-								$(event.currentTarget).closest('.recipient').remove();
+								jQuery(event.currentTarget).closest('.recipient').remove();
 							});
-	var recipient = $('<div>').addClass('recipient d-inline-block')
+	var recipient = jQuery('<div>').addClass('recipient d-inline-block')
 							  .text(email)
 							  .append(input)
 							  .append(remove);
-	$('#recipients').append(recipient);
+	jQuery('#recipients').append(recipient);
 }
 
 /**
@@ -85,7 +85,7 @@ function addRecipient(email) {
  * All this function does is copy the HTML content of the body into the accompanying text field.
  */
 function prepareEmail() {
-	$('#email-body-input').val($('#email-body').html());
+	jQuery('#email-body-input').val(jQuery('#email-body').html());
 }
 
 /*********************
@@ -109,20 +109,20 @@ function validate_email_form() {
 	 *
 	 * Finally, validate required fields.
 	 */
-	$("form.needs-validation").each((index, form) => {
+	jQuery("form.needs-validation").each((index, form) => {
 		/*
 		 * Hide all errors on the form.
 		 */
 		valid = true;
-		$(form).find('.invalid-feedback').addClass('d-none');
+		jQuery(form).find('.invalid-feedback').addClass('d-none');
 
 		valid = validate_required(form) && valid;
 		valid = validate_body_filled(form) && valid;
 
-		var recipients = $(form).find(".recipient");
+		var recipients = jQuery(form).find(".recipient");
 		valid = validate_recipients(recipients) && valid;
 
-		$(form).addClass("was-validated");
+		jQuery(form).addClass("was-validated");
 	});
 
 	return valid;
@@ -145,19 +145,19 @@ function validate_unsubscription_form() {
 	 *
 	 * Finally, validate required fields.
 	 */
-	$("form.needs-validation").each((index, form) => {
+	jQuery("form.needs-validation").each((index, form) => {
 		/*
 		 * Hide all errors on the form.
 		 */
 		valid = true;
-		$(form).find('.invalid-feedback').addClass('d-none');
+		jQuery(form).find('.invalid-feedback').addClass('d-none');
 
 		valid = validate_required(form) && valid;
 
-		var email = $(form).find("input[required][name$='email']");
+		var email = jQuery(form).find("input[required][namejQuery='email']");
 		valid = validate_email(email) && valid;
 
-		$(form).addClass("was-validated");
+		jQuery(form).addClass("was-validated");
 	});
 
 	return valid;
@@ -172,9 +172,9 @@ function validate_unsubscription_form() {
  */
 function validate_required(form) {
 	var valid = true;
-	$(form).find("input[required]").each((index, element) => {
-		if (! $(element).val()) {
-			$(element).parent()
+	jQuery(form).find("input[required]").each((index, element) => {
+		if (! jQuery(element).val()) {
+			jQuery(element).parent()
 					  .find('.invalid-feedback.invalid-feedback-required')
 					  .removeClass('d-none');
 			valid = false;
@@ -193,16 +193,16 @@ function validate_required(form) {
 function validate_body_filled(form) {
 	var valid = true;
 
-	$(form).find('#email-body').each((index, element) => {
+	jQuery(form).find('#email-body').each((index, element) => {
 		/*
 		 * The validation is based on the text itself.
 		 * If there is no visible text, then the body is considered to be empty.
 		 */
-		if (! $(element).text()) {
-			$(element).parent()
+		if (! jQuery(element).text()) {
+			jQuery(element).parent()
 					  .find('.invalid-feedback.invalid-feedback-required')
 					  .removeClass('d-none');
-			$("#email-body-input").addClass('is-invalid');
+			jQuery("#email-body-input").addClass('is-invalid');
 			valid = false;
 		}
 	});
@@ -219,7 +219,7 @@ function validate_body_filled(form) {
  */
 function validate_recipients(recipients) {
 	var valid = true;
-	var email_pattern = /^[0-9a-z.]+@[0-9a-z]+(\.[a-z]+)+$/gi; // the validation pattern
+	var email_pattern = /^[0-9a-z.]+@[0-9a-z]+(\.[a-z]+)+jQuery/gi; // the validation pattern
 
 	/*
 	 * If there are no recipients, there is nothing to validate, so return.
@@ -231,24 +231,24 @@ function validate_recipients(recipients) {
 	/*
 	* Clear any errors on the field.
 	*/
-	var email_field = $(recipients).closest('.form-group')
+	var email_field = jQuery(recipients).closest('.form-group')
 								   .find('input');
-	$(email_field).get(0).setCustomValidity("");
-	$(recipients).each((index, recipient) => {
+	jQuery(email_field).get(0).setCustomValidity("");
+	jQuery(recipients).each((index, recipient) => {
 		/*
 		* If the pattern does not match, show an errrecipient.
 		*/
-		if (! $(recipient).text().trim().match(email_pattern)) {
+		if (! jQuery(recipient).text().trim().match(email_pattern)) {
 			var message = "Invalid email address";
-			$(email_field).get(0).setCustomValidity(message)
-			$(email_field).addClass('is-invalid');
-			$(email_field).parent()
+			jQuery(email_field).get(0).setCustomValidity(message)
+			jQuery(email_field).addClass('is-invalid');
+			jQuery(email_field).parent()
 						  .find(".invalid-feedback.invalid-feedback-format")
 						  .removeClass('d-none');
-			$(recipient).addClass('recipient-invalid');
+			jQuery(recipient).addClass('recipient-invalid');
 			valid = false;
 		} else {
-			$(recipient).removeClass('.recipient-invalid');
+			jQuery(recipient).removeClass('.recipient-invalid');
 		}
 	})
 
