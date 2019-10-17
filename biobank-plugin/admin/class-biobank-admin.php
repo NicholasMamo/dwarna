@@ -59,7 +59,7 @@ class Biobank_Admin {
 		 */
 		$this->menu_pages = array(
 			"top_level" => "biobank_main",
-			"participants" => "biobank_participants",
+			"partners" => "biobank_partners",
 			"researchers" => "biobank_researchers",
 			"studies" => "biobank_studies",
 			"settings" => "biobank_settings",
@@ -95,11 +95,11 @@ class Biobank_Admin {
 
 		add_submenu_page(
 			$top_level_slug,
-			"Manage Participants",
-			"Participants",
+			"Manage Research Partners",
+			"Research Partners",
 			"biobank_create_participant",
-			$this->menu_pages["participants"],
-			array($this, "display_participants_page")
+			$this->menu_pages["partners"],
+			array($this, "display_research_partners_page")
 		);
 
 		add_submenu_page(
@@ -151,12 +151,12 @@ class Biobank_Admin {
 	}
 
 	/**
-	 * Display the participant management page.
+	 * Display the research partner management page.
 	 *
 	 * @since	1.0.0
 	 */
-	public function display_participants_page() {
-		include_once(plugin_dir_path(__FILE__) . "partials/biobank-admin-participants.php");
+	public function display_research_partners_page() {
+		include_once(plugin_dir_path(__FILE__) . "partials/biobank-admin-research-partners.php");
 	}
 
 	/**
@@ -221,7 +221,7 @@ class Biobank_Admin {
 
 		if (in_array("participant", $user->roles)) {
 			/*
-			 * Only encrypt the email address of participants.
+			 * Only encrypt the email address of research partners.
 			 */
 			require(plugin_dir_path(__FILE__) . "../includes/globals.php");
 			$nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
@@ -253,7 +253,7 @@ class Biobank_Admin {
 
 		if (in_array("participant", $user->roles)) {
 			/*
-			 * Only decrypt the email address of participants.
+			 * Only decrypt the email address of research partners.
 			 */
 			require(plugin_dir_path(__FILE__) . "../includes/globals.php");
 			$decoded = base64_decode($user->data->user_email);

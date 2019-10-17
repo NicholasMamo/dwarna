@@ -98,7 +98,7 @@ class ParticipantFormHandler extends UserFormHandler {
 			}
 		}
 		$error = urlencode($error);
-		wp_redirect(admin_url("admin.php") . "?page=biobank_participants&error=$error&redirect=create");
+		wp_redirect(admin_url("admin.php") . "?page=biobank_partners&error=$error&redirect=create");
 		exit;
 	}
 
@@ -162,7 +162,7 @@ class ParticipantFormHandler extends UserFormHandler {
 			}
 		}
 		$error = urlencode($error);
-		wp_redirect(admin_url("admin.php") . "?page=biobank_participants&error=$error&action=update&redirect=update" . (empty($return) ? "" : "&username=$return"));
+		wp_redirect(admin_url("admin.php") . "?page=biobank_partners&error=$error&action=update&redirect=update" . (empty($return) ? "" : "&username=$return"));
 	}
 
 	/**
@@ -226,7 +226,7 @@ class ParticipantFormHandler extends UserFormHandler {
 			}
 		}
 		$error = urlencode($error);
-		wp_redirect(admin_url("admin.php") . "?page=biobank_participants&error=$error&redirect=remove");
+		wp_redirect(admin_url("admin.php") . "?page=biobank_partners&error=$error&redirect=remove");
 
 	}
 

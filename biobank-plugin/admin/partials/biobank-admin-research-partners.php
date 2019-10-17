@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Provide an area where biobankers can create, edit and remove participants
+ * Provide an area where biobankers can create, edit and remove research partners.
  *
  * @link       https://github.com/nmamo
  * @since      1.0.0
@@ -54,9 +54,9 @@ $users_per_page = 6; // the number of users per page
 $search = isset($_GET["search"]) ? $_GET["search"] : ""; // get the search string
 
 /*
- * Fetch existing participants by searching in their usernames.
+ * Fetch existing research partners by searching in their usernames.
  */
-$existing_participants = get_users(array(
+$existing_research_partners = get_users(array(
 	"role" => "participant",
 	"number" => $users_per_page,
 	"paged" => $page,
@@ -88,13 +88,13 @@ $pagination = (paginate_links(array(
 
 <div class="wrap">
     <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-    <p>Add, edit or remove biobank participants</p>
+    <p>Add, edit or remove biobank research partners</p>
 
 	<?php
 		if (isset($_GET["error"]) && !empty($_GET["error"])) {
 		    echo create_error_notice($_GET["error"]);
 		} else if (isset($_GET["error"]) && isset($_GET["redirect"])) {
-		    echo create_success_notice("Participant " . $notices[$_GET["redirect"]]);
+		    echo create_success_notice("Research partner " . $notices[$_GET["redirect"]]);
 		}
 		$_GET["error"] = "";
 	?>
@@ -148,27 +148,27 @@ $pagination = (paginate_links(array(
 			</tr>
 		</table>
 
-        <?php submit_button($button_labels[$action] . " participant", $button_types[$action], "submit", TRUE); ?>
+        <?php submit_button($button_labels[$action] . " research partner", $button_types[$action], "submit", TRUE); ?>
     </form>
 
 	<div class="biobank-side">
 		<table class="wp-list-table widefat">
 			<thead>
-				<th scope="col" id="name" class="manage-column column-name column-primary">Existing Participants</th>
+				<th scope="col" id="name" class="manage-column column-name column-primary">Existing Research Partners</th>
 				<th scope="col" id="name" class="manage-column column-name column-primary"></th>
 				<th scope="col" id="name" class="manage-column column-name column-primary"></th>
 			</thead>
 			<tbody>
-			<?php foreach ($existing_participants as $participant) { ?>
+			<?php foreach ($existing_research_partners as $research_partner) { ?>
 				<tr>
-					<th scope="row"><?= $participant->data->display_name ?></th>
-					<td><a href="<?= $admin_page ?>&action=update&username=<?= $participant->data->user_login ?>">Edit</a></td>
-					<td><a href="<?= $admin_page ?>&action=remove&username=<?= $participant->data->user_login ?>">Remove</a></td>
+					<th scope="row"><?= $research_partner->data->display_name ?></th>
+					<td><a href="<?= $admin_page ?>&action=update&username=<?= $research_partner->data->user_login ?>">Edit</a></td>
+					<td><a href="<?= $admin_page ?>&action=remove&username=<?= $research_partner->data->user_login ?>">Remove</a></td>
 				</tr>
 			<?php } ?>
 			</tbody>
 			<tfoot>
-				<th scope="col" id="name" class="manage-column column-name column-primary">Existing Participants</th>
+				<th scope="col" id="name" class="manage-column column-name column-primary">Existing Research Partners</th>
 				<th scope="col" id="name" class="manage-column column-name column-primary"></th>
 				<th scope="col" id="name" class="manage-column column-name column-primary"></th>
 			</tfoot>
@@ -178,7 +178,7 @@ $pagination = (paginate_links(array(
 			<div class="<?= $this->plugin_name ?>-float-left"><?= strlen($pagination) > 0 ? "Pages: " . $pagination : "" ?></div>
 			<form class="<?= $this->plugin_name ?>-simple-form <?= $this->plugin_name ?>-float-right" id="search_form" method="get" name="search_form" action="<?= admin_url($admin_page) ?>">
 				<input name="page" type="hidden" value="<?= $plugin_page ?>" />
-				<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="search" placeholder="Search existing participants..." type="text" value="" aria-required="true"> <?= submit_button("Search", "secondary", $this->plugin_name . "-search") ?>
+				<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="search" placeholder="Search research partners..." type="text" value="" aria-required="true"> <?= submit_button("Search", "secondary", $this->plugin_name . "-search") ?>
 			</form>
 		</div>
 
