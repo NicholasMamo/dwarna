@@ -14,6 +14,7 @@
  */
 
 require_once(plugin_dir_path(__FILE__) . "../client/form/consent_form_handler.php");
+require_once(plugin_dir_path(__FILE__) . "../client/form/email_form_handler.php");
 require_once(plugin_dir_path(__FILE__) . "../client/form/study_form_handler.php");
 require_once(plugin_dir_path(__FILE__) . "../client/form/user_form_handler.php");
 
@@ -165,6 +166,12 @@ class Biobank {
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'redirect' ); // to prettify URLs - places GET parameters in session
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_plugin_admin_menu' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'options_update' );
+
+		/*
+		 * Email forms
+		 */
+		$email_form_handler = new \client\form\EmailFormHandler();
+		$this->loader->add_action( 'admin_post_create_email', $email_form_handler, 'create_email' );
 
 		/*
 		 * Participant forms
