@@ -323,14 +323,22 @@ class Biobank_Admin {
 		 * class.
 		 */
 
+		 /*
+ 		 * Load the general UI.
+ 		 */
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . "css/biobank-admin.css", array(), $this->version, "all" );
 
 		/*
-		 * Load the custom UI for the biobank studies" page
+		 * Load the custom UI for each page.
 		 */
-		if (get_current_screen()->id == "biobank_page_biobank_studies") {
-			wp_enqueue_style("jquery-ui-css", "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css");
-			wp_enqueue_style($this->plugin_name, plugin_dir_url( __FILE__ ) . "css/biobank-ui.css", array(), $this->version, "all");
+		switch (get_current_screen()->id) {
+			case "biobank_page_biobank_studies":
+				wp_enqueue_style("jquery-ui-css", "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css");
+				wp_enqueue_style($this->plugin_name, plugin_dir_url( __FILE__ ) . "css/biobank-ui.css", array(), $this->version, "all");
+				break;
+			case "biobank_page_biobank_emails":
+				wp_enqueue_style($this->plugin_name . "-email-style", plugin_dir_url( __FILE__ ) . "css/biobank-email.css", array(), $this->version, "all");
+				break;
 		}
 
 	}
