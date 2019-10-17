@@ -114,4 +114,10 @@ $plugin_pages = array(
  */
 $encryptionKey = hex2bin("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 
+/*
+ * The FontAwesome kit to use.
+ * A kit can be downloaded from FontAwesome after registering: https://fontawesome.com/
+ */
+$fontawesome_kit = "https://kit.fontawesome.com/xxxxxxxxxx.js"
+
 ?>
