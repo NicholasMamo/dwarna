@@ -73,7 +73,7 @@ function addRecipient(email) {
 							.on('click', (event) => {
 								jQuery(event.currentTarget).closest('.recipient').remove();
 							});
-	var recipient = jQuery('<div>').addClass('recipient d-inline-block')
+	var recipient = jQuery('<div>').addClass('recipient')
 							  .text(email)
 							  .append(input)
 							  .append(remove);
