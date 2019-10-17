@@ -10,7 +10,7 @@ $biobanker_capabilities = array(
     "biobank_create_participant", "biobank_edit_participant", "biobank_remove_participant",
 	"biobank_create_researcher", "biobank_edit_researcher", "biobank_remove_researcher",
 	"biobank_create_study", "biobank_edit_study", "biobank_remove_study",
-	"biobank_settings",
+	"biobank_send_email", "biobank_settings",
 	"update_consent", "view_consent",
 );
 
