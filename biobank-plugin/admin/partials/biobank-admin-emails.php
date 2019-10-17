@@ -45,7 +45,13 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 				<td>
 					<input autocapitalize="none" autocomplete="off" autocorrect="off"
 						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[recipient]"
-						   type="text" id="<?php echo $this->plugin_name; ?>-recipient" aria-required="true">
+						   type="text" id="recipient" aria-required="true">
+				</td>
+			</tr>
+
+			<tr class="form-field">
+				<th scope="row"></th>
+				<td id='recipients'>
 				</td>
 			</tr>
 
