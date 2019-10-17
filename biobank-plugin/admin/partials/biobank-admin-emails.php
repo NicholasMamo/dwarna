@@ -40,6 +40,25 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 
 			<tr class="form-field">
 				<th scope="row">
+					<label>Recipient Group</label>
+				</th>
+				<td>
+					<div class='radio-input-group'>
+						<input name="<?php echo $this->plugin_name; ?>[recipient-group]"
+							   type="radio" id="recipient-group-none" aria-required="true">
+						<label for="recipient-group-none">No one</label>
+					</div>
+
+					<div class='radio-input-group'>
+						<input name="<?php echo $this->plugin_name; ?>[recipient-group]"
+							   type="radio" id="recipient-group-all" aria-required="true">
+						<label for="recipient-group-all">All research partners</label>
+					</div>
+				</td>
+			</tr>
+
+			<tr class="form-field">
+				<th scope="row">
 					<label for="<?php echo $this->plugin_name; ?>-recipient">Recipient</label>
 				</th>
 				<td>

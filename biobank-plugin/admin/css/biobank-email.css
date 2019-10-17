@@ -2,6 +2,11 @@
 	padding: 0.25em;
 }
 
+.radio-input-group {
+	display: inline-block;
+	padding: 0 0.5em;
+}
+
 .recipient {
 	display: inline-block;
 	padding: 0 0.5em;
