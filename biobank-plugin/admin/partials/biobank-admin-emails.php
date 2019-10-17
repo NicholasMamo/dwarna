@@ -11,10 +11,6 @@
  * @subpackage Biobank/admin/partials
  */
 
-require_once(plugin_dir_path(__FILE__) . "ui/buttons.php");
-require_once(plugin_dir_path(__FILE__) . "ui/fields.php");
-require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
-
 ?>
 
 <div class="wrap">
@@ -33,9 +29,6 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 	<h2 class="title">Email</h2>
 
     <form class="<?= $this->plugin_name ?>-form" id="email_form" method="post" name="email_form" action="options.php">
-		<?php settings_fields($this->plugin_name); ?>
-		<?php do_settings_sections($this->plugin_name); ?>
-
 		<table class="form-table">
 
 			<tr class="form-field">
