@@ -74,6 +74,21 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 				</td>
 			</tr>
 
+			<tr class="form-field">
+				<th scope="row">
+					<label for="<?php echo $this->plugin_name; ?>-body">Body</label>
+				</th>
+				<td>
+				<?php
+					$settings = array(
+						'textarea_rows' => 5,
+						'media_buttons' => true
+					);
+					wp_editor( '', "{$this->plugin_name}-body", $settings);
+				?>
+				</td>
+			</tr>
+
 		</table>
 
         <?php submit_button("Send Email", "primary", "submit", TRUE); ?>
