@@ -23,7 +23,7 @@ if (isset($error) && ! empty($error)) {
 
 	<p class="biobank-description"><?= $study->study->description ?></p>
 	<p class="biobank-homepage"><a href="<?= $study->study->homepage ?>" target="_blank">Read more</a></p>
-	<?php include_once(plugin_dir_path(__FILE__) . '/quiz.php') ?>
+	<?php include_once(plugin_dir_path(__FILE__) . '/components/biobank-study-quiz.php') ?>
 	<div class='row'>
 
 		<div class='col-md-5 text-md-right'>
@@ -51,4 +51,4 @@ if (isset($error) && ! empty($error)) {
 
 <h2>Consent trail</h2>
 
-<?php include_once(plugin_dir_path(__FILE__) . '/consent-trail.php') ?>
+<?php include_once(plugin_dir_path(__FILE__) . '/components/biobank-consent-trail.php') ?>
