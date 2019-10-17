@@ -63,6 +63,7 @@ class Biobank_Admin {
 			"researchers" => "biobank_researchers",
 			"studies" => "biobank_studies",
 			"settings" => "biobank_settings",
+			"emails" => "biobank_emails",
 			"view_studies" => "biobank_view_studies",
 		);
 
@@ -130,6 +131,15 @@ class Biobank_Admin {
 
 		add_submenu_page(
 			$top_level_slug,
+			"Send Email",
+			"Emails",
+			"biobank_send_email",
+			$this->menu_pages["emails"],
+			array($this, "display_emails_page")
+		);
+
+		add_submenu_page(
+			$top_level_slug,
 			"Settings",
 			"Settings",
 			"biobank_settings",
@@ -175,6 +185,15 @@ class Biobank_Admin {
 	 */
 	public function display_view_studies_page() {
 		include_once(plugin_dir_path(__FILE__) . "partials/biobank-admin-study-info.php");
+	}
+
+	/**
+	 * Display the emails page.
+	 *
+	 * @since	1.0.0
+	 */
+	public function display_emails_page() {
+		include_once(plugin_dir_path(__FILE__) . "partials/biobank-admin-emails.php");
 	}
 
 	/**
