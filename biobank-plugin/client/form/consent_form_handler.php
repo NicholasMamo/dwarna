@@ -17,7 +17,7 @@ namespace client\form;
 require_once(plugin_dir_path(__FILE__) . "form_handler.php");
 
 /**
- * The form handler class used to manage study inputs from forms.
+ * The form handler class used to manage consent inputs from forms.
  *
  * This class validates and sanitizes inputs from various forms.
  *
