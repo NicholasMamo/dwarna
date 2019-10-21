@@ -14,6 +14,7 @@ usage() {
 
 email_tests() {
 	echo -e "${HIGHLIGHT}Email Schema Tests${DEFAULT}"
+	python3 -m unittest tests.test_email_schema
 }
 
 study_tests() {
