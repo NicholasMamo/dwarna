@@ -97,7 +97,7 @@ class EmailHandler(PostgreSQLRouteHandler):
 
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
-			response.body = json.dumps(dict(email))
+			response.body = json.dumps({ "data": dict(email) })
 		except (email_exceptions.UnknownRecipientGroupException,
 				email_exceptions.UnsupportedRecipientGroupException) as e:
 			response.status_code = 500

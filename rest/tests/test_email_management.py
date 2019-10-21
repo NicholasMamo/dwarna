@@ -43,10 +43,10 @@ class EmailManagementTest(BiobankTestCase):
 		Assert that the data is correct.
 		"""
 		response_body = response.json()
-		self.assertTrue('id' in response_body)
-		self.assertGreater(response_body['id'], 0)
-		self.assertEqual(subject, response_body['subject'])
-		self.assertEqual(body, response_body['body'])
+		self.assertTrue('id' in response_body['data'])
+		self.assertGreater(response_body['data']['id'], 0)
+		self.assertEqual(subject, response_body['data']['subject'])
+		self.assertEqual(body, response_body['data']['body'])
 
 	@BiobankTestCase.isolated_test
 	def test_create_email_with_recipients(self):
@@ -66,7 +66,7 @@ class EmailManagementTest(BiobankTestCase):
 		}, token)
 		self.assertEqual(response.status_code, 200)
 		response_body = response.json()
-		id = response_body['id']
+		id = response_body['data']['id']
 
 		"""
 		Ensure that the recipients were saved.
@@ -104,7 +104,7 @@ class EmailManagementTest(BiobankTestCase):
 		}, token)
 		self.assertEqual(response.status_code, 200)
 		response_body = response.json()
-		id = response_body['id']
+		id = response_body['data']['id']
 
 		"""
 		Ensure that all recipients were saved.
@@ -203,7 +203,7 @@ class EmailManagementTest(BiobankTestCase):
 		}, token)
 		self.assertEqual(response.status_code, 200)
 		response_body = response.json()
-		id = response_body['id']
+		id = response_body['data']['id']
 
 		"""
 		Assert that the data is correct.
@@ -212,10 +212,10 @@ class EmailManagementTest(BiobankTestCase):
 			"id": id
 		}, token)
 		self.assertEqual(response.status_code, 200)
-		response_body = response.json()['data']
-		self.assertEqual(id, response_body['id'])
-		self.assertEqual(subject, response_body['subject'])
-		self.assertEqual(body, response_body['body'])
+		response_body = response.json()
+		self.assertEqual(id, response_body['data']['id'])
+		self.assertEqual(subject, response_body['data']['subject'])
+		self.assertEqual(body, response_body['data']['body'])
 
 	@BiobankTestCase.isolated_test
 	def test_get_nonexistent_email(self):
@@ -260,7 +260,7 @@ class EmailManagementTest(BiobankTestCase):
 		}, token)
 		self.assertEqual(response.status_code, 200)
 		response_body = response.json()
-		id = response_body['id']
+		id = response_body['data']['id']
 
 		"""
 		Assert that the data is correct.
@@ -283,7 +283,7 @@ class EmailManagementTest(BiobankTestCase):
 		}, token)
 		self.assertEqual(response.status_code, 200)
 		response_body = response.json()
-		id = response_body['id']
+		id = response_body['data']['id']
 
 		"""
 		Assert that the data is correct.
@@ -314,7 +314,7 @@ class EmailManagementTest(BiobankTestCase):
 		}, token)
 		self.assertEqual(response.status_code, 200)
 		response_body = response.json()
-		id = response_body['id']
+		id = response_body['data']['id']
 
 		"""
 		Assert that the data is correct.
@@ -340,7 +340,7 @@ class EmailManagementTest(BiobankTestCase):
 		}, token)
 		self.assertEqual(response.status_code, 200)
 		response_body = response.json()
-		other_id = response_body['id']
+		other_id = response_body['data']['id']
 
 		"""
 		Assert that the data is correct.
@@ -377,7 +377,7 @@ class EmailManagementTest(BiobankTestCase):
 		}, token)
 		self.assertEqual(response.status_code, 200)
 		response_body = response.json()
-		id = response_body['id']
+		id = response_body['data']['id']
 
 		"""
 		Remove the email and ensure that getting it is impossible.
