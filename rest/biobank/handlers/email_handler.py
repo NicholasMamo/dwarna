@@ -74,7 +74,7 @@ class EmailHandler(PostgreSQLRouteHandler):
 				recipient_list = [ self._decrypt(row['email']) for row in rows ]
 				print(recipient_list)
 			else:
-				raise email_exceptions.UnkownRecipientGroupException(recipient_group)
+				raise email_exceptions.UnknownRecipientGroupException(recipient_group)
 
 			"""
 			Add the given list of recipients to the email's recipients.
@@ -98,6 +98,11 @@ class EmailHandler(PostgreSQLRouteHandler):
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
 			response.body = json.dumps(dict(email))
+		except (email_exceptions.UnknownRecipientGroupException,
+				email_exceptions.UnsupportedRecipientGroupException) as e:
+			response.status_code = 500
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ "error": str(e), "exception": e.__class__.__name__ })
 		except Exception as e:
 			response.status_code = 500
 			response.add_header("Content-Type", "application/json")

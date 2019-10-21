@@ -82,7 +82,7 @@ class EmailManagementTest(BiobankTestCase):
 	@BiobankTestCase.isolated_test
 	def test_create_email_with_recipient_group(self):
 		"""
-		Test that creating an email with a recipient group.
+		Test that creating an email with a recipient group works properly.
 		"""
 
 		subject = 'Ġanni żar lil Ċikku il-Ħamrun'
@@ -117,6 +117,44 @@ class EmailManagementTest(BiobankTestCase):
 		response_body = response.json()['data']
 		self.assertTrue(recipients[0] in response_body['recipients'])
 		self.assertTrue('nick@email.com' in response_body['recipients'])
+
+	@BiobankTestCase.isolated_test
+	def test_create_email_with_unsupported_recipient_group(self):
+		"""
+		Test that creating an email with an unsupported recipient group raises an exception.
+		"""
+
+		subject = 'Ġanni żar lil Ċikku il-Ħamrun'
+		body = "Ġie lura mingħand Ċikku tal-Ħamrun b'żarbun ġdid."
+
+		token = self._get_access_token(["create_email"])["access_token"]
+		response = self.send_request("POST", "email", {
+			"subject": subject,
+			"body": body,
+			"recipient_group": 'subscribed'
+		}, token)
+		self.assertEqual(response.status_code, 500)
+		response_body = response.json()
+		self.assertEqual('UnsupportedRecipientGroupException', response_body['exception'])
+
+	@BiobankTestCase.isolated_test
+	def test_create_email_with_unknown_recipient_group(self):
+		"""
+		Test that creating an email with an unknown recipient group raises an exception.
+		"""
+
+		subject = 'Ġanni żar lil Ċikku il-Ħamrun'
+		body = "Ġie lura mingħand Ċikku tal-Ħamrun b'żarbun ġdid."
+
+		token = self._get_access_token(["create_email"])["access_token"]
+		response = self.send_request("POST", "email", {
+			"subject": subject,
+			"body": body,
+			"recipient_group": 'unsubscribed'
+		}, token)
+		self.assertEqual(response.status_code, 500)
+		response_body = response.json()
+		self.assertEqual('UnknownRecipientGroupException', response_body['exception'])
 
 	@BiobankTestCase.isolated_test
 	def test_create_email_without_subject(self):
