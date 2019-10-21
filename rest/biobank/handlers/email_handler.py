@@ -196,6 +196,10 @@ class EmailHandler(PostgreSQLRouteHandler):
 			response.status_code = 500
 			response.add_header("Content-Type", "application/json")
 			response.body = json.dumps({ "error": str(e), "exception": e.__class__.__name__ })
+		except Exception as e:
+			response.status_code = 500
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ "error": "Internal Server Error: %s" % str(e), "exception": e.__class__.__name__ })
 
 		return response
 
