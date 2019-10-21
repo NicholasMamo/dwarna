@@ -32,7 +32,7 @@ class EmailTests(SchemaTestCase):
 		Set up the class to create the schema.
 		"""
 
-		super(StudyTests, self).setUpClass()
+		super(EmailTests, self).setUpClass()
 
 	def isolated_test(test):
 		"""
