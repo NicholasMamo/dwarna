@@ -239,3 +239,50 @@ class EmailTests(SchemaTestCase):
 			id
 		)))
 
+	@isolated_test
+	def test_default_sent_value(self):
+		"""
+		Test that by default, emails are not marked as sent.
+		"""
+
+		"""
+		Create an email and add a recipient to it.
+		"""
+		cursor = self._connection.execute("""
+			INSERT INTO
+				emails(subject, body)
+			VALUES
+				('%s', '%s')
+			RETURNING
+				id
+		""" % (
+			'', ''
+		), with_cursor=True)
+		id = cursor.fetchone()['id']
+		cursor.close()
+
+		self._connection.execute("""
+			INSERT INTO
+				email_recipients(email_id, recipient)
+			VALUES
+				('%d', 'test@email.com')
+		""" % (
+			id
+		))
+
+		"""
+		Assert that the email is not marked as sent.
+		"""
+
+		row = self._connection.select_one("""
+			SELECT
+				sent
+			FROM
+				email_recipients
+			WHERE
+				email_id = %d
+		""" % (
+			id
+		))
+		self.assertFalse(row['sent'])
+
