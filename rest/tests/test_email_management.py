@@ -49,6 +49,37 @@ class EmailManagementTest(BiobankTestCase):
 		self.assertEqual(body, response_body['body'])
 
 	@BiobankTestCase.isolated_test
+	def test_create_email_with_participants(self):
+		"""
+		Test that creating an email with participants.
+		"""
+
+		subject = 'Ġanni żar lil Ċikku il-Ħamrun'
+		body = "Ġie lura mingħand Ċikku tal-Ħamrun b'żarbun ġdid."
+		recipients = [ 'test@email.com' ]
+
+		token = self._get_access_token(["create_email", "view_email"])["access_token"]
+		response = self.send_request("POST", "email", {
+			"subject": subject,
+			"body": body,
+			"recipients": recipients
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		id = response_body['id']
+
+		"""
+		Ensure that the participants were saved.
+		"""
+		response = self.send_request("GET", "email", {
+			"id": id,
+			"recipients": True
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(recipients, response_body['recipients'])
+
+	@BiobankTestCase.isolated_test
 	def test_create_email_without_subject(self):
 		"""
 		Test that creating an email needs a subject to be provided.
@@ -108,3 +139,69 @@ class EmailManagementTest(BiobankTestCase):
 		self.assertEqual(id, response_body['id'])
 		self.assertEqual(subject, response_body['subject'])
 		self.assertEqual(body, response_body['body'])
+
+	@BiobankTestCase.isolated_test
+	def test_get_email_recipients(self):
+		"""
+		Test getting an email and its recipients.
+		The test is simple and looks only to retrieve the basic information, not the recipients.
+		"""
+
+		subject = 'Ġanni żar lil Ċikku il-Ħamrun'
+		body = "Ġie lura mingħand Ċikku tal-Ħamrun b'żarbun ġdid."
+		recipients = [ 'test1@email.com', 'test2@email.com' ]
+
+		token = self._get_access_token(["create_email", "view_email"])["access_token"]
+		response = self.send_request("POST", "email", {
+			"subject": subject,
+			"body": body,
+			"recipients": recipients
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		id = response_body['id']
+
+		"""
+		Assert that the data is correct.
+		"""
+		response = self.send_request("GET", "email", {
+			"id": id,
+			"recipients": True
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(recipients, response_body['recipients'])
+
+		"""
+		Add another email and ensure that the recipients are delivered with the right email.
+		"""
+
+		other_recipients = [ 'test3@email.com', 'test4@email.com' ]
+
+		response = self.send_request("POST", "email", {
+			"subject": subject,
+			"body": body,
+			"recipients": other_recipients
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		other_id = response_body['id']
+
+		"""
+		Assert that the data is correct.
+		"""
+		response = self.send_request("GET", "email", {
+			"id": other_id,
+			"recipients": True
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(other_recipients, response_body['recipients'])
+
+		response = self.send_request("GET", "email", {
+			"id": id,
+			"recipients": True
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(recipients, response_body['recipients'])
