@@ -83,3 +83,28 @@ class EmailTests(SchemaTestCase):
 		""")
 		self.assertEqual(subject, stored_subject['subject'])
 
+	@isolated_test
+	def test_email_body_character_set(self):
+		"""
+		Test that the character set of the email body handles Maltese characters.
+		"""
+
+		body = 'Ġanni żar lil Ċikku il-Ħamrun'
+
+		self._connection.execute("""
+			INSERT INTO
+				emails(subject, body)
+			VALUES
+				('%s', '%s')
+		""" % (
+			'', body
+		))
+
+		stored_body = self._connection.select_one("""
+			SELECT
+				body
+			FROM
+				emails
+			LIMIT 1
+		""")
+		self.assertEqual(body, stored_body['body'])
