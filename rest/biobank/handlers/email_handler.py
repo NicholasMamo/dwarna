@@ -99,4 +99,54 @@ class EmailHandler(PostgreSQLRouteHandler):
 		:rtype: :class:`oauth2.web.Response`
 		"""
 
-		pass
+		id = int(id)
+
+		"""
+		The base SQL string returns every email.
+		The placeholder allows modifications to what is returned.
+		"""
+		sql = """
+			SELECT
+				* %s
+			FROM
+				emails %s
+		"""
+
+		"""
+		Filter the emails if an ID is given.
+		"""
+		if id is not None:
+			sql += """
+				WHERE
+					id = %d
+			""" % id
+
+		"""
+		If the recipients are requested, return them as well.
+		"""
+		if recipients:
+			"""
+			Complete the SELECT and FROM fields.
+			"""
+			sql = sql % (
+				", ARRAY_AGG(recipient)",
+				"""
+				LEFT JOIN
+					email_recipients
+				ON
+					emails.id = email_recipients.email_id
+				"""
+			)
+		else:
+			sql = sql % ('', '')
+
+		"""
+		Return the response.
+		"""
+		emails = self._connector.select(sql)
+
+		response = Response()
+		response.status_code = 200
+		response.add_header("Content-Type", "application/json")
+		response.body = json.dumps({ "data": emails[0] if id is not None else emails })
+		return response
