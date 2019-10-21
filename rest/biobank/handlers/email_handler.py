@@ -115,7 +115,8 @@ class EmailHandler(PostgreSQLRouteHandler):
 		:rtype: :class:`oauth2.web.Response`
 		"""
 
-		id = int(id)
+		if id is not None:
+			id = int(id)
 
 		"""
 		The base SQL string returns every email.
