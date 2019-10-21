@@ -107,7 +107,7 @@ class EmailHandler(PostgreSQLRouteHandler):
 		"""
 		sql = """
 			SELECT
-				* %s
+				emails.* %s
 			FROM
 				emails %s
 		"""
@@ -129,14 +129,16 @@ class EmailHandler(PostgreSQLRouteHandler):
 			Complete the SELECT and FROM fields.
 			"""
 			sql = sql % (
-				", ARRAY_AGG(recipient)",
-				"""
-				LEFT JOIN
+				", ARRAY_AGG(recipient) AS recipients",
+				"""LEFT JOIN
 					email_recipients
 				ON
-					emails.id = email_recipients.email_id
-				"""
+					emails.id = email_recipients.email_id"""
 			)
+			sql += """
+				GROUP BY
+					emails.id
+			"""
 		else:
 			sql = sql % ('', '')
 
