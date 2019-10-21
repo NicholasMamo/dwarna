@@ -121,7 +121,37 @@ class EmailHandler(PostgreSQLRouteHandler):
 		:rtype: :class:`oauth2.web.Response`
 		"""
 
-		pass
+		response = Response()
+
+		try:
+			id = int(id)
+
+			if not self._email_exists(id):
+				raise email_exceptions.EmailDoesNotExistException(id)
+
+			"""
+			Delete the email and associated recipients.
+			"""
+			self._connector.execute("""
+				DELETE FROM
+					emails
+				WHERE
+					id = %d
+			""" % id)
+
+			response.status_code = 200
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ })
+		except (email_exceptions.EmailDoesNotExistException) as e:
+			response.status_code = 500
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ "error": str(e), "exception": e.__class__.__name__ })
+		except Exception as e:
+			response.status_code = 500
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ "error": "Internal Server Error: %s" % str(e), "exception": e.__class__.__name__ })
+
+		return response
 
 	def get_email(self, id=None, recipients=False, *args, **kwargs):
 		"""

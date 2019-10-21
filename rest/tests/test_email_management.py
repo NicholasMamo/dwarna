@@ -360,3 +360,50 @@ class EmailManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 200)
 		response_body = response.json()['data']
 		self.assertEqual(recipients, response_body['recipients'])
+
+	@BiobankTestCase.isolated_test
+	def test_remove_email(self):
+		"""
+		Test that removing an email works as it is supposed to.
+		"""
+
+		subject = 'Ġanni żar lil Ċikku il-Ħamrun'
+		body = "Ġie lura mingħand Ċikku tal-Ħamrun b'żarbun ġdid."
+
+		token = self._get_access_token(["create_email", "view_email", "remove_email"])["access_token"]
+		response = self.send_request("POST", "email", {
+			"subject": subject,
+			"body": body
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		id = response_body['id']
+
+		"""
+		Remove the email and ensure that getting it is impossible.
+		"""
+		response = self.send_request("DELETE", "email", {
+			"id": id
+		}, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("GET", "email", {
+			"id": id
+		}, token)
+		self.assertEqual(response.status_code, 500)
+		response_body = response.json()
+		self.assertEqual('EmailDoesNotExistException', response_body['exception'])
+
+	@BiobankTestCase.isolated_test
+	def test_remove_nonexistent_email(self):
+		"""
+		Test that removing an email that does not exist raises an exception.
+		"""
+
+		token = self._get_access_token(["create_email", "view_email", "remove_email"])["access_token"]
+		response = self.send_request("DELETE", "email", {
+			"id": 1
+		}, token)
+		self.assertEqual(response.status_code, 500)
+		response_body = response.json()
+		self.assertEqual('EmailDoesNotExistException', response_body['exception'])
