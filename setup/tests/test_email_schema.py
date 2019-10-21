@@ -324,3 +324,69 @@ class EmailTests(SchemaTestCase):
 			id, '', ''
 		), 'UniqueViolation')
 
+	@isolated_test
+	def test_duplicate_email_recipient(self):
+		"""
+		Test that a recipient can appear multiple times, but not for the same email.
+		"""
+
+		recipient = 'test@email.com'
+
+		"""
+		Create two emails and add the same recipient to them.
+		"""
+		cursor = self._connection.execute("""
+			INSERT INTO
+				emails(subject, body)
+			VALUES
+				('%s', '%s'),
+				('%s', '%s')
+			RETURNING
+				id
+		""" % (
+			'', '', '', ''
+		), with_cursor=True)
+		rows = cursor.fetchall()
+		ids = [ row['id'] for row in rows ]
+		cursor.close()
+
+		self._connection.execute("""
+			INSERT INTO
+				email_recipients(email_id, recipient)
+			VALUES
+				('%d', '%s'),
+				('%d', '%s')
+		""" % (
+			ids[0], recipient, ids[1], recipient
+		))
+
+		"""
+		Assert that the insertion worked.
+		"""
+
+		rows = self._connection.select("""
+			SELECT
+				email_id
+			FROM
+				email_recipients
+			WHERE
+				recipient = '%s'
+			ORDER BY
+				email_id ASC
+		""" % (
+			recipient
+		))
+		self.assertEqual(ids, [ row['email_id'] for row in rows ])
+
+		"""
+		Add the same recipient to the first email and assert that it fails.
+		"""
+
+		self.assert_fail_sql("""
+			INSERT INTO
+				email_recipients(email_id, recipient)
+			VALUES
+				('%d', '%s')
+		""" % (
+			ids[0], recipient
+		), 'UniqueViolation')
