@@ -60,11 +60,30 @@ class EmailHandler(PostgreSQLRouteHandler):
 			email = cursor.fetchone()
 			cursor.close()
 
+			if recipient_group is None or recipient_group.lower() == "none":
+				recipient_list = []
+			elif recipient_group.lower() == "subscribed":
+				raise email_exceptions.UnsupportedRecipientGroupException(recipient_group)
+			elif recipient_group.lower() == "all":
+				rows = self._connector.select("""
+					SELECT
+						email
+					FROM
+						participants
+				""")
+				recipient_list = [ self._decrypt(row['email']) for row in rows ]
+				print(recipient_list)
+			else:
+				raise email_exceptions.UnkownRecipientGroupException(recipient_group)
+
 			"""
-			Add the recipients to the email.
+			Add the given list of recipients to the email's recipients.
 			"""
 			if (recipients is not None and
 				type(recipients) is list):
+				recipient_list += recipients
+
+			if len(recipient_list):
 				self._connector.bulk_execute(
 					"""
 					INSERT INTO
@@ -72,7 +91,7 @@ class EmailHandler(PostgreSQLRouteHandler):
 					VALUES
 						%s
 					""",
-					[ (email['id'], recipient) for recipient in recipients ],
+					[ (email['id'], recipient) for recipient in recipient_list ],
 					"(%s, %s)"
 				)
 

@@ -49,9 +49,9 @@ class EmailManagementTest(BiobankTestCase):
 		self.assertEqual(body, response_body['body'])
 
 	@BiobankTestCase.isolated_test
-	def test_create_email_with_participants(self):
+	def test_create_email_with_recipients(self):
 		"""
-		Test that creating an email with participants.
+		Test that creating an email with recipients works properly.
 		"""
 
 		subject = 'Ġanni żar lil Ċikku il-Ħamrun'
@@ -69,7 +69,7 @@ class EmailManagementTest(BiobankTestCase):
 		id = response_body['id']
 
 		"""
-		Ensure that the participants were saved.
+		Ensure that the recipients were saved.
 		"""
 		response = self.send_request("GET", "email", {
 			"id": id,
@@ -78,6 +78,45 @@ class EmailManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 200)
 		response_body = response.json()['data']
 		self.assertEqual(recipients, response_body['recipients'])
+
+	@BiobankTestCase.isolated_test
+	def test_create_email_with_recipient_group(self):
+		"""
+		Test that creating an email with a recipient group.
+		"""
+
+		subject = 'Ġanni żar lil Ċikku il-Ħamrun'
+		body = "Ġie lura mingħand Ċikku tal-Ħamrun b'żarbun ġdid."
+		recipients = [ 'test@email.com' ]
+
+		"""
+		Create a participant.
+		"""
+		token = self._get_access_token(["create_participant", "create_email", "view_email"])["access_token"]
+		response = self.send_request("POST", "participant", { "username": "nick", "email": 'nick@email.com' }, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("POST", "email", {
+			"subject": subject,
+			"body": body,
+			'recipients': recipients,
+			"recipient_group": 'all'
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		id = response_body['id']
+
+		"""
+		Ensure that all recipients were saved.
+		"""
+		response = self.send_request("GET", "email", {
+			"id": id,
+			"recipients": True
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertTrue(recipients[0] in response_body['recipients'])
+		self.assertTrue('nick@email.com' in response_body['recipients'])
 
 	@BiobankTestCase.isolated_test
 	def test_create_email_without_subject(self):
