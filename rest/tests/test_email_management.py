@@ -26,7 +26,7 @@ class EmailManagementTest(BiobankTestCase):
 	def test_create_email(self):
 		"""
 		Test that creating an email works as it is supposed to.
-		This test includes sanitization
+		This test includes sanitization.
 		"""
 
 		subject = 'Ġanni żar lil Ċikku il-Ħamrun'
@@ -47,3 +47,34 @@ class EmailManagementTest(BiobankTestCase):
 		self.assertGreater(response_body['id'], 0)
 		self.assertEqual(subject, response_body['subject'])
 		self.assertEqual(body, response_body['body'])
+
+	@BiobankTestCase.isolated_test
+	def test_create_email_without_subject(self):
+		"""
+		Test that creating an email needs a subject to be provided.
+		"""
+
+		subject = 'Ġanni żar lil Ċikku il-Ħamrun'
+		body = "Ġie lura mingħand Ċikku tal-Ħamrun b'żarbun ġdid."
+
+		token = self._get_access_token(["create_email"])["access_token"]
+		response = self.send_request("POST", "email", {
+			"body": body
+		}, token)
+		self.assertEqual(response.status_code, 400)
+
+	@BiobankTestCase.isolated_test
+	def test_create_email_without_body(self):
+		"""
+		Test that creating an email needs a body to be provided.
+		"""
+
+		subject = 'Ġanni żar lil Ċikku il-Ħamrun'
+		body = "Ġie lura mingħand Ċikku tal-Ħamrun b'żarbun ġdid."
+
+		token = self._get_access_token(["create_email"])["access_token"]
+		response = self.send_request("POST", "email", {
+			"subject": subject
+		}, token)
+		self.assertEqual(response.status_code, 400)
+
