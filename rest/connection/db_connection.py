@@ -185,7 +185,7 @@ class PostgreSQLConnection(Connection):
 	def execute(self, batch, with_cursor=False):
 		"""
 		Execute the given transactions. If one fails, roll back all the changes.
-		This function does not return anything, but it may throw exceptions.
+		By default, this function does not return anything, but it may throw exceptions.
 		When something does go awry, the connection establishes a new connection.
 
 		If the execution is supposed to return results, then the `with_cursor` parameter returns the used cursor.
