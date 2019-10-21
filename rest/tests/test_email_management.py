@@ -1,5 +1,5 @@
 """
-Test the user management functionality in the backend.
+Test the email management functionality in the backend.
 """
 
 import json

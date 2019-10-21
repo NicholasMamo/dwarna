@@ -69,9 +69,9 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual(body["exception"], user_exceptions.UserExistsException.__name__)
 
 	@BiobankTestCase.isolated_test
-	def test_biobanker_sanitation(self):
+	def test_biobanker_sanitization(self):
 		"""
-		Test that the biobanker sanitation works.
+		Test that the biobanker sanitization works.
 		"""
 
 		token = self._get_access_token(["create_biobanker"])["access_token"]
@@ -203,7 +203,7 @@ class UserManagementTest(BiobankTestCase):
 		self.assertTrue(any(user["user_id"] == "tamara" for user in body["data"]))
 
 	@BiobankTestCase.isolated_test
-	def test_biobanker_removal_sanitation(self):
+	def test_biobanker_removal_sanitization(self):
 		"""
 		Test that the biobanker removal sanitizes the input.
 		"""
@@ -287,9 +287,9 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual(body["exception"], user_exceptions.UserExistsException.__name__)
 
 	@BiobankTestCase.isolated_test
-	def test_participant_sanitation(self):
+	def test_participant_sanitization(self):
 		"""
-		Test that the participant sanitation works.
+		Test that the participant sanitization works.
 		The tests include checks that the encryption does not change the value.
 		"""
 
@@ -482,9 +482,9 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual(body["exception"], user_exceptions.UserExistsException.__name__)
 
 	@BiobankTestCase.isolated_test
-	def test_researcher_sanitation(self):
+	def test_researcher_sanitization(self):
 		"""
-		Test that the researcher sanitation works.
+		Test that the researcher sanitization works.
 		"""
 
 		token = self._get_access_token(["create_researcher"])["access_token"]
