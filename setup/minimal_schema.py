@@ -48,7 +48,9 @@ def create_schema(database):
 							role				user_role
 		);""")
 
-		# explain the columns
+		"""
+		Add comments to describe the columns.
+		"""
 		connection.execute("""COMMENT ON COLUMN users.user_id IS 'The user''s unique identifier - a username or a pseudo-ID';""")
 		connection.execute("""COMMENT ON COLUMN users.role IS 'The user''s role';""")
 
@@ -69,7 +71,9 @@ def create_schema(database):
 							user_id				VARCHAR(64)		UNIQUE		REFERENCES users(user_id)		ON DELETE CASCADE
 		);""")
 
-		# explain the columns
+		"""
+		Add comments to describe the columns.
+		"""
 		connection.execute("""COMMENT ON COLUMN researchers.user_id IS 'The researcher''s unique identifier, links to the ''users'' table''s primary key';""")
 
 		# drop the participants table if it exists
@@ -84,7 +88,9 @@ def create_schema(database):
 							email				VARCHAR(256)
 		);""")
 
-		# explain the columns
+		"""
+		Add comments to describe the columns.
+		"""
 		connection.execute("""COMMENT ON COLUMN participants.user_id IS 'The participant''s unique identifier, links to the ''users'' table''s primary key';""")
 		connection.execute("""COMMENT ON COLUMN participants.name IS 'The participant''s name';""")
 		connection.execute("""COMMENT ON COLUMN participants.user_id IS 'The participant''s email address';""")
@@ -102,7 +108,9 @@ def create_schema(database):
 							cred_card			BYTEA
 		);""")
 
-		# explain the columns
+		"""
+		Add comments to describe the columns.
+		"""
 		connection.execute("""COMMENT ON COLUMN participant_identities.participant_id IS 'The participant''s unique identifier, links to the ''participants'' table''s primary key';""")
 		connection.execute("""COMMENT ON COLUMN participant_identities.address IS 'The participant''s address on the Hyperledger Fabric blockchain';""")
 		connection.execute("""COMMENT ON COLUMN participant_identities.temp_card IS 'The participant''s Hyperledger card, created when their identity is issued; they need to import it into the wallet in order to get a credential-ready version';""")
@@ -118,7 +126,9 @@ def create_schema(database):
 							user_id				VARCHAR(64)		UNIQUE		REFERENCES users(user_id)		ON DELETE CASCADE
 		);""")
 
-		# explain the columns
+		"""
+		Add comments to describe the columns.
+		"""
 		connection.execute("""COMMENT ON COLUMN biobankers.user_id IS 'The biobanker''s unique identifier, links to the ''users'' table''s primary key';""")
 
 		"""
@@ -148,7 +158,9 @@ def create_schema(database):
 							researcher_id		VARCHAR(64)		REFERENCES researchers(user_id) ON DELETE CASCADE
 		);""")
 
-		# explain the columns
+		"""
+		Add comments to describe the columns.
+		"""
 		connection.execute("""COMMENT ON COLUMN studies_researchers.study_id IS 'The study''s unique identifier, links to the ''studies'' table''s primary key';""")
 		connection.execute("""COMMENT ON COLUMN studies_researchers.researcher_id IS 'The researcher''s unique identifier, links to the ''researchers'' table''s primary key';""")
 
