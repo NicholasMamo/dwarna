@@ -141,6 +141,20 @@ class EmailManagementTest(BiobankTestCase):
 		self.assertEqual(body, response_body['body'])
 
 	@BiobankTestCase.isolated_test
+	def test_get_nonexistent_email(self):
+		"""
+		Test getting an email that does not exist.
+		"""
+
+		token = self._get_access_token(["view_email"])["access_token"]
+		response = self.send_request("GET", "email", {
+			"id": 1
+		}, token)
+		self.assertEqual(response.status_code, 500)
+		response_body = response.json()
+		self.assertEqual('EmailDoesNotExistException', response_body['exception'])
+
+	@BiobankTestCase.isolated_test
 	def test_get_all_emails(self):
 		"""
 		Test getting all emails.

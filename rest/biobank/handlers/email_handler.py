@@ -7,7 +7,7 @@ import traceback
 
 from oauth2.web import Response
 
-from .exceptions import general_exceptions, study_exceptions, user_exceptions
+from .exceptions import email_exceptions
 from .handler import PostgreSQLRouteHandler
 
 class EmailHandler(PostgreSQLRouteHandler):
@@ -115,57 +115,91 @@ class EmailHandler(PostgreSQLRouteHandler):
 		:rtype: :class:`oauth2.web.Response`
 		"""
 
-		if id is not None:
-			id = int(id)
-
-		"""
-		The base SQL string returns every email.
-		The placeholder allows modifications to what is returned.
-		"""
-		sql = """
-			SELECT
-				emails.* %s
-			FROM
-				emails %s
-		"""
-
-		"""
-		Filter the emails if an ID is given.
-		"""
-		if id is not None:
-			sql += """
-				WHERE
-					id = %d
-			""" % id
-
-		"""
-		If the recipients are requested, return them as well.
-		"""
-		if recipients:
-			"""
-			Complete the SELECT and FROM fields.
-			"""
-			sql = sql % (
-				", ARRAY_AGG(recipient) AS recipients",
-				"""LEFT JOIN
-					email_recipients
-				ON
-					emails.id = email_recipients.email_id"""
-			)
-			sql += """
-				GROUP BY
-					emails.id
-			"""
-		else:
-			sql = sql % ('', '')
-
-		"""
-		Return the response.
-		"""
-		emails = self._connector.select(sql)
-
 		response = Response()
-		response.status_code = 200
-		response.add_header("Content-Type", "application/json")
-		response.body = json.dumps({ "data": emails[0] if id is not None else emails })
+
+		try:
+			if id is not None:
+				id = int(id)
+
+				if not self._email_exists(id):
+					raise email_exceptions.EmailDoesNotExistException(id)
+
+			"""
+			The base SQL string returns every email.
+			The placeholder allows modifications to what is returned.
+			"""
+			sql = """
+				SELECT
+					emails.* %s
+				FROM
+					emails %s
+			"""
+
+			"""
+			Filter the emails if an ID is given.
+			"""
+			if id is not None:
+				sql += """
+					WHERE
+						id = %d
+				""" % id
+
+			"""
+			If the recipients are requested, return them as well.
+			"""
+			if recipients:
+				"""
+				Complete the SELECT and FROM fields.
+				"""
+				sql = sql % (
+					", ARRAY_AGG(recipient) AS recipients",
+					"""LEFT JOIN
+						email_recipients
+					ON
+						emails.id = email_recipients.email_id"""
+				)
+				sql += """
+					GROUP BY
+						emails.id
+				"""
+			else:
+				sql = sql % ('', '')
+
+			"""
+			Return the response.
+			"""
+			emails = self._connector.select(sql)
+
+			response.status_code = 200
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ "data": emails[0] if id is not None else emails })
+		except (email_exceptions.EmailDoesNotExistException) as e:
+			response.status_code = 500
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ "error": str(e), "exception": e.__class__.__name__ })
+
 		return response
+
+	"""
+	Supporting functions.
+	"""
+
+	def _email_exists(self, id):
+		"""
+		Check whether the email with the given ID exists.
+
+		:param id: The email's unique id.
+		:type id: str
+
+		:return: A boolean indicating whether the email with the given ID exists.
+		:rtype: bool
+		"""
+
+		return self._connector.exists("""
+			SELECT
+				*
+			FROM
+				emails
+			WHERE
+				id = %d
+		""" % id)
