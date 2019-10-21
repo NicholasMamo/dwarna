@@ -73,3 +73,4 @@ def clear():
 	connection.execute("DELETE FROM participant_identities")
 	connection.execute("DELETE FROM users")
 	connection.execute("DELETE FROM studies")
+	connection.execute("DELETE FROM emails")
