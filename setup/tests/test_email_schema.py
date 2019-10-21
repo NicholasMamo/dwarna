@@ -286,3 +286,41 @@ class EmailTests(SchemaTestCase):
 		))
 		self.assertFalse(row['sent'])
 
+	@isolated_test
+	def test_duplicate_emails(self):
+		"""
+		Test that adding emails with duplicate IDs does not work.
+		"""
+
+		"""
+		Create an email and add a recipient to it.
+		"""
+		cursor = self._connection.execute("""
+			INSERT INTO
+				emails(subject, body)
+			VALUES
+				('%s', '%s')
+			RETURNING
+				id
+		""" % (
+			'', ''
+		), with_cursor=True)
+		id = cursor.fetchone()['id']
+		cursor.close()
+
+		"""
+		Assert that trying to create a new email with the same ID fails.
+		"""
+
+		"""
+		Create an email and add a recipient to it.
+		"""
+		self.assert_fail_sql("""
+			INSERT INTO
+				emails(id, subject, body)
+			VALUES
+				(%d, '%s', '%s')
+		""" % (
+			id, '', ''
+		), 'UniqueViolation')
+
