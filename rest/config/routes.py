@@ -1,6 +1,7 @@
 from biobank.handlers.handler import PostgreSQLRouteHandler
-from biobank.handlers.consent_handler import ConsentHandler
 from biobank.handlers.biobanker_handler import BiobankerHandler
+from biobank.handlers.consent_handler import ConsentHandler
+from biobank.handlers.email_handler import EmailHandler
 from biobank.handlers.participant_handler import ParticipantHandler
 from biobank.handlers.researcher_handler import ResearcherHandler
 from biobank.handlers.study_handler import StudyHandler
@@ -50,6 +51,12 @@ blockchain_handler_class = HyperledgerAPI
 :vartype blockchain_handler_class: :class:`biobank.blockchain.api.BlockchainAPI`
 """
 
+email_handler_class = EmailHandler
+"""
+:var email_handler_class: The handler that receives route parameters and services dynamic email-related requests.
+:vartype email_handler_class: :class:`biobank.handler.RouteHandler`
+"""
+
 handler_connector = PostgreSQLConnection
 """
 :var handler_connector: The connector used by the handler to connect to the data storage solution.
@@ -58,7 +65,7 @@ handler_connector = PostgreSQLConnection
 
 handler_classes = [ generic_handler_class,
 	biobanker_handler_class, participant_handler_class, researcher_handler_class,
-	study_handler_class, consent_handler_class ]
+	study_handler_class, consent_handler_class, email_handler_class ]
 """
 :var handler_classes: The list of handler classes that are in use.
 :vartype handler_classes: list
@@ -331,4 +338,30 @@ routes.update({
 			"parameters": ["address", "card"],
 		}
 	},
+})
+
+"""
+Routes related to email management.
+"""
+routes.update({
+	"/email": {
+		"GET": {
+			"handler": email_handler_class,
+			"function": email_handler_class.get_email,
+			"scopes": ["view_email"],
+			"parameters": [],
+		},
+		"POST": {
+			"handler": email_handler_class,
+			"function": email_handler_class.create_email,
+			"scopes": ["create_email"],
+			"parameters": ["subject", "body"],
+		},
+		"DELETE": {
+			"handler": email_handler_class,
+			"function": email_handler_class.remove_email,
+			"scopes": ["remove_email"],
+			"parameters": ["id"],
+		},
+	}
 })
