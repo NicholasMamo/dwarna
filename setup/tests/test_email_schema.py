@@ -108,3 +108,69 @@ class EmailTests(SchemaTestCase):
 			LIMIT 1
 		""")
 		self.assertEqual(body, stored_body['body'])
+
+	@isolated_test
+	def test_email_recipients_cascade_on_deletion(self):
+		"""
+		Test that removing an email also removes its recipients.
+		"""
+
+		"""
+		Create an email and add a recipient to it.
+		"""
+		cursor = self._connection.execute("""
+			INSERT INTO
+				emails(subject, body)
+			VALUES
+				('%s', '%s')
+			RETURNING
+				id
+		""" % (
+			'', ''
+		), with_cursor=True)
+		id = cursor.fetchone()['id']
+		cursor.close()
+
+		self._connection.execute("""
+			INSERT INTO
+				email_recipients(email_id, recipient)
+			VALUES
+				('%d', 'test@email.com')
+		""" % (
+			id
+		))
+
+		"""
+		Delete the email and ensure that the recipient has also been removed.
+		"""
+		self._connection.execute("""
+			DELETE FROM
+				emails
+			WHERE
+				id = %d
+		""" % (
+			id
+		))
+
+		self.assertFalse(self._connection.exists("""
+			SELECT
+				*
+			FROM
+				emails
+			WHERE
+				id = %d
+		""" % (
+			id
+		)))
+
+		self.assertFalse(self._connection.exists("""
+			SELECT
+				*
+			FROM
+				email_recipients
+			WHERE
+				email_id = %d
+		""" % (
+			id
+		)))
+
