@@ -60,6 +60,22 @@ class EmailHandler(PostgreSQLRouteHandler):
 			email = cursor.fetchone()
 			cursor.close()
 
+			"""
+			Add the recipients to the email.
+			"""
+			if (recipients is not None and
+				type(recipients) is list):
+				self._connector.bulk_execute(
+					"""
+					INSERT INTO
+						email_recipients (email_id, recipient)
+					VALUES
+						%s
+					""",
+					[ (email['id'], recipient) for recipient in recipients ],
+					"(%s, %s)"
+				)
+
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
 			response.body = json.dumps(dict(email))
