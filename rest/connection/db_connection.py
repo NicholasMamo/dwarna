@@ -182,6 +182,41 @@ class PostgreSQLConnection(Connection):
 		cursor.close()
 		return rows
 
+	def bulk_execute(self, sql, tuples, placeholder):
+		"""
+		Execute the given transaction in batch.
+		If one execution fails, roll back all the changes.
+		This function does not return anything, but it may throw exceptions.
+		When something does go awry, the connection establishes a new connection.
+
+		:param sql: The SQL command to execute.
+			The placeholder in this command is replaced by the placeholder string.
+			In turn, the placeholder string is replaced by values.
+		:type sql: str
+		:param tuples: The tuples with values that will be placed into the bulk SQL code.
+			These will replace placeholders.
+			The number of placeholders must be equal to each tuple's length.
+		:type tuples: list of tuple
+		:param placeholder: The placeholder pattern that will be replaced by the tuples.
+			The number of placeholders must be equal to each tuple's length.
+		:type placeholder: str
+
+		:raises: :class:`Exception`: Any exception that is caught is rethrown.
+		"""
+
+		try:
+			cursor = self.cursor()
+			psycopg2.extras.execute_values(cursor, sql, tuples, placeholder)
+			self._con.commit()
+			cursor.close()
+		except Exception as e:
+			"""
+			If the transactions failed for some reason, reconnect to the database and raise the exception again.
+			In this way, the calling function knows about the failure.
+			"""
+			self.reconnect()
+			raise e
+
 	def execute(self, batch, with_cursor=False):
 		"""
 		Execute the given transactions. If one fails, roll back all the changes.
