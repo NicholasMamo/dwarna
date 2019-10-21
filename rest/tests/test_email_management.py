@@ -22,4 +22,28 @@ class EmailManagementTest(BiobankTestCase):
 	Test the backend's email management functionality.
 	"""
 
-	pass
+	@BiobankTestCase.isolated_test
+	def test_create_email(self):
+		"""
+		Test that creating an email works as it is supposed to.
+		This test includes sanitization
+		"""
+
+		subject = 'Ġanni żar lil Ċikku il-Ħamrun'
+		body = "Ġie lura mingħand Ċikku tal-Ħamrun b'żarbun ġdid."
+
+		token = self._get_access_token(["create_email"])["access_token"]
+		response = self.send_request("POST", "email", {
+			"subject": subject,
+			"body": body
+		}, token)
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		Assert that the data is correct.
+		"""
+		response_body = response.json()
+		self.assertTrue('id' in response_body)
+		self.assertGreater(response_body['id'], 0)
+		self.assertEqual(subject, response_body['subject'])
+		self.assertEqual(body, response_body['body'])

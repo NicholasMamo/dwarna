@@ -38,10 +38,37 @@ class EmailHandler(PostgreSQLRouteHandler):
 		:type recipient_group: None or str
 
 		:return: A response with any errors that may arise.
+			The response contains the new email's attributes, including its ID.
 		:rtype: :class:`oauth2.web.Response`
 		"""
 
-		pass
+		response = Response()
+
+		try:
+			subject = self._sanitize(subject)
+			body = self._sanitize(body)
+
+			cursor = self._connector.execute(
+				"""
+				INSERT INTO
+					emails (subject, body)
+				VALUES
+					('%s', '%s')
+				RETURNING
+					id, subject, body
+				""" % (subject, body), with_cursor=True)
+			email = cursor.fetchone()
+			cursor.close()
+
+			response.status_code = 200
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps(dict(email))
+		except Exception as e:
+			response.status_code = 500
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ "error": "Internal Server Error: %s" % str(e), "exception": e.__class__.__name__ })
+
+		return response
 
 	def remove_email(self, id, *args, **kwargs):
 		"""
