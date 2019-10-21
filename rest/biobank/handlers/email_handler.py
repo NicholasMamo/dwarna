@@ -8,9 +8,9 @@ import traceback
 from oauth2.web import Response
 
 from .exceptions import general_exceptions, study_exceptions, user_exceptions
-from .handler import RouteHandler
+from .handler import PostgreSQLRouteHandler
 
-class EmailHandler(RouteHandler):
+class EmailHandler(PostgreSQLRouteHandler):
 	"""
 	The email handler class receives and handles requests that are related to emails and their recipients.
 	"""
