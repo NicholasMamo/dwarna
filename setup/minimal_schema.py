@@ -165,6 +165,50 @@ def create_schema(database):
 		connection.execute("""COMMENT ON COLUMN studies_researchers.researcher_id IS 'The researcher''s unique identifier, links to the ''researchers'' table''s primary key';""")
 
 		"""
+		Emails.
+		"""
+
+		"""
+		Create the email relation.
+		An email is essentialy made up of a subject and a body.
+		The recipients are stored in a separate relation.
+		"""
+
+		connection.execute("""DROP TABLE IF EXISTS emails;""")
+		connection.execute("""CREATE TABLE emails (
+							id				SERIAL			PRIMARY KEY,
+							subject			VARCHAR(1024)	NOT NULL,
+							body			TEXT			NOT NULL
+		);""")
+
+		"""
+		Add comments to describe the columns.
+		"""
+		connection.execute("""COMMENT ON COLUMN emails.id IS 'The email''s unique ID and primary key';""")
+		connection.execute("""COMMENT ON COLUMN emails.subject IS 'The subject of the email';""")
+		connection.execute("""COMMENT ON COLUMN emails.body IS 'The body of the email';""")
+
+		"""
+		Create the email recipient relation.
+		This relation links emails with their recipients.
+		It also stores a boolean flag that marks whether the email has been sent or not.
+		The primary key is a compound key made up of the email ID and the recipient.
+		This structure prevents double-sending emails to the same recipient.
+		"""
+
+		connection.execute("""DROP TABLE IF EXISTS email_recipients;""")
+		connection.execute("""CREATE TABLE email_recipients (
+							email_id		INTEGER			REFERENCEs emails(id) ON DELETE CASCADE,
+							recipient		VARCHAR(1024)	NOT NULL,
+							sent			BOOLEAN			DEFAULT FALSE,
+							PRIMARY KEY(email_id, recipient)
+		);""")
+
+		connection.execute("""COMMENT ON COLUMN email_recipients.email_id IS 'The email''s unique identifier, links to the ''emails'' table''s primary key';""")
+		connection.execute("""COMMENT ON COLUMN email_recipients.recipient IS 'The email address of a recipient who is meant to receive the email';""")
+		connection.execute("""COMMENT ON COLUMN email_recipients.sent IS 'A boolean indicating whether the email has been sent to the recipient';""")
+
+		"""
 		When a user is removed from the users table, the deletion effect cascades.
 		However, the inverse is not true.
 		This trigger removes a user from the users table when the user is removed from a more specific table (participants, biobankers, researchers).
