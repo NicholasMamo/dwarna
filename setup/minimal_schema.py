@@ -174,7 +174,7 @@ def create_schema(database):
 		The recipients are stored in a separate relation.
 		"""
 
-		connection.execute("""DROP TABLE IF EXISTS emails;""")
+		connection.execute("""DROP TABLE IF EXISTS emails CASCADE;""")
 		connection.execute("""CREATE TABLE emails (
 							id				SERIAL			PRIMARY KEY,
 							subject			VARCHAR(1024)	NOT NULL,
