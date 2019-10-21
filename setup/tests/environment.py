@@ -48,6 +48,7 @@ def clear():
 
 	connection.execute("DELETE FROM users")
 	connection.execute("DELETE FROM studies")
+	connection.execute("DELETE FROM emails")
 
 if __name__ == "__main__":
 	create_testing_environment()
