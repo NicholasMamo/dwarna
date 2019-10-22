@@ -75,7 +75,7 @@ jQuery('#biobank-recipient').on('blur', (event) => {
  */
 function addRecipient(email) {
 	var input = jQuery('<input>').attr('type', 'hidden')
-							.attr('name', 'recipient[]')
+							.attr('name', 'biobank[recipient][]')
 							.val(email);
 	var remove = jQuery("<span>").addClass('fa fa-times-circle icon-remove')
 							.on('click', (event) => {
