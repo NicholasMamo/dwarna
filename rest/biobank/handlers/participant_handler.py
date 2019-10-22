@@ -138,8 +138,7 @@ class ParticipantHandler(UserHandler):
 
 			if len(update_strings):
 				sql = sql % (', '.join(update_strings), username)
-
-			self._connector.execute(sql)
+				self._connector.execute(sql)
 
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")

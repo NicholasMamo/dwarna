@@ -357,6 +357,93 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual("nicholas.mamo@um.edu.mt", data["email"])
 
 	@BiobankTestCase.isolated_test
+	def test_update_participant_except_name(self):
+		"""
+		Test updating a participant normally without changing the name.
+		"""
+
+		token = self._get_access_token(["create_participant", "view_participant", "update_participant"])["access_token"]
+		response = self.send_request("POST", "participant", { "username": "nick", "name": "Nicholas", "email": "nicholas.mamo@um.edu.mt" }, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("GET", "participant", {'username': 'nick'}, token)
+		data = response.json()["data"][0]
+		self.assertEqual("Nicholas", data["name"])
+		self.assertEqual("nicholas.mamo@um.edu.mt", data["email"])
+
+		"""
+		Update the participant.
+		"""
+		response = self.send_request("PUT", "participant", {
+			"username": "nick",
+			"email": "nicholas.mamo@um.edu.mt"
+		}, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("GET", "participant", {'username': 'nick'}, token)
+		data = response.json()["data"][0]
+		self.assertEqual("Nicholas", data["name"])
+		self.assertEqual("nicholas.mamo@um.edu.mt", data["email"])
+
+	@BiobankTestCase.isolated_test
+	def test_update_participant_except_email(self):
+		"""
+		Test updating a participant normally without changing the email address.
+		"""
+
+		token = self._get_access_token(["create_participant", "view_participant", "update_participant"])["access_token"]
+		response = self.send_request("POST", "participant", { "username": "nick", "name": "Nicholas", "email": "nicholas.mamo@um.edu.mt" }, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("GET", "participant", {'username': 'nick'}, token)
+		data = response.json()["data"][0]
+		self.assertEqual("Nicholas", data["name"])
+		self.assertEqual("nicholas.mamo@um.edu.mt", data["email"])
+
+		"""
+		Update the participant.
+		"""
+		response = self.send_request("PUT", "participant", {
+			"username": "nick",
+			"name": "Nicholas"
+		}, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("GET", "participant", {'username': 'nick'}, token)
+		data = response.json()["data"][0]
+		self.assertEqual("Nicholas", data["name"])
+		self.assertEqual("nicholas.mamo@um.edu.mt", data["email"])
+
+	@BiobankTestCase.isolated_test
+	def test_empty_update_participant(self):
+		"""
+		Test updating a participant without changing anything.
+		"""
+
+		token = self._get_access_token(["create_participant", "view_participant", "update_participant"])["access_token"]
+		response = self.send_request("POST", "participant", { "username": "nick", "name": "Nicholas", "email": "nicholas.mamo@um.edu.mt" }, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("GET", "participant", {'username': 'nick'}, token)
+		data = response.json()["data"][0]
+		self.assertEqual("Nicholas", data["name"])
+		self.assertEqual("nicholas.mamo@um.edu.mt", data["email"])
+
+		"""
+		Update the participant.
+		"""
+		response = self.send_request("PUT", "participant", {
+			"username": "nick",
+		}, token)
+		print(response.__dict__)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("GET", "participant", {'username': 'nick'}, token)
+		data = response.json()["data"][0]
+		self.assertEqual("Nicholas", data["name"])
+		self.assertEqual("nicholas.mamo@um.edu.mt", data["email"])
+
+	@BiobankTestCase.isolated_test
 	def test_get_participants(self):
 		"""
 		Test getting a list of participants.
