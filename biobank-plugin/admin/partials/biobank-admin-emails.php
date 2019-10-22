@@ -39,13 +39,13 @@
 				</th>
 				<td>
 					<div class='radio-input-group'>
-						<input name="<?php echo $this->plugin_name; ?>[recipient-group]"
+						<input name="<?= $this->plugin_name; ?>[recipient-group]"
 							   type="radio" id="recipient-group-none" aria-required="true">
 						<label for="recipient-group-none">No one</label>
 					</div>
 
 					<div class='radio-input-group'>
-						<input name="<?php echo $this->plugin_name; ?>[recipient-group]"
+						<input name="<?= $this->plugin_name; ?>[recipient-group]"
 							   type="radio" id="recipient-group-all" aria-required="true">
 						<label for="recipient-group-all">All research partners</label>
 					</div>
@@ -54,12 +54,12 @@
 
 			<tr class="form-field">
 				<th scope="row">
-					<label for="<?php echo $this->plugin_name; ?>-recipient">Recipient</label>
+					<label for="<?= $this->plugin_name; ?>-recipient">Recipient</label>
 				</th>
 				<td>
 					<input autocapitalize="none" autocomplete="off" autocorrect="off"
-						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[recipient]"
-						   type="text" id="recipient" aria-required="true">
+						   autofill="false" maxlength="60" name="<?= $this->plugin_name; ?>[recipient]"
+						   type="text" id="<?= $this->plugin_name; ?>-recipient" aria-required="true">
 				</td>
 			</tr>
 
@@ -71,7 +71,18 @@
 
 			<tr class="form-field">
 				<th scope="row">
-					<label for="<?php echo $this->plugin_name; ?>-body">Body</label>
+					<label for="<?= $this->plugin_name; ?>-subject">Subject</label>
+				</th>
+				<td>
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?= $this->plugin_name; ?>[subject]"
+						   type="text" id="<?= $this->plugin_name; ?>-subject" aria-required="true">
+				</td>
+			</tr>
+
+			<tr class="form-field">
+				<th scope="row">
+					<label for="<?= $this->plugin_name; ?>-body">Body</label>
 				</th>
 				<td>
 				<?php
