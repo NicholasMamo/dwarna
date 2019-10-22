@@ -34,6 +34,8 @@ $scopes = array(
 		"create_participant", "remove_participant",
 		"create_researcher", "remove_researcher",
 		"create_study", "update_study", "remove_study", "view_study",
+		"view_email", "create_email", "remove_email",
+		"view_subscription",
 	),
 	"biobanker" => array(
 		"create_participant", "remove_participant",
@@ -47,6 +49,7 @@ $scopes = array(
 		"view_study",
 		"update_consent", "view_consent",
 		"change_card",
+		"view_subscription", "update_subscription"
 	),
 );
 
