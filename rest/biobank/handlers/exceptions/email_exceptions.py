@@ -25,3 +25,11 @@ class UnsupportedRecipientGroupException(Exception):
 
 	def __init__(self, recipient_group, message="Recipient group '%s' is not supported"):
 		super(UnsupportedRecipientGroupException, self).__init__(message % recipient_group)
+
+class UnknownSubscriptionTypeException(Exception):
+	"""
+	An exception that indicates that the given subscription type is not known.
+	"""
+
+	def __init__(self, subscription, message="Subscription type '%s' is unknown"):
+		super(UnknownSubscriptionTypeException, self).__init__(message % subscription)
