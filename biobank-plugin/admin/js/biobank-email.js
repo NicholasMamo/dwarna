@@ -47,7 +47,7 @@ jQuery('#recipient').on('blur', (event) => {
 	 * Get the value.
 	 */
 	var value = jQuery('#recipient').val();
-	var email_pattern = /^[0-9a-z.]+@[0-9a-z]+(\.[a-z]+)+jQuery/gi;
+	var email_pattern = /^[0-9a-z.]+@[0-9a-z]+(\.[a-z]+)+$/gi;
 
 	/*
 	 * If the input is an email address, add the email address as a recipient.
