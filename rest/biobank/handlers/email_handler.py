@@ -305,13 +305,50 @@ class EmailHandler(PostgreSQLRouteHandler):
 		:param subscription: The subscription to update.
 		:type subscription: str
 		:param subscribed: A boolean indicating whether the participant is subscribed.
-		:typr subscribed: boolean
+		:typr subscribed: bool
 
 		:return: A response with any errors that may arise.
 		:rtype: :class:`oauth2.web.Response`
 		"""
 
-		pass
+		response = Response()
+
+		try:
+			username = self._sanitize(username)
+			if not self._participant_exists(username):
+				raise user_exceptions.ParticipantDoesNotExistException()
+
+			if subscription not in self._get_subscription_types():
+				raise email_exceptions.UnknownSubscriptionTypeException(subscription)
+
+			"""
+			Update the subscription.
+			"""
+			row = self._connector.execute("""
+				UPDATE
+					participant_subscriptions
+				SET
+					%s = %s
+				WHERE
+					participant_id = '%s'
+			""" % (
+				subscription, subscribed, username
+			))
+
+			response.status_code = 200
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ })
+		except (email_exceptions.UnknownSubscriptionTypeException,
+				user_exceptions.ParticipantDoesNotExistException) as e:
+			response.status_code = 500
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ "error": str(e), "exception": e.__class__.__name__ })
+		except Exception as e:
+			response.status_code = 500
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ "error": "Internal Server Error: %s" % str(e), "exception": e.__class__.__name__ })
+
+		return response
 
 	"""
 	Supporting functions.

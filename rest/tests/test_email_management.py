@@ -515,3 +515,167 @@ class EmailManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 200)
 		response_body = response.json()
 		self.assertTrue('any_email' in response_body['data'])
+
+	@BiobankTestCase.isolated_test
+	def test_update_subscription(self):
+		"""
+		Test that updating a participant's subscription works.
+		"""
+
+		"""
+		Create a participant.
+		"""
+		token = self._get_access_token(["create_participant", "update_subscription", "view_subscription"])["access_token"]
+		response = self.send_request("POST", "participant", { "username": "nick", "email": 'nick@email.com' }, token)
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		Get the participant's subscription.
+		"""
+		response = self.send_request("GET", "subscription", {
+			'username': 'nick',
+			'subscription': 'any_email'
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		self.assertTrue(response_body['data']['any_email'])
+
+		"""
+		Remove the participant's subscription.
+		"""
+		response = self.send_request("POST", "subscription", {
+			'username': 'nick',
+			'subscription': 'any_email',
+			'subscribed': False
+		}, token)
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		Get the participant's subscription.
+		"""
+		response = self.send_request("GET", "subscription", {
+			'username': 'nick',
+			'subscription': 'any_email'
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		self.assertFalse(response_body['data']['any_email'])
+
+		"""
+		Re-add the participant's subscription.
+		"""
+		response = self.send_request("POST", "subscription", {
+			'username': 'nick',
+			'subscription': 'any_email',
+			'subscribed': True
+		}, token)
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		Get the participant's subscription.
+		"""
+		response = self.send_request("GET", "subscription", {
+			'username': 'nick',
+			'subscription': 'any_email'
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		self.assertTrue(response_body['data']['any_email'])
+
+	@BiobankTestCase.isolated_test
+	def test_update_subscription_of_nonexistent_participant(self):
+		"""
+		Test that updating the subscription does not work if the participant does not exist.
+		"""
+
+		"""
+		Try to update a participant's subscription.
+		"""
+		token = self._get_access_token(["update_subscription"])["access_token"]
+		response = self.send_request("POST", "subscription", {
+			'username': 'nick',
+			'subscription': 'any_email',
+			'subscribed': True
+		}, token)
+		self.assertEqual(response.status_code, 500)
+		response_body = response.json()
+		self.assertEqual('ParticipantDoesNotExistException', response_body['exception'])
+
+	@BiobankTestCase.isolated_test
+	def test_update_subscription_without_participant(self):
+		"""
+		Test that updating the subscription does not work if the participant is not provided.
+		"""
+
+		"""
+		Try to update a participant's subscription.
+		"""
+		token = self._get_access_token(["update_subscription"])["access_token"]
+		response = self.send_request("POST", "subscription", {
+			'subscription': 'any_email',
+			'subscribed': True,
+		}, token)
+		self.assertEqual(response.status_code, 400)
+		response_body = response.json()
+		self.assertEqual('MissingArgumentException', response_body['exception'])
+
+	@BiobankTestCase.isolated_test
+	def test_update_unknown_subscription(self):
+		"""
+		Test that updating a participant's subscription does not work if the subscription is unknown.
+		"""
+
+		"""
+		Create a participant.
+		"""
+		token = self._get_access_token(["create_participant", "view_subscription", "update_subscription"])["access_token"]
+		response = self.send_request("POST", "participant", { "username": "nick", "email": 'nick@email.com' }, token)
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		Try to update the participant's subscription.
+		"""
+		response = self.send_request("POST", "subscription", {
+			'username': 'nick',
+			'subscription': 'no_email',
+			'subscribed': True,
+		}, token)
+		self.assertEqual(response.status_code, 500)
+		response_body = response.json()
+		self.assertEqual('UnknownSubscriptionTypeException', response_body['exception'])
+
+	@BiobankTestCase.isolated_test
+	def test_update_subscription_without_subscription(self):
+		"""
+		Test that updating the subscription does not work if the subscription type is not provided.
+		"""
+
+		"""
+		Try to update a participant's subscription.
+		"""
+		token = self._get_access_token(["update_subscription"])["access_token"]
+		response = self.send_request("POST", "subscription", {
+			'username': 'nick',
+			'subscribed': True,
+		}, token)
+		self.assertEqual(response.status_code, 400)
+		response_body = response.json()
+		self.assertEqual('MissingArgumentException', response_body['exception'])
+
+	@BiobankTestCase.isolated_test
+	def test_update_subscription_without_subscription_change(self):
+		"""
+		Test that updating the subscription does not work if the subscription value is not provided.
+		"""
+
+		"""
+		Try to update a participant's subscription.
+		"""
+		token = self._get_access_token(["update_subscription"])["access_token"]
+		response = self.send_request("POST", "subscription", {
+			'username': 'nick',
+			'subscription': 'any_email',
+		}, token)
+		self.assertEqual(response.status_code, 400)
+		response_body = response.json()
+		self.assertEqual('MissingArgumentException', response_body['exception'])
