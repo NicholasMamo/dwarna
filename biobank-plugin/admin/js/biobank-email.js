@@ -8,6 +8,14 @@ jQuery(document).ready(() => {
 });
 
 /*
+ * When the form is submitted, prepare the email.
+ * This process copies the HTML write-up to an input field so it can be processed.
+ */
+jQuery('#biobank-email-form').on('submit', (event) => {
+	prepareEmail();
+});
+
+/*
  * When the recipient field receives input, check if the email address has ended.
  * If it has, reset the field and add the email address as a new recipient.
  */
