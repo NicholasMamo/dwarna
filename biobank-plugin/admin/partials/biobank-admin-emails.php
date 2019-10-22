@@ -50,8 +50,8 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 					<div class='radio-input-group'>
 						<input name="<?= $this->plugin_name; ?>[recipient-group]"
 							   type="radio" id="recipient-group-all" aria-required="true"
-							   value="all">
-						<label for="recipient-group-all">All research partners</label>
+							   value="subscribed">
+						<label for="recipient-group-all">Subscribed research partners</label>
 					</div>
 				</td>
 			</tr>
