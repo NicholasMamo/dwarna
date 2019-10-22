@@ -702,3 +702,75 @@ class UserTests(SchemaTestCase):
 			SELECT *
 			FROM
 				users"""))
+
+	@SchemaTestCase.isolated_test
+	def test_remove_participant_cascades_to_subscriptions(self):
+		"""
+		Remove a participant from the participants table.
+		The participant's subscriptions should also be removed.
+		"""
+
+		participant = Participant("participant", "name", "address")
+
+		self._connection.execute("""
+			INSERT INTO
+				users (user_id, role)
+			VALUES
+				(%s);
+		""" % participant.get_user_insertion_string())
+
+		self._connection.execute("""
+			INSERT INTO
+				participants (user_id, name, email)
+			VALUES
+				(%s);
+		""" % participant.get_participant_insertion_string())
+
+		self.assertEqual(self._connection.count("""
+			SELECT COUNT(*)
+			FROM
+				users, participants
+			WHERE
+				users.user_id = participants.user_id"""), 1)
+
+		self._connection.execute("""
+			INSERT INTO
+				participant_subscriptions (participant_id)
+			VALUES
+				('%s');
+		""" % (participant._username))
+
+		self.assertEqual(self._connection.count("""
+			SELECT COUNT(*)
+			FROM
+				participant_subscriptions
+			WHERE
+				participant_subscriptions.participant_id= '%s'""" % (
+				participant._username
+		)), 1)
+
+		self._connection.execute("""
+			DELETE FROM
+				participants
+			WHERE
+				user_id = '%s'
+		""" % participant.get_username())
+
+		self.assertFalse(self._connection.exists("""
+			SELECT *
+			FROM
+				participant_subscriptions
+			WHERE
+				participant_id = '%s'""" % (
+				participant._username
+		)))
+
+		self.assertFalse(self._connection.exists("""
+			SELECT *
+			FROM
+				participants"""))
+
+		self.assertFalse(self._connection.exists("""
+			SELECT *
+			FROM
+				users"""))

@@ -129,6 +129,27 @@ def create_schema(database):
 		connection.execute("""COMMENT ON COLUMN participant_identities.cred_card IS 'The participant''s credential-ready Hyperledger card, created when the temporary card is imported, pinged and assigned credentials';""")
 
 		"""
+		Drop the participants' subscriptions table if it exists.
+		"""
+		connection.execute("""DROP TABLE IF EXISTS participant_subscriptions CASCADE;""")
+		"""
+		Create the table that links participants with their email subscriptions.
+		When a user is deleted, their corresponding participant-specific data should also be removed.
+		"""
+		connection.execute("""CREATE TABLE participant_subscriptions (
+							participant_id		VARCHAR(64)		REFERENCES participants(user_id)	ON DELETE CASCADE,
+							any_email			BOOLEAN			DEFAULT TRUE
+		);""")
+
+		"""
+		Add comments to describe the columns.
+		"""
+		connection.execute("""COMMENT ON COLUMN participant_subscriptions.participant_id IS 'The participant''s unique identifier, links to the ''participants'' table''s primary key';""")
+		connection.execute("""COMMENT ON COLUMN participant_subscriptions.any_email IS 'A boolean indicating whether the participant is subscribed to emails at all—
+			if it is true, the granularity may be controlled using other columns;
+			if it is false, the user receives no emails at all';""")
+
+		"""
 		Drop the biobankers table if it exists.
 		"""
 		connection.execute("""DROP TABLE IF EXISTS biobankers CASCADE;""")
