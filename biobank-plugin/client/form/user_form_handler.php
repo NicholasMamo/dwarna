@@ -70,6 +70,7 @@ class ParticipantFormHandler extends UserFormHandler {
 					$request = new \client\Request($this->scheme, $this->host, $this->port);
 					$request->add_parameter("username", $input["username"]);
 					$request->add_parameter("password", $input["password"]);
+					$request->add_parameter("email", $input["email"]);
 					$response = $request->send_post_request($endpoint);
 
 					if (! is_wp_error($response)) {
