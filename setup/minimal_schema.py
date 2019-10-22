@@ -17,7 +17,7 @@ if path not in sys.path:
 from connection.db_connection import PostgreSQLConnection
 
 """
-The database used by default
+The database used by default.
 """
 DEFAULT_DATABASE = "biobank"
 def create_schema(database):
@@ -36,13 +36,19 @@ def create_schema(database):
 		Create the users' tables.
 		"""
 
-		# drop the user roles if they exist
+		"""
+		Drop the user roles if they exist.
+		"""
 		connection.execute("""DROP TYPE IF EXISTS user_role CASCADE""")
 		connection.execute("""CREATE TYPE user_role AS ENUM ('BIOBANKER', 'RESEARCHER', 'PARTICIPANT')""")
 
-		# drop the user table if it exists
+		"""
+		Drop the user table if it exists.
+		"""
 		connection.execute("""DROP TABLE IF EXISTS users CASCADE;""")
-		# create a new table with the most basic and required user fields
+		"""
+		Create a new table with the most basic and required user fields.
+		"""
 		connection.execute("""CREATE TABLE users (
 							user_id 			VARCHAR(64)		PRIMARY KEY,
 							role				user_role
@@ -61,7 +67,9 @@ def create_schema(database):
 		The participant does not require any additional fields.
 		"""
 
-		# drop the researcher table if it exists
+		"""
+		Drop the researcher table if it exists.
+		"""
 		connection.execute("""DROP TABLE IF EXISTS researchers CASCADE;""")
 		"""
 		Create the researchers table.
@@ -76,7 +84,9 @@ def create_schema(database):
 		"""
 		connection.execute("""COMMENT ON COLUMN researchers.user_id IS 'The researcher''s unique identifier, links to the ''users'' table''s primary key';""")
 
-		# drop the participants table if it exists
+		"""
+		Drop the participants table if it exists.
+		"""
 		connection.execute("""DROP TABLE IF EXISTS participants CASCADE;""")
 		"""
 		Create the participants table.
@@ -93,9 +103,11 @@ def create_schema(database):
 		"""
 		connection.execute("""COMMENT ON COLUMN participants.user_id IS 'The participant''s unique identifier, links to the ''users'' table''s primary key';""")
 		connection.execute("""COMMENT ON COLUMN participants.name IS 'The participant''s name';""")
-		connection.execute("""COMMENT ON COLUMN participants.user_id IS 'The participant''s email address';""")
+		connection.execute("""COMMENT ON COLUMN participants.email IS 'The participant''s email address';""")
 
-		# drop the participants' identities table if it exists
+		"""
+		Drop the participants' identities table if it exists.
+		"""
 		connection.execute("""DROP TABLE IF EXISTS participant_identities CASCADE;""")
 		"""
 		Create the table that links participants with their blockchain identities.
@@ -116,7 +128,9 @@ def create_schema(database):
 		connection.execute("""COMMENT ON COLUMN participant_identities.temp_card IS 'The participant''s Hyperledger card, created when their identity is issued; they need to import it into the wallet in order to get a credential-ready version';""")
 		connection.execute("""COMMENT ON COLUMN participant_identities.cred_card IS 'The participant''s credential-ready Hyperledger card, created when the temporary card is imported, pinged and assigned credentials';""")
 
-		# drop the biobankers table if it exists
+		"""
+		Drop the biobankers table if it exists.
+		"""
 		connection.execute("""DROP TABLE IF EXISTS biobankers CASCADE;""")
 		"""
 		Create the biobankers table.
