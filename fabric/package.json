@@ -53,5 +53,8 @@
       }
     },
     "insert_license": false
+  },
+  "dependencies": {
+    "lodash": "^4.17.15"
   }
 }
