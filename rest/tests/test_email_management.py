@@ -407,3 +407,111 @@ class EmailManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 500)
 		response_body = response.json()
 		self.assertEqual('EmailDoesNotExistException', response_body['exception'])
+
+	"""
+	Email subscription tests.
+	"""
+
+	@BiobankTestCase.isolated_test
+	def test_get_subscription(self):
+		"""
+		Test that getting a participant's subscription works.
+		"""
+
+		"""
+		Create a participant.
+		"""
+		token = self._get_access_token(["create_participant", "view_subscription"])["access_token"]
+		response = self.send_request("POST", "participant", { "username": "nick", "email": 'nick@email.com' }, token)
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		Get the participant's subscription.
+		"""
+		response = self.send_request("GET", "subscription", {
+			'username': 'nick',
+			'subscription': 'any_email'
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		self.assertTrue('any_email' in response_body['data'])
+		self.assertTrue(response_body['data']['any_email'])
+
+	@BiobankTestCase.isolated_test
+	def test_get_subscription_of_nonexistent_participant(self):
+		"""
+		Test that getting the subscription does not work if the participant does not exist.
+		"""
+
+		"""
+		Try to get a participant's subscription.
+		"""
+		token = self._get_access_token(["view_subscription"])["access_token"]
+		response = self.send_request("GET", "subscription", {
+			'username': 'nick',
+		}, token)
+		self.assertEqual(response.status_code, 500)
+		response_body = response.json()
+		self.assertEqual('ParticipantDoesNotExistException', response_body['exception'])
+
+	@BiobankTestCase.isolated_test
+	def test_get_subscription_without_participant(self):
+		"""
+		Test that getting the subscription does not work if the participant is not provided.
+		"""
+
+		"""
+		Try to get a participant's subscription.
+		"""
+		token = self._get_access_token(["view_subscription"])["access_token"]
+		response = self.send_request("GET", "subscription", { }, token)
+		self.assertEqual(response.status_code, 400)
+		response_body = response.json()
+		self.assertEqual('MissingArgumentException', response_body['exception'])
+
+	@BiobankTestCase.isolated_test
+	def test_get_unknown_subscription(self):
+		"""
+		Test that getting a participant's subscription does not work if the subscription is unknown.
+		"""
+
+		"""
+		Create a participant.
+		"""
+		token = self._get_access_token(["create_participant", "view_subscription"])["access_token"]
+		response = self.send_request("POST", "participant", { "username": "nick", "email": 'nick@email.com' }, token)
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		Try to get the participant's subscription.
+		"""
+		response = self.send_request("GET", "subscription", {
+			'username': 'nick',
+			'subscription': 'no_email'
+		}, token)
+		self.assertEqual(response.status_code, 500)
+		response_body = response.json()
+		self.assertEqual('UnknownSubscriptionTypeException', response_body['exception'])
+
+	@BiobankTestCase.isolated_test
+	def test_get_all_subscriptions(self):
+		"""
+		Test that getting all of a participant's subscription works.
+		"""
+
+		"""
+		Create a participant.
+		"""
+		token = self._get_access_token(["create_participant", "view_subscription"])["access_token"]
+		response = self.send_request("POST", "participant", { "username": "nick", "email": 'nick@email.com' }, token)
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		Get the participant's subscription.
+		"""
+		response = self.send_request("GET", "subscription", {
+			'username': 'nick',
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		self.assertTrue('any_email' in response_body['data'])

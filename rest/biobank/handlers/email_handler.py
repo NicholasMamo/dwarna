@@ -7,7 +7,7 @@ import traceback
 
 from oauth2.web import Response
 
-from .exceptions import email_exceptions
+from .exceptions import email_exceptions, user_exceptions
 from .handler import PostgreSQLRouteHandler
 
 class EmailHandler(PostgreSQLRouteHandler):
@@ -256,7 +256,45 @@ class EmailHandler(PostgreSQLRouteHandler):
 		:rtype: :class:`oauth2.web.Response`
 		"""
 
-		pass
+		response = Response()
+
+		try:
+			username = self._sanitize(username)
+			if not self._participant_exists(username):
+				raise user_exceptions.ParticipantDoesNotExistException()
+
+			if subscription is not None and subscription not in self._get_subscription_types():
+				raise email_exceptions.UnknownSubscriptionTypeException(subscription)
+
+			"""
+			Retrieve the subscription according to whether one or all subscriptions are requested.
+			"""
+			row = self._connector.select_one("""
+				SELECT
+					%s
+				FROM
+					participant_subscriptions
+				WHERE
+					participant_id = '%s'
+			""" % (
+				'*' if subscription is None else f"participant_id, {subscription}",
+				username
+			))
+
+			response.status_code = 200
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ 'data': dict(row) })
+		except (email_exceptions.UnknownSubscriptionTypeException,
+				user_exceptions.ParticipantDoesNotExistException) as e:
+			response.status_code = 500
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ "error": str(e), "exception": e.__class__.__name__ })
+		except Exception as e:
+			response.status_code = 500
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ "error": "Internal Server Error: %s" % str(e), "exception": e.__class__.__name__ })
+
+		return response
 
 	def update_subscription(self, username, subscription, subscribed, *args, **kwargs):
 		"""
