@@ -239,6 +239,44 @@ class EmailHandler(PostgreSQLRouteHandler):
 		return response
 
 	"""
+	Subscription functions.
+	"""
+
+	def get_subscription(self, username, subscription=None, *args, **kwargs):
+		"""
+		Get a participant's subscription status.
+		If no subscription type is provided, all subscription types are returned.
+
+		:param username: The username of the participant whose subscriptions will be retrieved.
+		:type username: str
+		:param subscription: The subscription to retrieve.
+			If `None` is given, all subscriptions are returned.
+		:type subscription: None or str
+
+		:return: A response with any errors that may arise.
+		:rtype: :class:`oauth2.web.Response`
+		"""
+
+		pass
+
+	def update_subscription(self, username, subscription, subscribed, *args, **kwargs):
+		"""
+		Update the subscription of a participant.
+
+		:param username: The username of the participant whose subscription will be updated.
+		:type username: str
+		:param subscription: The subscription to update.
+		:type subscription: str
+		:param subscribed: A boolean indicating whether the participant is subscribed.
+		:typr subscribed: boolean
+
+		:return: A response with any errors that may arise.
+		:rtype: :class:`oauth2.web.Response`
+		"""
+
+		pass
+
+	"""
 	Supporting functions.
 	"""
 

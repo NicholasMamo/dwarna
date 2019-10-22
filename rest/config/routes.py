@@ -365,3 +365,23 @@ routes.update({
 		},
 	}
 })
+
+"""
+Routes related to subscription management.
+"""
+routes.update({
+	"/subscription": {
+		"GET": {
+			"handler": email_handler_class,
+			"function": email_handler_class.get_subscription,
+			"scopes": ["view_subscription"],
+			"parameters": ["username"],
+		},
+		"POST": {
+			"handler": email_handler_class,
+			"function": email_handler_class.update_subscription,
+			"scopes": ["update_subscription"],
+			"parameters": ["username", "subscription", "subscribed"],
+		},
+	}
+})
