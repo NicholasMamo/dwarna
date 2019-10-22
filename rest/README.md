@@ -25,6 +25,15 @@ The configuration files are in the `config/` directory. These files contain the 
 - `oauth.py` - the OAuth 2.0 configuration, including the lifetime of access tokens and a list of scopes, extracted automatically from the routes; and
 - `routes.py` - the routes served by the REST API, each linked with a handler function.
 
+## Documentation
+
+The documentation is in the `documentation/build` directory and can be navigated as a normal webpage.
+To generate the documentation, `cd` to this directory and run:
+
+```bash
+	sphinx-build documentation/source/ documentation/build
+```
+
 ## Unit Tests
 
 The unit tests can be run using `./tests.sh`. It might be necessary to make this script executable using `chmod +x tests.sh`.
