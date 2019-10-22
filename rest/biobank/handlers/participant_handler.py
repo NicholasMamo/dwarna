@@ -63,6 +63,12 @@ class ParticipantHandler(UserHandler):
 				VALUES
 					('%s', '%s', '%s');
 				""" % (username, attributes['name'], attributes['email']),
+				"""
+				INSERT INTO
+					participant_subscriptions (participant_id)
+				VALUES
+					('%s');
+				""" % (username),
 			])
 
 			response.status_code = 200
