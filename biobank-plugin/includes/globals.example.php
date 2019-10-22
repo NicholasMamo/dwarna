@@ -31,16 +31,17 @@ $participant_capabilities = array(
 
 $scopes = array(
 	"administrator" => array(
-		"create_participant", "remove_participant",
+		"create_participant", "update_participant", "remove_participant",
 		"create_researcher", "remove_researcher",
 		"create_study", "update_study", "remove_study", "view_study",
 		"view_email", "create_email", "remove_email",
 		"view_subscription",
 	),
 	"biobanker" => array(
-		"create_participant", "remove_participant",
+		"create_participant", "update_participant", "remove_participant",
 		"create_researcher", "remove_researcher",
 		"create_study", "update_study", "remove_study", "view_study",
+		"view_email", "create_email", "remove_email",
 	),
 	"researcher" => array(
 		"view_study", "view_consent",
