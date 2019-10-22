@@ -45,6 +45,14 @@ Study Handler
    :private-members:
    :special-members:
 
+Email Handler
+-------------
+
+.. automodule:: biobank.handlers.email_handler
+   :members:
+   :private-members:
+   :special-members:
+
 ===================
 Blockchain Handlers
 ===================
