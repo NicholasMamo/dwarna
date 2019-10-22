@@ -22,7 +22,7 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 		if (isset($_GET["error"]) && ! empty($_GET["error"])) {
 		    echo create_error_notice($_GET["error"]);
 		} else if (isset($_GET["error"]) && isset($_GET["redirect"])) {
-		    echo create_success_notice("Study " . $notices[$_GET["redirect"]]);
+		    echo create_success_notice("Email " . $notices[$_GET["redirect"]]);
 		}
 		$_GET["error"] = "";
 	?>
