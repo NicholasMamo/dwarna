@@ -32,10 +32,12 @@ class EmailHandler(PostgreSQLRouteHandler):
 								The group is represented as a string, or nothing at all.
 								The conversion from the group to the actual recipients is handled by the function.
 								Accepted strings:
+
 								- 'None' - no recipient should be added
 								- 'Subscribed' - only subscribed users should receive the email
 								- 'All' - everyone, including unsubscribed users, should receive the email.
-								*This should be used sparingly and only when absolutely needed to respect user decisions.*
+
+								**This should be used sparingly and only when absolutely needed to respect user decisions.**
 
 		:type recipient_group: None or str
 
