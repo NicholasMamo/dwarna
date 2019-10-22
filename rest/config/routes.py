@@ -160,6 +160,12 @@ routes.update({
 			"scopes": ["create_participant"],
 			"parameters": ["username"],
 		},
+		"PUT": {
+			"handler": participant_handler_class,
+			"function": participant_handler_class.update_participant,
+			"scopes": ["update_participant"],
+			"parameters": ["username"],
+		},
 		"DELETE": {
 			"handler": participant_handler_class,
 			"function": participant_handler_class.remove_participant_by_username,

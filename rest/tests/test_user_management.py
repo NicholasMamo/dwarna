@@ -327,6 +327,36 @@ class UserManagementTest(BiobankTestCase):
 		self.assertEqual(data["name"], "\\\\_nick")
 
 	@BiobankTestCase.isolated_test
+	def test_update_participant(self):
+		"""
+		Test updating a participant normally.
+		"""
+
+		token = self._get_access_token(["create_participant", "view_participant", "update_participant"])["access_token"]
+		response = self.send_request("POST", "participant", { "username": "nick", "name": "", "email": "" }, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("GET", "participant", {'username': 'nick'}, token)
+		data = response.json()["data"][0]
+		self.assertEqual("", data["name"])
+		self.assertEqual("", data["email"])
+
+		"""
+		Update the participant.
+		"""
+		response = self.send_request("PUT", "participant", {
+			"username": "nick",
+			"name": "Nicholas",
+			"email": "nicholas.mamo@um.edu.mt"
+		}, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("GET", "participant", {'username': 'nick'}, token)
+		data = response.json()["data"][0]
+		self.assertEqual("Nicholas", data["name"])
+		self.assertEqual("nicholas.mamo@um.edu.mt", data["email"])
+
+	@BiobankTestCase.isolated_test
 	def test_get_participants(self):
 		"""
 		Test getting a list of participants.
