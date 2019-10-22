@@ -110,6 +110,7 @@ class ParticipantFormHandler extends UserFormHandler {
 	 */
 	public function update_participant() {
 		$error = "";
+		$endpoint = "participant"; // the REST API's endpoint
 		$return = "";
 
 		if(isset($_POST["participant_nonce"]) && wp_verify_nonce($_POST["participant_nonce"], "participant_form")) {
@@ -139,26 +140,49 @@ class ParticipantFormHandler extends UserFormHandler {
 					$error = (string) $validation_check;
 				} else {
 					/*
-					 * Get the user's ID since this is an update operation.
-					 * Then, include this ID in the user data.
+					 * Create a request and fetch the response
 					 */
-					$id = get_user_by("login", $input["username"])->data->ID;
-					$user_data = array(
-						"ID" => "$id",
-						"user_login" => $input["username"],
-						"user_email" => $input["email"]
-					);
+					$request = new \client\Request($this->scheme, $this->host, $this->port);
+					$request->add_parameter("username", $input["username"]);
+					$request->add_parameter("password", $input["password"]);
+					$request->add_parameter("email", $input["email"]);
+					$response = $request->send_post_request($endpoint, $method='PUT');
+					var_dump($response);
+					exit;
 
-					/*
-					 * Only update the password if it is not empty
-					 */
-					if ($input["password"] != "") {
-						$user_data["user_pass"] = wp_hash_password($input["password"]);
+					if (! is_wp_error($response)) {
+						$body = json_decode($response["body"]);
+						$error = isset($body->error) ? $body->error : "";
+
+						if (empty($error)) {
+							/*
+							 * Get the user's ID since this is an update operation.
+							 * Then, include this ID in the user data.
+							 */
+							$id = get_user_by("login", $input["username"])->data->ID;
+							$user_data = array(
+								"ID" => "$id",
+								"user_login" => $input["username"],
+								"user_email" => $input["email"]
+							);
+
+							/*
+							 * Only update the password if it is not empty
+							 */
+							if ($input["password"] != "") {
+								$user_data["user_pass"] = wp_hash_password($input["password"]);
+							}
+
+							$user_id = wp_insert_user($user_data);
+							// TODO delete the participant in the backend?
+							$error = is_wp_error($user_id) ? "WordPress could not update the participant" : ""; // this error could be due to duplicate usernames or emails
+						}
+					} else {
+						/*
+						 * If no response is received, then a connection with the backend could not be established
+						 */
+						$error = "WordPress could not reach the backend";
 					}
-
-					$user_id = wp_insert_user($user_data);
-					// TODO delete the participant in the backend?
-					$error = is_wp_error($user_id) ? "WordPress could not update the participant" : ""; // this error could be due to duplicate usernames or emails
 				}
 			}
 		}
