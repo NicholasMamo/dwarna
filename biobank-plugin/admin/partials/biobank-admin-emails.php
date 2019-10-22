@@ -68,7 +68,7 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 
 			<tr class="form-field">
 				<th scope="row"></th>
-				<td id='recipients'>
+				<td id='biobank-recipients'>
 				</td>
 			</tr>
 
