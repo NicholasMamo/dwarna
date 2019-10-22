@@ -11,11 +11,11 @@ jQuery(document).ready(() => {
  * When the recipient field receives input, check if the email address has ended.
  * If it has, reset the field and add the email address as a new recipient.
  */
-jQuery('#recipient').on('input', (event) => {
+jQuery('#biobank-recipient').on('input', (event) => {
 	/*
 	 * Get the value and the last inputted character.
 	 */
-	var value = jQuery('#recipient').val();
+	var value = jQuery('#biobank-recipient').val();
 	var last = value.slice(-1);
 
 	/*
@@ -27,7 +27,7 @@ jQuery('#recipient').on('input', (event) => {
 		 * Then, reset the field and add the recipient.
 		 */
 		value = value.slice(0, -1);
-		jQuery('#recipient').val('');
+		jQuery('#biobank-recipient').val('');
 
 		/*
 		 * If the assumed email address is not empty, proceed to add the email address as a recipient.
@@ -42,11 +42,11 @@ jQuery('#recipient').on('input', (event) => {
  * When the recipient field loses focus, check whether the input is an email address.
  * If it is, add as a recipient.
  */
-jQuery('#recipient').on('blur', (event) => {
+jQuery('#biobank-recipient').on('blur', (event) => {
 	/*
 	 * Get the value.
 	 */
-	var value = jQuery('#recipient').val();
+	var value = jQuery('#biobank-recipient').val();
 	var email_pattern = /^[0-9a-z.]+@[0-9a-z]+(\.[a-z]+)+$/gi;
 
 	/*
@@ -56,7 +56,7 @@ jQuery('#recipient').on('blur', (event) => {
 		/*
 		 * Then, reset the field and add the recipient.
 		 */
-		jQuery('#recipient').val('');
+		jQuery('#biobank-recipient').val('');
 		addRecipient(value);
 	}
 });
@@ -77,7 +77,7 @@ function addRecipient(email) {
 							  .text(email)
 							  .append(input)
 							  .append(remove);
-	jQuery('#recipients').append(recipient);
+	jQuery('#biobank-recipients').append(recipient);
 }
 
 /**
@@ -85,5 +85,5 @@ function addRecipient(email) {
  * All this function does is copy the HTML content of the body into the accompanying text field.
  */
 function prepareEmail() {
-	jQuery('#email-body-input').val(jQuery('#email-body').html());
+	jQuery('#email-body-input').val(jQuery('[data-id="biobank-body"]').html());
 }
