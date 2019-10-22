@@ -137,7 +137,7 @@ def create_schema(database):
 		When a user is deleted, their corresponding participant-specific data should also be removed.
 		"""
 		connection.execute("""CREATE TABLE participant_subscriptions (
-							participant_id		VARCHAR(64)		REFERENCES participants(user_id)	ON DELETE CASCADE,
+							participant_id		VARCHAR(64)		REFERENCES participants(user_id)	ON DELETE CASCADE	PRIMARY KEY,
 							any_email			BOOLEAN			DEFAULT TRUE
 		);""")
 
