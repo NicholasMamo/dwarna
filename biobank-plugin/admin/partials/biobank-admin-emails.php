@@ -11,17 +11,18 @@
  * @subpackage Biobank/admin/partials
  */
 
+require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
+
 ?>
 
 <div class="wrap">
     <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 
 	<?php
-		if (isset($_GET["settings-updated"])) {
-			echo create_success_notice("Settings saved.");
-		}
-		if (isset($error) && ! empty($error)) {
-		    echo create_error_notice($error);
+		if (isset($_GET["error"]) && ! empty($_GET["error"])) {
+		    echo create_error_notice($_GET["error"]);
+		} else if (isset($_GET["error"]) && isset($_GET["redirect"])) {
+		    echo create_success_notice("Study " . $notices[$_GET["redirect"]]);
 		}
 		$_GET["error"] = "";
 	?>
