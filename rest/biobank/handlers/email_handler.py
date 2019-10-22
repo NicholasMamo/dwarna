@@ -298,3 +298,31 @@ class EmailHandler(PostgreSQLRouteHandler):
 			WHERE
 				id = %d
 		""" % id)
+
+	def _get_subscription_types(self):
+		"""
+		Get a list of supported subscription types.
+
+		:return: A list of supported subscription types.
+		:rtype: list of str
+		"""
+
+		"""
+		No rows are retrieved. The important thing is to get the column names.
+		"""
+		schema = self._connector.select("""
+			SELECT
+				*
+			FROM
+				information_schema.columns
+			WHERE
+				table_schema = 'public' AND
+				table_name   = 'participant_subscriptions'
+		""")
+
+		"""
+		The `participant_id` column is not needed because it is not a subscription type.
+		"""
+		column_names = [ column['column_name'] for column in schema ]
+		column_names = [ column for column in column_names if column != 'participant_id' ]
+		return column_names
