@@ -43,13 +43,14 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 					<div class='radio-input-group'>
 						<input name="<?= $this->plugin_name; ?>[recipient-group]"
 							   type="radio" id="recipient-group-none" aria-required="true"
-							   checked>
+							   value="none" checked>
 						<label for="recipient-group-none">No one</label>
 					</div>
 
 					<div class='radio-input-group'>
 						<input name="<?= $this->plugin_name; ?>[recipient-group]"
-							   type="radio" id="recipient-group-all" aria-required="true">
+							   type="radio" id="recipient-group-all" aria-required="true"
+							   value="all">
 						<label for="recipient-group-all">All research partners</label>
 					</div>
 				</td>
