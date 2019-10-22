@@ -119,23 +119,234 @@ class EmailManagementTest(BiobankTestCase):
 		self.assertTrue('nick@email.com' in response_body['recipients'])
 
 	@BiobankTestCase.isolated_test
-	def test_create_email_with_unsupported_recipient_group(self):
+	def test_create_email_with_subscribed_recipient_group(self):
 		"""
-		Test that creating an email with an unsupported recipient group raises an exception.
+		Test that the 'subscribed' user group works correctly.
 		"""
 
 		subject = 'Ġanni żar lil Ċikku il-Ħamrun'
 		body = "Ġie lura mingħand Ċikku tal-Ħamrun b'żarbun ġdid."
 
-		token = self._get_access_token(["create_email"])["access_token"]
+		"""
+		Create a participant.
+		"""
+		token = self._get_access_token(["create_participant", "update_subscription", "view_subscription", "create_email", "view_email"])["access_token"]
+		response = self.send_request("POST", "participant", { "username": "nick", "email": 'nick@email.com' }, token)
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		Create an email and add the subscribed participants to it.
+		The new participant should be included.
+		"""
 		response = self.send_request("POST", "email", {
 			"subject": subject,
 			"body": body,
 			"recipient_group": 'subscribed'
 		}, token)
-		self.assertEqual(response.status_code, 500)
+		self.assertEqual(response.status_code, 200)
 		response_body = response.json()
-		self.assertEqual('UnsupportedRecipientGroupException', response_body['exception'])
+		id = response_body['data']['id']
+
+		response = self.send_request("GET", "email", {
+			"id": id,
+			"recipients": True
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertTrue('nick@email.com' in response_body['recipients'])
+
+		"""
+		Remove the participant's subscription.
+		"""
+		response = self.send_request("POST", "subscription", {
+			'username': 'nick',
+			'subscription': 'any_email',
+			'subscribed': False
+		}, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("GET", "subscription", {
+			'username': 'nick',
+			'subscription': 'any_email'
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		self.assertFalse(response_body['data']['any_email'])
+
+		"""
+		Create an email and add the subscribed participants to it.
+		This time, the new participant should not be included.
+		"""
+		response = self.send_request("POST", "email", {
+			"subject": subject,
+			"body": body,
+			"recipient_group": 'subscribed'
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		id = response_body['data']['id']
+
+		response = self.send_request("GET", "email", {
+			"id": id,
+			"recipients": True
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertFalse('nick@email.com' in response_body['recipients'])
+
+		"""
+		Re-add the participant's subscription.
+		"""
+		response = self.send_request("POST", "subscription", {
+			'username': 'nick',
+			'subscription': 'any_email',
+			'subscribed': True
+		}, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("GET", "subscription", {
+			'username': 'nick',
+			'subscription': 'any_email'
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		self.assertTrue(response_body['data']['any_email'])
+
+		"""
+		Create an email and add the subscribed participants to it.
+		The new participant should be included again.
+		"""
+		response = self.send_request("POST", "email", {
+			"subject": subject,
+			"body": body,
+			"recipient_group": 'subscribed'
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		id = response_body['data']['id']
+
+		response = self.send_request("GET", "email", {
+			"id": id,
+			"recipients": True
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertTrue('nick@email.com' in response_body['recipients'])
+
+	@BiobankTestCase.isolated_test
+	def test_all_recipient_group_includes_unsubscribed(self):
+		"""
+		Test that the 'all' user group works correctly.
+		"""
+
+		subject = 'Ġanni żar lil Ċikku il-Ħamrun'
+		body = "Ġie lura mingħand Ċikku tal-Ħamrun b'żarbun ġdid."
+
+		"""
+		Create a participant.
+		"""
+		token = self._get_access_token(["create_participant", "update_subscription", "view_subscription", "create_email", "view_email"])["access_token"]
+		response = self.send_request("POST", "participant", { "username": "nick", "email": 'nick@email.com' }, token)
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		Create an email and add all participants to it.
+		The new participant should be included.
+		"""
+		response = self.send_request("POST", "email", {
+			"subject": subject,
+			"body": body,
+			"recipient_group": 'all'
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		id = response_body['data']['id']
+
+		response = self.send_request("GET", "email", {
+			"id": id,
+			"recipients": True
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertTrue('nick@email.com' in response_body['recipients'])
+
+		"""
+		Remove the participant's subscription.
+		"""
+		response = self.send_request("POST", "subscription", {
+			'username': 'nick',
+			'subscription': 'any_email',
+			'subscribed': False
+		}, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("GET", "subscription", {
+			'username': 'nick',
+			'subscription': 'any_email'
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		self.assertFalse(response_body['data']['any_email'])
+
+		"""
+		Create an email and add all participants to it.
+		This time, the new participant should not be included.
+		"""
+		response = self.send_request("POST", "email", {
+			"subject": subject,
+			"body": body,
+			"recipient_group": 'all'
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		id = response_body['data']['id']
+
+		response = self.send_request("GET", "email", {
+			"id": id,
+			"recipients": True
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertTrue('nick@email.com' in response_body['recipients'])
+
+		"""
+		Re-add the participant's subscription.
+		"""
+		response = self.send_request("POST", "subscription", {
+			'username': 'nick',
+			'subscription': 'any_email',
+			'subscribed': True
+		}, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("GET", "subscription", {
+			'username': 'nick',
+			'subscription': 'any_email'
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		self.assertTrue(response_body['data']['any_email'])
+
+		"""
+		Create an email and add all participants to it.
+		The new participant should be included again.
+		"""
+		response = self.send_request("POST", "email", {
+			"subject": subject,
+			"body": body,
+			"recipient_group": 'all'
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		id = response_body['data']['id']
+
+		response = self.send_request("GET", "email", {
+			"id": id,
+			"recipients": True
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertTrue('nick@email.com' in response_body['recipients'])
 
 	@BiobankTestCase.isolated_test
 	def test_create_email_with_unknown_recipient_group(self):

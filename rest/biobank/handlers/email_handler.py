@@ -67,7 +67,16 @@ class EmailHandler(PostgreSQLRouteHandler):
 			if recipient_group is None or recipient_group.lower() == "none":
 				recipient_list = []
 			elif recipient_group.lower() == "subscribed":
-				raise email_exceptions.UnsupportedRecipientGroupException(recipient_group)
+				rows = self._connector.select("""
+					SELECT
+						participants.email
+					FROM
+						participants JOIN participant_subscriptions
+							ON participants.user_id = participant_subscriptions.participant_id
+					WHERE
+						participant_subscriptions.any_email = TRUE
+				""")
+				recipient_list = [ self._decrypt(row['email']) for row in rows ]
 			elif recipient_group.lower() == "all":
 				rows = self._connector.select("""
 					SELECT
