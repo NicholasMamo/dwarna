@@ -129,7 +129,7 @@ abstract class FormHandler {
 	 */
 	protected function validate_required_string($string, $message) {
 		/*
-		 * A erquired string cannot be empty
+		 * A required string cannot be empty
 		 */
 		if (empty($string)) {
 			return new Status(false, $message);
