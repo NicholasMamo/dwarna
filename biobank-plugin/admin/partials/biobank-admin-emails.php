@@ -88,6 +88,8 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 					<label for="<?= $this->plugin_name; ?>-body">Body</label>
 				</th>
 				<td>
+				<input name="<?= $this->plugin_name; ?>[body]"
+					   type="hidden" id="<?= $this->plugin_name; ?>-body-input" aria-required="true">
 				<?php
 					$settings = array(
 						'textarea_rows' => 5,

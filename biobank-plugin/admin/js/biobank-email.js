@@ -85,5 +85,8 @@ function addRecipient(email) {
  * All this function does is copy the HTML content of the body into the accompanying text field.
  */
 function prepareEmail() {
-	jQuery('#email-body-input').val(jQuery('[data-id="biobank-body"]').html());
+	jQuery('#biobank-body-input').val(
+		jQuery('iframe#biobank-body_ifr').contents()
+										 .find('[data-id="biobank-body"]')
+										 .html());
 }
