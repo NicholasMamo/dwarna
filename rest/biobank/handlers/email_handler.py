@@ -72,7 +72,6 @@ class EmailHandler(PostgreSQLRouteHandler):
 						participants
 				""")
 				recipient_list = [ self._decrypt(row['email']) for row in rows ]
-				print(recipient_list)
 			else:
 				raise email_exceptions.UnknownRecipientGroupException(recipient_group)
 
