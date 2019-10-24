@@ -10,6 +10,7 @@
  * @subpackage Biobank/admin
  */
 
+ require_once(plugin_dir_path(__FILE__) . "../client/form/email_form_handler.php");
 require_once(plugin_dir_path(__FILE__) . "../client/request.php");
 
 /**
@@ -194,6 +195,32 @@ class Biobank_Admin {
 	 */
 	public function display_emails_page() {
 		include(plugin_dir_path(__FILE__) . "../includes/globals.php");
+
+		/*
+		 * Pagination setup
+		 */
+		$page = max(1, isset($_GET['paged']) ? $_GET['paged'] : 1); // get the current page number
+		$emails_per_page = 6; // the number of studies per page
+		$search = isset($_GET["search"]) ? $_GET["search"] : ""; // get the search string
+
+		/*
+		 * Fetch existing emails by searching in their names and descriptions.
+		 */
+		$request_handler = new \client\form\EmailFormHandler(); // used to send GET requests to the backend.
+		$existing_emails = $request_handler->search_emails($emails_per_page, $page, $search);
+		$_GET["error"] = empty($_GET["error"]) ? $existing_emails->error : $_GET["error"];
+
+		$emails = $existing_emails->data;
+		$total_emails = isset($existing_emails->total) ? $existing_emails->total : 0;
+
+		$big = 999999999; // need an unlikely integer
+		$pagination = (paginate_links( array(
+			"base" => str_replace( $big, "%#%", get_pagenum_link( $big, false ) ),
+			"format" => "?paged=%#%",
+			"add_fragment" => empty($search) ? "" : "&search=$search",
+			"current" => $page,
+			"total" => ceil($total_emails / $emails_per_page)
+		)));
 
 		wp_enqueue_script( $this->plugin_name . "-email", plugin_dir_url( __FILE__ ) . 'js/biobank-email.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name . "-fontawesome", $fontawesome_kit, array( 'jquery' ), $this->version, false );
