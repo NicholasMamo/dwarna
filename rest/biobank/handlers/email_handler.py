@@ -178,6 +178,8 @@ class EmailHandler(PostgreSQLRouteHandler):
 		:type recipients: bool
 
 		:return: A response with any errors that may arise.
+				 If an ID is provided, a single email is returned if found.
+				 Otherwise, a list of emails is returned.
 		:rtype: :class:`oauth2.web.Response`
 		"""
 
