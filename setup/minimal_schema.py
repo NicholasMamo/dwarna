@@ -211,10 +211,10 @@ def create_schema(database):
 
 		connection.execute("""DROP TABLE IF EXISTS emails CASCADE;""")
 		connection.execute("""CREATE TABLE emails (
-							id				SERIAL			PRIMARY KEY,
-							subject			VARCHAR(1024)	NOT NULL,
-							body			TEXT			NOT NULL,
-							created_at		TIMESTAMP		DEFAULT NOW()
+							id				SERIAL							PRIMARY KEY,
+							subject			VARCHAR(1024)					NOT NULL,
+							body			TEXT							NOT NULL,
+							created_at		TIMESTAMP WITHOUT TIME ZONE		DEFAULT NOW()
 		);""")
 
 		"""
@@ -223,6 +223,7 @@ def create_schema(database):
 		connection.execute("""COMMENT ON COLUMN emails.id IS 'The email''s unique ID and primary key';""")
 		connection.execute("""COMMENT ON COLUMN emails.subject IS 'The subject of the email';""")
 		connection.execute("""COMMENT ON COLUMN emails.body IS 'The body of the email';""")
+		connection.execute("""COMMENT ON COLUMN emails.created_at IS 'The date and time when the email was created, which defaults to the date and time when the row was created.';""")
 
 		"""
 		Create the email recipient relation.
