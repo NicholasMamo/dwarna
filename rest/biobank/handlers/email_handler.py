@@ -235,6 +235,8 @@ class EmailHandler(PostgreSQLRouteHandler):
 			Return the response.
 			"""
 			emails = self._connector.select(sql)
+			for i, email in enumerate(emails):
+				emails[i]['created_at'] = emails[i]['created_at'].timestamp()
 
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
