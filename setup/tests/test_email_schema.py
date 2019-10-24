@@ -18,6 +18,8 @@ import psycopg2
 import minimal_schema
 import unittest
 
+from datetime import datetime
+
 from .environment import *
 from .test import SchemaTestCase
 
@@ -108,6 +110,37 @@ class EmailTests(SchemaTestCase):
 			LIMIT 1
 		""")
 		self.assertEqual(body, stored_body['body'])
+
+	@isolated_test
+	def test_email_created_at(self):
+		"""
+		Test the `created_at` attribute of emails.
+		"""
+
+		subject = 'Ġanni żar lil Ċikku il-Ħamrun'
+
+		current_time = datetime.now()
+		self._connection.execute("""
+			INSERT INTO
+				emails(subject, body)
+			VALUES
+				('%s', '%s')
+		""" % (
+			subject, ''
+		))
+
+		email = self._connection.select_one("""
+			SELECT
+				created_at
+			FROM
+				emails
+			LIMIT 1
+		""")
+		self.assertEqual(current_time.year, email['created_at'].year)
+		self.assertEqual(current_time.month, email['created_at'].month)
+		self.assertEqual(current_time.day, email['created_at'].day)
+		self.assertEqual(current_time.hour, email['created_at'].hour)
+		self.assertEqual(current_time.minute, email['created_at'].minute)
 
 	@isolated_test
 	def test_email_recipients_cascade_on_deletion(self):

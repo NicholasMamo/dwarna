@@ -213,7 +213,8 @@ def create_schema(database):
 		connection.execute("""CREATE TABLE emails (
 							id				SERIAL			PRIMARY KEY,
 							subject			VARCHAR(1024)	NOT NULL,
-							body			TEXT			NOT NULL
+							body			TEXT			NOT NULL,
+							created_at		TIMESTAMP		DEFAULT NOW()
 		);""")
 
 		"""
