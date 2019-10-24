@@ -25,6 +25,8 @@ $plugin_page = $_GET["page"];
 $admin_page = "admin.php?page=$plugin_page";
 $request_handler = new \client\form\StudyFormHandler(); // used to send GET requests to the backend.
 
+// TODO: move this to the function call to clean up template
+
 /*
  * Get the kind of action that is to be performed in this form, if it is explicitly-stated.
  */
