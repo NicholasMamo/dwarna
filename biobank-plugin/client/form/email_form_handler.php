@@ -89,4 +89,38 @@ class EmailFormHandler extends FormHandler {
 		exit;
 	}
 
+	/**
+	 * Search for emails.
+	 *
+	 * Look for emails in the backend.
+	 * Any errors are also stored in the returned array.
+	 *
+	 * @since	1.0.0
+	 * @access	public
+	 * @param	int		$number The number of search results to fetch.
+	 * @param	int		$page The page number from where to resume the search.
+	 * @param	string	$search The search string to use.
+	 * @return	array 	The array containing the parsed response.
+	 */
+	public function search_emails($number, $page, $search) {
+		$endpoint = "email";
+
+		$request = new \client\Request($this->scheme, $this->host, $this->port);
+		$request->add_parameter("number", $number);
+		$request->add_parameter("page", $page);
+		$request->add_parameter("search", $search);
+
+		$response = $request->send_get_request($endpoint);
+		if (! is_wp_error($response)) {
+			$body = json_decode($response["body"]);
+			$body->error = isset($body->error) ? $body->error : "";
+			return $body;
+		} else {
+			$body = new \stdClass();
+			$body->data = array();
+			$body->error = "WordPress could not reach the backend";
+			return $body;
+		}
+	}
+
 }
