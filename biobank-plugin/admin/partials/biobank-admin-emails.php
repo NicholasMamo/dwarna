@@ -106,4 +106,37 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
         <?php submit_button("Send Email", "primary", "submit", TRUE); ?>
     </form>
 
+	<div class="biobank-side">
+		<table class="wp-list-table widefat">
+			<thead>
+				<th scope="col" id="name" class="manage-column column-name column-primary">Existing Emails</th>
+				<th scope="col" id="name" class="manage-column column-name column-primary"></th>
+				<th scope="col" id="name" class="manage-column column-name column-primary"></th>
+			</thead>
+			<tbody>
+			<?php foreach ($emails as $email) { ?>
+				<tr>
+					<th scope="row"><?= $email->subject ?></th>
+					<td><a href="<?= $admin_page ?>&action=update&id=<?= $email->id ?>">Edit</a></td>
+					<td><a href="<?= $admin_page ?>&action=remove&id=<?= $email->id ?>">Remove</a></td>
+				</tr>
+			<?php } ?>
+			</tbody>
+			<tfoot>
+				<th scope="col" id="name" class="manage-column column-name column-primary">Existing Emails</th>
+				<th scope="col" id="name" class="manage-column column-name column-primary"></th>
+				<th scope="col" id="name" class="manage-column column-name column-primary"></th>
+			</tfoot>
+		</table>
+
+		<div class="biobank-footer">
+			<div class="<?= $this->plugin_name ?>-float-left"><?= strlen($pagination) > 0 ? "Pages: " . $pagination : "" ?></div>
+			<form class="<?= $this->plugin_name ?>-simple-form <?= $this->plugin_name ?>-float-right" id="search_form" method="get" name="search_form" action="<?= admin_url($admin_page) ?>">
+				<input name="page" type="hidden" value="<?= $plugin_page ?>" />
+				<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="search" placeholder="Search existing emails..." type="text" value="" aria-required="true"> <?= submit_button("Search", "secondary", $this->plugin_name . "-search") ?>
+			</form>
+		</div>
+
+	</div>
+
 </div>
