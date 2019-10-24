@@ -893,6 +893,89 @@ class EmailManagementTest(BiobankTestCase):
 		response_body = response.json()['data']
 		self.assertEqual(2, len(response_body))
 
+	@BiobankTestCase.isolated_test
+	def test_email_total(self):
+		"""
+		Test getting the total number of emaisl even when filtering or paginating.
+		"""
+
+		token = self._get_access_token(["create_email", "view_email"])["access_token"]
+
+		"""
+		By default, there should be no emails.
+		"""
+		response = self.send_request("GET", "email", { }, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		self.assertEqual(0, response_body['total'])
+
+		"""
+		Create a few emails.
+		"""
+		ids = []
+		for i in range(0, 10):
+			subject = 'Email %s'
+			body = "Body %s"
+
+			response = self.send_request("POST", "email", {
+				"subject": subject % i,
+				"body": body % i
+			}, token)
+			ids.append(response.json()['data']['id'])
+			self.assertEqual(response.status_code, 200)
+
+		"""
+		Now there should be 10 emails.
+		"""
+		response = self.send_request("GET", "email", { }, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		self.assertEqual(10, response_body['total'])
+
+		"""
+		When paginating, the correct total should be returned.
+		"""
+		response = self.send_request("GET", "email", {
+			'number': 4,
+			'page': 3
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		self.assertEqual(10, response_body['total'])
+
+		"""
+		When searching, the correct total should be returned.
+		"""
+		response = self.send_request("GET", "email", {
+			'number': 4,
+			'page': 3,
+			'search': 'email',
+			'case_sensitive': False
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		self.assertEqual(10, response_body['total'])
+
+		"""
+		When the search is narrower, the total should change.
+		"""
+		response = self.send_request("GET", "email", {
+			'number': 4,
+			'page': 3,
+			'search': 'email 1',
+			'case_sensitive': False
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		self.assertEqual(1, response_body['total'])
+
+		response = self.send_request("GET", "email", {
+			'id': ids[0]
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()
+		self.assertEqual(1, response_body['total'])
+
 	"""
 	Email subscription tests.
 	"""

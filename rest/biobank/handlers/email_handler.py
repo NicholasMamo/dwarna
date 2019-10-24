@@ -278,15 +278,32 @@ class EmailHandler(PostgreSQLRouteHandler):
 				)
 
 			"""
-			Return the response.
+			Get the response.
 			"""
 			emails = self._connector.select(sql)
 			for i, email in enumerate(emails):
 				emails[i]['created_at'] = emails[i]['created_at'].timestamp()
 
+			"""
+			Calculate the total number of results.
+			"""
+			sql = """
+				SELECT
+					COUNT(*) AS total
+				FROM
+					emails
+				WHERE
+					TRUE %s
+			"""
+			if filters:
+				sql = sql % ('AND ' + ' AND '.join(filters))
+			else:
+				sql = sql % ''
+			summary = self._connector.select_one(sql)
+
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
-			response.body = json.dumps({ "data": emails[0] if id is not None else emails })
+			response.body = json.dumps({ "total": summary['total'], "data": emails[0] if id is not None else emails })
 		except (email_exceptions.EmailDoesNotExistException) as e:
 			response.status_code = 500
 			response.add_header("Content-Type", "application/json")
