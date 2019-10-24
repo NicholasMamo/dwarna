@@ -165,7 +165,7 @@ class EmailHandler(PostgreSQLRouteHandler):
 
 		return response
 
-	def get_email(self, id=None, recipients=False, *args, **kwargs):
+	def get_email(self, id=None, recipients=False, search="", case_sensitive=False, number=-1, page=1, *args, **kwargs):
 		"""
 		Get the email with the given ID.
 		If no ID is given, all emails are fetched.
@@ -176,6 +176,15 @@ class EmailHandler(PostgreSQLRouteHandler):
 		:type id: str
 		:param recipients: A parameter that specifies whether the email's recipients should be returned.
 		:type recipients: bool
+		:param search: A search string used to look up emails using their subject and body.
+		:type search: str
+		:param case_sensitive: A boolean indicating whether the search should be case sensitive.
+		:type case_sensitive: str
+		:param number: The number of emails to retrieve.
+			If a negative number is provided, all matching emails are retrieved.
+		:type number: str
+		:param page: The page number, used to aid in pagination.
+		:type page: str
 
 		:return: A response with any errors that may arise.
 				 If an ID is provided, a single email is returned if found.
@@ -192,6 +201,10 @@ class EmailHandler(PostgreSQLRouteHandler):
 				if not self._email_exists(id):
 					raise email_exceptions.EmailDoesNotExistException(id)
 
+			number = int(number)
+			page = max(int(page), 1)
+			case_sensitive = case_sensitive == 'True'
+
 			"""
 			The base SQL string returns every email.
 			The placeholder allows modifications to what is returned.
@@ -201,37 +214,68 @@ class EmailHandler(PostgreSQLRouteHandler):
 					emails.* %s
 				FROM
 					emails %s
+				WHERE
+					TRUE %s
 			"""
 
 			"""
-			Filter the emails if an ID is given.
+			Complete the SELECT and FROM fields.
 			"""
-			if id is not None:
-				sql += """
-					WHERE
-						id = %d
-				""" % id
-
 			"""
 			If the recipients are requested, return them as well.
 			"""
 			if recipients:
-				"""
-				Complete the SELECT and FROM fields.
-				"""
 				sql = sql % (
 					", ARRAY_AGG(recipient) AS recipients",
 					"""LEFT JOIN
 						email_recipients
 					ON
-						emails.id = email_recipients.email_id"""
+						emails.id = email_recipients.email_id""",
+					'%s'
 				)
+			else:
+				sql = sql % ('', '', '%s')
+
+			"""
+			Complete the WHERE field.
+			"""
+			filters = []
+
+			"""
+			Filter the emails if an ID is given.
+			"""
+			if id is not None:
+				filters.append(f"id = {id}")
+
+			"""
+			Perform a search if a string is given.
+			"""
+			if search:
+				filters.append(f"(emails.subject %s '%%{search}%%') OR (emails.body %s '%%{search}%%')"
+				% ("LIKE" if case_sensitive else "ILIKE", "LIKE" if case_sensitive else "ILIKE"))
+
+			if filters:
+				sql = sql % ('AND ' + ' AND '.join(filters))
+			else:
+				sql = sql % ''
+
+			"""
+			Add grouping if recipients were requested.
+			"""
+			if recipients:
 				sql += """
 					GROUP BY
 						emails.id
 				"""
-			else:
-				sql = sql % ('', '')
+
+			"""
+			Limit the results if a non-negative number is given.
+			"""
+			if number >= 0:
+				sql += """
+				LIMIT %d OFFSET %d""" % (
+					number, number * (page - 1)
+				)
 
 			"""
 			Return the response.

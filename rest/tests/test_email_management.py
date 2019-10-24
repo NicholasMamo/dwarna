@@ -620,6 +620,280 @@ class EmailManagementTest(BiobankTestCase):
 		self.assertEqual('EmailDoesNotExistException', response_body['exception'])
 
 	"""
+	Filtering tests.
+	"""
+
+	@BiobankTestCase.isolated_test
+	def test_email_limit(self):
+		"""
+		Test limiting the number of emails that are retrieved.
+		"""
+
+		token = self._get_access_token(["create_email", "view_email"])["access_token"]
+
+		"""
+		Create a few emails.
+		"""
+		for i in range(0, 10):
+			subject = 'Email %s'
+			body = "Body %s"
+
+			response = self.send_request("POST", "email", {
+				"subject": subject % i,
+				"body": body % i
+			}, token)
+			self.assertEqual(response.status_code, 200)
+
+		"""
+		By default, if no number is provided, all emails should be returned.
+		"""
+		response = self.send_request("GET", "email", { }, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(10, len(response_body))
+
+		"""
+		Try to get a negative number of emails.
+		This should return all emails.
+		"""
+		response = self.send_request("GET", "email", {
+			'number': -1
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(10, len(response_body))
+
+		"""
+		Try to get zero emails.
+		This should return no emails at all.
+		"""
+		response = self.send_request("GET", "email", {
+			'number': 0
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(0, len(response_body))
+
+		"""
+		Try to get five emails.
+		This should return five emails.
+		"""
+		response = self.send_request("GET", "email", {
+			'number': 5
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(5, len(response_body))
+
+		"""
+		Try to get all emails.
+		This should return all emails.
+		"""
+		response = self.send_request("GET", "email", {
+			'number': 10
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(10, len(response_body))
+
+		"""
+		Try to get more emails than exist.
+		This should return all existing emails.
+		"""
+		response = self.send_request("GET", "email", {
+			'number': 20
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(10, len(response_body))
+
+	@BiobankTestCase.isolated_test
+	def test_email_pagination(self):
+		"""
+		Test paginating emails.
+		"""
+
+		token = self._get_access_token(["create_email", "view_email"])["access_token"]
+
+		"""
+		Create a few emails.
+		"""
+		for i in range(0, 10):
+			subject = 'Email %s'
+			body = "Body %s"
+
+			response = self.send_request("POST", "email", {
+				"subject": subject % i,
+				"body": body % i
+			}, token)
+			self.assertEqual(response.status_code, 200)
+
+		"""
+		Test getting emails from a page that should be empty.
+		"""
+		response = self.send_request("GET", "email", {
+			'number': 1,
+			'page': 11
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(0, len(response_body))
+
+		"""
+		Test getting emails from a non-positive page.
+		This should return the first page.
+		"""
+		response = self.send_request("GET", "email", {
+			'number': 5,
+			'page': -1
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(5, len(response_body))
+
+		"""
+		Test getting emails from the first page.
+		"""
+		response = self.send_request("GET", "email", {
+			'number': 5,
+			'page': 1
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(5, len(response_body))
+
+		"""
+		Test getting emails from the last page.
+		"""
+		response = self.send_request("GET", "email", {
+			'number': 5,
+			'page': 2
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(5, len(response_body))
+
+		"""
+		Test getting emails from the last incomplete page.
+		"""
+		response = self.send_request("GET", "email", {
+			'number': 4,
+			'page': 3
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(2, len(response_body))
+
+	@BiobankTestCase.isolated_test
+	def test_email_search(self):
+		"""
+		Test searching emails.
+		"""
+
+		token = self._get_access_token(["create_email", "view_email"])["access_token"]
+
+		"""
+		Create a few emails.
+		"""
+		for i in range(0, 10):
+			subject = 'Email %s'
+			body = "Body %s"
+
+			response = self.send_request("POST", "email", {
+				"subject": subject % i,
+				"body": body % i
+			}, token)
+			self.assertEqual(response.status_code, 200)
+
+		"""
+		Test searching for a single email with a search string that should match the subject.
+		"""
+		response = self.send_request("GET", "email", {
+			'search': 'Email 1'
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(1, len(response_body))
+
+		"""
+		Test searching for a single email with a search string that should match the body.
+		"""
+		response = self.send_request("GET", "email", {
+			'search': 'Body 1'
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(1, len(response_body))
+
+		"""
+		Test searching for a single email with a case insensitive search string that should match the subject.
+		"""
+		response = self.send_request("GET", "email", {
+			'search': 'email 1',
+			'case_sensitive': False,
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(1, len(response_body))
+
+		"""
+		Test searching for a single email with a case insensitive search string that should match the body.
+		"""
+		response = self.send_request("GET", "email", {
+			'search': 'body 1',
+			'case_sensitive': False,
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(1, len(response_body))
+
+		"""
+		Test searching for a single email with a case sensitive search string that shouldn't match any email.
+		"""
+		response = self.send_request("GET", "email", {
+			'search': 'email 1',
+			'case_sensitive': True,
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(0, len(response_body))
+
+		"""
+		Test searching for a list of emails by looking in the subject.
+		"""
+		response = self.send_request("GET", "email", {
+			'search': 'email',
+			'case_sensitive': False,
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(10, len(response_body))
+
+		"""
+		Test searching for a list of emails by looking in the body.
+		"""
+		response = self.send_request("GET", "email", {
+			'search': 'body',
+			'case_sensitive': False,
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(10, len(response_body))
+
+		"""
+		Test paginating a list of emails.
+		"""
+		response = self.send_request("GET", "email", {
+			'search': 'email',
+			'case_sensitive': False,
+			'number': 4,
+			'page': 3
+		}, token)
+		self.assertEqual(response.status_code, 200)
+		response_body = response.json()['data']
+		self.assertEqual(2, len(response_body))
+
+	"""
 	Email subscription tests.
 	"""
 
