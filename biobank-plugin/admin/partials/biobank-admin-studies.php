@@ -75,7 +75,7 @@ foreach($existing_researchers as $researcher) {
  */
 
 $page = max(1, isset($_GET['paged']) ? $_GET['paged'] : 1); // get the current page number
-$studies_per_page = 5; // the number of studies per page
+$studies_per_page = 6; // the number of studies per page
 $search = isset($_GET["search"]) ? $_GET["search"] : ""; // get the search string
 
 /*
@@ -89,7 +89,7 @@ $total_studies = isset($existing_studies->total) ? $existing_studies->total : 0;
 
 $big = 999999999; // need an unlikely integer
 $pagination = (paginate_links( array(
-	"base" => str_replace( $big, "%#%", get_pagenum_link( get_pagenum_link( $big ) ) ),
+	"base" => str_replace( $big, "%#%", get_pagenum_link( $big, false ) ),
 	"format" => "?paged=%#%",
 	"add_fragment" => empty($search) ? "" : "&search=$search",
 	"current" => $page,
