@@ -166,6 +166,57 @@ class Biobank_Admin {
 	 * @since	1.0.0
 	 */
 	public function display_research_partners_page() {
+		/*
+		 * Fetch existing research partners by searching in their usernames.
+		 */
+		$search = isset($_GET["search"]) ? $_GET["search"] : "";
+		$existing_research_partners = get_users(array(
+			"role" => "participant",
+			"number" => Biobank_Admin::ITEMS_PER_PAGE,
+			"paged" => max(1, isset($_GET['paged']) ? $_GET['paged'] : 1),
+			"search" => "*$search*",
+			"search_columns" => array("user_login")
+		));
+
+		/*
+		 * Count the number of users that fit the search string.
+		 * This information is used to create a pagination.
+		 */
+		$query = new WP_User_Query(array(
+			"role" => "participant",
+			"search" => "*$search*",
+			"search_columns" => array("user_login"),
+		));
+		$total_users = $query->get_total(); // the total number of users
+		$pagination = $this->setup_pagination($total_users);
+
+		/*
+		 * Get the kind of action that is to be performed in this form, if it is explicitly-stated.
+		 * Also fetch other information about the page.
+		 */
+		$action = isset($_GET["action"]) ? $_GET["action"] : "create";
+		$plugin_page = $_GET["page"];
+		$admin_page = "admin.php?page=$plugin_page";
+
+		/*
+		 * Fetch the user being edited or removed if a username is given.
+		 */
+		$username = isset($_GET["username"]) ? $_GET["username"] : "";
+		$user = get_user_by("login", $username);
+		if ($user) {
+			/*
+			 * If a user was provided, decrypt their email address.
+			 */
+
+			$decoded = base64_decode($user->user_email);
+			$cipherNonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
+			$cipherText = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
+			$email = sodium_crypto_secretbox_open($cipherText, $cipherNonce, $encryptionKey);
+			$user->user_email = $email;
+		}
+
+		$action = $user ? $action : "create";
+
 		include_once(plugin_dir_path(__FILE__) . "partials/biobank-admin-research-partners.php");
 	}
 
