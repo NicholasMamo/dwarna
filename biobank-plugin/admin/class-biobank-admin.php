@@ -327,14 +327,11 @@ class Biobank_Admin {
 		/*
 		 * Load existing researchers to populate the fields.
 		 */
-		$existing_researchers = get_users(array(
+		$researchers = array_map(function($researcher) {
+			return $researcher->display_name;
+		}, get_users(array(
 			"role" => "researcher"
-		));
-
-		$researchers = array();
-		foreach($existing_researchers as $researcher) {
-			$researchers[$researcher->user_login] = $researcher->display_name;
-		}
+		)));
 
 		$plugin_page = $_GET["page"];
 		$admin_page = "admin.php?page=$plugin_page";
