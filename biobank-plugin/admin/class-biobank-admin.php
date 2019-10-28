@@ -222,6 +222,9 @@ class Biobank_Admin {
 			"total" => ceil($total_emails / $emails_per_page)
 		)));
 
+		$plugin_page = $_GET["page"];
+		$admin_page = "admin.php?page=$plugin_page";
+
 		wp_enqueue_script( $this->plugin_name . "-email", plugin_dir_url( __FILE__ ) . 'js/biobank-email.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name . "-fontawesome", $fontawesome_kit, array( 'jquery' ), $this->version, false );
 		include_once(plugin_dir_path(__FILE__) . "partials/biobank-admin-emails.php");
