@@ -147,8 +147,6 @@ class ParticipantFormHandler extends UserFormHandler {
 					$request->add_parameter("password", $input["password"]);
 					$request->add_parameter("email", $input["email"]);
 					$response = $request->send_post_request($endpoint, $method='PUT');
-					var_dump($response);
-					exit;
 
 					if (! is_wp_error($response)) {
 						$body = json_decode($response["body"]);
