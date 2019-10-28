@@ -44,6 +44,15 @@ class Biobank_Admin {
 	private $version;
 
 	/**
+	 * The maximum number of items to show in every pagination page.
+	 *
+	 * @since	1.0.0
+	 * @access	private
+	 * @var		int		ITEMS_PER_PAGE	The maximum number of items to show in every paginatio page.
+	 */
+	private const ITEMS_PER_PAGE = 10;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -169,7 +178,7 @@ class Biobank_Admin {
 		include_once(plugin_dir_path(__FILE__) . "partials/biobank-admin-researchers.php");
 	}
 
-	/**
+	/**$search
 	 * Display the study management page.
 	 *
 	 * @since	1.0.0
@@ -197,30 +206,18 @@ class Biobank_Admin {
 		include(plugin_dir_path(__FILE__) . "../includes/globals.php");
 
 		/*
-		 * Pagination setup
-		 */
-		$page = max(1, isset($_GET['paged']) ? $_GET['paged'] : 1); // get the current page number
-		$emails_per_page = 6; // the number of studies per page
-		$search = isset($_GET["search"]) ? $_GET["search"] : ""; // get the search string
-
-		/*
 		 * Fetch existing emails by searching in their names and descriptions.
 		 */
 		$request_handler = new \client\form\EmailFormHandler(); // used to send GET requests to the backend.
-		$existing_emails = $request_handler->search_emails($emails_per_page, $page, $search);
+		$existing_emails = $request_handler->search_emails(
+			Biobank_Admin::ITEMS_PER_PAGE,
+			max(1, isset($_GET['paged']) ? $_GET['paged'] : 1),
+			isset($_GET["search"]) ? $_GET["search"] : "");
 		$_GET["error"] = empty($_GET["error"]) ? $existing_emails->error : $_GET["error"];
 
 		$emails = $existing_emails->data;
 		$total_emails = isset($existing_emails->total) ? $existing_emails->total : 0;
-
-		$big = 999999999; // need an unlikely integer
-		$pagination = (paginate_links( array(
-			"base" => str_replace( $big, "%#%", get_pagenum_link( $big, false ) ),
-			"format" => "?paged=%#%",
-			"add_fragment" => empty($search) ? "" : "&search=$search",
-			"current" => $page,
-			"total" => ceil($total_emails / $emails_per_page)
-		)));
+		$pagination = $this->setup_pagination($total_emails);
 
 		$plugin_page = $_GET["page"];
 		$admin_page = "admin.php?page=$plugin_page";
@@ -439,6 +436,33 @@ class Biobank_Admin {
 		$valid[$this->plugin_name . "-port"] = isset($input["port"]) && !empty($input["port"]) ? $input["port"] : "8080";
 
 		return $valid;
+	}
+
+	/**
+	 * Set up the pagination.
+	 *
+	 * @since	1.0.0
+	 * @access	private
+	 * @param	int		$total The total number of items, used to calculate the number of pages.
+	 * @return	array	The array containing the pagination data.
+	 */
+	private function setup_pagination($total) {
+		/*
+		 * Pagination setup
+		 */
+		$page = max(1, isset($_GET['paged']) ? $_GET['paged'] : 1); // get the current page number
+		$items_per_page = Biobank_Admin::ITEMS_PER_PAGE; // the number of items per page
+		$search = isset($_GET["search"]) ? $_GET["search"] : ""; // get the search string
+
+		$big = 999999999; // need an unlikely integer
+		$pagination = (paginate_links( array(
+			"base" => str_replace( $big, "%#%", get_pagenum_link( $big, false ) ),
+			"format" => "?paged=%#%",
+			"add_fragment" => empty($search) ? "" : "&search=$search",
+			"current" => $page,
+			"total" => ceil($total / $items_per_page)
+		)));
+		return $pagination;
 	}
 
 }
