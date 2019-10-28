@@ -78,10 +78,10 @@ $auth_url = "http://localhost:3000/auth/local-wordpress";
 $token_endpoint = "token";
 
 /*
- * Page information and permissions.
+ * Page information and menu visibility.
  * These pages are created by the plugin upon activated, and removed when de-activated.
- * By default, pages are visible by everyone.
- * These permissions are used by the `wp_get_nav_menu_items` filter to hide pages.
+ * By default, pages are visible by everyone in the menu.
+ * These permissions are used by the `wp_get_nav_menu_items` filter to hide pages in the menu.
  */
 $plugin_pages = array(
 	"biobank-consent" => array(
@@ -93,7 +93,7 @@ $plugin_pages = array(
 			"post_author" => 1,
 			"post_type" => "page",
 		),
-		"permissions" => array(
+		"menu_visibility" => array(
 			"participant", "administrator",
 		)
 	),
@@ -106,7 +106,7 @@ $plugin_pages = array(
 			"post_author" => 1,
 			"post_type" => "page",
 		),
-		"permissions" => array( )
+		"menu_visibility" => array( )
 	)
 );
 

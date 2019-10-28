@@ -312,7 +312,7 @@ class Biobank_Public {
 				if (\is_user_logged_in()) {
 					$user = wp_get_current_user();
 					$role = $user->roles[0];
-					if (! count(array_intersect($user->roles, $plugin_pages[$slug]["permissions"]))) {
+					if (! count(array_intersect($user->roles, $plugin_pages[$slug]["menu_visibility"]))) {
 						unset($items[$id]);
 					}
 				} else {
