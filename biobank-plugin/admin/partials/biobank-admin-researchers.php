@@ -13,65 +13,6 @@
 require_once(plugin_dir_path(__FILE__) . "ui/buttons.php");
 require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 
-/*
- * Get the page's name, and copy the session variables into the query string container.
- * Then, clear the session variables.
- */
-$plugin_page = $_GET["page"];
-$admin_page = "admin.php?page=$plugin_page";
-
-/*
- * Get the kind of action that is to be performed in this form, if it is explicitly-stated.
- */
-$action = isset($_GET["action"]) ? $_GET["action"] : "create";
-
-/*
- * Fetch the user if a username is given.
- */
-$username = isset($_GET["username"]) ? $_GET["username"] : "";
-$user = get_user_by("login", $username);
-$user_meta = $user ? get_user_meta($user->data->ID) : array();
-$action = $user ? $action : "create";
-
-/*
- * Pagination setup
- */
-
-$page = max(1, isset($_GET['paged']) ? $_GET['paged'] : 1); // get the current page number
-$users_per_page = 6; // the number of users per page
-$search = isset($_GET["search"]) ? $_GET["search"] : ""; // get the search string
-
-/*
- * Fetch existing researchers by searching in their usernames.
- */
-$existing_researchers = get_users(array(
-	"role" => "researcher",
-	"number" => $users_per_page,
-	"paged" => $page,
-	"search" => "*$search*",
-	"search_columns" => array("user_login")
-));
-
-/*
- * Count the number of users that fit the search string.
- * This information is used to create a pagination.
- */
-$query = new WP_User_Query(array(
-	"role" => "researcher",
-	"search" => "*$search*",
-	"search_columns" => array("user_login"),
-));
-$total_users = $query->get_total(); // the total number of users
-
-$big = 999999999; // need an unlikely integer
-$pagination = (paginate_links( array(
-	"base" => str_replace( $big, "%#%", get_pagenum_link( get_pagenum_link( $big ) ) ),
-	"format" => "?paged=%#%",
-	"add_fragment" => empty($search) ? "" : "&search=$search",
-	"current" => $page,
-	"total" => ceil($total_users / $users_per_page)
-)));
-
 ?>
 
 <div class="wrap">
