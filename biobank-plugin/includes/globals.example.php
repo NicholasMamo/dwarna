@@ -106,9 +106,7 @@ $plugin_pages = array(
 			"post_author" => 1,
 			"post_type" => "page",
 		),
-		"permissions" => array(
-			"participant", "administrator",
-		)
+		"permissions" => array( )
 	)
 );
 
