@@ -314,6 +314,8 @@ class Biobank_Public {
 					if (! in_array($role, $plugin_pages[$slug]["permissions"])) {
 						unset($items[$id]);
 					}
+				} else {
+					unset($items[$id]);
 				}
 			}
 		}
