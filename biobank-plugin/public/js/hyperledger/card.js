@@ -28,6 +28,12 @@ const host = `${window.location.protocol}//${window.location.hostname}`;
 const ajax_base_path = `${host}/wordpress/wp-content/plugins/biobank-plugin/public/ajax/`;
 
 /**
+ * A boolean that indicates whether the page is preparing to navigate.
+ * If it is, further clicks to visit study pages are disabled.
+ */
+var navigating = false;
+
+/**
  * Sleep for a number of milliseconds.
  *
  * From: https://stackoverflow.com/a/39914235
@@ -131,33 +137,35 @@ jQuery('.study-consent').length && jQuery('.study-consent').ready(() => {
  */
 function getCard(element, study_id) {
 	/*
-	 * Whenever a study is opened, get the card.
-	 * Otherwise, do nothing.
+	 * If the user clicks on a study, get the card only if another card is not being fetched.
+	 * This ensures that the research partner does not load one card and use it in the wrong study.
 	 */
-	console.log(`Getting card for study ${study_id}`);
-
-	jQuery.get(`${ajax_base_path}get_username.php`).then(function(response) {
-		/*
-		* First get the user's username.
-		* TODO: Check the user role as well.
-		*
-		* If the user is logged in, check whether they have a temporary card for this study.
-		* If they do not, a new card is created instead.
-		*/
-		if (response) {
-			username = response;
-			loadCard(study_id);
-		} else {
+	if (! navigating) {
+		navigating = true;
+		console.log(`Getting card for study ${study_id}`);
+		jQuery.get(`${ajax_base_path}get_username.php`).then(function(response) {
 			/*
-			 * If the user is not logged in, check if they have an access token.
-			 * If they do, clear that token and refresh the page for the change to take effect.
-			 */
-			if (getCookie(hyperledger_access_token)) {
-				setCookie(hyperledger_access_token, "", 0);
-				location.reload();
+			* First get the user's username.
+			* TODO: Check the user role as well.
+			*
+			* If the user is logged in, check whether they have a temporary card for this study.
+			* If they do not, a new card is created instead.
+			*/
+			if (response) {
+				username = response;
+				loadCard(study_id);
+			} else {
+				/*
+				 * If the user is not logged in, check if they have an access token.
+				 * If they do, clear that token and refresh the page for the change to take effect.
+				 */
+				if (getCookie(hyperledger_access_token)) {
+					setCookie(hyperledger_access_token, "", 0);
+					location.reload();
+				}
 			}
-		}
-	});
+		});
+	}
 }
 
 /**
