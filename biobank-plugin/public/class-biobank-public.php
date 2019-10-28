@@ -292,7 +292,8 @@ class Biobank_Public {
 
 	/**
 	 * A filter function that modifies the visibility of certain menu pages.
-	 * This can be used to filter out pages that are not
+	 * This can be used to filter out pages that should not be accessible directly.
+	 * Note that this affects only visibility, not access permissions.
 	 */
 	public function set_menu_visibility($items, $menu, $args) {
 		include(plugin_dir_path(__FILE__) . "../includes/globals.php");
@@ -311,7 +312,7 @@ class Biobank_Public {
 				if (\is_user_logged_in()) {
 					$user = wp_get_current_user();
 					$role = $user->roles[0];
-					if (! in_array($role, $plugin_pages[$slug]["permissions"])) {
+					if (! count(array_intersect($user->roles, $plugin_pages[$slug]["permissions"]))) {
 						unset($items[$id]);
 					}
 				} else {
