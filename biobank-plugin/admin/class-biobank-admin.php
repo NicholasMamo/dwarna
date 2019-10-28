@@ -269,12 +269,76 @@ class Biobank_Admin {
 		include_once(plugin_dir_path(__FILE__) . "partials/biobank-admin-researchers.php");
 	}
 
-	/**$search
+	/**
 	 * Display the study management page.
 	 *
 	 * @since	1.0.0
 	 */
 	public function display_studies_page() {
+		/*
+		 * Get the kind of action that is to be performed in this form, if it is explicitly-stated.
+		 */
+		$action = isset($_GET["action"]) ? $_GET["action"] : "create";
+
+		/*
+		 * Fetch existing studies by searching in their names and descriptions.
+		 */
+		$search = isset($_GET["search"]) ? $_GET["search"] : ""; // get the search string
+		$request_handler = new \client\form\StudyFormHandler(); // used to send GET requests to the backend.
+		$existing_studies = $request_handler->search_studies(
+			Biobank_Admin::ITEMS_PER_PAGE,
+			max(1, isset($_GET['paged']) ? $_GET['paged'] : 1),
+			$search);
+		$_GET["error"] = empty($_GET["error"]) ? $existing_studies->error : $_GET["error"];
+
+		$studies = $existing_studies->data;
+		$total_studies = isset($existing_studies->total) ? $existing_studies->total : 0;
+
+		$pagination = $this->setup_pagination($total_studies);
+
+		/*
+		 * Fetch the study if an ID is given.
+		 */
+		if (isset($_GET["study_id"])) {
+			$study_id = (int) $_GET["study_id"];
+			$study_info = $request_handler->get_study($study_id);
+			/*
+			 * If an error arises, switch to the creation workflow.
+			 */
+			if (! empty($study->error)) {
+				$action = "create";
+				if (empty($error)) {
+					$error = $study->error;
+				}
+			} else {
+				$study = $study_info->study; // extract the study
+
+				/*
+				 * Extract the researchers, loading their information from WordPress.
+				 */
+				$study_researchers_info = $study_info->researchers;
+				$study_researchers = array();
+				foreach ($study_researchers_info as $researcher) {
+					$study_researchers[$researcher->user_id] = get_user_by("login", $researcher->user_id)->display_name;
+				}
+			}
+		}
+
+		/*
+		 * Load existing researchers to populate the fields.
+		 */
+		$existing_researchers = get_users(array(
+			"role" => "researcher"
+		));
+
+		$researchers = array();
+		foreach($existing_researchers as $researcher) {
+			$researchers[$researcher->user_login] = $researcher->display_name;
+		}
+
+		$plugin_page = $_GET["page"];
+		$admin_page = "admin.php?page=$plugin_page";
+
 		include_once(plugin_dir_path(__FILE__) . "partials/biobank-admin-studies.php");
 	}
 
