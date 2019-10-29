@@ -146,8 +146,6 @@ function getCard(element, study_id) {
 		jQuery.get(`${ajax_base_path}get_username.php`).then(function(response) {
 			/*
 			* First get the user's username.
-			* TODO: Check the user role as well.
-			*
 			* If the user is logged in, check whether they have a temporary card for this study.
 			* If they do not, a new card is created instead.
 			*/
