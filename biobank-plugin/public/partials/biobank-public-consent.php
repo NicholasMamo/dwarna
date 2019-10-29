@@ -19,7 +19,7 @@ $refresh = (isset($_GET["return"]) && $_GET["return"] == "update_consent");
 
 	<ul>
 	<?php foreach ($active_studies->data as $study) {?>
-		<li><a href='#' onclick='getCard(this, <?= $study->study->study_id ?>); return false;'><?= $study->study->name ?></a></li>
+		<li><a href='#' onclick='getCard(this, "<?= $study->study->study_id ?>"); return false;'><?= $study->study->name ?></a></li>
 	<?php } ?>
 	</ul>
 </div>
