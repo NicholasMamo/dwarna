@@ -5,6 +5,7 @@ The route handler to handle study-related requests.
 from datetime import datetime
 import os
 import json
+import psycopg2
 import sys
 import threading
 import traceback
@@ -284,6 +285,8 @@ class StudyHandler(PostgreSQLRouteHandler):
 				)
 
 			rows = self._connector.select(query)
+			for row in rows:
+				del row[psycopg2.extras.RealDictRow]
 
 			total = self._connector.count("""
 				SELECT COUNT(*)
