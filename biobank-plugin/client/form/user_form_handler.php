@@ -267,9 +267,10 @@ class ParticipantFormHandler extends UserFormHandler {
 		$endpoint = "has_card"; // the REST API's endpoint
 
 		/*
-		 * For security purposes, ensure that the user can // TODO: Complete.
+		 * For security purposes, ensure that the user can update their consent.
+		 * If they can update consent, they have a card that they can access.
 		 */
-		if (current_user_can("biobank_create_participant") || true) { // TODO: Create new capability.
+		if (current_user_can("biobank_update_consent")) {
 			/*
 			 * Create a request and fetch the response
 			 */
@@ -312,9 +313,10 @@ class ParticipantFormHandler extends UserFormHandler {
 		$endpoint = "get_card"; // the REST API's endpoint
 
 		/*
-		 * For security purposes, ensure that the user can // TODO: Complete.
+		 * For security purposes, ensure that the user can update their consent.
+		 * If they can update consent, they have a card that they can access.
 		 */
-		if (current_user_can("biobank_create_participant") || true) { // TODO: Create new capability.
+		if (current_user_can("biobank_update_consent")) {
 			/*
 			 * Create a request and fetch the response
 			 */
@@ -358,9 +360,10 @@ class ParticipantFormHandler extends UserFormHandler {
 		$endpoint = "save_cred_card"; // the REST API's endpoint
 
 		/*
-		 * For security purposes, ensure that the user can // TODO: Complete.
+		 * For security purposes, ensure that the user can update their consent.
+		 * If they can update consent, they have a card that they can access.
 		 */
-		if (current_user_can("biobank_create_participant") || true) { // TODO: Create new capability.
+		if (current_user_can("biobank_update_consent")) {
 			/*
 			 * Create a request and fetch the response
 			 */

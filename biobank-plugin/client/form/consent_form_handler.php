@@ -124,7 +124,7 @@ class ConsentFormHandler extends StudyHandler {
 			/*
 			 * For security purposes, ensure that the user can indeed update consent.
 			 */
-			if (current_user_can("update_consent") && isset($_POST["biobank"])) {
+			if (current_user_can("biobank_update_consent") && isset($_POST["biobank"])) {
 				/*
 				 * If the user has the necessary permissions, save the consent data to the session.
 				 */
@@ -164,7 +164,7 @@ class ConsentFormHandler extends StudyHandler {
 			/*
 			 * For security purposes, ensure that the user can indeed update consent.
 			 */
-			if (current_user_can("update_consent") && isset($_POST["biobank"])) {
+			if (current_user_can("biobank_update_consent") && isset($_POST["biobank"])) {
 				$error = '';
 				$give_endpoint = "give_consent";
 				$withdraw_endpoint = "withdraw_consent";
