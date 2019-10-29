@@ -60,9 +60,6 @@ class StudyHandler(PostgreSQLRouteHandler):
 			researchers = [] if researchers is None else researchers
 			researchers = self._sanitize_list(researchers)
 
-			# TODO: Error-handling.
-			self._blockchain_connector.create_study(study_id)
-
 			"""
 			Validate the data.
 			"""
@@ -72,6 +69,8 @@ class StudyHandler(PostgreSQLRouteHandler):
 			for researcher in researchers:
 				if not self._researcher_exists(researcher):
 					raise user_exceptions.ResearcherDoesNotExistException()
+
+			self._blockchain_connector.create_study(study_id)
 
 			"""
 			Create the study.
