@@ -22,6 +22,7 @@ from oauth2.web import Response
 
 import psycopg2
 
+from . import hyperledger_exceptions
 from .. import BlockchainAPI
 from config import blockchain
 
@@ -429,6 +430,11 @@ class HyperledgerAPI(BlockchainAPI):
 		:param port: The port to use when issuing the identity.
 			By default, the request is made to the admin REST API endpoint.
 		:type port: int
+
+		:return: The response content.
+		:rtype: dict
+
+		:raises: :class:`biobank.handlers.blockchain.api.hyperledger.hyperledger_exceptions`
 		"""
 
 		port = self._default_admin_port if port is None else port
@@ -438,6 +444,10 @@ class HyperledgerAPI(BlockchainAPI):
 			"$class": "org.consent.model.Study",
 			"studyID": study_id,
 		})
+		body = response.json()
+		if 'error' in body:
+			if 'already exists' in body['error']['message']:
+				raise hyperledger_exceptions.StudyAssetExistsException(study_id)
 		return response.content
 
 	"""

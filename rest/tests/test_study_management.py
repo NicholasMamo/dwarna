@@ -15,6 +15,7 @@ if path not in sys.path:
 
 import main
 
+from biobank.handlers.blockchain.api.hyperledger import hyperledger_exceptions
 from biobank.handlers.exceptions import general_exceptions, study_exceptions, user_exceptions
 from server.exceptions import request_exceptions
 
@@ -91,6 +92,49 @@ class StudyManagementTest(BiobankTestCase):
 		body = response.json()
 		self.assertEqual(response.status_code, 500)
 		self.assertEqual(body["exception"], study_exceptions.StudyExistsException.__name__)
+
+	@BiobankTestCase.isolated_test
+	def test_create_duplicate_blockchain_study(self):
+		"""
+		Test creating a study that already exists in the blockchain, but not in the database.
+		"""
+
+		token = self._get_access_token(["create_study", "remove_study"])["access_token"]
+		study_id = self._generate_study_name()
+
+		response = self.send_request("POST", "study", {
+			"study_id": study_id,
+			"name": "ALS",
+			"description": "ALS Study",
+			"homepage": "http://um.edu.mt",
+			"researchers": [],
+		}, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		Delete the study.
+		This removes the study information from the database, but not from the blockchain.
+		"""
+		response = self.send_request("DELETE", "study", {
+			"study_id": study_id,
+		}, token)
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		Re-create the study with the same ID.
+		This ID is taken in the blockchain.
+		"""
+		response = self.send_volatile_request("POST", "study", {
+			"study_id": study_id,
+			"name": "ALS",
+			"description": "ALS Study",
+			"homepage": "http://um.edu.mt",
+			"researchers": [],
+		}, token, 500)
+		body = response.json()
+		self.assertEqual(response.status_code, 500)
+		self.assertEqual(body["exception"], hyperledger_exceptions.StudyAssetExistsException.__name__)
 
 	@BiobankTestCase.isolated_test
 	def test_create_study_with_inexistent_researchers(self):
