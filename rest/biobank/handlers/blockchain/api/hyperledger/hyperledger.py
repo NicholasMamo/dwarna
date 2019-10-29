@@ -14,7 +14,7 @@ import urllib
 import uuid
 
 path = sys.path[0]
-path = os.path.join(path, "..", "..", '..')
+path = os.path.join(path, "..", "..", '..', '..')
 if path not in sys.path:
 	sys.path.insert(1, path)
 
@@ -22,7 +22,7 @@ from oauth2.web import Response
 
 import psycopg2
 
-from . import BlockchainAPI
+from .. import BlockchainAPI
 from config import blockchain
 
 class HyperledgerAPI(BlockchainAPI):

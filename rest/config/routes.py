@@ -5,7 +5,7 @@ from biobank.handlers.email_handler import EmailHandler
 from biobank.handlers.participant_handler import ParticipantHandler
 from biobank.handlers.researcher_handler import ResearcherHandler
 from biobank.handlers.study_handler import StudyHandler
-from biobank.handlers.blockchain.api.hyperledger import HyperledgerAPI
+from biobank.handlers.blockchain.api.hyperledger import hyperledger
 
 from connection.db_connection import PostgreSQLConnection
 
@@ -45,7 +45,7 @@ consent_handler_class = ConsentHandler
 :vartype consent_handler_class: :class:`biobank.handler.RouteHandler`
 """
 
-blockchain_handler_class = HyperledgerAPI
+blockchain_handler_class = hyperledger.HyperledgerAPI
 """
 :var blockchain_handler_class: The handler that receives route parameters and services requests related to blockchain-specific functions.
 :vartype blockchain_handler_class: :class:`biobank.blockchain.api.BlockchainAPI`
