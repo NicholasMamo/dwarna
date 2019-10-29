@@ -11,7 +11,7 @@ $biobanker_capabilities = array(
 	"biobank_create_researcher", "biobank_edit_researcher", "biobank_remove_researcher",
 	"biobank_create_study", "biobank_edit_study", "biobank_remove_study",
 	"biobank_send_email", "biobank_settings",
-	"update_consent", "view_consent",
+	"biobank_update_consent", "biobank_view_consent",
 );
 
 $researcher_capabilities = array(
@@ -21,7 +21,7 @@ $researcher_capabilities = array(
 
 $participant_capabilities = array(
     "biobank_view_profile",
-	"update_consent", "view_consent",
+	"biobank_update_consent", "biobank_view_consent",
 );
 
 /*
