@@ -208,15 +208,10 @@ class Biobank_Public {
 					$quiz = json_decode($contents);
 
 					/*
-					 * TODO: Create a new function.
+					 * Load the study.
 					 */
-					$studies = (new \client\form\ConsentFormHandler())->get_active_studies();
-					foreach ($studies->data as $study) {
-						if ($study->study->study_id == $_SESSION['study_id']) {
-							include_once(plugin_dir_path(__FILE__) . "partials/biobank-public-study.php");
-							break;
-						}
-					}
+					$study = (new \client\form\StudyFormHandler())->get_study($_SESSION['study_id']);
+					include_once(plugin_dir_path(__FILE__) . "partials/biobank-public-study.php");
 				}
 			}
 		}
