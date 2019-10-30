@@ -86,8 +86,7 @@ class ParticipantFormHandler extends UserFormHandler {
 							);
 
 							$user_id = wp_insert_user($user_data);
-							// TODO delete the participant in the backend
-							$error = is_wp_error($user_id) ? "WordPress could not create the participant" : ""; // this error could be due to duplicate usernames or emails
+							$error = is_wp_error($user_id) ? "WordPress could not create the participant" : "";
 						}
 					} else {
 						/*
@@ -172,7 +171,6 @@ class ParticipantFormHandler extends UserFormHandler {
 							}
 
 							$user_id = wp_insert_user($user_data);
-							// TODO delete the participant in the backend?
 							$error = is_wp_error($user_id) ? "WordPress could not update the participant" : ""; // this error could be due to duplicate usernames or emails
 						}
 					} else {
@@ -487,7 +485,6 @@ class ResearcherFormHandler extends UserFormHandler {
 							$user_id = wp_insert_user($user_data);
 							update_user_meta($user_id, "affiliation", $input["affiliation"]);
 							update_user_meta($user_id, "role", $input["role"]);
-							// TODO delete the researcher in the backend
 							$error = is_wp_error($user_id) ? "WordPress could not create the researcher" : ""; // this error could be due to duplicate usernames or emails
 						}
 					} else {
@@ -560,7 +557,6 @@ class ResearcherFormHandler extends UserFormHandler {
 
 					/*
 					 * Only update the password if it is not empty.
-					 * TODO: Update the backend password.
 					 */
 					if ($input["password"] != "") {
 						$user_data["user_pass"] = wp_hash_password($input["password"]);
@@ -569,7 +565,6 @@ class ResearcherFormHandler extends UserFormHandler {
 					$user_id = wp_insert_user($user_data);
 					update_user_meta($user_id, "affiliation", $input["affiliation"]);
 					update_user_meta($user_id, "role", $input["role"]);
-					// TODO delete the researcher in the backend?
 					$error = is_wp_error($user_id) ? "WordPress could not update the researcher" : ""; // this error could be due to duplicate usernames or emails
 				}
 			}
