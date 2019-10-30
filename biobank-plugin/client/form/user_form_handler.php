@@ -86,6 +86,10 @@ class ParticipantFormHandler extends UserFormHandler {
 							);
 
 							$user_id = wp_insert_user($user_data);
+							/*
+							 * Hash the email address to use it as a reverse index.
+							 */
+							update_user_meta($user_id, 'hashed_email', hash('sha256', $input['email']));
 							$error = is_wp_error($user_id) ? "WordPress could not create the participant" : "";
 						}
 					} else {
@@ -171,6 +175,10 @@ class ParticipantFormHandler extends UserFormHandler {
 							}
 
 							$user_id = wp_insert_user($user_data);
+							/*
+							 * Hash the email address to use it as a reverse index.
+							 */
+							update_user_meta($user_id, 'hashed_email', hash('sha256', $input['email']));
 							$error = is_wp_error($user_id) ? "WordPress could not update the participant" : ""; // this error could be due to duplicate usernames or emails
 						}
 					} else {
