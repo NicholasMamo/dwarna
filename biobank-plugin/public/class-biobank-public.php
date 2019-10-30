@@ -289,8 +289,14 @@ class Biobank_Public {
 	 * A filter function that modifies the visibility of certain menu pages.
 	 * This can be used to filter out pages that should not be accessible directly.
 	 * Note that this affects only visibility, not access permissions.
+	 *
+	 * @since	1.0.0
+	 * @access	public
+	 * @param	array	$items	The menu items.
+	 * @param	array	$args	Any other arguments.
+	 * @return	array	The filtered menu items.
 	 */
-	public function set_menu_visibility($items, $menu, $args) {
+	public function set_menu_visibility($items, $args) {
 		include(plugin_dir_path(__FILE__) . "../includes/globals.php");
 		foreach ($items as $id => $item) {
 			/*
@@ -316,6 +322,37 @@ class Biobank_Public {
 			}
 		}
 		return $items;
+	}
+
+	/**
+	 * When a user attempts to log in, check if they are logging in using their email address.
+	 * If they are, try to encrypt it in case this is a research partner.
+	 *
+	 * @since	1.0.0
+	 * @access	public
+	 * @param	string	$username	The username used to log in.
+	 *								This can either be an actual username or an email address.
+	 */
+	public function encrypt_email_for_login(&$username) {
+		/*
+		 * Only proceed if the 'username' is actually an email address.
+		 */
+		if (is_email($username)) {
+			/*
+			 * If there is already a user associated with the given email address, proceed normally.
+			 */
+			if (get_user_by("email", $username)) {
+				return;
+			}
+
+			/*
+			 * Otherwise, hash the email address and check if any user has the same hashed email address.
+			 */
+			$users = get_users(array('meta_key' => 'hashed_email', 'meta_value' => hash('sha256', $username)));
+			if (count($users)) {
+				$username = $users[0]->data->user_login;
+			}
+		}
 	}
 
 	/**

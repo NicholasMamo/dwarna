@@ -226,6 +226,9 @@ class Biobank {
 		$this->loader->add_action( 'init', $plugin_public, 'register_shortcodes' );
 		$this->loader->add_action( 'init', $plugin_public, 'init' );
 
+		$this->loader->add_action('wp_authenticate', $plugin_public, 'encrypt_email_for_login');
+		add_action( 'wp_authenticate', 'wp_authenticate_by_email' );
+
 		$this->loader->add_filter( 'wp_get_nav_menu_items', $plugin_public, 'set_menu_visibility', 10, 3 );
 		$this->loader->add_filter('http_api_curl', $this, 'set_curl_timeout', 10, 3);
 
