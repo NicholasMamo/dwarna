@@ -301,7 +301,7 @@ class Biobank_Admin {
 		 * Fetch the study if an ID is given.
 		 */
 		if (isset($_GET["study_id"])) {
-			$study_id = (int) $_GET["study_id"];
+			$study_id = $_GET["study_id"];
 			$study_info = $request_handler->get_study($study_id);
 			/*
 			 * If an error arises, switch to the creation workflow.
