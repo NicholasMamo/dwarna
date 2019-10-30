@@ -728,3 +728,123 @@ class ConsentManagementTest(BiobankTestCase):
 			body = response.json()
 			self.assertEqual(response.status_code, 200)
 			self.assertTrue(any(user["user_id"] == "p2323" for user in body["data"]))
+
+	"""
+	Consent Trail.
+	"""
+
+	def test_get_consent_trail(self):
+		"""
+		Test getting the consent trail of a user.
+		"""
+
+		with rest_context(2323, 2323, ConsentManagementTest._study_ids[1]) as address:
+			token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
+
+			"""
+			In the beginning, the consent trail should be empty.
+			"""
+
+			response = self.send_request("GET", "get_consent_trail", {
+				"username": "p2323",
+				"access_token": "None",
+				"port": 2323,
+			}, token)
+			body = response.json()
+			self.assertEqual({}, body['data']['timeline'])
+
+			"""
+			After giving consent, the timeline should have this new consent change.
+			"""
+
+			response = self.send_request("POST", "give_consent", {
+				"study_id": ConsentManagementTest._study_ids[1],
+				"address": address,
+				"access_token": None,
+				"port": 2323,
+			}, token)
+			self.assertEqual(response.status_code, 200)
+
+			response = self.send_volatile_request("GET", "has_consent", {
+				"study_id": ConsentManagementTest._study_ids[1],
+				"address": address,
+				"access_token": "None",
+				"port": 2323,
+			}, token, value=True)
+			body = response.json()
+			self.assertEqual(response.status_code, 200)
+			self.assertTrue(body["data"])
+
+			response = self.send_request("GET", "get_consent_trail", {
+				"username": "p2323",
+				"access_token": "None",
+				"port": 2323,
+			}, token)
+			body = response.json()
+			self.assertEqual(1, len(body['data']['timeline']))
+			for i, timestamp in enumerate(sorted(body['data']['timeline'].keys())):
+				self.assertEqual(not (i % 2), body['data']['timeline'][timestamp][ConsentManagementTest._study_ids[1]])
+
+			"""
+			Withdraw consent, and the timeline should have this new consent change.
+			"""
+
+			response = self.send_request("POST", "withdraw_consent", {
+				"study_id": ConsentManagementTest._study_ids[1],
+				"address": address,
+				"access_token": None,
+				"port": 2323,
+			}, token)
+			self.assertEqual(response.status_code, 200)
+
+			response = self.send_volatile_request("GET", "has_consent", {
+				"study_id": ConsentManagementTest._study_ids[1],
+				"address": address,
+				"access_token": "None",
+				"port": 2323,
+			}, token, value=False)
+			body = response.json()
+			self.assertEqual(response.status_code, 200)
+			self.assertFalse(body["data"])
+
+			response = self.send_request("GET", "get_consent_trail", {
+				"username": "p2323",
+				"access_token": "None",
+				"port": 2323,
+			}, token)
+			body = response.json()
+			self.assertEqual(2, len(body['data']['timeline']))
+			for i, timestamp in enumerate(sorted(body['data']['timeline'].keys())):
+				self.assertEqual(not (i % 2), body['data']['timeline'][timestamp][ConsentManagementTest._study_ids[1]])
+
+			"""
+			Give consent once more, and the timeline should have this new consent change.
+			"""
+
+			response = self.send_request("POST", "give_consent", {
+				"study_id": ConsentManagementTest._study_ids[1],
+				"address": address,
+				"access_token": None,
+				"port": 2323,
+			}, token)
+			self.assertEqual(response.status_code, 200)
+
+			response = self.send_volatile_request("GET", "has_consent", {
+				"study_id": ConsentManagementTest._study_ids[1],
+				"address": address,
+				"access_token": "None",
+				"port": 2323,
+			}, token, value=True)
+			body = response.json()
+			self.assertEqual(response.status_code, 200)
+			self.assertTrue(body["data"])
+
+			response = self.send_request("GET", "get_consent_trail", {
+				"username": "p2323",
+				"access_token": "None",
+				"port": 2323,
+			}, token)
+			body = response.json()
+			self.assertEqual(3, len(body['data']['timeline']))
+			for i, timestamp in enumerate(sorted(body['data']['timeline'].keys())):
+				self.assertEqual(not (i % 2), body['data']['timeline'][timestamp][ConsentManagementTest._study_ids[1]])

@@ -392,14 +392,14 @@ class ConsentHandler(PostgreSQLRouteHandler):
 
 			rows = self._connector.select(command)
 			studies = {
-				int(study["study_id"]): study for study in rows
+				study["study_id"]: study for study in rows
 			}
 
 			"""
 			For each study get the user's consent changes, if any.
 			"""
 			for row in rows:
-				study_id = int(row["study_id"])
+				study_id = row["study_id"]
 
 				"""
 				Construct the timeline, one timestamp at a time, from the current study.
