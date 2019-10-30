@@ -166,6 +166,7 @@ class Biobank_Admin {
 	 * @since	1.0.0
 	 */
 	public function display_research_partners_page() {
+		include(plugin_dir_path(__FILE__) . "../includes/globals.php");
 		/*
 		 * Fetch existing research partners by searching in their usernames.
 		 */
