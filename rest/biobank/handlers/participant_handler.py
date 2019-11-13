@@ -19,16 +19,18 @@ class ParticipantHandler(UserHandler):
 	The participant handler class receives and handles requests that are related to participants.
 	"""
 
-	def create_participant(self, username, name="", email="", *args, **kwargs):
+	def create_participant(self, username, first_name="", last_name="", email="", *args, **kwargs):
 		"""
 		Insert a participant into the database.
 
 		:param username: The participant's username.
 		:type username: str
-		:param username: The participant's name.
-		:type username: str
-		:param username: The participant's email.
-		:type username: str
+		:param first_name: The participant's first name.
+		:type first_name: str
+		:param first_name: The participant's last name.
+		:type first_name: str
+		:param email: The participant's email.
+		:type email: str
 
 		:return: A response with any errors that may arise.
 		:rtype: :class:`oauth2.web.Response`
@@ -46,7 +48,8 @@ class ParticipantHandler(UserHandler):
 
 			attributes = self._encrypt_participant({
 				'username': username,
-				'name': name,
+				'first_name': first_name,
+				'last_name': last_name,
 				'email': email,
 			})
 
@@ -59,10 +62,10 @@ class ParticipantHandler(UserHandler):
 				""" % (username, "PARTICIPANT"),
 				"""
 				INSERT INTO
-					participants (user_id, name, email)
+					participants (user_id, first_name, last_name, email)
 				VALUES
-					('%s', '%s', '%s');
-				""" % (username, attributes['name'], attributes['email']),
+					('%s', '%s', '%s', '%s');
+				""" % (username, attributes['first_name'], attributes['last_name'], attributes['email']),
 				"""
 				INSERT INTO
 					participant_subscriptions (participant_id)
@@ -87,20 +90,24 @@ class ParticipantHandler(UserHandler):
 
 		return response
 
-	def update_participant(self, username, name=None, email=None, *args, **kwargs):
+	def update_participant(self, username, first_name=None, last_name=None, email=None, *args, **kwargs):
 		"""
 		Update a participant.
 
 		:param username: The participant's new username.
 		:type username: str
-		:param username: The participant's new name.
-						 If it is not given, then it is not updated.
+		:param first_name: The participant's new first name.
+						   If it is not given, then it is not updated.
 
-		:type username: str or None
-		:param username: The participant's new email.
-						 If it is not given, then it is not updated.
+		:type first_name: str or None
+		:param last_name: The participant's new last name.
+						   If it is not given, then it is not updated.
 
-		:type username: str or None
+		:type last_name: str or None
+		:param email: The participant's new email.
+					  If it is not given, then it is not updated.
+
+		:type email: str or None
 
 		:return: A response with any errors that may arise.
 		:rtype: :class:`oauth2.web.Response`
@@ -116,7 +123,8 @@ class ParticipantHandler(UserHandler):
 
 			attributes = self._encrypt_participant({
 				'username': username,
-				'name': name,
+				'first_name': first_name,
+				'last_name': last_name,
 				'email': email,
 			})
 
@@ -130,8 +138,11 @@ class ParticipantHandler(UserHandler):
 			"""
 
 			update_strings = []
-			if name is not None:
-				update_strings.append(f"name = '{attributes['name']}'")
+			if first_name is not None:
+				update_strings.append(f"first_name = '{attributes['first_name']}'")
+
+			if last_name is not None:
+				update_strings.append(f"last_name = '{attributes['last_name']}'")
 
 			if email is not None:
 				update_strings.append(f"email = '{attributes['email']}'")
@@ -212,7 +223,7 @@ class ParticipantHandler(UserHandler):
 		if username is None:
 			rows = self._connector.select("""
 				SELECT
-					user_id, name, email
+					*
 				FROM
 					participants
 			""")
@@ -226,7 +237,7 @@ class ParticipantHandler(UserHandler):
 		else:
 			rows = self._connector.select("""
 				SELECT
-					user_id, name, email
+					*
 				FROM
 					participants
 				WHERE
