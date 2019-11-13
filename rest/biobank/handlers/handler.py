@@ -107,8 +107,11 @@ class RouteHandler(ABC):
 		:rtype: str
 		"""
 
-		f = Fernet(db.encryption_secret)
-		return f.decrypt(str.encode(string)).decode()
+		if string:
+			f = Fernet(db.encryption_secret)
+			return f.decrypt(str.encode(string)).decode()
+		else:
+			return string
 
 class PostgreSQLRouteHandler(RouteHandler):
 	"""
