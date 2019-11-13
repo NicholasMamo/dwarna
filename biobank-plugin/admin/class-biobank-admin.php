@@ -10,7 +10,8 @@
  * @subpackage Biobank/admin
  */
 
- require_once(plugin_dir_path(__FILE__) . "../client/form/email_form_handler.php");
+require_once(plugin_dir_path(__FILE__) . "../client/form/email_form_handler.php");
+require_once(plugin_dir_path(__FILE__) . "../client/form/user_form_handler.php");
 require_once(plugin_dir_path(__FILE__) . "../client/request.php");
 
 /**
@@ -208,12 +209,26 @@ class Biobank_Admin {
 			/*
 			 * If a user was provided, decrypt their email address.
 			 */
-
 			$decoded = base64_decode($user->user_email);
 			$cipherNonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
 			$cipherText = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
 			$email = sodium_crypto_secretbox_open($cipherText, $cipherNonce, $encryptionKey);
 			$user->user_email = $email;
+
+			/*
+			 * Load the rest of the details from the backend.
+			 */
+			$request_handler = new \client\form\ParticipantFormHandler();
+ 			$response = $request_handler->get_participant($username);
+			if (isset($response->error)) {
+				/*
+				 * Show the error if need be.
+				 */
+				$_GET["error"] = empty($_GET["error"]) ? $response->error : $_GET["error"];
+			} else {
+				$user->first_name = $response->data->first_name ?? '';
+				$user->last_name = $response->data->last_name ?? '';
+			}
 		}
 
 		$action = $user ? $action : "create";
