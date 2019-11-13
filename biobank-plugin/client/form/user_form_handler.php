@@ -414,6 +414,43 @@ class ParticipantFormHandler extends UserFormHandler {
 		return $body;
 	}
 
+
+
+	/**
+	 * Get the given participant from the backend.
+	 *
+	 * @param	string	$username	The username of the research partner to retrieve.
+	 *
+	 * @since	1.0.0
+	 */
+	public function get_participant($username) {
+		$error = "";
+		$endpoint = "participant"; // the REST API's endpoint
+
+		/*
+		 * For security purposes, ensure that the user can indeed edit research partners.
+		 */
+		if (current_user_can("biobank_edit_participant")) {
+			/*
+			 * Create a request and fetch the response
+			 */
+			$request = new \client\Request($this->scheme, $this->host, $this->port);
+			$request->add_parameter("username", $username);
+			$response = $request->send_get_request($endpoint);
+
+			if (! is_wp_error($response)) {
+				$body = json_decode($response["body"]);
+				$body->data = $body->data[0];
+				return $body;
+			} else {
+				/*
+				 * If no response is received, then a connection with the backend could not be established
+				 */
+				return (object) [ 'error' => "WordPress could not reach the backend" ];
+			}
+		}
+	}
+
 }
 
 /**
