@@ -40,7 +40,7 @@ class RouteHandler(ABC):
 	:type _threads: list
 	"""
 
-	encrypted_attributes = ['name', 'email']
+	encrypted_attributes = [ 'first_name', 'last_name', 'email' ]
 
 	def __init__(self, connector, blockchain_connector, threads, *args, **kwargs):
 		"""
