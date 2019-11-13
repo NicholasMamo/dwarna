@@ -7,7 +7,7 @@
 
 $biobanker_capabilities = array(
     "read", "biobank_view_admin_menu",
-    "biobank_create_participant", "biobank_edit_participant", "biobank_remove_participant",
+    "biobank_create_participant", "biobank_edit_participant", "biobank_view_participant", "biobank_remove_participant",
 	"biobank_create_researcher", "biobank_edit_researcher", "biobank_remove_researcher",
 	"biobank_create_study", "biobank_edit_study", "biobank_remove_study",
 	"biobank_send_email", "biobank_settings",
@@ -31,14 +31,14 @@ $participant_capabilities = array(
 
 $scopes = array(
 	"administrator" => array(
-		"create_participant", "update_participant", "remove_participant",
+		"create_participant", "update_participant", "view_participant", "remove_participant",
 		"create_researcher", "remove_researcher",
 		"create_study", "update_study", "remove_study", "view_study",
 		"view_email", "create_email", "remove_email",
 		"view_subscription",
 	),
 	"biobanker" => array(
-		"create_participant", "update_participant", "remove_participant",
+		"create_participant", "update_participant", "view_participant", "remove_participant",
 		"create_researcher", "remove_researcher",
 		"create_study", "update_study", "remove_study", "view_study",
 		"view_email", "create_email", "remove_email",
