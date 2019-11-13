@@ -69,7 +69,7 @@ class StudyTests(SchemaTestCase):
 
 		self._connection.execute("""
 			INSERT INTO
-				participants (user_id, name, email)
+				participants (user_id, first_name, last_name, email)
 			VALUES
 				(%s), (%s);
 		""" % (

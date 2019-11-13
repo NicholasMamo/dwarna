@@ -32,7 +32,7 @@ class UserTests(SchemaTestCase):
 		Test user data.
 		"""
 
-		participant = Participant("participant", "name", "address")
+		participant = Participant("participant", "first", "last", "address")
 		biobanker = Biobanker("biobanker")
 		researcher = Researcher("researcher")
 
@@ -62,7 +62,7 @@ class UserTests(SchemaTestCase):
 		""" % researcher.get_username(), "ForeignKeyViolation")
 		self.assert_fail_sql("""
 			INSERT INTO
-				participants (user_id, name, email)
+				participants (user_id, first_name, last_name, email)
 			VALUES
 				(%s);
 		""" % participant.get_participant_insertion_string(), "ForeignKeyViolation")
@@ -88,7 +88,7 @@ class UserTests(SchemaTestCase):
 		This forces an IntegrityError.
 		"""
 
-		participant = Participant("participant", "name", "address")
+		participant = Participant("participant", "first", "last", "address")
 
 		self._connection.execute("""
 			INSERT INTO
@@ -167,7 +167,7 @@ class UserTests(SchemaTestCase):
 		Otherwise, an IntegrityError is raised.
 		"""
 
-		participant = Participant("participant", "name", "address")
+		participant = Participant("participant", "first", "last", "address")
 
 		self._connection.execute("""
 			INSERT INTO
@@ -177,13 +177,13 @@ class UserTests(SchemaTestCase):
 		""" % participant.get_user_insertion_string())
 		self._connection.execute("""
 			INSERT INTO
-				participants (user_id, name, email)
+				participants (user_id, first_name, last_name, email)
 			VALUES
 				(%s);
 		""" % participant.get_participant_insertion_string())
 		self.assert_fail_sql("""
 			INSERT INTO
-				participants (user_id, name, email)
+				participants (user_id, first_name, last_name, email)
 			VALUES
 				(%s);
 		""" % participant.get_participant_insertion_string(), "UniqueViolation")
@@ -194,7 +194,7 @@ class UserTests(SchemaTestCase):
 		Insert a single user into the database.
 		"""
 
-		participant = Participant("participant", "name", "address")
+		participant = Participant("participant", "first", "last", "address")
 
 		self.assertFalse(self._connection.exists("""
 			SELECT *
@@ -219,7 +219,7 @@ class UserTests(SchemaTestCase):
 		Delete a user from the database.
 		"""
 
-		participant = Participant("participant", "name", "address")
+		participant = Participant("participant", "first", "last", "address")
 
 		self.assertFalse(self._connection.exists("""
 			SELECT *
@@ -256,7 +256,7 @@ class UserTests(SchemaTestCase):
 		Delete all users from the database.
 		"""
 
-		participant = Participant("participant", "name", "address")
+		participant = Participant("participant", "first", "last", "address")
 
 		self.assertFalse(self._connection.exists("""
 			SELECT *
@@ -522,7 +522,7 @@ class UserTests(SchemaTestCase):
 		Insert a participant into the database.
 		"""
 
-		participant = Participant("participant", "name", "address")
+		participant = Participant("participant", "first", "last", "address")
 
 		self._connection.execute("""
 			INSERT INTO
@@ -533,7 +533,7 @@ class UserTests(SchemaTestCase):
 
 		self._connection.execute("""
 			INSERT INTO
-				participants (user_id, name, email)
+				participants (user_id, first_name, last_name, email)
 			VALUES
 				(%s);
 		""" % participant.get_participant_insertion_string())
@@ -552,7 +552,7 @@ class UserTests(SchemaTestCase):
 		The user should also be removed from the participants table at the same time.
 		"""
 
-		participant = Participant("participant", "name", "address")
+		participant = Participant("participant", "first", "last", "address")
 
 		self._connection.execute("""
 			INSERT INTO
@@ -563,7 +563,7 @@ class UserTests(SchemaTestCase):
 
 		self._connection.execute("""
 			INSERT INTO
-				participants (user_id, name, email)
+				participants (user_id, first_name, last_name, email)
 			VALUES
 				(%s);
 		""" % participant.get_participant_insertion_string())
@@ -591,7 +591,7 @@ class UserTests(SchemaTestCase):
 		The user should also be removed from the users table at the same time.
 		"""
 
-		participant = Participant("participant", "name", "address")
+		participant = Participant("participant", "first", "last", "address")
 
 		self._connection.execute("""
 			INSERT INTO
@@ -602,7 +602,7 @@ class UserTests(SchemaTestCase):
 
 		self._connection.execute("""
 			INSERT INTO
-				participants (user_id, name, email)
+				participants (user_id, first_name, last_name, email)
 			VALUES
 				(%s);
 		""" % participant.get_participant_insertion_string())
@@ -638,7 +638,7 @@ class UserTests(SchemaTestCase):
 		The participant's identities should also be removed.
 		"""
 
-		participant = Participant("participant", "name", "address")
+		participant = Participant("participant", "first", "last", "address")
 
 		self._connection.execute("""
 			INSERT INTO
@@ -649,7 +649,7 @@ class UserTests(SchemaTestCase):
 
 		self._connection.execute("""
 			INSERT INTO
-				participants (user_id, name, email)
+				participants (user_id, first_name, last_name, email)
 			VALUES
 				(%s);
 		""" % participant.get_participant_insertion_string())
@@ -710,7 +710,7 @@ class UserTests(SchemaTestCase):
 		The participant's subscriptions should also be removed.
 		"""
 
-		participant = Participant("participant", "name", "address")
+		participant = Participant("participant", "first", "last", "address")
 
 		self._connection.execute("""
 			INSERT INTO
@@ -721,7 +721,7 @@ class UserTests(SchemaTestCase):
 
 		self._connection.execute("""
 			INSERT INTO
-				participants (user_id, name, email)
+				participants (user_id, first_name, last_name, email)
 			VALUES
 				(%s);
 		""" % participant.get_participant_insertion_string())

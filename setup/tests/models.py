@@ -18,16 +18,17 @@ class User(ABC):
 
 class Participant(User):
 
-	def __init__(self, username, name="", email=""):
+	def __init__(self, username, first_name="", last_name="", email=""):
 		super(Participant, self).__init__(username)
-		self._name = name
+		self._first_name = first_name
+		self._last_name = last_name
 		self._email = email
 
 	def get_user_insertion_string(self):
 		return "'%s', '%s'" % (self._username, "PARTICIPANT")
 
 	def get_participant_insertion_string(self):
-		return "'%s', '%s', '%s'" % (self._username, self._name, self._email)
+		return "'%s', '%s', '%s', '%s'" % (self._username, self._first_name, self._last_name, self._email)
 
 class Biobanker(User):
 

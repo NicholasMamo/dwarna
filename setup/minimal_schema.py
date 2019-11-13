@@ -94,7 +94,8 @@ def create_schema(database):
 		"""
 		connection.execute("""CREATE TABLE participants (
 							user_id				VARCHAR(64)		UNIQUE		REFERENCES users(user_id)		ON DELETE CASCADE,
-							name				VARCHAR(256),
+							first_name			VARCHAR(256),
+							last_name			VARCHAR(256),
 							email				VARCHAR(256)
 		);""")
 
@@ -102,7 +103,8 @@ def create_schema(database):
 		Add comments to describe the columns.
 		"""
 		connection.execute("""COMMENT ON COLUMN participants.user_id IS 'The participant''s unique identifier, links to the ''users'' table''s primary key';""")
-		connection.execute("""COMMENT ON COLUMN participants.name IS 'The participant''s name';""")
+		connection.execute("""COMMENT ON COLUMN participants.first_name IS 'The participant''s first name';""")
+		connection.execute("""COMMENT ON COLUMN participants.last_name IS 'The participant''s last name';""")
 		connection.execute("""COMMENT ON COLUMN participants.email IS 'The participant''s email address';""")
 
 		"""
