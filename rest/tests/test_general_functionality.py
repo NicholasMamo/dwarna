@@ -116,8 +116,9 @@ class GeneralFunctionalityTest(BiobankTestCase):
 
 		token = self._get_access_token(["create_study", "view_study"])["access_token"]
 
+		study_id = self._generate_study_name()
 		response = self.send_request("POST", "study", {
-			"study_id": "2320",
+			"study_id": study_id,
 			"name": "ALS",
 			"description": "¯\_(ツ)_/¯",
 			"homepage": "http://um.edu.mt",
@@ -125,7 +126,7 @@ class GeneralFunctionalityTest(BiobankTestCase):
 		body = response.json()
 		self.assertEqual(response.status_code, 200)
 
-		response = self.send_volatile_request("GET", "study", { "study_id": 2320 }, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": study_id }, token)
 		body = response.json()
 		study = body["study"]
 		self.assertEqual(study["description"], "¯\_(ツ)_/¯")
