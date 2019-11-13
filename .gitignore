@@ -24,3 +24,7 @@ biobank-plugin/includes/globals.php
 # Documentation
 
 rest/documentation/build
+
+# Logs
+
+*.log
