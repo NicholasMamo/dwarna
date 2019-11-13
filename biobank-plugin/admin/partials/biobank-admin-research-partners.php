@@ -76,6 +76,25 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 					</div>
 				</td>
 			</tr>
+
+			<tr class="form-field">
+				<th scope="row">
+					<label for="<?php echo $this->plugin_name; ?>-first_name">First Name</label>
+				</th>
+				<td>
+					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[first_name]" type="text" id="<?php echo $this->plugin_name; ?>-first_name" value="<?= $action != "create" ? $user->data->first_name : "" ?>">
+				</td>
+			</tr>
+
+			<tr class="form-field">
+				<th scope="row">
+					<label for="<?php echo $this->plugin_name; ?>-last_name">Last Name</label>
+				</th>
+				<td>
+					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[last_name]" type="text" id="<?php echo $this->plugin_name; ?>-last_name" value="<?= $action != "create" ? $user->data->last_name : "" ?>">
+				</td>
+			</tr>
+
 		</table>
 
         <?php submit_button($button_labels[$action] . " research partner", $button_types[$action], "submit", TRUE); ?>
