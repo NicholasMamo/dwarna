@@ -497,7 +497,7 @@ class StudyManagementTest(BiobankTestCase):
 			"study_id": study_ids[1],
 			"name": "Diabetes",
 			"description": "Diabetes study",
-			"homepage": "http://um.edu.mt",
+			"homepage": "wuts thathttp://um.edu.mt",
 			"researchers": ["bill"],
 		}, token)
 

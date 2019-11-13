@@ -285,7 +285,8 @@ class StudyHandler(PostgreSQLRouteHandler):
 
 			rows = self._connector.select(query)
 			for row in rows:
-				del row[psycopg2.extras.RealDictRow]
+				if psycopg2.extras.RealDictRow in row:
+					del row[psycopg2.extras.RealDictRow]
 
 			total = self._connector.count("""
 				SELECT COUNT(*)
