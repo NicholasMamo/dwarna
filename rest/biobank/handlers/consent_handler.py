@@ -17,6 +17,7 @@ if path not in sys.path:
 from oauth2.web import Response
 
 from .exceptions import general_exceptions, study_exceptions, user_exceptions
+from .blockchain.api.hyperledger import hyperledger_exceptions
 from .handler import PostgreSQLRouteHandler
 
 from config import blockchain
@@ -213,6 +214,12 @@ class ConsentHandler(PostgreSQLRouteHandler):
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
 			response.body = json.dumps({ "data": decrypted_data })
+		except (
+			hyperledger_exceptions.UnauthorizedDataAccessException
+		) as e:
+			response.status_code = 401
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ "error": str(e), "exception": e.__class__.__name__ })
 		except (
 			study_exceptions.StudyDoesNotExistException,
 		) as e:
