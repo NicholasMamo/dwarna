@@ -34,14 +34,18 @@ $scopes = array(
 		"create_participant", "update_participant", "view_participant", "remove_participant",
 		"create_researcher", "remove_researcher",
 		"create_study", "update_study", "remove_study", "view_study",
+		"view_consent",
 		"view_email", "create_email", "remove_email",
 		"view_subscription",
+		"admin",
 	),
 	"biobanker" => array(
 		"create_participant", "update_participant", "view_participant", "remove_participant",
 		"create_researcher", "remove_researcher",
 		"create_study", "update_study", "remove_study", "view_study",
+		"view_consent",
 		"view_email", "create_email", "remove_email",
+		"admin",
 	),
 	"researcher" => array(
 		"view_study", "view_consent",
