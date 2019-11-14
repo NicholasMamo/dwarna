@@ -363,7 +363,7 @@ class ConsentManagementTest(BiobankTestCase):
 			self.assertEqual(response.status_code, 200)
 			self.assertFalse(body["data"])
 
-	def ntest_get_participants_consented_studies(self):
+	def test_get_participants_consented_studies(self):
 		"""
 		Test getting the studies that the participant consented to.
 		"""
