@@ -610,22 +610,25 @@ class Biobank_Admin {
 	 *
 	 * @since	1.0.0
 	 * @access	private
-	 * @param	int		$total The total number of items, used to calculate the number of pages.
+	 * @param	int		$total			The total number of items, used to calculate the number of pages.
+	 * @param	string	$search_name	The name of the search parameter. This is needed when multiple paginations are on the same page.
+	 * @param	string	$page_name		The name of the page parameter. This is needed when multiple paginations are on the same page.
 	 * @return	array	The array containing the pagination data.
 	 */
-	private function setup_pagination($total) {
+	private function setup_pagination($total, $search_name='search', $page_name='paged') {
 		/*
 		 * Pagination setup
 		 */
-		$page = max(1, isset($_GET['paged']) ? $_GET['paged'] : 1); // get the current page number
+		$page = max(1, isset($_GET[$page_name]) ? $_GET[$page_name] : 1); // get the current page number
 		$items_per_page = Biobank_Admin::ITEMS_PER_PAGE; // the number of items per page
-		$search = isset($_GET["search"]) ? $_GET["search"] : ""; // get the search string
+		$search = isset($_GET[$search_name]) ? $_GET[$search_name] : ""; // get the search string
+		$fragment = empty($search) ? "" : "&search_name=$search"; // the URL fragment
 
 		$big = 999999999; // need an unlikely integer
 		$pagination = (paginate_links( array(
 			"base" => str_replace( $big, "%#%", get_pagenum_link( $big, false ) ),
-			"format" => "?paged=%#%",
-			"add_fragment" => empty($search) ? "" : "&search=$search",
+			"format" => "?$page_name=%#%",
+			"add_fragment" => $fragment,
 			"current" => $page,
 			"total" => ceil($total / $items_per_page)
 		)));
