@@ -164,7 +164,7 @@ class ResourceServer(Provider):
 			"""
 			Pass on all parameters - even those that are not required - to the handler function.
 			"""
-			return api_function(self._route_handlers[api_handler], token=access_token, **parameters)
+			return api_function(self._route_handlers[api_handler], token=token, **parameters)
 		except request_exceptions.MissingArgumentException as e:
 			response.status_code = 400
 			response.add_header("Content-Type", "application/json")
