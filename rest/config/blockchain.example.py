@@ -7,6 +7,7 @@ host = "http://localhost"
 admin_port = 3001
 """
 :var admin_port: The port where the Hyperledger Composer REST API listens to admin requests.
+				 Only the users with the 'admin' scope can use this port.
 :vartype admin_port: int
 """
 
