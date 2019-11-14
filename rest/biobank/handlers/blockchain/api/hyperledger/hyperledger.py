@@ -543,11 +543,13 @@ class HyperledgerAPI(BlockchainAPI):
 	def get_all_study_participants(self, study_id, port=None, *args, **kwargs):
 		"""
 		Get a list of participant addresses of participants that have consented to participate in the study with the given ID.
+		The list includes all research partners that have ever participated in the study.
 
 		:param study_id: The unique ID of the study.
 		:type study_id: int
 		:param port: The port to use when issuing the identity.
 			By default, the request is made to the admin REST API endpoint.
+			The list includes all research partners that have ever participated in the study.
 		:type port: int
 
 		:return: A list of participant addresses that have consented to participate in the study.
@@ -569,6 +571,11 @@ class HyperledgerAPI(BlockchainAPI):
 		consent_changes = json.loads(response.content)
 		consent_changes = sorted(consent_changes, key=lambda change: change['timestamp'])[::-1]
 
+		"""
+		In the consent asset, the research partner is stored as:
+
+			> `resource:org.consent.model.ResearchParticipant#44383227-f8be-4c9a-bd3d-b1ec6eb0c6b2`
+		"""
 		address_pattern = re.compile('\#(.+?)$')
 		participants = [ address_pattern.findall(consent_change['participant'])[0] for consent_change in consent_changes ]
 		return list(set(participants))
@@ -584,7 +591,7 @@ class HyperledgerAPI(BlockchainAPI):
 			By default, the request is made to the admin REST API endpoint.
 		:type port: int
 
-		:return: A list of participant addresses that have consented to participate in the study.
+		:return: A list of participant addresses that are currently consenting to participate in the study.
 		:rtype: list of str
 		"""
 
@@ -603,6 +610,11 @@ class HyperledgerAPI(BlockchainAPI):
 		consent_changes = json.loads(response.content)
 		consent_changes = sorted(consent_changes, key=lambda change: change['timestamp'])[::-1]
 
+		"""
+		In the consent asset, the research partner is stored as:
+
+			> `resource:org.consent.model.ResearchParticipant#44383227-f8be-4c9a-bd3d-b1ec6eb0c6b2`
+		"""
 		address_pattern = re.compile('\#(.+?)$')
 		checked_participants, participants = [], []
 		for change in consent_changes:
