@@ -609,7 +609,7 @@ class HyperledgerAPI(BlockchainAPI):
 		if port is None:
 			port = self._default_admin_port if token is not None and routes.admin_scope in token.scopes else self._default_multiuser_port
 		elif int(port) == self._default_admin_port and routes.admin_scope not in token.scopes:
-			port = self._default_multiuser_port
+			raise hyperledger_exceptions.UnauthorizedDataAccessException()
 
 		params = {
 			"study_id": f"resource:org.consent.model.Study#{study_id}"
