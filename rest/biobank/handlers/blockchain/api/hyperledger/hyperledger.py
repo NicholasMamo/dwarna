@@ -580,7 +580,7 @@ class HyperledgerAPI(BlockchainAPI):
 		participants = [ address_pattern.findall(consent_change['participant'])[0] for consent_change in consent_changes ]
 		return list(set(participants))
 
-	def get_study_participants(self, study_id, port=None, *args, **kwargs):
+	def get_study_participants(self, study_id, port=None, token=None, *args, **kwargs):
 		"""
 		Get a list of participant addresses of participants that have consented to participate in the study with the given ID.
 		The function checks only the last consent of each participant.
@@ -590,12 +590,22 @@ class HyperledgerAPI(BlockchainAPI):
 		:param port: The port to use when issuing the identity.
 			By default, the request is made to the admin REST API endpoint.
 		:type port: int
+		:param token: The access token used to make the call.
+			It is used to permit admin access only to users who have the necessary privileges.
+		:type token: :class:`oauth2.datatype.AccessToken`
 
 		:return: A list of participant addresses that are currently consenting to participate in the study.
 		:rtype: list of str
+
+		:raises: :class:`biobank.handlers.blockchain.api.hyperledger.hyperledger_exceptions.UnauthorizedDataAccessException`
 		"""
 
-		port = self._default_admin_port if port is None else port
+		"""
+		If no port is given, assign the port according to the user privileges.
+		"""
+		from config import routes
+		if port is None:
+			port = self._default_admin_port if token is not None and routes.admin_scope in token.scopes else self._default_multiuser_port
 
 		params = {
 			"study_id": f"resource:org.consent.model.Study#{study_id}"
@@ -603,6 +613,12 @@ class HyperledgerAPI(BlockchainAPI):
 		param_string = urllib.parse.urlencode(params)
 		endpoint = f"{self._host}:{port}/api/queries/get_study_consents?{param_string}"
 		response = requests.get(endpoint, headers={ })
+
+		"""
+		Check whether the user could access the endpoint.
+		"""
+		if response.status_code == 401:
+			raise hyperledger_exceptions.UnauthorizedDataAccessException()
 
 		"""
 		Sort the consent changes in descending order of timestamp to be certain of their validity.
