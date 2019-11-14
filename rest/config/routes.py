@@ -71,6 +71,12 @@ handler_classes = [ generic_handler_class,
 :vartype handler_classes: list
 """
 
+admin_scope = "admin"
+"""
+:var admin_scope: The scope that designates access only to members with elevated privileges.
+:vartype admin_scope: str
+"""
+
 """
 Basic routes.
 """
