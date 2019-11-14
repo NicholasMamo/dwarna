@@ -61,6 +61,7 @@ class ConsentManagementTest(BiobankTestCase):
 			self._generate_study_name(),
 			self._generate_study_name(),
 			self._generate_study_name(),
+			self._generate_study_name(),
 		]
 
 		"""
@@ -95,6 +96,14 @@ class ConsentManagementTest(BiobankTestCase):
 			"study_id": ConsentManagementTest._study_ids[3],
 			"name": "Thalassemia",
 			"description": "Thalassemia study",
+			"homepage": "http://um.edu.mt",
+		}, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("POST", "study", {
+			"study_id": ConsentManagementTest._study_ids[4],
+			"name": "Asthma",
+			"description": "Asthma study",
 			"homepage": "http://um.edu.mt",
 		}, token)
 		self.assertEqual(response.status_code, 200)
