@@ -582,7 +582,7 @@ class ConsentManagementTest(BiobankTestCase):
 			p2322_token = self._get_access_token(["update_consent", "view_consent"], "p2322")["access_token"]
 			p2323_token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
 
-			token = self._get_access_token(["update_consent", "view_consent"], "admin")["access_token"]
+			token = self._get_access_token(["update_consent", "view_consent", "admin"], "admin")["access_token"]
 
 			"""
 			Assert that there are no participants in the study yet.
