@@ -15,6 +15,7 @@ scopes = [ scope for route in routes.values()
 			for handler in route.values()
 			for scope in handler["scopes"] ]
 scopes.append(default_scope)
+scopes.append(admin_scope)
 scopes = list(set(scopes))
 """
 :var scopes: All the possible scopes given by the authoization server.
