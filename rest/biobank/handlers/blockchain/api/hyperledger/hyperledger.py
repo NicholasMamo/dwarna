@@ -602,10 +602,14 @@ class HyperledgerAPI(BlockchainAPI):
 
 		"""
 		If no port is given, assign the port according to the user privileges.
+		If a port is given and it is the admin port, check for user privileges.
+		If the user does not have access to the port, revert to the multi-user port.
 		"""
 		from config import routes
 		if port is None:
 			port = self._default_admin_port if token is not None and routes.admin_scope in token.scopes else self._default_multiuser_port
+		elif int(port) == self._default_admin_port and routes.admin_scope not in token.scopes:
+			port = self._default_multiuser_port
 
 		params = {
 			"study_id": f"resource:org.consent.model.Study#{study_id}"

@@ -11,6 +11,7 @@ if path not in sys.path:
 	sys.path.insert(1, path)
 
 from biobank.handlers.exceptions import study_exceptions, user_exceptions
+from config.blockchain import admin_port
 from server.exceptions import request_exceptions
 
 from .environment import *
@@ -737,6 +738,133 @@ class ConsentManagementTest(BiobankTestCase):
 			body = response.json()
 			self.assertEqual(response.status_code, 200)
 			self.assertTrue(any(user["user_id"] == "p2323" for user in body["data"]))
+
+	def test_get_study_participants_port_management(self):
+		"""
+		Test getting the participants that have consented to the use of their samples in a study.
+		This test ensures that normal users cannot read anyone else's consent changes.
+		"""
+
+		with rest_context(2322, 2322, ConsentManagementTest._study_ids[1]) as p2322_address,\
+			 rest_context(2323, 2323, ConsentManagementTest._study_ids[1]) as p2323_address:
+
+			p2322_token = self._get_access_token(["update_consent", "view_consent"], "p2322")["access_token"]
+			p2323_token = self._get_access_token(["update_consent", "view_consent"], "p2323")["access_token"]
+
+			token = self._get_access_token(["update_consent", "view_consent", "admin"], "admin")["access_token"]
+
+			"""
+			Assert that there are no participants in the study yet.
+			"""
+
+			response = self.send_request("GET", "get_participants_by_study", {
+				"study_id": ConsentManagementTest._study_ids[4],
+			}, token)
+			body = response.json()
+			self.assertEqual(response.status_code, 200)
+			self.assertEqual(len(body['data']), 0)
+
+			response = self.send_request("GET", "get_participants_by_study", {
+				"study_id": ConsentManagementTest._study_ids[4],
+			}, p2322_token)
+			body = response.json()
+			self.assertEqual(response.status_code, 401)
+
+			response = self.send_request("GET", "get_participants_by_study", {
+				"study_id": ConsentManagementTest._study_ids[4],
+			}, p2323_token)
+			body = response.json()
+			self.assertEqual(response.status_code, 401)
+
+			"""
+			Give consent from `p2322`.
+			"""
+
+			response = self.send_request("POST", "give_consent", {
+				"study_id": ConsentManagementTest._study_ids[4],
+				"address": p2322_address,
+				"access_token": None,
+				"port": 2322,
+			}, p2322_token)
+			self.assertEqual(response.status_code, 200)
+
+			response = self.send_volatile_request("GET", "has_consent", {
+				"study_id": ConsentManagementTest._study_ids[4],
+				"address": p2322_address,
+				"access_token": "None",
+				"port": 2322,
+			}, p2322_token, value=True)
+			body = response.json()
+			self.assertEqual(response.status_code, 200)
+			self.assertTrue(body["data"])
+
+			"""
+			Give consent from `p2323`.
+			"""
+
+			response = self.send_request("POST", "give_consent", {
+				"study_id": ConsentManagementTest._study_ids[4],
+				"address": p2323_address,
+				"access_token": None,
+				"port": 2323,
+			}, p2323_token)
+			self.assertEqual(response.status_code, 200)
+
+			response = self.send_volatile_request("GET", "has_consent", {
+				"study_id": ConsentManagementTest._study_ids[4],
+				"address": p2323_address,
+				"access_token": "None",
+				"port": 2323,
+			}, p2323_token, value=True)
+			body = response.json()
+			self.assertEqual(response.status_code, 200)
+			self.assertTrue(body["data"])
+
+			"""
+			Check that the two appear in the study, but only from the admin token.
+			The other tokens, sent without a port, should return nothing.
+			By default, the unauthenticated multi-user API is used.
+			"""
+
+			response = self.send_request("GET", "get_participants_by_study", {
+				"study_id": ConsentManagementTest._study_ids[4],
+			}, token)
+			body = response.json()
+			self.assertEqual(response.status_code, 200)
+			self.assertEqual(2, len(body["data"]))
+			self.assertTrue(any(user["user_id"] == "p2322" for user in body["data"]))
+			self.assertTrue(any(user["user_id"] == "p2323" for user in body["data"]))
+
+			response = self.send_request("GET", "get_participants_by_study", {
+				"study_id": ConsentManagementTest._study_ids[4],
+			}, p2322_token)
+			body = response.json()
+			self.assertEqual(response.status_code, 401)
+
+			response = self.send_request("GET", "get_participants_by_study", {
+				"study_id": ConsentManagementTest._study_ids[4],
+			}, p2322_token)
+			body = response.json()
+			self.assertEqual(response.status_code, 401)
+
+			"""
+			Try to override the ports manually for p2322 and p2323.
+			This should fail because they do not have admin access.
+			"""
+
+			response = self.send_request("GET", "get_participants_by_study", {
+				"study_id": ConsentManagementTest._study_ids[4],
+				"port": admin_port,
+			}, p2322_token)
+			body = response.json()
+			self.assertEqual(response.status_code, 401)
+
+			response = self.send_request("GET", "get_participants_by_study", {
+				"study_id": ConsentManagementTest._study_ids[4],
+				"port": admin_port,
+			}, p2322_token)
+			body = response.json()
+			self.assertEqual(response.status_code, 401)
 
 	"""
 	Consent Trail.
