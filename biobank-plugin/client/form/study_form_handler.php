@@ -73,7 +73,7 @@ class StudyFormHandler extends StudyHandler {
 
 		$response = $request->send_get_request($endpoint);
 		if (! is_wp_error($response)) {
-			$body = json_decode($response["body"]);
+			$body = (object) json_decode($response["body"]);
 			$body->error = isset($body->error) ? $body->error : "";
 			return $body;
 		} else {
