@@ -434,7 +434,7 @@ class HyperledgerAPI(BlockchainAPI):
 		:return: The response content.
 		:rtype: dict
 
-		:raises: :class:`biobank.handlers.blockchain.api.hyperledger.hyperledger_exceptions`
+		:raises: :class:`biobank.handlers.blockchain.api.hyperledger.hyperledger_exceptions.StudyAssetExistsException`
 		"""
 
 		port = self._default_admin_port if port is None else port
