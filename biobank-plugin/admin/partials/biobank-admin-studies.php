@@ -120,9 +120,6 @@ require_once(plugin_dir_path(__FILE__) . "../../client/request.php");
 			</form>
 		</div>
 
-	</div>
-
-	<div class='biobank-side'>
 		<table class="wp-list-table widefat">
 			<thead>
 				<th scope="col" id="name" class="manage-column column-name column-primary">Participating Research Partners</th>
