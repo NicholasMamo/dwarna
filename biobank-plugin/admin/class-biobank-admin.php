@@ -309,8 +309,9 @@ class Biobank_Admin {
 
 		$studies = $existing_studies->data;
 		$total_studies = isset($existing_studies->total) ? $existing_studies->total : 0;
-
 		$pagination = $this->setup_pagination($total_studies);
+
+		$research_partners = array();
 
 		/*
 		 * Fetch the study if an ID is given.
@@ -337,6 +338,19 @@ class Biobank_Admin {
 				foreach ($study_researchers_info as $researcher) {
 					$study_researchers[$researcher->user_id] = get_user_by("login", $researcher->user_id)->display_name;
 				}
+
+				/*
+				 * Get a list of research partners participating in the study.
+				 */
+				$research_partners = $request_handler->get_participants_by_study($study_id)->data;
+				$research_partner_pagination = $this->setup_pagination(
+					count($research_partners),
+					$search_name='search_rp',
+					$page_name='page_rp');
+				$research_partners = array_slice(
+					$research_partners,
+					Biobank_Admin::ITEMS_PER_PAGE * (($_GET['page_rp'] ?? 1) - 1),
+					Biobank_Admin::ITEMS_PER_PAGE);
 			}
 		}
 
