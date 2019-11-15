@@ -122,4 +122,32 @@ require_once(plugin_dir_path(__FILE__) . "../../client/request.php");
 
 	</div>
 
+	<div class='biobank-side'>
+		<table class="wp-list-table widefat">
+			<thead>
+				<th scope="col" id="name" class="manage-column column-name column-primary">Participating Research Partners</th>
+				<th scope="col" id="name" class="manage-column column-name column-primary"></th>
+				<th scope="col" id="name" class="manage-column column-name column-primary"></th>
+			</thead>
+			<tbody>
+			<?php foreach ($research_partners as $research_partner) { ?>
+				<tr>
+					<th scope="row"><?= $research_partner->user_id ?></th>
+					<td><a href="admin.php?page=biobank_partners&action=update&username=<?= $research_partner->user_id ?>">Edit</a></td>
+					<td><a href="admin.php?page=biobank_partners&action=remove&username=<?= $research_partner->user_id ?>">Remove</a></td>
+				</tr>
+			<?php } ?>
+			</tbody>
+			<tfoot>
+				<th scope="col" id="name" class="manage-column column-name column-primary">Participating Research Partners</th>
+				<th scope="col" id="name" class="manage-column column-name column-primary"></th>
+				<th scope="col" id="name" class="manage-column column-name column-primary"></th>
+			</tfoot>
+		</table>
+
+		<div class="biobank-footer">
+			<div class="<?= $this->plugin_name ?>-float-left"><?= strlen($pagination) > 0 ? "Pages: " . $pagination : "" ?></div>
+		</div>
+	</div>
+
 </div>
