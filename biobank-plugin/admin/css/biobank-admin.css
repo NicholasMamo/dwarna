@@ -175,8 +175,6 @@
 	}
 
 	.biobank-side {
-		height: 600px;
-		max-height: 70vh;
 		padding: 0 20px;
 		width: 50%;
 	}
@@ -305,7 +303,7 @@
 	box-sizing: border-box;
 	display: block;
 	margin: 0 0 10px 0;
-	max-height: calc(85% - 10px);
+	max-height: 50vh;
 	position: relative;
 	width: 100%;
 }
@@ -326,7 +324,7 @@
 }
 
 .biobank-side table tbody {
-	height: calc(100% - 72px);
+	height: calc(50vh - 72px);
 	overflow: auto;
 }
 
