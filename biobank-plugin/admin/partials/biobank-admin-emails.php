@@ -43,14 +43,14 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 					<div class='radio-input-group'>
 						<input name="<?= $this->plugin_name; ?>[recipient-group]"
 							   type="radio" id="recipient-group-none" aria-required="true"
-							   value="none" checked>
+							   value="none" checked <?= $action == 'create' ? '' : 'disabled' ?>>
 						<label for="recipient-group-none">No one</label>
 					</div>
 
 					<div class='radio-input-group'>
 						<input name="<?= $this->plugin_name; ?>[recipient-group]"
 							   type="radio" id="recipient-group-all" aria-required="true"
-							   value="subscribed">
+							   value="subscribed" <?= $action == 'create' ? '' : 'disabled' ?>>
 						<label for="recipient-group-all">Subscribed research partners</label>
 					</div>
 				</td>
@@ -63,7 +63,8 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 				<td>
 					<input autocapitalize="none" autocomplete="off" autocorrect="off"
 						   autofill="false" maxlength="60" name="<?= $this->plugin_name; ?>[recipient]"
-						   type="text" id="<?= $this->plugin_name; ?>-recipient" aria-required="true">
+						   type="text" id="<?= $this->plugin_name; ?>-recipient" aria-required="true"
+						   <?= $action == 'create' ? '' : 'disabled' ?>>
 				</td>
 			</tr>
 
@@ -80,7 +81,9 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 				<td>
 					<input autocapitalize="none" autocomplete="off" autocorrect="off"
 						   autofill="false" maxlength="60" name="<?= $this->plugin_name; ?>[subject]"
-						   type="text" id="<?= $this->plugin_name; ?>-subject" aria-required="true">
+						   type="text" id="<?= $this->plugin_name; ?>-subject" aria-required="true"
+						   value='<?= $email ? $email->data->subject : '' ?>'
+						   <?= $action == 'create' ? '' : 'disabled' ?>>
 				</td>
 			</tr>
 
@@ -96,7 +99,7 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 						'textarea_rows' => 5,
 						'media_buttons' => true
 					);
-					wp_editor( '', "{$this->plugin_name}-body", $settings);
+					wp_editor( $email ? $email->data->body : '', "{$this->plugin_name}-body", $settings);
 				?>
 				</td>
 			</tr>
