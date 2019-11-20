@@ -96,7 +96,53 @@ class EmailFormHandler extends FormHandler {
 	 * @access	public
 	 */
 	public function remove_email() {
-		
+		$error = "";
+		$endpoint = "email"; // the REST API's endpoint
+
+		if(isset($_POST["email_nonce"]) && wp_verify_nonce($_POST["email_nonce"], "email_form")) {
+			/*
+			 * For security purposes, ensure that the user can indeed send emails
+			 */
+			if (current_user_can("biobank_remove_email") && isset($_POST["biobank"])) {
+				$input = $_POST["biobank"];
+
+				/*
+				 * Perform validation
+				 */
+				$valid_id = $this->validate_required_string($input["email_id"], "The email ID cannot be empty");
+
+				/*
+				 * Ensure that everything checks out
+				 */
+				$validation_check = $this->validate(array(
+					$valid_id,
+				));
+
+				if (! $validation_check->is_successful()) {
+					$error = (string) $validation_check;
+				} else {
+					/*
+					 * Create a request and fetch the response
+					 */
+					$request = new \client\Request($this->scheme, $this->host, $this->port);
+					$request->add_parameter("id", $input["email_id"]);
+					$response = $request->send_post_request($endpoint, "DELETE");
+
+					if (! is_wp_error($response)) {
+						$body = json_decode($response["body"]);
+						$error = isset($body->error) ? $body->error : "";
+					} else {
+						/*
+						 * If no response is received, then a connection with the backend could not be established
+						 */
+						$error = "WordPress could not reach the backend";
+					}
+				}
+			}
+		}
+		$error = urlencode($error);
+		wp_redirect(admin_url("admin.php") . "?page=biobank_emails&error=$error&redirect=remove");
+		exit;
 	}
 
 	/**
