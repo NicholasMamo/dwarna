@@ -33,6 +33,7 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
     <form class="<?= $this->plugin_name ?>-form" id="<?= $this->plugin_name ?>-email-form" method="post" name="email_form" action=<?php echo esc_url(admin_url("admin-post.php")); ?>>
 		<?php wp_nonce_field("email_form", "email_nonce"); ?>
 		<input type="hidden" name="action" value="<?= $action ?>_email">
+		<input type="hidden" name="<?= $this->plugin_name; ?>[email_id]" value="<?= $action != 'create' ? $email->data->id : '' ?>">
 
 		<table class="form-table">
 
