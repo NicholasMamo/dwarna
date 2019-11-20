@@ -92,15 +92,15 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 					<label for="<?= $this->plugin_name; ?>-body">Body</label>
 				</th>
 				<td>
-				<input name="<?= $this->plugin_name; ?>[body]"
-					   type="hidden" id="<?= $this->plugin_name; ?>-body-input" aria-required="true">
-				<?php
-					$settings = array(
-						'textarea_rows' => 5,
-						'media_buttons' => true
-					);
-					wp_editor( $email ? $email->data->body : '', "{$this->plugin_name}-body", $settings);
-				?>
+					<input name="<?= $this->plugin_name; ?>[body]"
+						   type="hidden" id="<?= $this->plugin_name; ?>-body-input" aria-required="true">
+					<?php
+						$settings = array(
+							'textarea_rows' => 5,
+							'media_buttons' => true
+						);
+						wp_editor( $email ? $email->data->body : '', "{$this->plugin_name}-body", $settings);
+					?>
 				</td>
 			</tr>
 
@@ -125,7 +125,6 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 			</tbody>
 			<tfoot>
 				<th scope="col" id="name" class="manage-column column-name column-primary">Existing Emails</th>
-				<th scope="col" id="name" class="manage-column column-name column-primary"></th>
 				<th scope="col" id="name" class="manage-column column-name column-primary"></th>
 			</tfoot>
 		</table>
