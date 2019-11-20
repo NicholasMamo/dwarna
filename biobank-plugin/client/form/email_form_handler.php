@@ -90,10 +90,7 @@ class EmailFormHandler extends FormHandler {
 	}
 
 	/**
-	 * Search for emails.
-	 *
-	 * Look for emails in the backend.
-	 * Any errors are also stored in the returned array.
+	 * Get a single email.
 	 *
 	 * @since	1.0.0
 	 * @access	public
@@ -109,6 +106,36 @@ class EmailFormHandler extends FormHandler {
 		$request->add_parameter("number", $number);
 		$request->add_parameter("page", $page);
 		$request->add_parameter("search", $search);
+
+		$response = $request->send_get_request($endpoint);
+		if (! is_wp_error($response)) {
+			$body = json_decode($response["body"]);
+			$body->error = isset($body->error) ? $body->error : "";
+			return $body;
+		} else {
+			$body = new \stdClass();
+			$body->data = array();
+			$body->error = "WordPress could not reach the backend";
+			return $body;
+		}
+	}
+
+	/**
+	 * Search for emails.
+	 *
+	 * Look for emails in the backend.
+	 * Any errors are also stored in the returned array.
+	 *
+	 * @since	1.0.0
+	 * @access	public
+	 * @param	int		$id The ID of the email to fetch.
+	 * @return	array 	The array containing the parsed response.
+	 */
+	public function get_email($id) {
+		$endpoint = "email";
+
+		$request = new \client\Request($this->scheme, $this->host, $this->port);
+		$request->add_parameter("id", $id);
 
 		$response = $request->send_get_request($endpoint);
 		if (! is_wp_error($response)) {
