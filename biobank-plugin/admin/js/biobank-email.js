@@ -4,6 +4,10 @@ jQuery(document).ready(() => {
 	 */
 	jQuery('.recipient .icon-remove').on('click', (event) => {
 		jQuery(event.currentTarget).closest('.recipient').remove();
+
+		if (! jQuery('#biobank-recipients').children().length) {
+			jQuery('#biobank-recipients').parent().hide();
+		}
 	});
 
 	/*
@@ -91,12 +95,17 @@ function addRecipient(email) {
 	var remove = jQuery("<span>").addClass('fa fa-times-circle icon-remove')
 							.on('click', (event) => {
 								jQuery(event.currentTarget).closest('.recipient').remove();
+
+								if (! jQuery('#biobank-recipients').children().length) {
+									jQuery('#biobank-recipients').parent().hide();
+								}
 							});
 	var recipient = jQuery('<div>').addClass('recipient')
 							  .text(email)
 							  .append(input)
 							  .append(remove);
 	jQuery('#biobank-recipients').append(recipient);
+	jQuery('#biobank-recipients').parent().show();
 }
 
 /**

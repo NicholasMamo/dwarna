@@ -70,7 +70,7 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 				</td>
 			</tr>
 
-			<tr class="form-field">
+			<tr class="form-field" hidden>
 				<th scope="row"></th>
 				<td id='biobank-recipients'>
 				</td>
