@@ -5,6 +5,17 @@ jQuery(document).ready(() => {
 	jQuery('.recipient .icon-remove').on('click', (event) => {
 		jQuery(event.currentTarget).closest('.recipient').remove();
 	});
+
+	/*
+	 * If the email body is not empty when the page loads, disable editing.
+	 * This is because the email is being viewed, which does not permit editing.
+	 */
+	setTimeout(() => {
+		var body = jQuery('iframe#biobank-body_ifr').contents().find('[data-id="biobank-body"]');
+		if (body.html()) {
+			body.attr('contenteditable', false);
+		}
+	}, 200);
 });
 
 /*
