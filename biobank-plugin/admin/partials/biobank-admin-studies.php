@@ -97,11 +97,11 @@ require_once(plugin_dir_path(__FILE__) . "../../client/request.php");
 			</thead>
 			<tbody>
 			<?php foreach ($studies as $data) { ?>
-				<?php $study = $data->study; ?>
+				<?php $existing_study = $data->study; ?>
 				<tr>
-					<th scope="row"><?= $study->name ?></th>
-					<td><a href="<?= $admin_page ?>&action=update&study_id=<?= $study->study_id ?>">Edit</a></td>
-					<td><a href="<?= $admin_page ?>&action=remove&study_id=<?= $study->study_id ?>">Remove</a></td>
+					<th scope="row"><?= $existing_study->name ?></th>
+					<td><a href="<?= $admin_page ?>&action=update&study_id=<?= $existing_study->study_id ?>">Edit</a></td>
+					<td><a href="<?= $admin_page ?>&action=remove&study_id=<?= $existing_study->study_id ?>">Remove</a></td>
 				</tr>
 			<?php } ?>
 			</tbody>
@@ -120,6 +120,7 @@ require_once(plugin_dir_path(__FILE__) . "../../client/request.php");
 			</form>
 		</div>
 
+		<?php if (isset($study)): ?>
 		<table class="wp-list-table widefat">
 			<thead>
 				<th scope="col" id="name" class="manage-column column-name column-primary">Participating Research Partners</th>
@@ -145,6 +146,8 @@ require_once(plugin_dir_path(__FILE__) . "../../client/request.php");
 		<div class="biobank-footer">
 			<div class="<?= $this->plugin_name ?>-float-left"><?= strlen($pagination) > 0 ? "Pages: " . $pagination : "" ?></div>
 		</div>
+
+	<?php endif; ?>
 	</div>
 
 </div>
