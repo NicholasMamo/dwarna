@@ -111,13 +111,11 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 			<thead>
 				<th scope="col" id="name" class="manage-column column-name column-primary">Existing Emails</th>
 				<th scope="col" id="name" class="manage-column column-name column-primary"></th>
-				<th scope="col" id="name" class="manage-column column-name column-primary"></th>
 			</thead>
 			<tbody>
 			<?php foreach ($emails as $email) { ?>
 				<tr>
 					<th scope="row"><?= $email->subject ?></th>
-					<td><a href="<?= $admin_page ?>&action=update&id=<?= $email->id ?>">Edit</a></td>
 					<td><a href="<?= $admin_page ?>&action=remove&id=<?= $email->id ?>">Remove</a></td>
 				</tr>
 			<?php } ?>
