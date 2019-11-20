@@ -11,6 +11,7 @@
  * @subpackage Biobank/admin/partials
  */
 
+require_once(plugin_dir_path(__FILE__) . "ui/buttons.php");
 require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 
 ?>
@@ -106,7 +107,7 @@ require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
 
 		</table>
 
-        <?php submit_button("Send Email", "primary", "submit", TRUE); ?>
+		<?php submit_button($button_labels[$action] . " email", $button_types[$action], "submit", TRUE); ?>
     </form>
 
 	<div class="biobank-side">
