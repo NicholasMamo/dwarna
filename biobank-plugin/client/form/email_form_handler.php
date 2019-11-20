@@ -90,6 +90,16 @@ class EmailFormHandler extends FormHandler {
 	}
 
 	/**
+	 * Remove an email.
+	 *
+	 * @since	1.0.0
+	 * @access	public
+	 */
+	public function remove_email() {
+		
+	}
+
+	/**
 	 * Get a single email.
 	 *
 	 * @since	1.0.0

@@ -172,6 +172,7 @@ class Biobank {
 		 */
 		$email_form_handler = new \client\form\EmailFormHandler();
 		$this->loader->add_action( 'admin_post_create_email', $email_form_handler, 'create_email' );
+		$this->loader->add_action( 'admin_post_remove_email', $email_form_handler, 'remove_email' );
 
 		/*
 		 * Participant forms
