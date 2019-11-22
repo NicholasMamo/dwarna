@@ -190,6 +190,42 @@ class EmailFormHandler extends FormHandler {
 	}
 
 	/**
+	 * Get the user's subscriptions.
+	 *
+	 * @since	1.0.0
+	 * @access	public
+	 *
+	 * @param	string	$username	The username of the user whose subscriptions will be fetched.
+	 *								If no username is given, the currently logged-in user's subscriptions are fetched.
+	 *
+	 * @return	array	The list of user subscriptions.
+	 */
+	public function get_subscriptions($username=null) {
+		$error = "";
+		$endpoint = "subscription"; // the REST API's endpoint
+
+		/*
+		 * Create a request and fetch the response
+		 */
+		$request = new \client\Request($this->scheme, $this->host, $this->port);
+
+		$username  = $username ?? wp_get_current_user()->user_login;
+		$request->add_parameter("username", $username);
+
+		$response = $request->send_get_request($endpoint);
+		if (! is_wp_error($response)) {
+			$body = json_decode($response["body"]);
+			$body->error = isset($body->error) ? $body->error : "";
+			return $body;
+		} else {
+			$body = new \stdClass();
+			$body->data = array();
+			$body->error = "WordPress could not reach the backend";
+			return $body;
+		}
+	}
+
+	/**
 	 * Search for emails.
 	 *
 	 * Look for emails in the backend.
