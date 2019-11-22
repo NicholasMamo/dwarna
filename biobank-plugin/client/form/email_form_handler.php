@@ -146,6 +146,19 @@ class EmailFormHandler extends FormHandler {
 	}
 
 	/**
+	 * Unsubscribe from receiving biobank-related emails.
+	 *
+	 * The function expects an email address.
+	 * It unsubscribes any research partners that have this email address.
+	 *
+	 * @since	1.0.0
+	 * @access	public
+	 */
+	public function unsubscribe() {
+		
+	}
+
+	/**
 	 * Get a single email.
 	 *
 	 * @since	1.0.0
