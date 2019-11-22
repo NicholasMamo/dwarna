@@ -1,7 +1,7 @@
-<form class="<?= $this->plugin_name ?>-form" id="unsubscribe-form"
-	  method="post" name="unsubscribe_form" action=<?php echo esc_url(admin_url("admin-post.php")); ?>>
-	<input type="hidden" name="action" value="unsubscribe_form">
-	<?php wp_nonce_field("unsubscribe_form", "unsubscribe_nonce"); ?>
+<form class="<?= $this->plugin_name ?>-form" id="subscription-form"
+	  method="post" name="subscription_form" action=<?php echo esc_url(admin_url("admin-post.php")); ?>>
+	<input type="hidden" name="action" value="update_subscription">
+	<?php wp_nonce_field("subscription_form", "subscription_nonce"); ?>
 
 	<div class='row my-2'>
 		<div class='col-md-5 text-md-right'>
