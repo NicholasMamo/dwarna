@@ -149,7 +149,7 @@ class Biobank_Public {
 		add_shortcode("biobank-consent", array($this, "display_consent_form"));
 		add_shortcode("biobank-study", array($this, "display_study"));
 		add_shortcode("biobank-trail", array($this, "display_consent_trail"));
-		add_shortcode("biobank-unsubscribe", array($this, "display_unsubscribe_form"));
+		add_shortcode("biobank-subscription", array($this, "display_subscription_form"));
 	}
 
 	/**
@@ -261,11 +261,11 @@ class Biobank_Public {
 	 * @since    1.0.0
 	 * @access	public
 	 */
-	public function display_unsubscribe_form() {
+	public function display_subscription_form() {
 		$email_handler = new \client\form\EmailFormHandler();
 		$subscriptions = $email_handler->get_subscriptions();
 
-		include_once(plugin_dir_path(__FILE__) . "partials/biobank-public-unsubscribe.php");
+		include_once(plugin_dir_path(__FILE__) . "partials/biobank-public-subscription.php");
 	}
 
 	/**

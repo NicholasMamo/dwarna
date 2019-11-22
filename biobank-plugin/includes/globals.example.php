@@ -115,9 +115,9 @@ $plugin_pages = array(
 	),
 	"biobank-unsubscribe" => array(
 		"wp_info" => array(
-			"post_title" => "Unsubscribe",
-			"post_content" => "[biobank-unsubscribe]",
-			"post_name" => "biobank-unsubscribe",
+			"post_title" => "Subscriptions",
+			"post_content" => "[biobank-subscription]",
+			"post_name" => "biobank-subscription",
 			"post_status" => "publish",
 			"post_author" => 1,
 			"post_type" => "page",
