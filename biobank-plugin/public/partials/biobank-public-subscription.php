@@ -33,6 +33,8 @@ require_once(plugin_dir_path(__FILE__) . "../../admin/partials/ui/notices.php");
 			<label for="<?= $this->plugin_name ?>-any">Any emails</label>
 		</div>
 		<div class='col-md-5'>
+			<input type="hidden" name='<?= $this->plugin_name ?>[any_email]'
+			 	   value="off" />
 			<input id='<?= $this->plugin_name ?>-any'
 				   name='<?= $this->plugin_name ?>[any_email]'
 				   type='checkbox' <?= $subscriptions->data->any_email ? 'checked' : '' ?>>
