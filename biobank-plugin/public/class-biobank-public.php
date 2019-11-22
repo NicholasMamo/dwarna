@@ -429,8 +429,12 @@ class Biobank_Public {
 	 * @return	string	The slug of the current post or page.
 	 */
 	private function get_current_slug() {
-		$url = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["SERVER_NAME"] . $_SERVER["REDIRECT_URL"];
-		return substr($url, strlen(home_url()) + 1, -1);
+		if (isset($_SERVER["REDIRECT_URL"])) {
+			$url = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["SERVER_NAME"] . $_SERVER["REDIRECT_URL"];
+			return substr($url, strlen(home_url()) + 1, -1);
+		} else {
+			return;
+		}
 	}
 
 }
