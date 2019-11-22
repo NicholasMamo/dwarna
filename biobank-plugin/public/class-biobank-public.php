@@ -137,6 +137,16 @@ class Biobank_Public {
 					break;
 			}
 		}
+
+		require(plugin_dir_path(__FILE__) . "../includes/globals.php");
+		$slug = $this->get_current_slug();
+		if (isset($plugin_pages[$slug])) {
+			$page = $plugin_pages[$slug];
+			if (! $page['public'] && ! is_user_logged_in()) {
+				wp_redirect(home_url());
+				exit;
+			}
+		}
 	}
 
 	/**
