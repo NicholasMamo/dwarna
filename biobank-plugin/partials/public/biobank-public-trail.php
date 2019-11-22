@@ -1,6 +1,6 @@
 <?php
 
-require_once(plugin_dir_path(__FILE__) . "ui/fields.php");
+require_once(plugin_dir_path(__FILE__) . "../ui/fields.php");
 require_once(plugin_dir_path(__FILE__) . "../../client/form/consent_form_handler.php");
 
 $error = "";

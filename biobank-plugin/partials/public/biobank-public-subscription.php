@@ -10,7 +10,7 @@
  * @subpackage Biobank/public/partials
  */
 
-require_once(plugin_dir_path(__FILE__) . "../../admin/partials/ui/notices.php");
+require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 
 ?>
 

@@ -167,7 +167,7 @@ class Biobank_Public {
 			$user = wp_get_current_user();
 			$role = $user->roles[0];
 			if ($role == "participant") {
-				include_once(plugin_dir_path(__FILE__) . "partials/biobank-public-trail.php");
+				include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-trail.php");
 			}
 		}
 	}
@@ -213,7 +213,7 @@ class Biobank_Public {
 					 * Load the study.
 					 */
 					$study = (new \client\form\StudyFormHandler())->get_study($_SESSION['study_id']);
-					include_once(plugin_dir_path(__FILE__) . "partials/biobank-public-study.php");
+					include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-study.php");
 				}
 			}
 		}
@@ -250,7 +250,7 @@ class Biobank_Public {
 					array_push($all_studies, $study->study->study_id);
 				}
 
-				include_once(plugin_dir_path(__FILE__) . "partials/biobank-public-consent.php");
+				include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-consent.php");
 			}
 		}
 	}
@@ -266,7 +266,7 @@ class Biobank_Public {
 		$subscriptions = $email_handler->get_subscriptions();
 
 		$_GET["error"] = $_GET["error"] ?? "";
-		include_once(plugin_dir_path(__FILE__) . "partials/biobank-public-subscription.php");
+		include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-subscription.php");
 	}
 
 	/**

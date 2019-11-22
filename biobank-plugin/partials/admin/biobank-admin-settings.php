@@ -11,9 +11,9 @@
  * @subpackage Biobank/admin/partials
  */
 
-require_once(plugin_dir_path(__FILE__) . "ui/buttons.php");
-require_once(plugin_dir_path(__FILE__) . "ui/fields.php");
-require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
+require_once(plugin_dir_path(__FILE__) . "../ui/buttons.php");
+require_once(plugin_dir_path(__FILE__) . "../ui/fields.php");
+require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 
 require_once(plugin_dir_path(__FILE__) . "../../client/request.php");
 require_once(plugin_dir_path(__FILE__) . "../../client/form/form_handler.php");

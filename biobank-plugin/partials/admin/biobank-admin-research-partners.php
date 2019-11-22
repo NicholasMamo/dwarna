@@ -11,8 +11,8 @@
  */
 
 require(plugin_dir_path(__FILE__) . "../../includes/globals.php");
-require_once(plugin_dir_path(__FILE__) . "ui/buttons.php");
-require_once(plugin_dir_path(__FILE__) . "ui/notices.php");
+require_once(plugin_dir_path(__FILE__) . "../ui/buttons.php");
+require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 
 ?>
 

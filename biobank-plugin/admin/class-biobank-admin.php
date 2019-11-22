@@ -233,7 +233,7 @@ class Biobank_Admin {
 
 		$action = $user ? $action : "create";
 
-		include_once(plugin_dir_path(__FILE__) . "partials/biobank-admin-research-partners.php");
+		include_once(plugin_dir_path(__FILE__) . "../partials/admin/biobank-admin-research-partners.php");
 	}
 
 	/**
@@ -282,7 +282,7 @@ class Biobank_Admin {
 		$user_meta = $user ? get_user_meta($user->data->ID) : array();
 		$action = $user ? $action : "create";
 
-		include_once(plugin_dir_path(__FILE__) . "partials/biobank-admin-researchers.php");
+		include_once(plugin_dir_path(__FILE__) . "../partials/admin/biobank-admin-researchers.php");
 	}
 
 	/**
@@ -365,7 +365,7 @@ class Biobank_Admin {
 		$plugin_page = $_GET["page"];
 		$admin_page = "admin.php?page=$plugin_page";
 
-		include_once(plugin_dir_path(__FILE__) . "partials/biobank-admin-studies.php");
+		include_once(plugin_dir_path(__FILE__) . "../partials/admin/biobank-admin-studies.php");
 	}
 
 	/**
@@ -375,7 +375,7 @@ class Biobank_Admin {
 	 * @since	1.0.0
 	 */
 	public function display_view_studies_page() {
-		include_once(plugin_dir_path(__FILE__) . "partials/biobank-admin-study-info.php");
+		include_once(plugin_dir_path(__FILE__) . "../partials/admin/biobank-admin-study-info.php");
 	}
 
 	/**
@@ -414,7 +414,7 @@ class Biobank_Admin {
 
 		wp_enqueue_script( $this->plugin_name . "-email", plugin_dir_url( __FILE__ ) . 'js/biobank-email.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name . "-fontawesome", $fontawesome_kit, array( 'jquery' ), $this->version, false );
-		include_once(plugin_dir_path(__FILE__) . "partials/biobank-admin-emails.php");
+		include_once(plugin_dir_path(__FILE__) . "../partials/admin/biobank-admin-emails.php");
 	}
 
 	/**
@@ -423,7 +423,7 @@ class Biobank_Admin {
 	 * @since	1.0.0
 	 */
 	public function display_settings_page() {
-		include_once(plugin_dir_path(__FILE__) . "partials/biobank-admin-settings.php");
+		include_once(plugin_dir_path(__FILE__) . "../partials/admin/biobank-admin-settings.php");
 	}
 
 	/**

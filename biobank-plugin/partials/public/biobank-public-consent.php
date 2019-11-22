@@ -1,6 +1,6 @@
 <?php
 
-require_once(plugin_dir_path(__FILE__) . "ui/fields.php");
+require_once(plugin_dir_path(__FILE__) . "../ui/fields.php");
 
 $error = isset($defaults->error) && ! empty($defaults->error) ? $defaults->error : $error;
 $refresh = (isset($_GET["return"]) && $_GET["return"] == "update_consent");
