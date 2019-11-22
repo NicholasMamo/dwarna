@@ -405,6 +405,8 @@ class Biobank_Public {
 	/**
 	 * Get the blockchain solution's access token.
 	 * It is assumed that this access token is stored in a cookie.
+	 *
+	 * @return	string	The blockchain access token.
 	 */
 	public function get_blockchain_access_token() {
 		require(plugin_dir_path(__FILE__) . "../includes/globals.php");
