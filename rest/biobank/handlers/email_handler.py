@@ -381,6 +381,7 @@ class EmailHandler(PostgreSQLRouteHandler):
 		:param username: The username of the participant whose subscription will be updated.
 		:type username: str
 		:param subscription: The subscription to update.
+							 The only accepted subscription type at present is 'any_email'.
 		:type subscription: str
 		:param subscribed: A boolean indicating whether the participant is subscribed.
 		:typr subscribed: bool
