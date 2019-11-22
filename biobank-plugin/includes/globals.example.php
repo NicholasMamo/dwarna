@@ -112,7 +112,18 @@ $plugin_pages = array(
 			"post_type" => "page",
 		),
 		"menu_visibility" => array( )
-	)
+	),
+	"biobank-unsubscribe" => array(
+		"wp_info" => array(
+			"post_title" => "Unsubscribe",
+			"post_content" => "[biobank-unsubscribe]",
+			"post_name" => "biobank-unsubscribe",
+			"post_status" => "publish",
+			"post_author" => 1,
+			"post_type" => "page",
+		),
+		"menu_visibility" => array( )
+	),
 );
 
 /*
