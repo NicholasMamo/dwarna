@@ -417,4 +417,20 @@ class Biobank_Public {
 		return $access_token;
 	}
 
+	/**
+	 * Get the slug of the current post or page.
+	 *
+	 * The function constructs the URL without the query.
+	 * Then, it removes the home URL, thus leaving only the slug.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 *
+	 * @return	string	The slug of the current post or page.
+	 */
+	private function get_current_slug() {
+		$url = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["SERVER_NAME"] . $_SERVER["REDIRECT_URL"];
+		return substr($url, strlen(home_url()) + 1, -1);
+	}
+
 }
