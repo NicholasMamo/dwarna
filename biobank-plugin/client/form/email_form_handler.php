@@ -153,6 +153,38 @@ class EmailFormHandler extends FormHandler {
 	 * @access	public
 	 */
 	public function update_subscription() {
+		$error = "";
+		$endpoint = "subscription"; // the REST API's endpoint
+
+		if(isset($_POST["subscription_nonce"]) && wp_verify_nonce($_POST["subscription_nonce"], "subscription_form")) {
+			if (isset($_POST["biobank"])) {
+				$input = $_POST["biobank"];
+
+				/*
+				 * Create a request and fetch the response
+				 */
+				$request = new \client\Request($this->scheme, $this->host, $this->port);
+				$request->add_parameter("username", wp_get_current_user()->user_login);
+				$request->add_parameter("subscription", 'any_email');
+				$request->add_parameter("subscribed", $input['any_email'] == 'on');
+				$response = $request->send_post_request($endpoint, "POST");
+
+				if (! is_wp_error($response)) {
+					$body = json_decode($response["body"]);
+					$error = isset($body->error) ? $body->error : "";
+				} else {
+					/*
+					 * If no response is received, then a connection with the backend could not be established
+					 */
+					$error = "WordPress could not reach the backend";
+				}
+			}
+		}
+		$error = urlencode($error);
+
+		require(plugin_dir_path(__FILE__) . "../../includes/globals.php");
+		wp_redirect(home_url($plugin_pages['biobank-susbcription']['wp_info']['post_name']) . "?redirect=update&error=$error");
+		exit;
 	}
 
 	/**
