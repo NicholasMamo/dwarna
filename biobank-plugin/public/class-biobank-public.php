@@ -148,6 +148,7 @@ class Biobank_Public {
 		add_shortcode("biobank-consent", array($this, "display_consent_form"));
 		add_shortcode("biobank-study", array($this, "display_study"));
 		add_shortcode("biobank-trail", array($this, "display_consent_trail"));
+		add_shortcode("biobank-unsubscribe", array($this, "display_unsubscribe_form"));
 	}
 
 	/**
@@ -252,6 +253,14 @@ class Biobank_Public {
 			}
 		}
 	}
+
+	/**
+	 * Show the form that allows research partners to unsubscribe from receiving biobank-related emails.
+	 *
+	 * @since    1.0.0
+	 * @access	public
+	 */
+	public function display_unsubscribe_form() { }
 
 	/**
 	 * Check whether the user has authorized.
