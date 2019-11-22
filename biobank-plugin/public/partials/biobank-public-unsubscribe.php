@@ -5,19 +5,18 @@
 
 	<div class='row my-2'>
 		<div class='col-md-5 text-md-right'>
-			<label for="<?= $this->plugin_name ?>-email">Email address</label>
+			<label for="<?= $this->plugin_name ?>-any">Any emails</label>
 		</div>
 		<div class='col-md-5'>
-			<input id='<?= $this->plugin_name ?>-email'
-				   class='form-control'
-				   name='<?= $this->plugin_name ?>[email]'
-				   type='email' value='' placeholder="joe.borg@gmail.com">
+			<input id='<?= $this->plugin_name ?>-any'
+				   name='<?= $this->plugin_name ?>[any_email]'
+				   type='checkbox' value=''>
 		</div>
 	</div>
 
 	<div class='row my-2'>
 		<div class='col-md-7 offset-md-5'>
-			<input type = "submit" class = "btn btn-primary float-left" value="Unsubscribe" />
+			<input type = "submit" class = "btn btn-primary float-left" value="Update subscription" />
 		</div>
 	</div>
 </form>
