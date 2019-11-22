@@ -10,7 +10,7 @@
 		<div class='col-md-5'>
 			<input id='<?= $this->plugin_name ?>-any'
 				   name='<?= $this->plugin_name ?>[any_email]'
-				   type='checkbox' value=''>
+				   type='checkbox' <?= $subscriptions->data->any_email ? 'checked' : '' ?>>
 		</div>
 	</div>
 

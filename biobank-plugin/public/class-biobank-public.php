@@ -1,6 +1,7 @@
 <?php
 
 require_once(plugin_dir_path(__FILE__) . "../client/form/consent_form_handler.php");
+require_once(plugin_dir_path(__FILE__) . "../client/form/email_form_handler.php");
 
 /**
  * The public-facing functionality of the plugin.
@@ -261,6 +262,9 @@ class Biobank_Public {
 	 * @access	public
 	 */
 	public function display_unsubscribe_form() {
+		$email_handler = new \client\form\EmailFormHandler();
+		$subscriptions = $email_handler->get_subscriptions();
+
 		include_once(plugin_dir_path(__FILE__) . "partials/biobank-public-unsubscribe.php");
 	}
 
