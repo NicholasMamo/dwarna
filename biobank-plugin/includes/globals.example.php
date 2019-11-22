@@ -113,7 +113,7 @@ $plugin_pages = array(
 		),
 		"menu_visibility" => array( )
 	),
-	"biobank-unsubscribe" => array(
+	"biobank-subscription" => array(
 		"wp_info" => array(
 			"post_title" => "Subscriptions",
 			"post_content" => "[biobank-subscription]",
