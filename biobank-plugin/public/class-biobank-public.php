@@ -260,7 +260,9 @@ class Biobank_Public {
 	 * @since    1.0.0
 	 * @access	public
 	 */
-	public function display_unsubscribe_form() { }
+	public function display_unsubscribe_form() {
+		include_once(plugin_dir_path(__FILE__) . "partials/biobank-public-unsubscribe.php");
+	}
 
 	/**
 	 * Check whether the user has authorized.
