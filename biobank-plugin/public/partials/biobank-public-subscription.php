@@ -1,3 +1,28 @@
+<?php
+
+/**
+ * Provide an area where research partners can update their subscription preferences.
+ *
+ * @link       https://github.com/nmamo
+ * @since      1.0.0
+ *
+ * @package    Biobank
+ * @subpackage Biobank/public/partials
+ */
+
+require_once(plugin_dir_path(__FILE__) . "../../admin/partials/ui/notices.php");
+
+?>
+
+<?php
+	if (isset($_GET["error"]) && ! empty($_GET["error"])) {
+		echo create_error_notice($_GET["error"]);
+	} else if (isset($_GET["error"]) && isset($_GET["redirect"])) {
+		echo create_success_notice("Subscriptions " . $notices[$_GET["redirect"]]);
+	}
+	$_GET["error"] = "";
+?>
+
 <form class="<?= $this->plugin_name ?>-form" id="subscription-form"
 	  method="post" name="subscription_form" action=<?php echo esc_url(admin_url("admin-post.php")); ?>>
 	<input type="hidden" name="action" value="update_subscription">
