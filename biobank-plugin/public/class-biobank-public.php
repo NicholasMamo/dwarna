@@ -265,6 +265,7 @@ class Biobank_Public {
 		$email_handler = new \client\form\EmailFormHandler();
 		$subscriptions = $email_handler->get_subscriptions();
 
+		$_GET["error"] = $_GET["error"] ?? "";
 		include_once(plugin_dir_path(__FILE__) . "partials/biobank-public-subscription.php");
 	}
 
