@@ -100,7 +100,8 @@ $plugin_pages = array(
 		),
 		"menu_visibility" => array(
 			"participant", "administrator",
-		)
+		),
+		"public" => false,
 	),
 	"biobank-study" => array(
 		"wp_info" => array(
@@ -111,7 +112,8 @@ $plugin_pages = array(
 			"post_author" => 1,
 			"post_type" => "page",
 		),
-		"menu_visibility" => array( )
+		"menu_visibility" => array( ),
+		"public" => false,
 	),
 	"biobank-subscription" => array(
 		"wp_info" => array(
@@ -122,7 +124,8 @@ $plugin_pages = array(
 			"post_author" => 1,
 			"post_type" => "page",
 		),
-		"menu_visibility" => array( )
+		"menu_visibility" => array( ),
+		"public" => false,
 	),
 );
 
