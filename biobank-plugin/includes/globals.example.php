@@ -127,6 +127,18 @@ $plugin_pages = array(
 		"menu_visibility" => array( ),
 		"public" => false,
 	),
+	"biobank-recruitment" => array(
+		"wp_info" => array(
+			"post_title" => "Become a Research Partner",
+			"post_content" => "<!-- wp:shortcode -->biobank-recruitment<!-- /wp:shortcode -->",
+			"post_name" => "biobank-recruitment",
+			"post_status" => "publish",
+			"post_author" => 1,
+			"post_type" => "page",
+		),
+		"menu_visibility" => array( ),
+		"public" => true,
+	),
 );
 
 /*
