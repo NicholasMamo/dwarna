@@ -92,7 +92,7 @@ $plugin_pages = array(
 	"biobank-consent" => array(
 		"wp_info" => array(
 			"post_title" => "Ongoing Studies",
-			"post_content" => "[biobank-consent type=\"all\"]",
+			"post_content" => "<!-- wp:shortcode -->[biobank-consent type=\"all\"]<!-- /wp:shortcode -->",
 			"post_name" => "biobank-consent",
 			"post_status" => "publish",
 			"post_author" => 1,
@@ -106,7 +106,7 @@ $plugin_pages = array(
 	"biobank-study" => array(
 		"wp_info" => array(
 			"post_title" => "Study",
-			"post_content" => "[biobank-study]",
+			"post_content" => "<!-- wp:shortcode -->biobank-study<!-- /wp:shortcode -->",
 			"post_name" => "biobank-study",
 			"post_status" => "publish",
 			"post_author" => 1,
@@ -118,7 +118,7 @@ $plugin_pages = array(
 	"biobank-subscription" => array(
 		"wp_info" => array(
 			"post_title" => "Subscriptions",
-			"post_content" => "[biobank-subscription]",
+			"post_content" => "<!-- wp:shortcode -->biobank-subscription<!-- /wp:shortcode -->",
 			"post_name" => "biobank-subscription",
 			"post_status" => "publish",
 			"post_author" => 1,
