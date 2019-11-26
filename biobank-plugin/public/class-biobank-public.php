@@ -331,6 +331,15 @@ class Biobank_Public {
 	 */
 	public function set_menu_visibility($items, $args) {
 		include(plugin_dir_path(__FILE__) . "../includes/globals.php");
+
+		/*
+		 * If this is an administrator page, load all menu items normally.
+		 * This fixes an issue whereby the menu items do not appear in the _Appearance -> Menus_ settings page in the administrator dashboard.
+		 */
+		if (is_admin()) {
+			return $items;
+		}
+
 		foreach ($items as $id => $item) {
 			/*
 			 * Load the actual post.
