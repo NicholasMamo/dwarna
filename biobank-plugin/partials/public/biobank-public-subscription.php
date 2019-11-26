@@ -37,7 +37,7 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 			 	   value="off" />
 			<input id='<?= $this->plugin_name ?>-any'
 				   name='<?= $this->plugin_name ?>[any_email]'
-				   type='checkbox' <?= $subscriptions->data->any_email ? 'checked' : '' ?>>
+				   type='checkbox' <?= isset($subscriptions) && $subscriptions->data->any_email ? 'checked' : '' ?>>
 		</div>
 	</div>
 
