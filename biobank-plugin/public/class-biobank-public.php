@@ -272,11 +272,18 @@ class Biobank_Public {
 	 * @access	public
 	 */
 	public function display_subscription_form() {
-		$email_handler = new \client\form\EmailFormHandler();
-		$subscriptions = $email_handler->get_subscriptions();
+		if (\is_user_logged_in()) {
+			$user = wp_get_current_user();
+			$role = $user->roles[0];
+			if ($role == "participant") {
+				$email_handler = new \client\form\EmailFormHandler();
+				$subscriptions = $email_handler->get_subscriptions();
+				$subscriptions->data = (object) $subscriptions->data;
 
-		$_GET["error"] = $_GET["error"] ?? "";
-		include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-subscription.php");
+				$_GET["error"] = $_GET["error"] ?? "";
+				include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-subscription.php");
+			}
+		}
 	}
 
 	/**
