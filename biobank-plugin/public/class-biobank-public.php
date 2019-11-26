@@ -323,6 +323,12 @@ class Biobank_Public {
 	 * This can be used to filter out pages that should not be accessible directly.
 	 * Note that this affects only visibility, not access permissions.
 	 *
+	 * A page is shown if one of two conditions are reached.
+	 *
+	 * 	 1. The user is logged-in and they have the necessary credentials to read the page.
+	 *	 2. The page is public, and is thus shown to every logged-out user.
+	 *      For a plugin page to be shown to everyone, it has to be public and visible to all user roles.
+	 *
 	 * @since	1.0.0
 	 * @access	public
 	 * @param	array	$items	The menu items.
@@ -350,7 +356,7 @@ class Biobank_Public {
 			if (array_key_exists($slug, $plugin_pages)) {
 				/*
 				 * If the page was created by the plugin, check whether the user has the necessary permissions to view it.
-				 * If they do not, remove the menu item from view.
+				 * If the user is not logged in and the page is not public, remove the menu item from view.
 				 */
 				if (\is_user_logged_in()) {
 					$user = wp_get_current_user();
@@ -358,8 +364,8 @@ class Biobank_Public {
 					if (! count(array_intersect($user->roles, $plugin_pages[$slug]["menu_visibility"]))) {
 						unset($items[$id]);
 					}
-				} else {
-					unset($items[$id]);
+				} else if (! $plugin_pages[$slug]["public"]) {
+						unset($items[$id]);
 				}
 			}
 		}
