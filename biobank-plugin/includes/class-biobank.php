@@ -174,7 +174,7 @@ class Biobank {
 		$this->loader->add_action( 'admin_post_create_email', $email_form_handler, 'create_email' );
 		$this->loader->add_action( 'admin_post_remove_email', $email_form_handler, 'remove_email' );
 		$this->loader->add_action( 'admin_post_update_subscription', $email_form_handler, 'update_subscription' );
-		$this->loader->add_action( 'admin_post_new_recruitment', $email_form_handler, 'forward_recruitment' );
+		$this->loader->add_action( 'admin_post_nopriv_new_recruitment', $email_form_handler, 'forward_recruitment' );
 
 		/*
 		 * Participant forms
@@ -210,6 +210,9 @@ class Biobank {
 		$this->loader->add_action( 'user_register', $plugin_admin, 'encrypt_email' );
 		$this->loader->add_action( 'profile_update', $plugin_admin, 'encrypt_email' );
 		$this->loader->add_action( 'wp_mail', $plugin_admin, 'before_email' );
+
+		$this->loader->add_action( 'phpmailer_init', $plugin_admin, 'send_smtp_email' );
+
 	}
 
 	/**
