@@ -138,6 +138,34 @@ abstract class FormHandler {
 	}
 
 	/**
+	 * Validate the given email.
+	 *
+	 * @since	1.0.0
+	 * @access	protected
+	 * @param	string	$email		The email to validate
+	 * @return	Status	A status object
+	 */
+	protected function validate_email($email) {
+		$filter = is_array($filter) ? $filter : array($filter); // make the filter a list if it is not one already.
+
+		/*
+		 * An email address cannot be empty
+		 */
+		if (empty($email)) {
+			return new Status(false, "Email cannot be empty");
+		}
+
+		/*
+		 * Check the email address' syntax
+		 */
+		if (! is_email($email)) {
+			return new Status(false, "Invalid email address");
+		}
+
+		return new Status(true);
+	}
+
+	/**
 	 * Iterate over the given statuses to ensure that they are all successful.
 	 *
 	 * If an unsuccessful status is found, return it and exit.
