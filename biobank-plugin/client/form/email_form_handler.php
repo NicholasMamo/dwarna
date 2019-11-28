@@ -194,7 +194,53 @@ class EmailFormHandler extends FormHandler {
 	 * @access	public
 	 */
 	public function forward_recruitment() {
-		
+		$error = "";
+		$endpoint = "subscription"; // the REST API's endpoint
+		require(plugin_dir_path(__FILE__) . "../../includes/globals.php");
+
+		if(isset($_POST["recruitment_nonce"]) && wp_verify_nonce($_POST["recruitment_nonce"], "recruitment_form")) {
+			if (isset($_POST["biobank"])) {
+				$input = $_POST["biobank"];
+
+				/*
+				 * Verify that all the required details were provided and are correct.
+				 */
+				$valid_id = $this->validate_required_string($input["name"], "The name cannot be empty");
+				$valid_email = $this->validate_email($input["email"]);
+				$valid_mobile = $this->validate_required_string($input["mobile"], "The mobile number cannot be empty");
+
+				/*
+				 * Ensure that everything checks out
+				 */
+				$validation_check = $this->validate(array(
+					$valid_id,
+					$valid_email,
+					$valid_mobile
+				));
+
+				if (! $validation_check->is_successful()) {
+					$error = (string) $validation_check;
+				} else {
+					$sent = wp_mail(
+						'nicholas.mamo@um.edu.mt',
+						"New Research Partner: {$input['name']}",
+						"<p>New Research Partner: {$input['name']}</p>
+						 <p>Mobile: {$input['mobile']}</p>
+						 <p>Email: {$input['email']}</p>",
+						 array(
+							 "Content-type: text/html"
+						 )
+					);
+
+					if (! $sent) {
+						$error = "Email could not be sent";
+					}
+				}
+			}
+		}
+		$error = urlencode($error);
+
+		wp_redirect(home_url($plugin_pages['biobank-recruitment']['wp_info']['post_name']) . "?redirect=update&error=$error");
 		exit;
 	}
 
