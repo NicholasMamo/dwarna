@@ -160,6 +160,7 @@ class Biobank_Public {
 		add_shortcode("biobank-study", array($this, "display_study"));
 		add_shortcode("biobank-trail", array($this, "display_consent_trail"));
 		add_shortcode("biobank-subscription", array($this, "display_subscription_form"));
+		add_shortcode("biobank-recruitment", array($this, "display_recruitment_form"));
 	}
 
 	/**
@@ -284,6 +285,17 @@ class Biobank_Public {
 				include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-subscription.php");
 			}
 		}
+	}
+
+	/**
+	 * Show the form that allows members of the general public to apply to become research partners.
+	 *
+	 * @since    1.0.0
+	 * @access	public
+	 */
+	public function display_recruitment_form() {
+		$_GET["error"] = $_GET["error"] ?? "";
+		include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-recruitment.php");
 	}
 
 	/**
