@@ -25,7 +25,7 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 
 <form class="<?= $this->plugin_name ?>-form" id="recruitment-form"
 	  method="post" name="recruitment_form" action=<?php echo esc_url(admin_url("admin-post.php")); ?>>
-	<input type="hidden" name="action" value="update_recruitment">
+	<input type="hidden" name="action" value="new_recruitment">
 	<?php wp_nonce_field("recruitment_form", "recruitment_nonce"); ?>
 
 	<div class='row my-2'>

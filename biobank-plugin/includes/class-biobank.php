@@ -174,6 +174,7 @@ class Biobank {
 		$this->loader->add_action( 'admin_post_create_email', $email_form_handler, 'create_email' );
 		$this->loader->add_action( 'admin_post_remove_email', $email_form_handler, 'remove_email' );
 		$this->loader->add_action( 'admin_post_update_subscription', $email_form_handler, 'update_subscription' );
+		$this->loader->add_action( 'admin_post_new_recruitment', $email_form_handler, 'forward_recruitment' );
 
 		/*
 		 * Participant forms

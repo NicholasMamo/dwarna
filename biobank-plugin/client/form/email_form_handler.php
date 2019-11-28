@@ -188,6 +188,17 @@ class EmailFormHandler extends FormHandler {
 	}
 
 	/**
+	 * Forward the recruitment form to the biobank.
+	 *
+	 * @since	1.0.0
+	 * @access	public
+	 */
+	public function forward_recruitment() {
+		
+		exit;
+	}
+
+	/**
 	 * Get a single email.
 	 *
 	 * @since	1.0.0
