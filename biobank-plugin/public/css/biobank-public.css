@@ -58,3 +58,65 @@
 #biobank-quiz .biobank-question.incorrect .biobank-quiz-question-explanation {
 	display: initial;
 }
+
+/*
+ * Forms
+ */
+
+.checkbox-container {
+	cursor: pointer;
+	display: block;
+	font-size: 22px;
+	margin-bottom: 12px;
+	padding-left: 35px;
+	position: relative;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.checkbox-container input {
+	cursor: pointer;
+	height: 0;
+	opacity: 0;
+	position: absolute;
+	width: 0;
+}
+
+.checkbox {
+	background-color: white;
+	border: 3px solid #cd2653;
+	height: 25px;
+	left: 0;
+	position: absolute;
+	transition: background-color 0.2s ease-in;
+	top: 0;
+	width: 25px;
+}
+
+.checkbox-container:hover input ~ .checkbox {
+	background-color: #cd2653;
+}
+
+.checkbox-container input:checked ~ .checkbox {
+	background-color: #cd2653;
+}
+
+.checkbox:after {
+	color: white;
+	content: "✓";
+	display: none;
+	font-weight: bolder;
+	font-size: 1em;
+	position: absolute;
+}
+
+.checkbox-container input:checked ~ .checkbox:after {
+	display: block;
+}
+
+.checkbox-container .checkbox:after {
+	text-align: center;
+	top: -7px;
+}
