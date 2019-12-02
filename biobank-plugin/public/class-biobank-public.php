@@ -279,7 +279,6 @@ class Biobank_Public {
 				$subscriptions = $email_handler->get_subscriptions();
 				$subscriptions->data = (object) $subscriptions->data;
 
-				$_GET["error"] = $_GET["error"] ?? "";
 				include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-subscription.php");
 			}
 		}
@@ -292,7 +291,6 @@ class Biobank_Public {
 	 * @access	public
 	 */
 	public function display_recruitment_form() {
-		$_GET["error"] = $_GET["error"] ?? "";
 		include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-recruitment.php");
 	}
 

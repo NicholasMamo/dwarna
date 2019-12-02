@@ -15,16 +15,15 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 ?>
 
 <?php
-	if (isset($_GET["error"]) && ! empty($_GET["error"])) {
-		echo create_error_notice($_GET["error"]);
-	} else if (isset($_GET["error"]) && isset($_GET["redirect"])) {
+	if (isset($_GET["biobank_error"]) && ! empty($_GET["biobank_error"])) {
+		echo create_error_notice($_GET["biobank_error"]);
+	} else if (isset($_GET["biobank_error"]) && isset($_GET["redirect"])) {
 		switch ($_GET['redirect']) {
 			case 'send':
 				echo create_success_notice("Email sent");
 				break;
 		}
 	}
-	$_GET["error"] = "";
 ?>
 
 <form class="<?= $this->plugin_name ?>-form" id="recruitment-form"

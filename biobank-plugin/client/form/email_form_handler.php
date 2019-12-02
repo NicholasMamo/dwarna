@@ -85,7 +85,7 @@ class EmailFormHandler extends FormHandler {
 			}
 		}
 		$error = urlencode($error);
-		wp_redirect(admin_url("admin.php") . "?page=biobank_emails&error=$error&redirect=create");
+		wp_redirect(admin_url("admin.php") . "?page=biobank_emails&biobank_error=$error&redirect=create");
 		exit;
 	}
 
@@ -141,7 +141,7 @@ class EmailFormHandler extends FormHandler {
 			}
 		}
 		$error = urlencode($error);
-		wp_redirect(admin_url("admin.php") . "?page=biobank_emails&error=$error&redirect=remove");
+		wp_redirect(admin_url("admin.php") . "?page=biobank_emails&biobank_error=$error&redirect=remove");
 		exit;
 	}
 
@@ -183,7 +183,7 @@ class EmailFormHandler extends FormHandler {
 		$error = urlencode($error);
 
 		require(plugin_dir_path(__FILE__) . "../../includes/globals.php");
-		wp_redirect(home_url($plugin_pages['biobank-subscription']['wp_info']['post_name']) . "?redirect=update&error=$error");
+		wp_redirect(home_url($plugin_pages['biobank-subscription']['wp_info']['post_name']) . "?redirect=update&biobank_error=$error");
 		exit;
 	}
 
@@ -240,7 +240,7 @@ class EmailFormHandler extends FormHandler {
 		}
 		$error = urlencode($error);
 
-		wp_redirect(home_url($plugin_pages['biobank-recruitment']['wp_info']['post_name']) . "?redirect=send&error=$error");
+		wp_redirect(home_url($plugin_pages['biobank-recruitment']['wp_info']['post_name']) . "?redirect=send&biobank_error=$error");
 		exit;
 	}
 
