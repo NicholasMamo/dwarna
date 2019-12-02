@@ -173,9 +173,24 @@ class ParticipantFormHandler extends UserFormHandler {
 
 							/*
 							 * Only update the password if it is not empty
+							 * If the password is updated, send it to the user.
 							 */
 							if ($input["password"] != "") {
 								$user_data["user_pass"] = wp_hash_password($input["password"]);
+
+								$sent = wp_mail(
+									$user_data['user_email'],
+									"Dwarna: new password",
+									"<p>Your Dwarna password has been updated. Keep it safe and use it to log in to Dwarna.</p>
+									 <p>New password: {$input['password']}</p>",
+									 array(
+										 "Content-type: text/html"
+									 )
+								);
+
+								if (! $sent) {
+									$error = isset($error) ? $error : "Email could not be sent";
+								}
 							}
 
 							$user_id = wp_insert_user($user_data);
