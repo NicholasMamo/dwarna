@@ -32,7 +32,11 @@ function preprocess($message) {
  */
 function create_notice($message, $class) {
 	$message = preprocess($message);
-    return "<div class = 'notice notice-$class'><p>$message</p></div>";
+	if (is_admin()) {
+    	return "<div class = 'notice notice-$class'><p>$message</p></div>";
+	} else {
+		return "<div class = 'alert alert-$class'><p>$message</p></div>";
+	}
 }
 
 /**
