@@ -196,14 +196,13 @@ class ParticipantFormHandler extends UserFormHandler {
 							if ($input["password"] != "") {
 								$user_data["user_pass"] = wp_hash_password($input["password"]);
 
+								ob_start();
+								include_once(plugin_dir_path(__FILE__) . "../../partials/emails/biobank-email-update-research-partner.php");
+								$body = ob_get_contents();
+								ob_end_clean();
 								$sent = wp_mail(
-									$user_data['user_email'],
-									"Dwarna: new password",
-									"<p>Your Dwarna password has been updated. Keep it safe and use it to log in to Dwarna.</p>
-									 <p>New password: {$input['password']}</p>",
-									 array(
-										 "Content-type: text/html"
-									 )
+									$user_data['user_email'], "Your new Dwarna password",
+									$body, array( "Content-type: text/html")
 								);
 
 								if (! $sent) {
