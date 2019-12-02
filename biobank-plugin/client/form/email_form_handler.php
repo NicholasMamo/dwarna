@@ -221,15 +221,13 @@ class EmailFormHandler extends FormHandler {
 				if (! $validation_check->is_successful()) {
 					$error = (string) $validation_check;
 				} else {
+					ob_start();
+					include_once(plugin_dir_path(__FILE__) . "../../partials/emails/biobank-email-recruitment.php");
+					$body = ob_get_contents();
+					ob_end_clean();
 					$sent = wp_mail(
-						'nicholas.mamo@um.edu.mt',
-						"New Research Partner: {$input['name']}",
-						"<p>New Research Partner: {$input['name']}</p>
-						 <p>Mobile: {$input['mobile']}</p>
-						 <p>Email: {$input['email']}</p>",
-						 array(
-							 "Content-type: text/html"
-						 )
+						'nicholas.mamo@um.edu.mt', "New Research Partner: {$input['name']}",
+						$body, array( "Content-type: text/html" )
 					);
 
 					if (! $sent) {
