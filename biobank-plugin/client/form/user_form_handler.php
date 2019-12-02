@@ -93,6 +93,24 @@ class ParticipantFormHandler extends UserFormHandler {
 							 */
 							update_user_meta($user_id, 'hashed_email', hash('sha256', $input['email']));
 							$error = is_wp_error($user_id) ? "WordPress could not create the participant" : "";
+
+							/*
+							 * Send an email with the login details.
+							 */
+							$sent = wp_mail(
+								$user_data['user_email'],
+								"Welcome to Dwarna!",
+								"<p>Your new Dwarna account is ready to be used. Keep your password safe and use it to log in to Dwarna.</p>
+								 <p>Username: {$input['username']}</p>
+								 <p>Password: {$input['password']}</p>",
+								 array(
+									 "Content-type: text/html"
+								 )
+							);
+
+							if (! $sent) {
+								$error = isset($error) ? $error : "Email could not be sent";
+							}
 						}
 					} else {
 						/*
