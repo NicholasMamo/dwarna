@@ -104,7 +104,7 @@ class ParticipantFormHandler extends UserFormHandler {
 			}
 		}
 		$error = urlencode($error);
-		wp_redirect(admin_url("admin.php") . "?page=biobank_partners&error=$error&redirect=create");
+		wp_redirect(admin_url("admin.php") . "?page=biobank_partners&biobank_error=$error&redirect=create");
 		exit;
 	}
 
@@ -195,7 +195,7 @@ class ParticipantFormHandler extends UserFormHandler {
 			}
 		}
 		$error = urlencode($error);
-		wp_redirect(admin_url("admin.php") . "?page=biobank_partners&error=$error&action=update&redirect=update" . (empty($return) ? "" : "&username=$return"));
+		wp_redirect(admin_url("admin.php") . "?page=biobank_partners&biobank_error=$error&action=update&redirect=update" . (empty($return) ? "" : "&username=$return"));
 	}
 
 	/**
@@ -259,7 +259,7 @@ class ParticipantFormHandler extends UserFormHandler {
 			}
 		}
 		$error = urlencode($error);
-		wp_redirect(admin_url("admin.php") . "?page=biobank_partners&error=$error&redirect=remove");
+		wp_redirect(admin_url("admin.php") . "?page=biobank_partners&biobank_error=$error&redirect=remove");
 
 	}
 
@@ -546,7 +546,7 @@ class ResearcherFormHandler extends UserFormHandler {
 			}
 		}
 		$error = urlencode($error);
-		wp_redirect(admin_url("admin.php") . "?page=biobank_researchers&error=$error&redirect=create");
+		wp_redirect(admin_url("admin.php") . "?page=biobank_researchers&biobank_error=$error&redirect=create");
 
 	}
 
@@ -619,7 +619,7 @@ class ResearcherFormHandler extends UserFormHandler {
 			}
 		}
 		$error = urlencode($error);
-		wp_redirect(admin_url("admin.php") . "?page=biobank_researchers&error=$error&action=update&redirect=update" . (empty($return) ? "" : "&username=$return"));
+		wp_redirect(admin_url("admin.php") . "?page=biobank_researchers&biobank_error=$error&action=update&redirect=update" . (empty($return) ? "" : "&username=$return"));
 	}
 
 	/**
@@ -683,7 +683,7 @@ class ResearcherFormHandler extends UserFormHandler {
 			}
 		}
 		$error = urlencode($error);
-		wp_redirect(admin_url("admin.php") . "?page=biobank_researchers&error=$error&redirect=remove");
+		wp_redirect(admin_url("admin.php") . "?page=biobank_researchers&biobank_error=$error&redirect=remove");
 
 	}
 

@@ -221,7 +221,7 @@ class StudyFormHandler extends StudyHandler {
 			}
 		}
 		$error = urlencode($error);
-		wp_redirect(admin_url("admin.php") . "?page=biobank_studies&error=$error&redirect=create");
+		wp_redirect(admin_url("admin.php") . "?page=biobank_studies&biobank_error=$error&redirect=create");
 
 	}
 
@@ -294,7 +294,7 @@ class StudyFormHandler extends StudyHandler {
 			}
 		}
 		$error = urlencode($error);
-		wp_redirect(admin_url("admin.php") . "?page=biobank_studies&error=$error&action=update&redirect=update" . (empty($return) ? "" : "&study_id=$return"));
+		wp_redirect(admin_url("admin.php") . "?page=biobank_studies&biobank_error=$error&action=update&redirect=update" . (empty($return) ? "" : "&study_id=$return"));
 
 	}
 
@@ -349,7 +349,7 @@ class StudyFormHandler extends StudyHandler {
 			}
 		}
 		$error = urlencode($error);
-		wp_redirect(admin_url("admin.php") . "?page=biobank_studies&error=$error&redirect=remove");
+		wp_redirect(admin_url("admin.php") . "?page=biobank_studies&biobank_error=$error&redirect=remove");
 
 	}
 

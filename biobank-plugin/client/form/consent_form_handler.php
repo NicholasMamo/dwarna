@@ -145,7 +145,7 @@ class ConsentFormHandler extends StudyHandler {
 		 * If something goes wrong, redirect back with an error.
 		 */
 		$error = urlencode($error);
-		wp_redirect(get_site_url() . "/index.php/biobank-consent?error=$error&return=" . __FUNCTION__);
+		wp_redirect(get_site_url() . "/index.php/biobank-consent?biobank_error=$error&return=" . __FUNCTION__);
 		exit;
 	}
 
@@ -209,11 +209,11 @@ class ConsentFormHandler extends StudyHandler {
 		 */
 		if (isset($study['study_id'])) {
 			$error = urlencode($error);
-			wp_redirect(get_site_url() . "/index.php/biobank-study?action=consent&study={$study['study_id']}error=$error&return=" . __FUNCTION__);
+			wp_redirect(get_site_url() . "/index.php/biobank-study?action=consent&study={$study['study_id']}&biobank_error=$error&return=" . __FUNCTION__);
 			exit;
 		} else {
 			$error = urlencode($error);
-			wp_redirect(get_site_url() . "/index.php/biobank-consent?action=consent&study={$study['study_id']}error=$error&return=" . __FUNCTION__);
+			wp_redirect(get_site_url() . "/index.php/biobank-consent?action=consent&study={$study['study_id']}&biobank_error=$error&return=" . __FUNCTION__);
 			exit;
 		}
 	}

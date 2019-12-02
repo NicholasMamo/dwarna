@@ -20,12 +20,12 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
     <p>Add, edit or remove biobank researchers</p>
 
 	<?php
-		if (isset($_GET["error"]) && !empty($_GET["error"])) {
-		    echo create_error_notice($_GET["error"]);
-		} else if (isset($_GET["error"]) && isset($_GET["redirect"])) {
+		if (isset($_GET["biobank_error"]) && !empty($_GET["biobank_error"])) {
+		    echo create_error_notice($_GET["biobank_error"]);
+		} else if (isset($_GET["biobank_error"]) && isset($_GET["redirect"])) {
 		    echo create_success_notice("Researcher " . $notices[$_GET["redirect"]]);
 		}
-		$_GET["error"] = "";
+		$_GET["biobank_error"] = "";
 	?>
 
     <form class="<?= $this->plugin_name ?>-form" id="researcher_form" method="post" name="researcher_form" action=<?php echo esc_url(admin_url("admin-post.php")); ?>>

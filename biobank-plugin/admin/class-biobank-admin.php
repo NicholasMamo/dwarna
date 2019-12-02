@@ -224,7 +224,7 @@ class Biobank_Admin {
 				/*
 				 * Show the error if need be.
 				 */
-				$_GET["error"] = empty($_GET["error"]) ? $response->error : $_GET["error"];
+				$_GET["biobank_error"] = empty($_GET["biobank_error"]) ? $response->error : $_GET["biobank_error"];
 			} else {
 				$user->first_name = $response->data->first_name ?? '';
 				$user->last_name = $response->data->last_name ?? '';

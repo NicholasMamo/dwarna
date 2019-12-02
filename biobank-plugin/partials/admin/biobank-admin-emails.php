@@ -20,12 +20,12 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
     <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 
 	<?php
-		if (isset($_GET["error"]) && ! empty($_GET["error"])) {
-		    echo create_error_notice($_GET["error"]);
-		} else if (isset($_GET["error"]) && isset($_GET["redirect"])) {
+		if (isset($_GET["biobank_error"]) && ! empty($_GET["biobank_error"])) {
+		    echo create_error_notice($_GET["biobank_error"]);
+		} else if (isset($_GET["biobank_error"]) && isset($_GET["redirect"])) {
 		    echo create_success_notice("Email " . $notices[$_GET["redirect"]]);
 		}
-		$_GET["error"] = "";
+		$_GET["biobank_error"] = "";
 	?>
 
 	<h2 class="title">Email</h2>

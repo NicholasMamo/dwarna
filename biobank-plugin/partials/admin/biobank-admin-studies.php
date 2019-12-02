@@ -24,12 +24,12 @@ require_once(plugin_dir_path(__FILE__) . "../../client/request.php");
     <p>Add, edit or remove biobank studies</p>
 
 	<?php
-		if (isset($_GET["error"]) && ! empty($_GET["error"])) {
-		    echo create_error_notice($_GET["error"]);
-		} else if (isset($_GET["error"]) && isset($_GET["redirect"])) {
+		if (isset($_GET["biobank_error"]) && ! empty($_GET["biobank_error"])) {
+		    echo create_error_notice($_GET["biobank_error"]);
+		} else if (isset($_GET["biobank_error"]) && isset($_GET["redirect"])) {
 		    echo create_success_notice("Study " . $notices[$_GET["redirect"]]);
 		}
-		$_GET["error"] = "";
+		$_GET["biobank_error"] = "";
 	?>
 
     <form class="<?= $this->plugin_name ?>-form" id="study_form" method="post" name="study_form" onsubmit="convert_values()" action=<?php echo esc_url(admin_url("admin-post.php")); ?>>

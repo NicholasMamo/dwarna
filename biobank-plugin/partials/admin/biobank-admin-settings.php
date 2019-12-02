@@ -48,7 +48,6 @@ $port = isset($options["biobank-port"]) ? $options["biobank-port"] : "8080";
 		if (isset($error) && ! empty($error)) {
 		    echo create_error_notice($error);
 		}
-		$_GET["error"] = "";
 	?>
 
 	<h2 class="title">Server configuration</h2>

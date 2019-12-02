@@ -82,7 +82,7 @@ $search = isset($_GET["search"]) ? $_GET["search"] : ""; // get the search strin
  */
 $existing_studies = $request_handler->search_researcher_studies(wp_get_current_user()->user_login, $studies_per_page, $page, $search);
 $error = isset($existing_studies->error) && !empty($existing_studies->error) ? $existing_studies->error : $error;
-$_GET["error"] = empty($_GET["error"]) ? $error : $_GET["error"];
+$_GET["biobank_error"] = empty($_GET["biobank_error"]) ? $error : $_GET["biobank_error"];
 
 $studies = $existing_studies->data;
 $total_studies = isset($existing_studies->total) ? $existing_studies->total : 0;
@@ -103,12 +103,12 @@ $pagination = (paginate_links( array(
     <p>View biobank studies</p>
 
 	<?php
-		if (isset($_GET["error"]) && ! empty($_GET["error"])) {
-		    echo create_error_notice($_GET["error"]);
-		} else if (isset($_GET["error"]) && isset($_GET["redirect"])) {
+		if (isset($_GET["biobank_error"]) && ! empty($_GET["biobank_error"])) {
+		    echo create_error_notice($_GET["biobank_error"]);
+		} else if (isset($_GET["biobank_error"]) && isset($_GET["redirect"])) {
 		    echo create_success_notice("Study " . $notices[$_GET["redirect"]]);
 		}
-		$_GET["error"] = "";
+		$_GET["biobank_error"] = "";
 	?>
 
     <form class="<?= $this->plugin_name ?>-form" id="study_form" method="post" name="study_form">
