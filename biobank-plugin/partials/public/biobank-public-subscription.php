@@ -28,12 +28,15 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 	<input type="hidden" name="action" value="update_subscription">
 	<?php wp_nonce_field("subscription_form", "subscription_nonce"); ?>
 
-	<label for="<?= $this->plugin_name ?>-any">Any emails</label>
-	<input type="hidden" name='<?= $this->plugin_name ?>[any_email]'
-	 	   value="off" />
-	<input id='<?= $this->plugin_name ?>-any'
-		   name='<?= $this->plugin_name ?>[any_email]'
-		   type='checkbox' <?= isset($subscriptions) && $subscriptions->data->any_email ? 'checked' : '' ?>>
+	<label class='checkbox-container'
+		   for="<?= $this->plugin_name ?>-any">Any emails
+		<input type="hidden" name='<?= $this->plugin_name ?>[any_email]'
+		 	   value="off" />
+		<input id='<?= $this->plugin_name ?>-any'
+			   name='<?= $this->plugin_name ?>[any_email]'
+			   type='checkbox' <?= isset($subscriptions) && $subscriptions->data->any_email ? 'checked' : '' ?>>
+		<span class='checkbox'></span>
+	</label>
 
 	<input type = "submit" class = "btn btn-primary float-left" value="Update subscription" />
 </form>

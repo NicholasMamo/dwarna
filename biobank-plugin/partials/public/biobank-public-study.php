@@ -24,16 +24,20 @@ if (isset($error) && ! empty($error)) {
 	<p class="biobank-description"><?= $study->study->description ?></p>
 	<p class="biobank-homepage"><a href="<?= $study->study->homepage ?>" target="_blank">Read more</a></p>
 	<?php include_once(plugin_dir_path(__FILE__) . '/components/biobank-study-quiz.php') ?>
-	<label for="<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>">Participate</label>
+
+	<label class='checkbox-container'
+		   for="<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>">Participate
+	   <input id = '<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>'
+	   		  name = '<?= $this->plugin_name ?>[study][consent]'
+			  class = 'study-consent' type = 'checkbox'>
+	   <span class='checkbox'></span>
+   </label>
+
+	<input name='<?= $this->plugin_name ?>[study][study_id]'
+		   type='hidden' value='<?= $study->study->study_id ?>'>
 	<input id='<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>-address'
 		   name='<?= $this->plugin_name ?>[address]'
 		   type='hidden' value=''>
-	<input name='<?= $this->plugin_name ?>[study][study_id]'
-		   type='hidden' value='<?= $study->study->study_id ?>'>
-	<input id = '<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>'
-		   name = '<?= $this->plugin_name ?>[study][consent]'
-		   class = 'study-consent'
-		   type = 'checkbox'>
 
 	<input type = "submit" class = "btn btn-primary float-left" disabled />
 </form>
