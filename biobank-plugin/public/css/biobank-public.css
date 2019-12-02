@@ -63,6 +63,17 @@
  * Forms
  */
 
+.biobank-form input[type="text"], .biobank-form input[type="password"],
+.biobank-form input[type="email"], .biobank-form input[type="url"],
+.biobank-form input[type="date"], .biobank-form input[type="month"],
+.biobank-form input[type="time"], .biobank-form input[type="datetime"],
+.biobank-form input[type="datetime-local"], .biobank-form input[type="week"],
+.biobank-form input[type="number"], .biobank-form input[type="search"],
+.biobank-form input[type="tel"], .biobank-form input[type="color"],
+.biobank-form textarea {
+	margin-bottom: 2em;
+}
+
 .checkbox-container,
 .radio-container {
 	cursor: pointer;
