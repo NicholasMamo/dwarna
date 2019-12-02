@@ -189,7 +189,7 @@ class ParticipantFormHandler extends UserFormHandler {
 
 							/*
 							 * Only update the password if it is not empty
-							 * If the password is updated, send it to the user.
+							 * If the password is updated, email it to the user.
 							 */
 							if ($input["password"] != "") {
 								$user_data["user_pass"] = wp_hash_password($input["password"]);
@@ -652,18 +652,18 @@ class ResearcherFormHandler extends UserFormHandler {
 
 					/*
 					 * Only update the password if it is not empty.
+					 * If the password is updated, email it to the user.
 					 */
 					if ($input["password"] != "") {
 						$user_data["user_pass"] = wp_hash_password($input["password"]);
 
+						ob_start();
+						include_once(plugin_dir_path(__FILE__) . "../../partials/emails/biobank-email-update-researcher.php");
+						$body = ob_get_contents();
+						ob_end_clean();
 						$sent = wp_mail(
-							$user_data['user_email'],
-							"Dwarna: new password",
-							"<p>Your Dwarna password has been updated. Keep it safe and use it to log in to Dwarna.</p>
-							 <p>New password: {$input['password']}</p>",
-							 array(
-								 "Content-type: text/html"
-							 )
+							$user_data['user_email'], "Dwarna: new password",
+							$body, array( "Content-type: text/html" )
 						);
 
 						if (! $sent) {
