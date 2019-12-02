@@ -35,6 +35,13 @@
 	color: #B2000D;
 }
 
+.biobank-alert {
+	background-color: #cd2653;
+	color: white;
+	font-weight: 400;
+	padding: 2rem;
+}
+
 #biobank-consent-trail {
 	max-height: 30vh;
 	overflow: auto;

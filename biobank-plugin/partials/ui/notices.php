@@ -35,7 +35,7 @@ function create_notice($message, $class) {
 	if (is_admin()) {
     	return "<div class = 'notice notice-$class'><p>$message</p></div>";
 	} else {
-		return "<div class = 'alert alert-$class'><p>$message</p></div>";
+		return "<div class = 'biobank-alert biobank-alert-$class'>$message</div>";
 	}
 }
 
