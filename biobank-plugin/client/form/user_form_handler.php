@@ -569,16 +569,14 @@ class ResearcherFormHandler extends UserFormHandler {
 							/*
 							 * Send an email with the login details.
 							 */
-							$sent = wp_mail(
-								$user_data['user_email'],
-								"Welcome to Dwarna!",
-								"<p>Your new Dwarna account is ready to be used. Keep your password safe and use it to log in to Dwarna.</p>
-								 <p>Username: {$input['username']}</p>
-								 <p>Password: {$input['password']}</p>",
-								 array(
-									 "Content-type: text/html"
-								 )
-							);
+							ob_start();
+  							include_once(plugin_dir_path(__FILE__) . "../../partials/emails/biobank-email-create-researcher.php");
+  							$body = ob_get_contents();
+  							ob_end_clean();
+ 							$sent = wp_mail(
+ 								$user_data['user_email'], "Welcome to Dwarna!",
+ 								$body, array( "Content-type: text/html" )
+ 							);
 
 							if (! $sent) {
 								$error = isset($error) ? $error : "Email could not be sent";
