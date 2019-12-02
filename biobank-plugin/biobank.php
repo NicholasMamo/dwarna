@@ -8,20 +8,20 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              https://github.com/nmamo
+ * @link              https://github.com/NicholasMamo
  * @since             1.0.0
- * @package           Biobank
+ * @package           Dwarna
  *
  * @wordpress-plugin
- * Plugin Name:       Biobank Permissions
- * Plugin URI:        https://github.com/nmamo/biobank
- * Description:       A Dynamic Consent portal, allowing biobank participants to inform themselves about ongoing studies and to manage consent
+ * Plugin Name:       Dwarna
+ * Plugin URI:        https://github.com/NicholasMamo/dwarna
+ * Description:       A plugin to enable dynamic consent in WordPress. The plugin is derived from Dwarna: A Blockchain Solution for Dynamic Consent in Biobanking.
  * Version:           1.0.0
  * Author:            Nicholas Mamo
- * Author URI:        https://github.com/nmamo
+ * Author URI:        https://github.com/NicholasMamo
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       biobank
+ * Text Domain:       dwarna
  * Domain Path:       /languages
  */
 
