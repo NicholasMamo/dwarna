@@ -32,42 +32,20 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 	<input type="hidden" name="action" value="new_recruitment">
 	<?php wp_nonce_field("recruitment_form", "recruitment_nonce"); ?>
 
-	<div class='row my-2'>
-		<div class='col-md-5 text-md-right'>
-			<label for="<?= $this->plugin_name ?>-name">Name</label>
-		</div>
-		<div class='col-md-5'>
-			<input id='<?= $this->plugin_name ?>-name'
-				   name='<?= $this->plugin_name ?>[name]'
-				   type='text' ?>
-		</div>
-	</div>
+	<label for="<?= $this->plugin_name ?>-name">Name</label>
+	<input id='<?= $this->plugin_name ?>-name'
+		   name='<?= $this->plugin_name ?>[name]'
+		   type='text' ?>
 
-	<div class='row my-2'>
-		<div class='col-md-5 text-md-right'>
-			<label for="<?= $this->plugin_name ?>-email">Email</label>
-		</div>
-		<div class='col-md-5'>
-			<input id='<?= $this->plugin_name ?>-email'
-				   name='<?= $this->plugin_name ?>[email]'
-				   type='email' ?>
-		</div>
-	</div>
+	<label for="<?= $this->plugin_name ?>-email">Email</label>
+	<input id='<?= $this->plugin_name ?>-email'
+		   name='<?= $this->plugin_name ?>[email]'
+		   type='email' ?>
 
-	<div class='row my-2'>
-		<div class='col-md-5 text-md-right'>
-			<label for="<?= $this->plugin_name ?>-mobile">Mobile</label>
-		</div>
-		<div class='col-md-5'>
-			<input id='<?= $this->plugin_name ?>-mobile'
-				   name='<?= $this->plugin_name ?>[mobile]'
-				   type='text' ?>
-		</div>
-	</div>
+	<label for="<?= $this->plugin_name ?>-mobile">Mobile</label>
+	<input id='<?= $this->plugin_name ?>-mobile'
+		   name='<?= $this->plugin_name ?>[mobile]'
+		   type='text' ?>
 
-	<div class='row my-2'>
-		<div class='col-md-7 offset-md-5'>
-			<input type = "submit" class = "btn btn-primary float-left" value="Become a research partner" />
-		</div>
-	</div>
+	<input type = "submit" value="Become a research partner" />
 </form>
