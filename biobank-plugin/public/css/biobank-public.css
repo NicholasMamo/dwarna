@@ -123,18 +123,13 @@
 	color: white;
 	content: "✓";
 	display: none;
-	font-weight: bolder;
-	font-size: 1em;
-	position: absolute;
+	font-weight: 900;
+	font-size: 0.75em;
+	margin-top: -2px;
+	text-align: center;
 }
 
 .checkbox-container input:checked ~ .checkbox:after,
 .radio-container input:checked ~ .radio:after {
 	display: block;
-}
-
-.checkbox-container .checkbox:after,
-.radio-container .radio:after {
-	text-align: center;
-	top: -7px;
 }
