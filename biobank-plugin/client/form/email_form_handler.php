@@ -240,7 +240,7 @@ class EmailFormHandler extends FormHandler {
 		}
 		$error = urlencode($error);
 
-		wp_redirect(home_url($plugin_pages['biobank-recruitment']['wp_info']['post_name']) . "?redirect=update&error=$error");
+		wp_redirect(home_url($plugin_pages['biobank-recruitment']['wp_info']['post_name']) . "?redirect=send&error=$error");
 		exit;
 	}
 

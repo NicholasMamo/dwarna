@@ -18,7 +18,11 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 	if (isset($_GET["error"]) && ! empty($_GET["error"])) {
 		echo create_error_notice($_GET["error"]);
 	} else if (isset($_GET["error"]) && isset($_GET["redirect"])) {
-		echo create_success_notice("Subscriptions " . $notices[$_GET["redirect"]]);
+		switch ($_GET['redirect']) {
+			case 'send':
+				echo create_success_notice("Email sent");
+				break;
+		}
 	}
 	$_GET["error"] = "";
 ?>
