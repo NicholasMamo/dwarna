@@ -63,7 +63,8 @@
  * Forms
  */
 
-.checkbox-container {
+.checkbox-container,
+.radio-container {
 	cursor: pointer;
 	display: block;
 	font-size: 22px;
@@ -76,7 +77,8 @@
 	user-select: none;
 }
 
-.checkbox-container input {
+.checkbox-container input,
+.radio-container input {
 	cursor: pointer;
 	height: 0;
 	opacity: 0;
@@ -84,7 +86,8 @@
 	width: 0;
 }
 
-.checkbox {
+.checkbox,
+.radio {
 	background-color: white;
 	border: 3px solid #cd2653;
 	height: 25px;
@@ -95,12 +98,25 @@
 	width: 25px;
 }
 
-.checkbox-container:hover input ~ .checkbox {
+.radio {
+	border-radius: 50%;
+}
+
+.checkbox-container:hover input ~ .checkbox,
+.radio-container:hover input ~ .radio {
 	background-color: #cd2653;
+}
+
+.radio-container:hover input:checked ~ .radio {
+	background-color: inherit;
 }
 
 .checkbox-container input:checked ~ .checkbox {
 	background-color: #cd2653;
+}
+
+.radio-container input:checked ~ .radio {
+	border-width: 7.5px;
 }
 
 .checkbox:after {
@@ -112,11 +128,13 @@
 	position: absolute;
 }
 
-.checkbox-container input:checked ~ .checkbox:after {
+.checkbox-container input:checked ~ .checkbox:after,
+.radio-container input:checked ~ .radio:after {
 	display: block;
 }
 
-.checkbox-container .checkbox:after {
+.checkbox-container .checkbox:after,
+.radio-container .radio:after {
 	text-align: center;
 	top: -7px;
 }
