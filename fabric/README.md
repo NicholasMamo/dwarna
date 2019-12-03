@@ -38,6 +38,10 @@ Dwarna stores backups as volumes from the Docker images. The volumes are stored 
 
 Apart from these volumes, the administrator card needs to be re-used. Dwarna looks for this card in the `dwarna-blockchain` directory.
 
+### Restoring Backups
+
+To restore backups, remove the `fabric-scripts/hlfv12/composer/backup_*` directories as well as the `dwarna-blockchain/admin@dwarna-blockchain.card`. Then, run the `reinstall_network.sh` script. Copy the `backup_*` folders and the `admin@dwarna-blockchain.card` back to the `fabric-scripts/hlfv12/composer/` and `dwarna-blockchain` folders respectively. Start the network normally using the `start_network.sh` script.
+
 ## Passport
 
 The passport files are located in `node/passport-local-wordpress`.
