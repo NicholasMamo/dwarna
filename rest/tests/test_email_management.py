@@ -896,7 +896,7 @@ class EmailManagementTest(BiobankTestCase):
 	@BiobankTestCase.isolated_test
 	def test_email_total(self):
 		"""
-		Test getting the total number of emaisl even when filtering or paginating.
+		Test getting the total number of emails even when filtering or paginating.
 		"""
 
 		token = self._get_access_token(["create_email", "view_email"])["access_token"]
@@ -975,6 +975,95 @@ class EmailManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 200)
 		response_body = response.json()
 		self.assertEqual(1, response_body['total'])
+
+	"""
+	Email delivery tests.
+	"""
+
+	@BiobankTestCase.isolated_test
+	def test_next_email_initially_empty(self):
+		"""
+		Test that when there are no emails, the email delivery system returns no email.
+		"""
+
+		token = self._get_access_token(["view_email"])["access_token"]
+
+		"""
+		Initially, there should be no emails to send.
+		"""
+		response = self.send_request("GET", "delivery", { }, token)
+		response_body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual({}, response_body['data'])
+
+	@BiobankTestCase.isolated_test
+	def test_next_email_without_recipients(self):
+		"""
+		Test that if an email has no recipients, it is not returned.
+		"""
+
+		token = self._get_access_token(["create_email", "view_email"])["access_token"]
+
+		"""
+		Initially, there should be no emails to send.
+		"""
+		response = self.send_request("GET", "delivery", { }, token)
+		response_body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual({}, response_body['data'])
+
+		"""
+		Create an email.
+		"""
+		response = self.send_request("POST", "email", {
+			"subject": "subject",
+			"body": "body"
+		}, token)
+		id = response.json()['data']['id']
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		Since the email has no recipients, it should not be returned for delivery.
+		"""
+		response = self.send_request("GET", "delivery", { }, token)
+		response_body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual({}, response_body['data'])
+
+	@BiobankTestCase.isolated_test
+	def test_next_email(self):
+		"""
+		Test that if an email has recipients who have not received the email yet, it is returned.
+		"""
+
+		token = self._get_access_token(["create_email", "view_email"])["access_token"]
+
+		"""
+		Initially, there should be no emails to send.
+		"""
+		response = self.send_request("GET", "delivery", { }, token)
+		response_body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual({}, response_body['data'])
+
+		"""
+		Create an email.
+		"""
+		response = self.send_request("POST", "email", {
+			"subject": "subject",
+			"body": "body",
+			'recipients': [ 'nicholas.mamo@um.edu.mt' ],
+		}, token)
+		id = response.json()['data']['id']
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		Since the email has no recipients, it should not be returned for delivery.
+		"""
+		response = self.send_request("GET", "delivery", { }, token)
+		response_body = response.json()['data']
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(id, response_body['email']['id'])
 
 	"""
 	Email subscription tests.

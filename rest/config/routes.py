@@ -379,6 +379,20 @@ routes.update({
 })
 
 """
+Routes related to delivering emails.
+"""
+routes.update({
+	"/delivery": {
+		"GET": {
+			"handler": email_handler_class,
+			"function": email_handler_class.get_next_email,
+			"scopes": ["view_email"],
+			"parameters": [],
+		}
+	}
+})
+
+"""
 Routes related to subscription management.
 """
 routes.update({

@@ -315,6 +315,68 @@ class EmailHandler(PostgreSQLRouteHandler):
 
 		return response
 
+
+	def get_next_email(self, *args, **kwargs):
+		"""
+		Get the next unsent email.
+
+		:return: A response with any errors that may arise.
+				 The email and the recipients to whom the email was sent are returned.
+		:rtype: :class:`oauth2.web.Response`
+		"""
+
+		response = Response()
+
+		try:
+			"""
+			Get the next email and its recipients.
+			The results are returned in the same row.
+			The recipients are returned as an array.
+			"""
+
+			sql = """
+				SELECT
+					emails.*, ARRAY_AGG(email_recipients.recipient) AS recipients
+				FROM
+					email_recipients JOIN emails
+						ON email_recipients.email_id = emails.id
+				WHERE
+					email_recipients.sent = False
+				GROUP BY
+					emails.id
+				ORDER BY
+					id ASC
+				LIMIT
+					1
+			"""
+
+			"""
+			Get the response.
+			The recipients are moved into a different variable.
+			"""
+			email = self._connector.select_one(sql)
+			if email:
+				recipients = email['recipients']
+				email['created_at'] = email['created_at'].timestamp()
+				del email['recipients']
+
+			response.status_code = 200
+			response.add_header("Content-Type", "application/json")
+			if email:
+				response.body = json.dumps({ 'data': { 'email': email, 'recipients': recipients } })
+			else:
+				response.body = json.dumps({ 'data': { } })
+		except (email_exceptions.EmailDoesNotExistException) as e:
+			response.status_code = 500
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ "error": str(e), "exception": e.__class__.__name__ })
+		except Exception as e:
+			response.status_code = 500
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ "error": "Internal Server Error: %s" % str(e), "exception": e.__class__.__name__ })
+
+		return response
+
 	"""
 	Subscription functions.
 	"""
