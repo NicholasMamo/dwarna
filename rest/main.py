@@ -79,7 +79,7 @@ def start_auth_server(port, token_expiry, connection, oauth_connection):
 
 	try:
 		client_store = PostgresqlClientStore(oauth_connection)
-		client_store.add_client(client_id="abc", client_secret="xyz")
+		client_store.add_client(client_id=oauth.client_id, client_secret=oauth.client_secret)
 
 		"""
 		Create a token store.
