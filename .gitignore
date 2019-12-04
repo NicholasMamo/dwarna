@@ -16,6 +16,7 @@ fabric/fabric-scripts/hlfv12/composer/backup*
 rest/tests/cards
 rest/config/blockchain.py
 rest/config/db.py
+rest/config/email.py
 
 # WordPress
 
