@@ -12,6 +12,7 @@ setup_path = os.path.join(path, "..", "..")
 if setup_path not in sys.path:
 	sys.path.insert(1, setup_path)
 
+from config import oauth
 from connection.db_connection import PostgreSQLConnection
 from setup import minimal_schema, oauth_schema
 
@@ -30,12 +31,12 @@ PORT = 3198
 The port where the tests will be held.
 """
 
-CLIENT_ID = "abc"
+CLIENT_ID = oauth.client_id
 """
 The client's ID.
 """
 
-CLIENT_SECRET = "xyz"
+CLIENT_SECRET = oauth.client_secret
 """
 The client's secret.
 """
