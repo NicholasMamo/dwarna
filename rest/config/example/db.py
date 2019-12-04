@@ -13,5 +13,12 @@ oauth_database = "biobank_oauth"
 encryption_secret = b'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 """
 :var encryption_secret: The secret key used to encrypt and decrypt.
+						To generate a new secret run:
+
+						.. code-block:: python
+
+							from cryptography.fernet import Fernet
+							key = Fernet.generate_key()
+
 :vartype encryption_secret: bytes
 """
