@@ -334,27 +334,7 @@ class EmailHandler(PostgreSQLRouteHandler):
 			The recipients are returned as an array.
 			"""
 
-			sql = """
-				SELECT
-					emails.*, ARRAY_AGG(email_recipients.recipient) AS recipients
-				FROM
-					email_recipients JOIN emails
-						ON email_recipients.email_id = emails.id
-				WHERE
-					email_recipients.sent = False
-				GROUP BY
-					emails.id
-				ORDER BY
-					id ASC
-				LIMIT
-					1
-			"""
-
-			"""
-			Get the response.
-			The recipients are moved into a different variable.
-			"""
-			email = self._connector.select_one(sql)
+			email = self._get_next_email()
 			if email:
 				recipients = email['recipients']
 				email['created_at'] = email['created_at'].timestamp()
@@ -542,3 +522,36 @@ class EmailHandler(PostgreSQLRouteHandler):
 		column_names = [ column['column_name'] for column in schema ]
 		column_names = [ column for column in column_names if column != 'participant_id' ]
 		return column_names
+
+	def _get_next_email(self, *args, **kwargs):
+		"""
+		Get the next unsent email.
+
+		:return: The next email, or `None` if there is no unsent email.
+				 The email and the recipients to whom the email was sent are returned.
+		:rtype: dict or None
+		"""
+
+		sql = """
+			SELECT
+				emails.*, ARRAY_AGG(email_recipients.recipient) AS recipients
+			FROM
+				email_recipients JOIN emails
+					ON email_recipients.email_id = emails.id
+			WHERE
+				email_recipients.sent = False
+			GROUP BY
+				emails.id
+			ORDER BY
+				id ASC
+			LIMIT
+				1
+		"""
+
+		"""
+		Get the response.
+		The recipients are moved into a different variable.
+		"""
+		email = self._connector.select_one(sql)
+
+		return email
