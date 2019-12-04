@@ -3,12 +3,25 @@ The route handler to handle email-related requests.
 """
 
 import json
+import os
+import smtplib
+import ssl
+import sys
 import traceback
+
+from email.mime.text import MIMEText
+
+path = sys.path[0]
+path = os.path.join(path, "../../")
+if path not in sys.path:
+	sys.path.insert(1, path)
 
 from oauth2.web import Response
 
 from .exceptions import email_exceptions, user_exceptions
 from .handler import PostgreSQLRouteHandler
+
+from config import email as smtp
 
 class EmailHandler(PostgreSQLRouteHandler):
 	"""
@@ -315,10 +328,9 @@ class EmailHandler(PostgreSQLRouteHandler):
 
 		return response
 
-
-	def get_next_email(self, *args, **kwargs):
+	def deliver(self, *args, **kwargs):
 		"""
-		Get the next unsent email.
+		Send the next unsent email.
 
 		:return: A response with any errors that may arise.
 				 The email and the recipients to whom the email was sent are returned.
@@ -334,7 +346,100 @@ class EmailHandler(PostgreSQLRouteHandler):
 			The recipients are returned as an array.
 			"""
 
-			email = self._get_next_email()
+			email = self._get_next_email(*args, **kwargs)
+			if email:
+				recipients = email['recipients']
+				email['created_at'] = email['created_at'].timestamp()
+				del email['recipients']
+
+				"""
+				If there is an email to be sent, set up the SMTP connection.
+				Then, set up the email itself and deliver it.
+				The email is always sent to the sender, with the recipients being `Bcc` receivers.
+				"""
+
+				if smtp.smtp_secure == 'tls':
+					smtpserver = smtplib.SMTP(smtp.smtp_host, smtp.smtp_port)
+					smtpserver.set_debuglevel(0)
+					smtpserver.ehlo()
+					smtpserver.starttls()
+					smtpserver.ehlo()
+				elif smtp.smtp_secure == 'ssl':
+					smtpserver = smtplib.SMTP_SSL(smtp.smtp_host, smtp.smtp_port)
+					smtpserver.set_debuglevel(0)
+					smtpserver.ehlo()
+
+				"""
+				Authenticate if need be.
+				"""
+				if smtp.smtp_auth:
+					smtpserver.login(smtp.smtp_user, smtp.smtp_pass)
+
+				"""
+				Construct the email.
+				"""
+				message = MIMEText(email['body'], 'html')
+				message['Subject'] = email['subject']
+				message['From'] = f"{smtp.smtp_name} <{smtp.smtp_from}>"
+				message['Bcc'] = ','.join(recipients)
+
+				smtpserver.sendmail(smtp.smtp_from, [smtp.smtp_from] + recipients, message.as_string())
+				smtpserver.close()
+
+				"""
+				Mark the emails as sent.
+				"""
+
+				self._connector.execute("""
+					UPDATE
+						email_recipients
+					SET
+						sent = True
+					WHERE
+						email_id = %d AND
+						recipient IN ('%s')
+				""" % (
+					email['id'],
+					"', '".join(recipients)
+				))
+
+			response.status_code = 200
+			response.add_header("Content-Type", "application/json")
+			if email:
+				response.body = json.dumps({ 'data': { 'email': email, 'recipients': recipients } })
+			else:
+				response.body = json.dumps({ 'data': { } })
+		except (email_exceptions.EmailDoesNotExistException) as e:
+			response.status_code = 500
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ "error": str(e), "exception": e.__class__.__name__ })
+		except Exception as e:
+			traceback.print_exc()
+			response.status_code = 500
+			response.add_header("Content-Type", "application/json")
+			response.body = json.dumps({ "error": "Internal Server Error: %s" % str(e), "exception": e.__class__.__name__ })
+
+		return response
+
+	def get_next_email(self, *args, **kwargs):
+		"""
+		Get the next unsent email.
+
+		:return: A response with any errors that may arise.
+				 The email and the recipients to whom the email should be sent are returned.
+		:rtype: :class:`oauth2.web.Response`
+		"""
+
+		response = Response()
+
+		try:
+			"""
+			Get the next email and its recipients.
+			The results are returned in the same row.
+			The recipients are returned as an array.
+			"""
+
+			email = self._get_next_email(*args, **kwargs)
 			if email:
 				recipients = email['recipients']
 				email['created_at'] = email['created_at'].timestamp()
