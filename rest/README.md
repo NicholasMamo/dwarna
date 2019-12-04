@@ -14,16 +14,19 @@ The REST API can be run using `python3 main.py`.
 
 ### Configuration
 
-The configuration files are in the `config/` directory. These files contain the following information:
+The configuration files should be placed in the `config/` directory.
+Copies of the configuration files are in the `config/examples` directory.
+The files in the `config` directory should be the following:
 
-- `blockchain.py` - information about where the Hyperledger Fabric blockchain is served, including the ports where the multi-user and administration endpoints of Hyperledger Composer's REST API should be served;
-- `db.example.py` - a shell containing information such as which databases should be used. The file needs to be renamed to `db.py` and filled in. To generate an encryption secret, used to encrypt sensitive personal information of users run the following:
-```python
-	from cryptography.fernet import Fernet
-	key = Fernet.generate_key()
-````
-- `oauth.py` - the OAuth 2.0 configuration, including the lifetime of access tokens and a list of scopes, extracted automatically from the routes; and
-- `routes.py` - the routes served by the REST API, each linked with a handler function.
+- `blockchain.py` - Information about where the Hyperledger Fabric blockchain is served.
+					This includes the ports where the multi-user and administration endpoints of Hyperledger Composer's REST API should be served;
+- `db.py` - 		The configuration file with information such as which databases should be used.
+					An encryption secret is used to encrypt sensitive personal information;
+- `email.py` - 		The email configuration, including SMTP details;
+- `oauth.py` - 		The OAuth 2.0 configuration.
+ 					This includes the lifetime of access tokens and a list of scopes, extracted automatically from the routes.
+					The client ID and secret have to be generated anew; and
+- `routes.py` - 	The routes served by the REST API, each linked with a handler function.
 
 ## Documentation
 
@@ -36,8 +39,10 @@ To generate the documentation, `cd` to this directory and run:
 
 ## Unit Tests
 
-The unit tests can be run using `./tests.sh`. It might be necessary to make this script executable using `chmod +x tests.sh`.
+The unit tests can be run using `./tests.sh`.
+It might be necessary to make this script executable using `chmod +x tests.sh`.
 
 ### Command-Line Arguments
 
--t - The test to run, one of _consent_, _general_, _study_, _user_. If no argument is given, all tests are run (optional).
+-t - The test to run, one of _consent_, _general_, _email_, _study_, _user_.
+If no argument is given, all tests are run (optional).
