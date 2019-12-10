@@ -328,9 +328,13 @@ class EmailHandler(PostgreSQLRouteHandler):
 
 		return response
 
-	def deliver(self, *args, **kwargs):
+	def deliver(self, simulated=False, *args, **kwargs):
 		"""
 		Send the next unsent email.
+
+		:param simulated: A boolean to simulate the email delivery.
+						 If the delivery is simulated, the email is not actually delivered, but marked as such.
+		:type simulated: boolean
 
 		:return: A response with any errors that may arise.
 				 The email and the recipients to whom the email was sent are returned.
@@ -358,33 +362,34 @@ class EmailHandler(PostgreSQLRouteHandler):
 				The email is always sent to the sender, with the recipients being `Bcc` receivers.
 				"""
 
-				if smtp.smtp_secure == 'tls':
-					smtpserver = smtplib.SMTP(smtp.smtp_host, smtp.smtp_port)
-					smtpserver.set_debuglevel(0)
-					smtpserver.ehlo()
-					smtpserver.starttls()
-					smtpserver.ehlo()
-				elif smtp.smtp_secure == 'ssl':
-					smtpserver = smtplib.SMTP_SSL(smtp.smtp_host, smtp.smtp_port)
-					smtpserver.set_debuglevel(0)
-					smtpserver.ehlo()
+				if not simulated:
+					if smtp.smtp_secure == 'tls':
+						smtpserver = smtplib.SMTP(smtp.smtp_host, smtp.smtp_port)
+						smtpserver.set_debuglevel(0)
+						smtpserver.ehlo()
+						smtpserver.starttls()
+						smtpserver.ehlo()
+					elif smtp.smtp_secure == 'ssl':
+						smtpserver = smtplib.SMTP_SSL(smtp.smtp_host, smtp.smtp_port)
+						smtpserver.set_debuglevel(0)
+						smtpserver.ehlo()
 
-				"""
-				Authenticate if need be.
-				"""
-				if smtp.smtp_auth:
-					smtpserver.login(smtp.smtp_user, smtp.smtp_pass)
+					"""
+					Authenticate if need be.
+					"""
+					if smtp.smtp_auth:
+						smtpserver.login(smtp.smtp_user, smtp.smtp_pass)
 
-				"""
-				Construct the email.
-				"""
-				message = MIMEText(email['body'], 'html')
-				message['Subject'] = email['subject']
-				message['From'] = f"{smtp.smtp_name} <{smtp.smtp_from}>"
-				message['Bcc'] = ','.join(recipients)
+					"""
+					Construct the email.
+					"""
+					message = MIMEText(email['body'], 'html')
+					message['Subject'] = email['subject']
+					message['From'] = f"{smtp.smtp_name} <{smtp.smtp_from}>"
+					message['Bcc'] = ','.join(recipients)
 
-				smtpserver.sendmail(smtp.smtp_from, [smtp.smtp_from] + recipients, message.as_string())
-				smtpserver.close()
+					smtpserver.sendmail(smtp.smtp_from, [smtp.smtp_from] + recipients, message.as_string())
+					smtpserver.close()
 
 				"""
 				Mark the emails as sent.

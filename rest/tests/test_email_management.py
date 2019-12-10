@@ -1095,7 +1095,9 @@ class EmailManagementTest(BiobankTestCase):
 		"""
 		This email should now have been sent.
 		"""
-		response = self.send_request("POST", "delivery", { }, token)
+		response = self.send_request("POST", "delivery", {
+			"simulated": True
+		}, token)
 		response_body = response.json()['data']
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(id, response_body['email']['id'])
