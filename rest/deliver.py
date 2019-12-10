@@ -33,7 +33,8 @@ def main(port):
 	:type port: int
 	"""
 
-	access_token = _get_access_token(port, [ 'deliver_email' ], 'delivery_service')
+	access_token = _get_access_token(port, [ 'deliver_email' ], 'delivery_service')['access_token']
+	email = _deliver_email(port, access_token)
 
 def _get_access_token(port, scopes, user_id="admin"):
 	"""
@@ -59,6 +60,25 @@ def _get_access_token(port, scopes, user_id="admin"):
 	}
 
 	response = requests.post(f"http://localhost:{port}/token", data=data)
+	return response.json()
+
+def _deliver_email(port, access_token):
+	"""
+	Deliver the next email.
+
+	:param port: The port on which the REST API is listening.
+	:type port: int
+	:param access_token: The access token to send with the request.
+	:type access_token: str
+
+	:return: The delivered email.
+	:rtype: dict
+	"""
+
+	headers = { "Authorization": access_token }
+	data = { 'max_recipients': 20 }
+
+	response = requests.post(f"http://localhost:{port}/delivery", json=data, headers=headers)
 	return response.json()
 
 if __name__ == "__main__":
