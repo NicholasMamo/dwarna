@@ -28,6 +28,19 @@ backup_plugin() {
 	cp biobank-plugin/includes/globals.php backup/$1/biobank-plugin/includes/globals.php
 }
 
+# The PostgreSQL backup creates a CSV file of each Dwarna table.
+backup_postgresql() {
+	mkdir -p backup/$1/postgresql/
+	chown postgres backup/$1/postgresql/
+
+	tables=( users researchers participants participant_identities participant_subscriptions biobankers studies studies_researchers emails email_recipients )
+	for table in "${tables[@]}"
+	do
+		su -c "psql -U postgres -d biobank -c \"COPY ${table} TO '${parent_path}/backup/$1/postgresql/${table}.csv' DELIMITER ',' CSV HEADER;\"" postgres
+	done
+}
+
 backup_fabric $backup
 backup_rest $backup
 backup_plugin $backup
+backup_postgresql $backup
