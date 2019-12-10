@@ -24,6 +24,11 @@ To start, Dwarna, execute the `start.sh` script.
 It might be necessary to make this script executable using `chmod +x start.sh`.
 The script first starts Hyperledger Fabric, and then starts the REST API.
 
+## Email Delivery
+
+The email delivery script is in the `rest/` directory—`deliver.py`.
+It might be necessary to make this script executable using `chmod +x deliver.py`.
+
 ## Unit Tests
 
 To run the unit tests, execute the `tests.sh` script.
