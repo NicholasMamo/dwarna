@@ -18,5 +18,12 @@ backup_rest() {
 	cp rest/config/*.py backup/$1/rest/config
 }
 
+# The WordPress plugin backup copies the configuration, including the encryption key.
+backup_plugin() {
+	mkdir -p backup/$1/biobank-plugin/includes
+	cp biobank-plugin/includes/globals.php backup/$1/biobank-plugin/includes/globals.php
+}
+
 backup_fabric $backup
 backup_rest $backup
+backup_plugin $backup
