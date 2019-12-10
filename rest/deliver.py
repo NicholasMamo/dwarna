@@ -25,7 +25,7 @@ def setup_args():
 	args = parser.parse_args()
 	return args
 
-def main(port=None):
+def main(port):
 	"""
 	Deliver the next email.
 
@@ -33,7 +33,33 @@ def main(port=None):
 	:type port: int
 	"""
 
-	pass
+	access_token = _get_access_token(port, [ 'deliver_email' ], 'delivery_service')
+
+def _get_access_token(port, scopes, user_id="admin"):
+	"""
+	Fetch the access token.
+
+	:param port: The port on which the REST API is listening.
+	:type port: int
+	:param scopes: The list of scopes that are required.
+	:type scopes: list
+	:param user_id: The user on whose behalf an access token will be fetched.
+	:type user_id: str
+
+	:return: The returned access token.
+	:rtype: dict
+	"""
+
+	data = {
+		"grant_type": "client_credentials",
+		"client_id": oauth.client_id,
+		"client_secret": oauth.client_secret,
+		"scope": ' '.join(scopes),
+		"user_id": user_id
+	}
+
+	response = requests.post(f"http://localhost:{port}/token", data=data)
+	return response.json()
 
 if __name__ == "__main__":
 	args = setup_args()
