@@ -3,6 +3,7 @@
 backup=$( date +%Y%m%d )
 mkdir -p backup/$backup
 
+# The Hyperledger Fabric backup copies the admin card and the actual data.
 backup_fabric() {
 	mkdir -p backup/$1/fabric/dwarna-blockchain
 	cp fabric/dwarna-blockchain/admin@dwarna-blockchain.card backup/$1/fabric/dwarna-blockchain
