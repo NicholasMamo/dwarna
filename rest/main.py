@@ -52,6 +52,7 @@ def setup_args():
 
 	Accepted arguments:
 		- -p --port		The port on which to serve the REST API, defaults to 7225.
+		- --single-card	Run the server in single-card mode.
 
 	:return: The command-line arguments.
 	:rtype: list
