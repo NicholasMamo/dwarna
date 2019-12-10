@@ -673,7 +673,7 @@ class EmailHandler(PostgreSQLRouteHandler):
 		If a limit is imposed on the participants, return only the first few.
 		"""
 		max_recipients = int(max_recipients)
-		if max_recipients > 0:
+		if max_recipients > 0 and email is not None:
 			email['recipients'] = email['recipients'][:max_recipients]
 
 		return email
