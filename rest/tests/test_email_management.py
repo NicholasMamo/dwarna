@@ -1058,12 +1058,113 @@ class EmailManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 200)
 
 		"""
-		This email should be returned as has recipients.
+		This email should be returned as it has recipients.
 		"""
 		response = self.send_request("GET", "delivery", { }, token)
 		response_body = response.json()['data']
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(id, response_body['email']['id'])
+
+	@BiobankTestCase.isolated_test
+	def test_next_email_no_limit_participants(self):
+		"""
+		Test that when no limit is imposed on participants, all participants are returned.
+		"""
+
+		token = self._get_access_token(["create_email", "view_email", "create_participant"])["access_token"]
+
+		"""
+		Initially, there should be no emails to send.
+		"""
+		response = self.send_request("GET", "delivery", { }, token)
+		response_body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual({}, response_body['data'])
+
+		"""
+		Create a few participants.
+		"""
+		participants = 25
+		for i in range(1, participants):
+			response = self.send_request("POST", "participant", { "username": i, "email": f"{i}@email.com" }, token)
+			self.assertEqual(response.status_code, 200)
+
+		"""
+		Create an email.
+		"""
+		response = self.send_request("POST", "email", {
+			"subject": "subject",
+			"body": "body",
+			'recipient_group': 'all',
+			'recipients': [ 'nicholas.mamo@um.edu.mt' ],
+		}, token)
+		id = response.json()['data']['id']
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		This email should be returned with all recipients.
+		"""
+		response = self.send_request("GET", "delivery", { }, token)
+		response_body = response.json()['data']
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(id, response_body['email']['id'])
+		self.assertEqual(participants, len(response_body['recipients']))
+
+	@BiobankTestCase.isolated_test
+	def test_next_email_limit_participants(self):
+		"""
+		Test that when a limit is imposed on participants, that number of participants is returned.
+		"""
+
+		token = self._get_access_token(["create_email", "view_email", "create_participant"])["access_token"]
+
+		"""
+		Initially, there should be no emails to send.
+		"""
+		response = self.send_request("GET", "delivery", { }, token)
+		response_body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual({}, response_body['data'])
+
+		"""
+		Create a few participants.
+		"""
+		participants = 5
+		for i in range(1, participants):
+			response = self.send_request("POST", "participant", { "username": i, "email": f"{i}@email.com" }, token)
+			self.assertEqual(response.status_code, 200)
+
+		"""
+		Create an email.
+		"""
+		response = self.send_request("POST", "email", {
+			"subject": "subject",
+			"body": "body",
+			'recipient_group': 'all',
+			'recipients': [ 'nicholas.mamo@um.edu.mt' ],
+		}, token)
+		id = response.json()['data']['id']
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		This email should be returned with all recipients.
+		"""
+		response = self.send_request("GET", "delivery", { }, token)
+		response_body = response.json()['data']
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(id, response_body['email']['id'])
+		self.assertEqual(participants, len(response_body['recipients']))
+
+		"""
+		Limit the number of participants to return.
+		"""
+		response = self.send_request("GET", "delivery", {
+			'max_recipients': 2
+		}, token)
+		response_body = response.json()['data']
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(id, response_body['email']['id'])
+		self.assertEqual(2, len(response_body['recipients']))
 
 	@BiobankTestCase.isolated_test
 	def test_send_email(self):
@@ -1109,6 +1210,102 @@ class EmailManagementTest(BiobankTestCase):
 		response_body = response.json()
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual({}, response_body['data'])
+
+	@BiobankTestCase.isolated_test
+	def test_send_email_no_limit_participants(self):
+		"""
+		Test that when no limit is imposed on participants, the email is delivered to all participants.
+		"""
+
+		token = self._get_access_token(["create_email", "view_email", "deliver_email", "create_participant"])["access_token"]
+
+		"""
+		Create a few participants.
+		"""
+		participants = 25
+		for i in range(1, participants):
+			response = self.send_request("POST", "participant", { "username": i, "email": f"{i}@email.com" }, token)
+			self.assertEqual(response.status_code, 200)
+
+		"""
+		Create an email.
+		"""
+		response = self.send_request("POST", "email", {
+			"subject": "subject",
+			"body": "body",
+			'recipient_group': 'all',
+			'recipients': [ 'nicholas.mamo@um.edu.mt' ],
+		}, token)
+		id = response.json()['data']['id']
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		This email should be delivered to all recipients.
+		"""
+		response = self.send_request("POST", "delivery", {
+			"simulated": True
+		}, token)
+		response_body = response.json()['data']
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(id, response_body['email']['id'])
+		self.assertEqual(participants, len(response_body['recipients']))
+
+		"""
+		Now there should be no more emails to deliver.
+		"""
+		response = self.send_request("GET", "delivery", { }, token)
+		response_body = response.json()['data']
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual({}, response_body)
+
+	@BiobankTestCase.isolated_test
+	def test_send_email_limit_participants(self):
+		"""
+		Test that when a limit is imposed on participants, the email is delivered only to that number of participants.
+		"""
+
+		token = self._get_access_token(["create_email", "view_email", "deliver_email", "create_participant"])["access_token"]
+
+		"""
+		Create a few participants.
+		"""
+		participants = 5
+		for i in range(1, participants):
+			response = self.send_request("POST", "participant", { "username": i, "email": f"{i}@email.com" }, token)
+			self.assertEqual(response.status_code, 200)
+
+		"""
+		Create an email.
+		"""
+		response = self.send_request("POST", "email", {
+			"subject": "subject",
+			"body": "body",
+			'recipient_group': 'all',
+			'recipients': [ 'nicholas.mamo@um.edu.mt' ],
+		}, token)
+		id = response.json()['data']['id']
+		self.assertEqual(response.status_code, 200)
+
+		"""
+		Deliver the email to only a few participants.
+		"""
+		response = self.send_request("POST", "delivery", {
+			'max_recipients': 2,
+			'simulated': True,
+		}, token)
+		response_body = response.json()['data']
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(id, response_body['email']['id'])
+		self.assertEqual(2, len(response_body['recipients']))
+
+		"""
+		Now there should be a few more recipients to deliver to.
+		"""
+		response = self.send_request("GET", "delivery", { }, token)
+		response_body = response.json()['data']
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(id, response_body['email']['id'])
+		self.assertEqual(participants - 2, len(response_body['recipients']))
 
 	"""
 	Email subscription tests.

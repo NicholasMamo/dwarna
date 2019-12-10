@@ -331,6 +331,7 @@ class EmailHandler(PostgreSQLRouteHandler):
 	def deliver(self, simulated=False, *args, **kwargs):
 		"""
 		Send the next unsent email.
+		The `max_recipients` parameter can be used to limit the number of recipients to deliver to.
 
 		:param simulated: A boolean to simulate the email delivery.
 						 If the delivery is simulated, the email is not actually delivered, but marked as such.
@@ -429,6 +430,7 @@ class EmailHandler(PostgreSQLRouteHandler):
 	def get_next_email(self, *args, **kwargs):
 		"""
 		Get the next unsent email.
+		The `max_recipients` parameter can be used to limit the number of recipients to deliver to.
 
 		:return: A response with any errors that may arise.
 				 The email and the recipients to whom the email should be sent are returned.
@@ -633,9 +635,13 @@ class EmailHandler(PostgreSQLRouteHandler):
 		column_names = [ column for column in column_names if column != 'participant_id' ]
 		return column_names
 
-	def _get_next_email(self, *args, **kwargs):
+	def _get_next_email(self, max_recipients=-1, *args, **kwargs):
 		"""
 		Get the next unsent email.
+
+		:param max_recipients: The maximum number of recipients to deliver the email to.
+							   If a zero or negative number is provided, all participants are returned.
+		:type max_recipients: int
 
 		:return: The next email, or `None` if there is no unsent email.
 				 The email and the recipients to whom the email was sent are returned.
@@ -660,8 +666,14 @@ class EmailHandler(PostgreSQLRouteHandler):
 
 		"""
 		Get the response.
-		The recipients are moved into a different variable.
 		"""
 		email = self._connector.select_one(sql)
+
+		"""
+		If a limit is imposed on the participants, return only the first few.
+		"""
+		max_recipients = int(max_recipients)
+		if max_recipients > 0:
+			email['recipients'] = email['recipients'][:max_recipients]
 
 		return email
