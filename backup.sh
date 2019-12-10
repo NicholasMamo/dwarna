@@ -12,4 +12,11 @@ backup_fabric() {
 	cp -r fabric/fabric-scripts/hlfv12/composer/backup_* backup/$1/fabric/fabric-scripts/hlfv12/composer
 }
 
+# The REST API backup copies the configuration, including the encryption keys.
+backup_rest() {
+	mkdir -p backup/$1/rest/config
+	cp rest/config/*.py backup/$1/rest/config
+}
+
 backup_fabric $backup
+backup_rest $backup
