@@ -25,7 +25,6 @@ restore_postgresql() {
 # Restore the WordPress database.
 function restore_wordpress() {
 	echo -e "${HIGHLIGHT}Restoring WordPress database${DEFAULT}"
-	mkdir -p backup/$1/wordpress/
 	read -p 'Enter database [wordpress]: ' database
 	database=${database:-wordpress}
 	read -p 'Enter username: ' username
