@@ -50,7 +50,8 @@ backup_postgresql() {
 backup_wordpress() {
 	echo -e "${HIGHLIGHT}Backing up WordPress database${DEFAULT}"
 	mkdir -p backup/$1/wordpress/
-	mysqldump -u root -p wordpress > backup/$1/wordpress/wordpress.sql
+	read -p 'Enter username: ' username
+	mysqldump -u $username -p wordpress > backup/$1/wordpress/wordpress.sql
 }
 
 backup_fabric $backup
