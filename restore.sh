@@ -7,6 +7,13 @@ function usage() {
 	echo -e "       -p path    The path of the backup to restore, for example 'backup/20191217'";
 }
 
+# Restore Hyperledger Fabric's admin card and the actual data.
+restore_fabric() {
+	echo -e "${HIGHLIGHT}Restoring Hyperledger Fabric files${DEFAULT}"
+	cp $1/fabric/dwarna-blockchain/admin@dwarna-blockchain.card fabric/dwarna-blockchain/admin@dwarna-blockchain.card
+	cp -r $1/fabric/fabric-scripts/hlfv12/composer/* fabric/fabric-scripts/hlfv12/composer/
+}
+
 # Restore the REST API's configuration, including the encryption keys.
 restore_rest() {
 	echo -e "${HIGHLIGHT}Restoring REST API files${DEFAULT}"
@@ -46,6 +53,7 @@ function restore_wordpress() {
 if getopts "p:" o
 then
 	path=${OPTARG}
+	restore_fabric $path
 	restore_rest $path
 	restore_plugin $path
 	restore_postgresql $path
