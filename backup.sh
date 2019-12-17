@@ -43,9 +43,7 @@ backup_postgresql() {
 # The WordPress backup creates a CSV file of each WordPress table.
 backup_wordpress() {
 	mkdir -p backup/$1/wordpress/
-
-	mysqldump -u root -p -T /var/lib/mysql-files/ --fields-terminated-by ',' --fields-enclosed-by '"' --fields-escaped-by '\' --no-create-info wordpress
-	cp /var/lib/mysql-files/*.txt backup/$1/wordpress/
+	mysqldump -u root -p wordpress > backup/$1/wordpress/wordpress.dump
 }
 
 backup_fabric $backup
