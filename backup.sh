@@ -38,11 +38,14 @@ backup_postgresql() {
 	echo -e "${HIGHLIGHT}Backing up PostgreSQL database${DEFAULT}"
 	mkdir -p backup/$1/postgresql/
 	chown postgres backup/$1/postgresql/
+	
+	read -p 'Enter database [biobank]: ' database
+	database=${database:-biobank}
 
 	tables=( users researchers participants participant_identities participant_subscriptions biobankers studies studies_researchers emails email_recipients )
 	for table in "${tables[@]}"
 	do
-		su -c "psql -U postgres -d biobank -c \"COPY ${table} TO '${parent_path}/backup/$1/postgresql/${table}.csv' DELIMITER ',' CSV HEADER;\"" postgres
+		su -c "psql -U postgres -d $database -c \"COPY ${table} TO '${parent_path}/backup/$1/postgresql/${table}.csv' DELIMITER ',' CSV HEADER;\"" postgres
 	done
 }
 
