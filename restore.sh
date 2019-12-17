@@ -7,6 +7,12 @@ function usage() {
 	echo -e "       -p path    The path of the backup to restore, for example 'backup/20191217'";
 }
 
+# Restore the REST API's configuration, including the encryption keys.
+restore_rest() {
+	echo -e "${HIGHLIGHT}Restoring REST API files${DEFAULT}"
+	cp $1/rest/config/* rest/config
+}
+
 # Restore the WordPress plugin's configuration, including the encryption key.
 restore_plugin() {
 	echo -e "${HIGHLIGHT}Restoring WordPress plugin files${DEFAULT}"
@@ -40,6 +46,7 @@ function restore_wordpress() {
 if getopts "p:" o
 then
 	path=${OPTARG}
+	restore_rest $path
 	restore_plugin $path
 	restore_postgresql $path
 	restore_wordpress $path
