@@ -9,6 +9,14 @@ from biobank.handlers.blockchain.api.hyperledger import hyperledger
 
 from connection.db_connection import PostgreSQLConnection
 
+base_url = "http://localhost"
+"""
+:var base_url: The base URL of the REST API.
+			   This is used when absolute paths are required, for example when sending emails.
+			   The protocol needs to be included, but there should be no trailing slash.
+:vartype base_url: str
+"""
+
 generic_handler_class = PostgreSQLRouteHandler
 """
 :var generic_handler_class: The handler that receives route parameters and services generic requests.
