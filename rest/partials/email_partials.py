@@ -10,8 +10,6 @@ path = os.path.join(path, "../")
 if path not in sys.path:
 	sys.path.insert(1, path)
 
-from config.routes import base_url
-
 def header():
 	"""
 	Get the header of the email.
@@ -19,6 +17,8 @@ def header():
 	:return: A string containing the header of the email.
 	:rtype: str
 	"""
+
+	from config.routes import base_url
 
 	return f"""<html>
 		<head></head>
