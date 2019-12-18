@@ -22,6 +22,7 @@ from .exceptions import email_exceptions, user_exceptions
 from .handler import PostgreSQLRouteHandler
 
 from config import email as smtp
+from partials import email_partials
 
 class EmailHandler(PostgreSQLRouteHandler):
 	"""
@@ -384,7 +385,7 @@ class EmailHandler(PostgreSQLRouteHandler):
 					"""
 					Construct the email.
 					"""
-					message = MIMEText(email['body'], 'html')
+					message = MIMEText(email_partials.email() % email['body'], 'html')
 					message['Subject'] = email['subject']
 					message['From'] = f"{smtp.smtp_name} <{smtp.smtp_from}>"
 					message['Bcc'] = ','.join(recipients)
