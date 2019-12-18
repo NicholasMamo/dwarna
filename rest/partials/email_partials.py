@@ -11,3 +11,16 @@ if path not in sys.path:
 	sys.path.insert(1, path)
 
 from config.routes import base_url
+
+def header():
+	"""
+	Get the header of the email.
+
+	:return: A string containing the header of the email.
+	:rtype: str
+	"""
+
+	return f"""<html>
+		<head></head>
+		<body>
+			<img src="{base_url}/assets/dwarna-logo.png" style='max-width: 62.8%%; margin: 0 auto'>"""
