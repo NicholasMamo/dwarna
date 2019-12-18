@@ -101,8 +101,14 @@ class ParticipantFormHandler extends UserFormHandler {
  							include_once(plugin_dir_path(__FILE__) . "../../partials/emails/biobank-email-create-research-partner.php");
  							$body = ob_get_contents();
  							ob_end_clean();
+
+							require(plugin_dir_path(__FILE__) . "../../includes/globals.php");
+							$nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
+							$cipherEmail = sodium_crypto_secretbox($user_data['user_email'], $nonce, $encryptionKey);
+							$encodedEmail = base64_encode($nonce . $cipherEmail);
+
 							$sent = wp_mail(
-								$user_data['user_email'], "Welcome to Dwarna!",
+								$encodedEmail, "Welcome to Dwarna!",
 								$body, array( "Content-type: text/html" )
 							);
 
@@ -198,8 +204,14 @@ class ParticipantFormHandler extends UserFormHandler {
 								include_once(plugin_dir_path(__FILE__) . "../../partials/emails/biobank-email-update-research-partner.php");
 								$body = ob_get_contents();
 								ob_end_clean();
+
+								require(plugin_dir_path(__FILE__) . "../../includes/globals.php");
+								$nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
+								$cipherEmail = sodium_crypto_secretbox($user_data['user_email'], $nonce, $encryptionKey);
+								$encodedEmail = base64_encode($nonce . $cipherEmail);
+
 								$sent = wp_mail(
-									$user_data['user_email'], "Your new Dwarna password",
+									$encodedEmail, "Your new Dwarna password",
 									$body, array( "Content-type: text/html")
 								);
 
