@@ -15,8 +15,7 @@ jQuery(document).ready(() => {
 	 * This is because the email is being viewed, which does not permit editing.
 	 */
 	setTimeout(() => {
-		var body = jQuery('iframe#biobank-body_ifr').contents().find('[data-id="biobank-body"]');
-		if (body.html()) {
+		if (jQuery("#biobank-edit").val()) {
 			body.attr('contenteditable', false);
 		}
 	}, 200);

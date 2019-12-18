@@ -96,6 +96,9 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 				<td>
 					<input name="<?= $this->plugin_name; ?>[body]"
 						   type="hidden" id="<?= $this->plugin_name; ?>-body-input" aria-required="true">
+					<input name="<?= $this->plugin_name ?>[edit]"
+						   type='hidden' id="<?= $this->plugin_name; ?>-edit" aria-required="true"
+						   value='<?= isset($email) ? true : false ?>'>
 					<?php
 						$settings = array(
 							'textarea_rows' => 5,
