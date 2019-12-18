@@ -35,3 +35,16 @@ def footer():
 
 	return f"""</body>
 	</html>"""
+
+def email():
+	"""
+	Get the email structure, including all necessary HTML tags, the header and footer.
+	The response has a placeholder for the body text.
+
+	:return: The emails structure, including the header and footer.
+	:rtype: str
+	"""
+
+	return f"""{ header() }
+			%s
+	{ footer() }"""
