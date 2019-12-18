@@ -148,6 +148,17 @@ class Biobank_Public {
 	}
 
 	/**
+	 * When the user logs out, clear the study session variable.
+	 * This fixes the issue of redirecting users to the study page even though they have not authenticated with Passport.js for that study.
+	 *
+	 * @since	1.0.0
+	 * @access	public
+	 */
+	public function clear_session() {
+		unset($_SESSION['study_id']);
+	}
+
+	/**
 	 * Register the shortcodes that appear in the public-facing side of the site.
 	 *
 	 * @since    1.0.0

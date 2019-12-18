@@ -232,6 +232,8 @@ class Biobank {
 		$this->loader->add_action( 'init', $plugin_public, 'register_shortcodes' );
 		$this->loader->add_action( 'init', $plugin_public, 'init' );
 
+		$this->loader->add_action( 'wp_logout', $plugin_public, 'clear_session' );
+
 		$this->loader->add_action('wp_authenticate', $plugin_public, 'encrypt_email_for_login');
 		$this->loader->add_action('login_form_lostpassword', $plugin_public, 'encrypt_email_for_lost_password');
 
