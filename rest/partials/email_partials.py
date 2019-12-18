@@ -24,3 +24,14 @@ def header():
 		<head></head>
 		<body>
 			<img src="{base_url}/assets/dwarna-logo.png" style='max-width: 62.8%%; margin: 0 auto'>"""
+
+def footer():
+	"""
+	Get the footer of the email.
+
+	:return: A string containing the footer of the email.
+	:rtype: str
+	"""
+
+	return f"""</body>
+	</html>"""
