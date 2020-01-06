@@ -47,14 +47,25 @@ To configure the plugin:
 1. Copy the `includes/globals.example.php` file into `includes/globals.php`;
 2. Fill in the `$encryptionKey` variable.
    First generate a key using `php -r "echo bin2hex(sodium_crypto_secretbox_keygen());" > itop_secret_key.txt`.
-   Then, replace the 'x' string in the `$encryptionKey` variable with the contents of the new `itop_secret_key.txt`.
+   Then, replace the 'x' string in the `$encryptionKey` variable with the contents of the new `itop_secret_key.txt`; and
 3. Create a [FontAwesome](https://fontawesome.com/) account to get an icon kit.
    These icons are used by the plugin to beautify it.
    Once you get an icon kit, replace the `$fontawesome_kit` variable's value with a link to the kit.
 
+To authenticate users against Hyperledger Composer, the plugin uses OAuth 2.0 (separate from the REST API).
+This workflow is also tied with the Hyperledger Fabric blockchain.
+To configure the OAuth 2.0 server:
+
+1. Generate a client ID and secret by running `php -f oauth2/generate_credentials.php`;
+2. Copy the client ID and secret into the `fabric/start_network.sh` script's `clientID` and `clientSecret` fields; and
+3. Run the SQL instructions available in `oauth2/install.sql` in the WordPress database that you are using.
+   The last line allows you to create the client using the generated client ID and secret.
+   Update the client ID and secret.
+   Also update the URL to be the same as the callback URL in the `fabric/start_network.sh` script.
+
 ### Activating
 
-To install the plugin, place this directory in the `wordpress/wp-content/plugins/` directory of your local installation.
+To activate the plugin, place this directory in the `wordpress/wp-content/plugins/` directory of your local installation.
 Alternatively, create a shortcut (or symbolic link) to this directory in the `wordpress/wp-content/plugins/` folder.
 Then, navigate to the _Installed Plugins_ tab under the _Plugins_ menu and activate the `Dwarna` plugin.
 
