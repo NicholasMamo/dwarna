@@ -11,27 +11,6 @@ It also handles all requests to the REST API.
 The WordPress plugin is an easy-to-use interface to enable dynamic consent.
 To get started, follow the installation instructions in this README.md file.
 
-### Prerequisites
-
-The plugin has been developed for WordPress 5.0.
-
-Before installing and using the plugin, set up the configuration.
-To configure the plugin:
-
-1. Copy the `includes/globals.example.php` file into `includes/globals.php`;
-2. Fill in the `$encryptionKey` variable.
-   First generate a key using `php -r "echo bin2hex(sodium_crypto_secretbox_keygen());" > itop_secret_key.txt`.
-   Then, replace the 'x' string in the `$encryptionKey` variable with the contents of the new `itop_secret_key.txt`.
-3. Create a [FontAwesome](https://fontawesome.com/) account to get an icon kit.
-   These icons are used by the plugin to beautify it.
-   Once you get an icon kit, replace the `$fontawesome_kit` variable's value with a link to the kit.
-
-### Installing
-
-To install the plugin, place this directory in the `wordpress/wp-content/plugins/` directory of your local installation.
-Alternatively, create a shortcut (or symbolic link) to this directory in the `wordpress/wp-content/plugins/` folder.
-Then, navigate to the _Installed Plugins_ tab under the _Plugins_ menu and activate the `Dwarna` plugin.
-
 Dwarna's plugin adds three new user roles:
 
 * `biobanker`, synonymous to the administrator, and currently not used;
@@ -55,6 +34,29 @@ The plugin also adds a few shortcodes that can be placed anywhere:
 * `[biobank-study]` to show a study;
 * `[biobank-subscription]` to show the email subscription preferences form; and
 * `[biobank-trail]` to show the consent trail
+
+### Prerequisites
+
+The plugin has been developed for WordPress 5.0.
+
+### Configuration
+
+Before installing and using the plugin, set up the configuration.
+To configure the plugin:
+
+1. Copy the `includes/globals.example.php` file into `includes/globals.php`;
+2. Fill in the `$encryptionKey` variable.
+   First generate a key using `php -r "echo bin2hex(sodium_crypto_secretbox_keygen());" > itop_secret_key.txt`.
+   Then, replace the 'x' string in the `$encryptionKey` variable with the contents of the new `itop_secret_key.txt`.
+3. Create a [FontAwesome](https://fontawesome.com/) account to get an icon kit.
+   These icons are used by the plugin to beautify it.
+   Once you get an icon kit, replace the `$fontawesome_kit` variable's value with a link to the kit.
+
+### Activating
+
+To install the plugin, place this directory in the `wordpress/wp-content/plugins/` directory of your local installation.
+Alternatively, create a shortcut (or symbolic link) to this directory in the `wordpress/wp-content/plugins/` folder.
+Then, navigate to the _Installed Plugins_ tab under the _Plugins_ menu and activate the `Dwarna` plugin.
 
 ### Deactivating
 
