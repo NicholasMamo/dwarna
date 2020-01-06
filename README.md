@@ -1,71 +1,78 @@
 ![](https://github.com/NicholasMamo/dwarna/raw/master/assets/logo.png "Dwarna Logo")
 
-# Dwarna: Introducing a Dynamic Consent Solution for Biobanking on the Blockchain
+# Dwarna: A Blockchain Solution for Dynamic Consent in Biobanking
 
 Dwarna ('about us' in Maltese) is a blockchain-based dynamic consent application for biobanking.
-The application, which is served through a WordPress plugin, uses a Hyperledger Fabric blockchain, through Hyperledger Composer, to store research participants' consent changes.
-In this way, the blockchain stores an immutable consent trail.
-The application contains functionality to manage research studies, research participants and researchers in WordPress.
+In biobanking, individuals provide biospecimens, like blood or saliva, to be used in medical research.
+Dynamic consent transforms these individuals into research partners, allowing them to decide in which research they want to participate.
+Dwarna is an application that is served through a WordPress plugin.
+It uses a Hyperledger Fabric blockchain to store research partners' consent changes to create an immutable consent trail.
 
----
+More details about Dwarna can be found in [Dwarna: A Blockchain Solution for Dynamic Consent in Biobanking](https://www.nature.com/articles/s41431-019-0560-9), published in the European Journal of Human Genetics.
 
-## Installing Dwarna
+## Getting Started
 
-To install, Dwarna, execute the `install.sh` script.
-It might be necessary to make this script executable using `chmod +x install.sh`.
-The script installs the schema using psycopg2, and then Hyperledger Fabric and its dependencies.
+To download this repository, clone it using `git clone https://github.com/NicholasMamo/dwarna.git`.
+Then, follow the installation instructions in this README file.
+This repository contains three different sub-projects: a WordPress plugin, a Hyperledger Fabric blockchain and a REST API.
+More detailed instructions about each sub-project, including installation and configuration instructions, are in the respective directories:
 
-The REST API configuration has to be defined.
-Copy all the files in `rest/config/example` into `rest/config` and fill in the details in the files.
+- [WordPress biobank plugin README.md](https://github.com/NicholasMamo/dwarna/tree/master/biobank-plugin)
+- [Hyperledger Fabric README.md](https://github.com/NicholasMamo/dwarna/tree/master/fabric)
+- [REST API README.md](https://github.com/NicholasMamo/dwarna/tree/master/rest)
 
-## Starting Dwarna
+### Prerequisites
 
-To start, Dwarna, execute the `start.sh` script.
-It might be necessary to make this script executable using `chmod +x start.sh`.
-The script first starts Hyperledger Fabric, and then starts the REST API.
+More details about the prerequisites are in each README.md files.
 
-## Email Delivery
+### Installing
 
-The email delivery script is in the `rest/` directory—`deliver.py`.
-It might be necessary to make this script executable using `chmod +x deliver.py`.
+To install Dwarna, use the `install.sh` script:
 
-## Unit Tests
+    chmod +x install.sh
+	./install.sh
 
-To run the unit tests, execute the `tests.sh` script.
-It might be necessary to make this script executable using `chmod +x tests.sh`.
+The script installs the schema using psycopg2, and Hyperledger Fabric and its dependencies.
 
-### Command-Line Arguments
+However, you still need to configure the REST API and the WordPress plugin.
+To do this, follow the README files above.
 
--t - The test to run, one of _rest_, _schema_.
-To run the individual tests for each type, run the `tests.sh` scripts in the `rest` and `setup` directories.
-If no argument is given, all tests are run (optional).
+Once you have configured Dwarna, you can start Hyperledger Composer and the REST API using the `start.sh` script:
 
-## Directory Structure
+    chmod +x start.sh
+	./start.sh
 
-More specific `README.md` files are in each of the respective directories where necessary.
+The email delivery script is part of the REST API.
+To run it:
 
-### `biobank-plugin/`
+    chmod +x deliver.py
+	./rest/deliver.py
 
-The WordPress plugin.
+## Running the tests
 
-### `fabric/`
+To run the unit tests, use the `tests.sh` script:
 
-The Hyperledger Fabric files.
+    chmod +x tests.sh
+	./tests.sh
 
-### `rest/`
+The unit testing ensures the correct functioning of the database schema and the REST API.
+To run them separately, use the `-t` command-line argument:
 
-The REST API.
+    ./tests.sh -t rest
+    ./tests.sh -t schema
 
-### `setup/`
+## Versioning
 
-The setup scripts to construct the database schema for the REST API and associated tests.
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/NicholasMamo/dwarna/tags).
 
-## Dependencies
+## Authors
 
-- REST API
-	- psycopg2
-	- python-oauth2
-	- requests
-	- requests-toolbelt
-- Hyperledger Composer
-	- docker-compose
+* **Nicholas Mamo** - *Development* - [NicholasMamo](https://github.com/NicholasMamo)
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+* [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2) for this README template
