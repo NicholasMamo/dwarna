@@ -44,21 +44,23 @@ Command-line arguments:
 
 ## Deployment
 
-To deploy the project, add the site to `/etc/apache2/sites-enabled/000-default.conf`.
+To deploy the project, add the site to `/etc/apache2/sites-available/dwarna.conf`, or a similar file.
 The configuration should look similar to what follows:
 
 ```
-NameVirtualHost *:3740
-<VirtualHost *:3740>
-    DocumentRoot /var/www/html
+Listen 7225
+<VirtualHost *:7225>
+    DocumentRoot /var/www/html/dwarna
 
-    ErrorLog ${APACHE_LOG_DIR}/wsgi_error.log
+    ErrorLog ${APACHE_LOG_DIR}/dwarna_rest_error.log
 
-    WSGIDaemonProcess sampleapp python-path=/var/www/html/prod:/var/www/html/prod/lib/python3.6/site-packages
-    WSGIProcessGroup sampleapp
-    WSGIScriptAlias / /var/www/html/prod/test.py
+    WSGIDaemonProcess dwarna python-path=/var/www/html/dwarna/rest/venv/bin:/var/www/html/dwarna/rest/venv/lib/python3.7/site-packages
+    WSGIProcessGroup dwarna
+    WSGIScriptAlias / /var/www/html/dwarna/rest/main.py
 </VirtualHost>
 ```
+
+In deployment, the server expects to find a `.pgpass` with the used databases in `/var/www`.
 
 ## Running the tests
 
