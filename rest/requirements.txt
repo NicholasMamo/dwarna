@@ -1,0 +1,15 @@
+certifi==2019.11.28
+cffi==1.13.2
+chardet==3.0.4
+idna==2.8
+mod-wsgi==4.7.0
+postgres==3.0.0
+psycopg2==2.8.4
+psycopg2-binary==2.8.4
+psycopg2-pool==1.1
+pycparser==2.19
+python-oauth2==1.1.1
+requests==2.22.0
+requests-toolbelt==0.9.1
+threaded==4.0.8
+urllib3==1.25.7
