@@ -27,6 +27,8 @@ from psycopg2.extensions import cursor
 Biobank-specific classes.
 """
 
+sys.path.insert(0, os.path.join(os.path.abspath(os.path.dirname(__file__))))
+
 from threads.thread_manager import ThreadManager
 
 from biobank.handlers.blockchain.api.hyperledger import hyperledger
@@ -143,15 +145,17 @@ def start_auth_server(port, token_expiry, connection, oauth_connection):
 
 		app = OAuthApplication(resource_provider=resource_provider, authorization_server=authorization_server)
 
-		port = int(port)
-		httpd = make_server('', port, app, handler_class=OAuthRequestHandler)
+		if port is not None:
+			port = int(port)
+			httpd = make_server('', port, app, handler_class=OAuthRequestHandler)
 
-		print("Starting OAuth2 server on http://localhost:%d/..." % (port))
-		httpd.serve_forever()
+			print("Starting OAuth2 server on http://localhost:%d/..." % (port))
+			httpd.serve_forever()
+		return app
 	except KeyboardInterrupt:
 		httpd.server_close()
 
-def main(database, oauth_database, listen_port=None, single_card=None, token_expiry=oauth.token_expiry):
+def main(database, oauth_database, listen_port=None, single_card=None, token_expiry=oauth.token_expiry, dev=True):
 	"""
 	Establish a connection with PostgreSQL and start the server.
 
@@ -167,13 +171,18 @@ def main(database, oauth_database, listen_port=None, single_card=None, token_exp
 		This should only be provided in testing environments.
 		Otherwise, the configuration should be updated.
 	:type token_expiry: int
+	:param dev: A boolean indicating whether the server is in development or not.
+	:type dev: bool
+
+	:return: The WSGI server application or None if it is not in development
+	:rtype: server.application.OAuthApplication or None
 	"""
 
 	"""
 	Get the listen port.
 	If it was not provided as an argument, it is sought as a command-line argument.
 	"""
-	if listen_port is None:
+	if listen_port is None and dev:
 		args = setup_args()
 		listen_port = args.port[0] if args.port else 7225
 
@@ -201,22 +210,32 @@ def main(database, oauth_database, listen_port=None, single_card=None, token_exp
 	Start the OAuth 2.0 server.
 	"""
 
-	auth_server = Process(target=start_auth_server, args=(listen_port, token_expiry, connection, oauth_connection))
-	auth_server.start()
+	if dev:
+		auth_server = Process(target=start_auth_server, args=(listen_port, token_expiry, connection, oauth_connection))
+		auth_server.start()
 
-	def sigint_handler(signal, frame):
-		print("Terminating servers...")
-		auth_server.terminate()
-		auth_server.join()
-		connection.close()
+		def sigint_handler(signal, frame):
+			print("Terminating servers...")
+			auth_server.terminate()
+			auth_server.join()
+			connection.close()
 
-	signal.signal(signal.SIGINT, sigint_handler)
+		signal.signal(signal.SIGINT, sigint_handler)
+	else:
+		app = start_auth_server(listen_port, token_expiry, connection, oauth_connection)
+		return app
 
 if __name__ == "__main__":
-	main(db.database, db.oauth_database, 7225)
+	app = main(db.database, db.oauth_database, 7225, dev=True)
 	print("To test getting OAuth2 tokens:")
 	print("curl --ipv4 -v -X POST \\")
 	print("\t-d 'grant_type=client_credentials&client_id=abc&client_secret=xyz' \\")
 	print("\t-d 'scope=create_participant create_researcher' \\")
 	print("\thttp://localhost:8080/token")
 	print()
+elif __name__.startswith('_mod_wsgi_'):
+	app = main(db.database, db.oauth_database, None, dev=False)
+
+def application(env, start_response):
+	global app
+	return app.__call__(env, start_response)
