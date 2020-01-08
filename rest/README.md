@@ -2,20 +2,23 @@
 
 # REST API
 
-The REST API is used by the WordPress plugin to store biobanking-related information.
+The REST API is used as an interface between the frontend (WordPress) and the backend (the database and the blockchain).
 
-## Starting the REST API
+## Getting Started
 
-The REST API can be run using `python3 main.py`.
+The REST API is an [OAuth2.0](https://tools.ietf.org/html/rfc6749) server based on [python-oauth2](https://github.com/wndhydrnt/python-oauth2).
+The REST API uses the [Client Credentials grant](https://tools.ietf.org/html/rfc6749#section-1.3.4).
+Resource requests to it are expected to be preceded by a request to obtain an access token.
 
-### Command-Line Arguments
-
--p --port - The port on which to serve the REST API, defaults to 7225 (optional).
+The REST API itself requires no installation.
+However, before using it, you will need to configure it.
 
 ### Configuration
 
 The configuration files should be placed in the `config/` directory.
-Copies of the configuration files are in the `config/examples` directory.
+To get started quickly, copy the configuration files from the `config/examples` directory.
+Fill the required fields before starting the REST API.
+Any time you update the configuration, you will need to restart the REST API.
 The files in the `config` directory should be the following:
 
 - `blockchain.py` - Information about where the Hyperledger Fabric blockchain is served.
@@ -28,21 +31,67 @@ The files in the `config` directory should be the following:
 					The client ID and secret have to be generated anew; and
 - `routes.py` - 	The routes served by the REST API, each linked with a handler function.
 
+### Starting
+
+The REST API can be run using:
+
+ 	chmod +x main.py
+	./main.py
+
+Command-line arguments:
+
+* -p --port - The port on which to serve the REST API, defaults to 7225 (optional).
+
+## Deployment
+
+To deploy the project, add the site to `/etc/apache2/sites-enabled/000-default.conf`.
+The configuration should look similar to what follows:
+
+```
+NameVirtualHost *:3740
+<VirtualHost *:3740>
+    DocumentRoot /var/www/html
+
+    ErrorLog ${APACHE_LOG_DIR}/wsgi_error.log
+
+    WSGIDaemonProcess sampleapp python-path=/var/www/html/prod:/var/www/html/prod/lib/python3.6/site-packages
+    WSGIProcessGroup sampleapp
+    WSGIScriptAlias / /var/www/html/prod/test.py
+</VirtualHost>
+```
+
+## Running the tests
+
+The unit tests can be run using:
+
+ 	chmod +x tests.sh
+	./tests.sh
+
+Command-line arguments:
+
+* -t - The test to run, one of _consent_, _general_, _email_, _study_, _user_.
+
+If no argument is given, all tests are run (optional).
+
 ## Documentation
 
 The documentation is in the `documentation/build` directory and can be navigated as a normal webpage.
-To generate the documentation, `cd` to this directory and run:
+To generate the documentation:
 
-```bash
 	sphinx-build documentation/source/ documentation/build
-```
 
-## Unit Tests
+## Built with
 
-The unit tests can be run using `./tests.sh`.
-It might be necessary to make this script executable using `chmod +x tests.sh`.
+* [python-oauth2](https://github.com/wndhydrnt/python-oauth2)
 
-### Command-Line Arguments
+## Authors
 
--t - The test to run, one of _consent_, _general_, _email_, _study_, _user_.
-If no argument is given, all tests are run (optional).
+* **Nicholas Mamo** - *Development* - [NicholasMamo](https://github.com/NicholasMamo)
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+* [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2) for this README template
