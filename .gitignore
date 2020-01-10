@@ -30,3 +30,7 @@ rest/documentation/build
 # Logs
 
 *.log
+
+# Virtual Environments
+
+venv
