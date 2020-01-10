@@ -55,6 +55,7 @@ Listen 7225
     ErrorLog ${APACHE_LOG_DIR}/dwarna_rest_error.log
 
     WSGIDaemonProcess dwarna python-path=/var/www/html/dwarna/rest/venv/bin:/var/www/html/dwarna/rest/venv/lib/python3.7/site-packages
+	WSGIPassAuthorization On
     WSGIProcessGroup dwarna
     WSGIScriptAlias / /var/www/html/dwarna/rest/main.py
 </VirtualHost>
