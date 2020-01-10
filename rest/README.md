@@ -63,6 +63,23 @@ Listen 7225
 
 In deployment, the server expects to find a `.pgpass` with the used databases in `/var/www`.
 
+To test that the deployment is working correctly, first get a token:
+
+	curl --request POST \
+	--url http://localhost:7225/token \
+	--header 'content-type: application/x-www-form-urlencoded' \
+	--cookie 'PHPSESSID=v1t986ncntih1ibpdi2jgkkt7m; connect.sid=s%253Asay_LrcO55ZhYJolOe9nyKyxMVMHHdJQ.WUhepUB8IaLCFwwVTBYvqctlIDpNy%252BwDWp932m2bySM' \
+	--data grant_type=client_credentials \
+	--data client_id=CLIENT_ID \
+	--data client_secret=CLIENT_SECRET
+
+Then, ping the server:
+
+	curl --request GET \
+  --url http://localhost:7225/ping \
+  --header 'authorization: ACCESS_TOKEN' \
+  --cookie 'PHPSESSID=v1t986ncntih1ibpdi2jgkkt7m; connect.sid=s%253Asay_LrcO55ZhYJolOe9nyKyxMVMHHdJQ.WUhepUB8IaLCFwwVTBYvqctlIDpNy%252BwDWp932m2bySM'
+
 ## Running the tests
 
 The unit tests can be run using:
