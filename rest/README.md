@@ -44,7 +44,7 @@ Command-line arguments:
 
 ## Deployment
 
-To deploy the project, add the site to `/etc/apache2/sites-available/dwarna.conf`, or a similar file.
+To deploy the project, add the site to `/etc/apache2/sites-available/rest.conf`, or a similar file.
 The configuration should look similar to what follows:
 
 ```
@@ -55,11 +55,15 @@ Listen 7225
     ErrorLog ${APACHE_LOG_DIR}/dwarna_rest_error.log
 
     WSGIDaemonProcess dwarna python-path=/var/www/html/dwarna/rest/venv/bin:/var/www/html/dwarna/rest/venv/lib/python3.7/site-packages
-	WSGIPassAuthorization On
+    WSGIPassAuthorization On
     WSGIProcessGroup dwarna
     WSGIScriptAlias / /var/www/html/dwarna/rest/main.py
 </VirtualHost>
 ```
+
+Activate the site using:
+
+    sudo a2ensite rest
 
 In deployment, the server expects to find a `.pgpass` with the used databases in `/var/www`.
 
