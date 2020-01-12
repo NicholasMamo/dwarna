@@ -46,7 +46,33 @@ The email delivery script is part of the REST API.
 To run it:
 
     chmod +x deliver.py
-	./rest/deliver.py
+    ./rest/deliver.py
+
+### Backups
+
+Dwarna's `backup.sh` script takes a backup of all the files that are necessary to restore all data.
+To take a backup:
+
+    chmod +x backup.sh
+    ./backup.sh
+
+The backups are created in the `backups/` directory.
+Backups are separated into folders according to the date when they were taken.
+These directories have the format `yyyymmdd`.
+Each backup is further separated into folders:
+
+* `fabric/` - The blockchain data;
+* `rest/` - The REST API configuration;
+* `biobank-plugin/` - The WordPress plugin configuration;
+* `postgresql/` - The PostgreSQL data; and
+* `wordpress/` - The WordPress MySQL data
+
+To restore a backup, run the `restore.sh` script:
+
+    chmod +x restore.sh
+    ./restore.sh yyyymmdd
+
+The script automatically restores the backup stored in the folder named `yyyymmdd`.
 
 ## Running the tests
 
