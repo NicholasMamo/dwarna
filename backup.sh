@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
+# Go to the script directory.
+parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+cd "$parent_path"
+
 source variables.sh
 
 backup=$( date +%Y%m%d )
 mkdir -p backup/$backup
-
-# Go to the script directory.
-parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-cd "$parent_path"
 
 usage() {
 	echo -e "${HIGHLIGHT}Usage: $0 [-h] [--blockchain] [--rest] [--plugin] [--postgresql] [--wordpress]${DEFAULT}";
