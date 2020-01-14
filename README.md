@@ -23,7 +23,12 @@ More detailed instructions about each sub-project, including installation and co
 
 ### Prerequisites
 
-More details about the prerequisites are in each README.md files.
+Details about the prerequisites are available in each README.md file.
+Some Python prerequisites are required to run the REST API and the setup scripts:
+
+    virtualenv venv
+	source venv/bin/activate
+	python -m pip install -r requirements.txt
 
 ### Installing
 
