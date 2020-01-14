@@ -24,7 +24,10 @@ Then, it installs prerequisites for the Hyperledger blockchain, downloads Hyperl
 The script also deletes any existing Dwarna administrator cards.
 Finally, it stops and starts Hyperledger Fabric to set up any necessary configurations.
 
-You can start the Dwarna network using the `start_network.sh` script:
+You can start the Dwarna network using the `start_network.sh` script.
+Create `start_network.sh` by copying `start_network.example.sh` and filling in the `clientID` and `clientSecret`.
+Use the OAuth 2.0 values retrieved by following the process when installing the [WordPress plugin](https://github.com/NicholasMamo/dwarna/tree/master/biobank-plugin).
+Then run the new script normally:
 
 	chmod +x start_network.sh
 	./start_network.sh
