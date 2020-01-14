@@ -72,12 +72,29 @@ Each backup is further separated into folders:
 * `postgresql/` - The PostgreSQL data; and
 * `wordpress/` - The WordPress MySQL data
 
+By default, the backup copies all of this data.
+You can specify which data to back up by passing on the following arguments:
+
+* `--blockchain` - Back up only the Hyperledger Fabric files;
+* `--rest` - Back up only the REST API configuration;
+* `--plugin` - Back up only the WordPress plugin configuration;
+* `--postgresql` - Back up only the PostgreSQL data; and
+* `--wordpress` - Back up only the WordPress MySQL data
+
 To restore a backup, run the `restore.sh` script:
 
     chmod +x restore.sh
-    ./restore.sh yyyymmdd
+    ./restore.sh -p backup/yyyymmdd
 
-The script automatically restores the backup stored in the folder named `yyyymmdd`.
+The script automatically restores the backup stored in the folder named `backup/yyyymmdd`.
+By default, the restoration copies back all of this data.
+You can specify which data to restore by passing on the following arguments:
+
+* `--blockchain` - Restore only the Hyperledger Fabric files;
+* `--rest` - Restore only the REST API configuration;
+* `--plugin` - Restore only the WordPress plugin configuration;
+* `--postgresql` - Restore only the PostgreSQL data; and
+* `--wordpress` - Restore only the WordPress MySQL data
 
 ## Running the tests
 
