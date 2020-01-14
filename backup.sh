@@ -9,6 +9,10 @@ mkdir -p backup/$backup
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
 
+usage() {
+	echo -e "${HIGHLIGHT}Usage: $0 [-h] [--blockchain] [--rest] [--plugin] [--postgresql] [--wordpress]${DEFAULT}";
+}
+
 # The Hyperledger Fabric backup copies the admin card and the actual data.
 backup_fabric() {
 	echo -e "${HIGHLIGHT}Backing up Hyperledger Fabric files${DEFAULT}"
@@ -57,10 +61,6 @@ backup_wordpress() {
 	database=${database:-wordpress}
 	read -p 'Enter username: ' username
 	mysqldump -u $username -p $database > backup/$1/wordpress/wordpress.sql
-}
-
-usage() {
-	echo -e "${HIGHLIGHT}Usage: $0 [-h] [--blockchain] [--rest] [--plugin] [--postgresql] [--wordpress]${DEFAULT}";
 }
 
 args() {
