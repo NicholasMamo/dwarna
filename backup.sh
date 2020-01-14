@@ -59,10 +59,15 @@ backup_wordpress() {
 	mysqldump -u $username -p $database > backup/$1/wordpress/wordpress.sql
 }
 
+usage() {
+	echo -e "${HIGHLIGHT}Usage: $0 [--blockchain] [--rest] [--plugin] [--postgresql] [--wordpress]${DEFAULT}";
+}
+
 args() {
 	options=$(getopt --long blockchain --long rest --long plugin --long postgresql --long wordpress -- "$@")
 	[ $? -eq 0 ] || {
 		echo "Unknown option provided"
+		usage
 		exit 1
 	}
 	eval set -- "$options"
