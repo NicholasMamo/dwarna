@@ -219,7 +219,7 @@ def main(database, oauth_database, listen_port=None, single_card=None, token_exp
 
 if __name__ == "__main__":
 	args = setup_args()
-	port = args.port[0] if args.port else None
+	port = args.port[0] if type(args.port) is not int else args.port
 	app = main(db.database, db.oauth_database, port, dev=True)
 
 	print("To test the REST API:")
