@@ -42,7 +42,7 @@ restore_postgresql() {
 }
 
 # Restore the WordPress database.
-function restore_wordpress() {
+restore_wordpress() {
 	echo -e "${HIGHLIGHT}Restoring WordPress database${DEFAULT}"
 	read -p 'Enter database [wordpress]: ' database
 	database=${database:-wordpress}
