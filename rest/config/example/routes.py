@@ -396,6 +396,12 @@ routes.update({
 			"function": email_handler_class.get_next_email,
 			"scopes": ["view_email"],
 			"parameters": [],
+		},
+		"POST": {
+			"handler": email_handler_class,
+			"function": email_handler_class.deliver,
+			"scopes": ["deliver_email"],
+			"parameters": [],
 		}
 	}
 })
