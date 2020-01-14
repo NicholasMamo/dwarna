@@ -60,11 +60,11 @@ backup_wordpress() {
 }
 
 usage() {
-	echo -e "${HIGHLIGHT}Usage: $0 [--blockchain] [--rest] [--plugin] [--postgresql] [--wordpress]${DEFAULT}";
+	echo -e "${HIGHLIGHT}Usage: $0 [-h] [--blockchain] [--rest] [--plugin] [--postgresql] [--wordpress]${DEFAULT}";
 }
 
 args() {
-	options=$(getopt --long blockchain --long rest --long plugin --long postgresql --long wordpress -- "$@")
+	options=$(getopt --options h --long blockchain --long rest --long plugin --long postgresql --long wordpress -- "$@")
 	[ $? -eq 0 ] || {
 		echo "Unknown option provided"
 		usage
@@ -75,6 +75,9 @@ args() {
 	len_options=0
 	while true; do
         case "$1" in
+		-h)
+			usage
+			;;
         --blockchain)
 			backup_fabric $backup
             ;;
