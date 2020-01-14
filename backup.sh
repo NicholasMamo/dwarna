@@ -38,7 +38,7 @@ backup_postgresql() {
 	echo -e "${HIGHLIGHT}Backing up PostgreSQL database${DEFAULT}"
 	mkdir -p backup/$1/postgresql/
 	chown postgres backup/$1/postgresql/
-	
+
 	read -p 'Enter database [biobank]: ' database
 	database=${database:-biobank}
 
@@ -59,8 +59,38 @@ backup_wordpress() {
 	mysqldump -u $username -p $database > backup/$1/wordpress/wordpress.sql
 }
 
-backup_fabric $backup
-backup_rest $backup
-backup_plugin $backup
-backup_postgresql $backup
-backup_wordpress $backup
+function args() {
+	options=$(getopt --long blockchain --long rest --long plugin --long postgresql --long wordpress -- "$@")
+	[ $? -eq 0 ] || {
+		echo "Incorrect option provided"
+		exit 1
+	}
+	eval set -- "$options"
+
+	while true; do
+        case "$1" in
+        --blockchain)
+			backup_fabric $backup
+            ;;
+        --rest)
+			backup_rest $backup
+            ;;
+        --plugin)
+			backup_plugin $backup
+            ;;
+        --postgresql)
+			backup_postgresql $backup
+            ;;
+        --wordpress)
+			backup_wordpress $backup
+            ;;
+        --)
+            shift
+            break
+            ;;
+        esac
+        shift
+    done
+}
+
+args $0 "$@"
