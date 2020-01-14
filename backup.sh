@@ -59,7 +59,7 @@ backup_wordpress() {
 	mysqldump -u $username -p $database > backup/$1/wordpress/wordpress.sql
 }
 
-function args() {
+args() {
 	options=$(getopt --long blockchain --long rest --long plugin --long postgresql --long wordpress -- "$@")
 	[ $? -eq 0 ] || {
 		echo "Unknown option provided"
