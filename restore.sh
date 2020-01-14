@@ -3,7 +3,7 @@
 source variables.sh
 
 function usage() {
-	echo -e "Usage: sh $0 -p path";
+	echo -e "Usage: sh $0 -p path [-h] [--blockchain] [--rest] [--plugin] [--postgresql] [--wordpress]";
 	echo -e "       -p path    The path of the backup to restore, for example 'backup/20191217'";
 }
 
@@ -50,14 +50,64 @@ function restore_wordpress() {
 	mysql -u $username -p $database < $1/wordpress/wordpress.sql
 }
 
-if getopts "p:" o
-then
-	path=${OPTARG}
-	restore_fabric $path
-	restore_rest $path
-	restore_plugin $path
-	restore_postgresql $path
-	restore_wordpress $path
-else
-	usage
-fi
+args() {
+	shift
+	if [ "$1" == "-p" ]
+	then
+		shift
+		path="$1"
+	else
+		echo "Expected path option"
+		usage
+		exit 1
+	fi
+
+	options=$(getopt --options h --long blockchain --long rest --long plugin --long postgresql --long wordpress -- "$@")
+	[ $? -eq 0 ] || {
+		echo "Unknown option provided"
+		usage
+		exit 1
+	}
+	eval set -- "$options"
+
+	len_options=0
+	while true; do
+        case "$1" in
+		-h)
+			usage
+			;;
+        --blockchain)
+			restore_fabric $path
+            ;;
+        --rest)
+			restore_rest $path
+            ;;
+        --plugin)
+			restore_plugin $path
+            ;;
+        --postgresql)
+			restore_postgresql $path
+            ;;
+        --wordpress)
+			restore_wordpress $path
+            ;;
+        --)
+            shift
+            break
+            ;;
+        esac
+        shift
+		let len_options++
+    done
+
+	if [ $len_options -eq 0 ]
+	then
+		restore_fabric $path
+		restore_rest $path
+		restore_plugin $path
+		restore_postgresql $path
+		restore_wordpress $path
+	fi
+}
+
+args $0 "$@"
