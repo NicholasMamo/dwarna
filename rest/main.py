@@ -61,7 +61,7 @@ def setup_args():
 	"""
 
 	parser = argparse.ArgumentParser(description="Serve the REST API which controls the dynamic consent functionality.")
-	parser.add_argument("-p", "--port", nargs="+", type=str, help="<Optional> The port on which to serve the REST API, defaults to 7225.", required=False)
+	parser.add_argument("-p", "--port", nargs="+", type=int, default=7225, help="<Optional> The port on which to serve the REST API, defaults to 7225.", required=False)
 	parser.add_argument("--single-card", help="Run the server in single-card mode.", action="store_true")
 	args = parser.parse_args()
 	return args
@@ -179,14 +179,6 @@ def main(database, oauth_database, listen_port=None, single_card=None, token_exp
 	"""
 
 	"""
-	Get the listen port.
-	If it was not provided as an argument, it is sought as a command-line argument.
-	"""
-	if listen_port is None and dev:
-		args = setup_args()
-		listen_port = args.port[0] if args.port else 7225
-
-	"""
 	Get the card operation mode.
 	If it was not provided as an argument, it is sought as a command-line argument.
 	"""
@@ -226,12 +218,19 @@ def main(database, oauth_database, listen_port=None, single_card=None, token_exp
 		return app
 
 if __name__ == "__main__":
-	app = main(db.database, db.oauth_database, 7225, dev=True)
-	print("To test getting OAuth2 tokens:")
-	print("curl --ipv4 -v -X POST \\")
-	print("\t-d 'grant_type=client_credentials&client_id=abc&client_secret=xyz' \\")
+	args = setup_args()
+	port = args.port[0] if args.port else None
+	app = main(db.database, db.oauth_database, port, dev=True)
+
+	print("To test the REST API:")
+	print("curl --ipv4 -v POST \\")
+	print(f"\t-d 'grant_type=client_credentials&client_id={oauth.client_id}&client_secret={oauth.client_secret}' \\")
 	print("\t-d 'scope=create_participant create_researcher' \\")
-	print("\thttp://localhost:8080/token")
+	print(f"\thttp://localhost:{port}/token")
+	print()
+	print("curl -I -X GET \\")
+	print("\t-h 'authorization: ACCESS_TOKEN' \\")
+	print(f"\thttp://localhost:{port}/ping")
 	print()
 elif __name__.startswith('_mod_wsgi_'):
 	app = main(db.database, db.oauth_database, None, dev=False)
