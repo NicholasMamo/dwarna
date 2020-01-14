@@ -67,6 +67,7 @@ function args() {
 	}
 	eval set -- "$options"
 
+	len_options=0
 	while true; do
         case "$1" in
         --blockchain)
@@ -90,7 +91,17 @@ function args() {
             ;;
         esac
         shift
+		let len_options++
     done
+
+	if [ $len_options -eq 0 ]
+	then
+		backup_fabric $backup
+		backup_rest $backup
+		backup_plugin $backup
+		backup_postgresql $backup
+		backup_wordpress $backup
+	fi
 }
 
 args $0 "$@"
