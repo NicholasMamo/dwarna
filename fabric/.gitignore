@@ -1,1 +1,15 @@
+# scripts
+
 start_network.sh
+
+# blockchain files
+
+dwarna-blockchain/*.card
+
+# Hyperledger Fabric files
+
+.nvm
+
+# backups
+
+fabric-scripts/hlfv12/composer/backup*

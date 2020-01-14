@@ -1,1 +1,14 @@
-venv
+# test outputs
+
+tests/cards
+
+# configuration
+
+config/blockchain.py
+config/db.py
+config/email.py
+config/oauth.py
+
+# documentation
+
+documentation/build

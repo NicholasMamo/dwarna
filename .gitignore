@@ -1,36 +1,9 @@
 __pycache__/
 
-# Fabric
-
-# Hyperledger Fabric deployment-specific files
-
-fabric/dwarna-blockchain/*.card
-fabric/.nvm
-
-# Backups
-
-fabric/fabric-scripts/hlfv12/composer/backup*
-
-# REST API
-
-rest/tests/cards
-rest/config/blockchain.py
-rest/config/db.py
-rest/config/email.py
-rest/config/oauth.py
-
-# WordPress
-
-biobank-plugin/includes/globals.php
-
-# Documentation
-
-rest/documentation/build
-
-# Logs
+# logs
 
 *.log
 
-# Virtual Environments
+# virtual environments
 
 venv
