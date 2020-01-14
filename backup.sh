@@ -62,7 +62,7 @@ backup_wordpress() {
 function args() {
 	options=$(getopt --long blockchain --long rest --long plugin --long postgresql --long wordpress -- "$@")
 	[ $? -eq 0 ] || {
-		echo "Incorrect option provided"
+		echo "Unknown option provided"
 		exit 1
 	}
 	eval set -- "$options"
