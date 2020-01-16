@@ -13,11 +13,6 @@ const hyperledger_access_token = "access_token";
 const biobank_backend_port = 7225;
 
 /**
- * The port where the Hyperledger multi-user REST API is listening.
- */
-const hyperledger_port = 3000;
-
-/**
  * The website host.
  */
 const host = `${window.location.protocol}//${window.location.hostname}`;
@@ -30,7 +25,7 @@ const ajax_base_path = `${host}/wordpress/wp-content/plugins/biobank-plugin/publ
 /**
  * The blockchain host.
  */
-const hyperledger_host = `${window.location.protocol}//${window.location.hostname}:${hyperledger_port}`;
+const hyperledger_host = `${window.location.protocol}//${window.location.hostname}:3000`;
 
 /**
  * A boolean that indicates whether the page is preparing to navigate.
