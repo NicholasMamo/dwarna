@@ -60,29 +60,6 @@ $scopes = array(
 );
 
 /*
- * The client identifiers.
- */
-
-$client_id = "abc";
-$client_secret = "xyz";
-
-/*
- * The name of the blockchain solution's access token.
- * It is assumed to be stored in a cookie.
- */
-$blockchain_access_token = "access_token";
-
-/**
- * The authorization URL for the Hyperledger Composer REST API.
- */
-$auth_url = "http://localhost:3000/auth/local-wordpress";
-
-/*
- * The endpoint to which requests for access tokens should be made.
- */
-$token_endpoint = "token";
-
-/*
  * Page information and menu visibility.
  * These pages are created by the plugin upon activated, and removed when de-activated.
  * By default, pages are visible by everyone in the menu.
@@ -140,6 +117,29 @@ $plugin_pages = array(
 		"public" => true,
 	),
 );
+
+/*
+ * The client identifiers.
+ */
+
+$client_id = "abc";
+$client_secret = "xyz";
+
+/*
+ * The name of the blockchain solution's access token.
+ * It is assumed to be stored in a cookie.
+ */
+$blockchain_access_token = "access_token";
+
+/**
+ * The authorization URL for the Hyperledger Composer REST API.
+ */
+$auth_url = "http://localhost:3000/auth/local-wordpress";
+
+/*
+ * The endpoint to which requests for access tokens should be made.
+ */
+$token_endpoint = "token";
 
 /*
  * The key used to encrypt email addresses.
