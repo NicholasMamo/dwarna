@@ -65,6 +65,13 @@ To configure the OAuth 2.0 server:
    Update the client ID and secret.
    Also update the URL to be the same as the callback URL in the `fabric/start_network.sh` script.
 4. Update `includes/global.php`'s Oauth 2.0 configuration to point to this database.
+   If you are using a proxy to connect to the Hyperledger Composer multi-user REST API, update the proxy settings.
+   For example, if you are using `/fabric` as a proxy to port `:3000`, set `proxy_from` to `:3000` and `proxy_to` to `/fabric`.
+   This proxy is used as string replacement in `oauth/auth.php` and `oauth/access_token.php`.
+   Thus, it may be necessary to make the path more specific.
+5. Set the base path of the website for the OAuth 2.0 procedure in `includes/global.php`.
+   If you are serving the WordPress blog from _example.com_, leave this empty.
+   If you are serving the blog from _example.com/wordpress_, then the base path should be `wordpress`.
 
 ### Activating
 
