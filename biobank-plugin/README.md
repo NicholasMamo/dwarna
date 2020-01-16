@@ -51,6 +51,8 @@ To configure the plugin:
 3. Create a [FontAwesome](https://fontawesome.com/) account to get an icon kit.
    These icons are used by the plugin to beautify it.
    Once you get an icon kit, replace the `$fontawesome_kit` variable's value with a link to the kit.
+4. Copy the `public/js/hyperledger/card.example.js` file into `public/js/hyperledger/card.js`.
+   Update the variables as need be to point to the Hyperledger Composer REST API endpoints.
 
 To authenticate users against Hyperledger Composer, the plugin uses OAuth 2.0 (separate from the REST API).
 This workflow is also tied with the Hyperledger Fabric blockchain.
