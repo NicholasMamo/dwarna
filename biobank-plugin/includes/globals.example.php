@@ -161,4 +161,11 @@ $oauth_host = "localhost";
 $oauth_username = "root";
 $oauth_password = "root";
 
+/*
+ * OAuth 2.0 proxy settings.
+ * This is used by the OAuth 2.0 system (`oauth/access_token.php` and `oauth/auth.php`).
+ */
+$proxy_from = "";
+$proxy_to = "";
+
 ?>
