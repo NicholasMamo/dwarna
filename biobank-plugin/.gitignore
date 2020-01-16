@@ -1,3 +1,5 @@
 # configuration
 
 includes/globals.php
+
+public/js/hyperledger/card.js
