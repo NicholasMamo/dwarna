@@ -15,7 +15,7 @@ const biobank_backend_port = 7225;
 /**
  * The port where the Hyperledger multi-user REST API is listening.
  */
-const hyperldger_port = 3000;
+const hyperledger_port = 3000;
 
 /**
  * The website host.
@@ -26,6 +26,11 @@ const host = `${window.location.protocol}//${window.location.hostname}`;
  * The base path where the AJAX scripts reside.
  */
 const ajax_base_path = `${host}/wordpress/wp-content/plugins/biobank-plugin/public/ajax/`;
+
+/**
+ * The blockchain host.
+ */
+const hyperledger_host = `${window.location.protocol}//${window.location.hostname}:${hyperledger_port}`;
 
 /**
  * A boolean that indicates whether the page is preparing to navigate.
@@ -265,7 +270,7 @@ function importCard(card) {
 	const formData = new FormData();
 	formData.append("card", file);
 	return jQuery.ajax({
-		url: `${host}:${hyperldger_port}/api/wallet/import?name=card`,
+		url: `${hyperledger_host}/api/wallet/import?name=card`,
 		method: "POST",
 		type: "POST",
 		cache: false,
@@ -312,7 +317,7 @@ function exportCard(study_id) {
 			}
 		};
 
-		request.open("GET", `${host}:${hyperldger_port}/api/wallet/card/export`, true);
+		request.open("GET", `${hyperledger_host}/api/wallet/card/export`, true);
 		request.setRequestHeader("X-Access-Token", access_token);
 		request.send();
 	});
@@ -382,7 +387,7 @@ function ping() {
 	var access_token = decodeURIComponent(getCookie("access_token"));
 	access_token = access_token.substring(2, access_token.indexOf("."));
 	return jQuery.ajax({
-		url: `${host}:${hyperldger_port}/api/system/ping`,
+		url: `${hyperledger_host}/api/system/ping`,
 		method: "GET",
 		type: "GET",
 		headers: {
@@ -406,7 +411,7 @@ async function loadConsent(study_id, address) {
 	var param_string = 'study_id=' + encodeURIComponent(`resource:org.consent.model.Study#${study_id}`);
 	param_string = param_string + '&username=' + encodeURIComponent(`resource:org.consent.model.ResearchParticipant#${address}`);
 	return jQuery.ajax({
-		url: `${host}:${hyperldger_port}/api/queries/has_consent?${param_string}`,
+		url: `${hyperledger_host}/api/queries/has_consent?${param_string}`,
 		method: "GET",
 		type: "GET",
 		headers: {
