@@ -168,4 +168,11 @@ $oauth_password = "root";
 $proxy_from = "";
 $proxy_to = "";
 
+/*
+ * The base path to the website.
+ * For example, if the URL to this WordPress website is example.com the base path is an empty string.
+ * If the URL is example.com/wordpress, then the basepath is "wordpress".
+ */
+$base_path = "";
+
 ?>
