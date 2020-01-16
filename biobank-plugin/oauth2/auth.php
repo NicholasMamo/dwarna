@@ -19,8 +19,24 @@ ini_set('display_errors', 1);
 require_once("/var/www/html/wordpress/wp-load.php");
 
 require_once(__DIR__.'/server.php');
+require(plugin_dir_path(__FILE__) . "../includes/globals.php");
+
+/*
+ * Add a trailing slash to the base path if need be.
+ */
+if (strlen($base_path) && substr($base_path, -1) != "/") {
+	$base_path = "$base_path/";
+}
 
 $request = OAuth2\Request::createFromGlobals();
+if ($proxy_from) {
+	if ($request->query('redirect_uri')) {
+	        $request->query['redirect_uri'] = str_replace($proxy_from, $proxy_to, $request->query("redirect_uri"));
+	} else {
+	        $request->request["redirect_uri"] = str_replace($proxy_from, $proxy_to, $request->request("redirect_uri"));
+	}
+}
+
 $response = new OAuth2\Response();
 
 // Validate the authorization request.
@@ -47,7 +63,7 @@ if (isset($_GET["redirect_uri"])) {
 		 * Redirect with instructions to return here after execution.
 		 */
 		$redirect = urlencode("http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
-		header("Location: http://$_SERVER[HTTP_HOST]/wordpress/wp-login.php?redirect_to=$redirect");
+		header("Location: http://$_SERVER[HTTP_HOST]/" . $base_path . "wp-login.php?redirect_to=$redirect");
 		exit; // Ensure that no more code is executed from this point onwards.
 	}
 

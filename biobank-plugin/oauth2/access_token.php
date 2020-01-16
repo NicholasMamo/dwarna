@@ -13,12 +13,15 @@ ini_set('display_errors', 1);
 require_once("/var/www/html/wordpress/wp-load.php");
 
 require_once(__DIR__.'/server.php');
+require(plugin_dir_path(__FILE__) . "../includes/globals.php");
 
 /*
  * Craft a response from the request.
  * The response contains the access token as a parameter.
  */
-$response = $server->handleTokenRequest(OAuth2\Request::createFromGlobals());
+$request = OAuth2\Request::createFromGlobals();
+$request->request["redirect_uri"] = str_replace($proxy_from, $proxy_to, $request->request["redirect_uri"]);
+$response = $server->handleTokenRequest($request);
 
 /*
  * Get the requesting user using the supplied authorization code.
