@@ -4,9 +4,11 @@
  * Initialize the server.
  */
 
-$dsn      = 'mysql:dbname=wordpress;host=localhost';
-$username = 'root';
-$password = 'root';
+require(plugin_dir_path(__FILE__) . "../includes/globals.php");
+
+$dsn      = "mysql:dbname=$oauth_database;host=$oauth_host";
+$username = $oauth_username;
+$password = $oauth_password;
 
 // Switch on error reporting.
 ini_set('display_errors',1);

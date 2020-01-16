@@ -64,6 +64,7 @@ To configure the OAuth 2.0 server:
    The last line allows you to create the client using the generated client ID and secret.
    Update the client ID and secret.
    Also update the URL to be the same as the callback URL in the `fabric/start_network.sh` script.
+4. Update `includes/global.php`'s Oauth 2.0 configuration to point to this database.
 
 ### Activating
 
