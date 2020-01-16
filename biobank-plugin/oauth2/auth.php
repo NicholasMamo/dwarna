@@ -50,6 +50,7 @@ if (isset($_GET["redirect_uri"])) {
 	 * The user data is returned to this URL.
 	 */
 	$redirect_uri = $_GET["redirect_uri"];
+	$redirect_uri = str_replace($proxy_from, $proxy_to, $redirect_uri);
 	$state = $_GET["state"];
 
 	/*
