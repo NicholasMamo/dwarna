@@ -343,7 +343,7 @@ class Biobank_Public {
 					wp_redirect("$hyperledger_host?redirect=$host");
 					exit;
 				} else if (isset($_GET[$blockchain_access_token])) {
-					$_COOKIE[$blockchain_access_token] = $_GET[$blockchain_access_token];
+					setcookie($blockchain_access_token, $_GET[$blockchain_access_token]);
 				}
 			}
 		} else if (!\is_user_logged_in()) {
