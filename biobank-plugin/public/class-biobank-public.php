@@ -332,6 +332,18 @@ class Biobank_Public {
 				wp_redirect($auth_url);
 				exit;
 			}
+
+			/*
+			 * If the blockchain access token is not set, redirect to the Hyperledger host to retrieve it.
+			 * The page should redirect to the same page (the homepage), with the access token as a GET parameter.
+			 * If this access token is present, it is saved as a cookie value.
+			 */
+			if (! isset($_COOKIE[$blockchain_access_token]) && ! isset($_GET[$blockchain_access_token])) {
+				wp_redirect("$hyperledger_host/wp-content/plugins/biobank-plugin/public/ajax/get_cookie.php?redirect=$host");
+				exit;
+			} else if (isset($_GET[$blockchain_access_token])) {
+				$_COOKIE[$blockchain_access_token] = $_GET[$blockchain_access_token];
+			}
 		} else if (!\is_user_logged_in()) {
 			unset($_SESSION["authorized"]);
 		}
