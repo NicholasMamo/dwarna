@@ -132,10 +132,10 @@ $client_secret = "xyz";
 $blockchain_access_token = "access_token";
 
 /**
- * The host where the Hyperledger Composer REST APIs are being served.
- * This is used to retrieve the access token if need be.
+ * The cookie redirect URL.
+ * This URL is used to fetch the access token cookie.
  */
-$hyperledger_host = "http://localhost";
+$hyperledger_host = "http://localhost/wordpress/wp-content/plugins/biobank-plugin/public/ajax/get_cookie.php";
 
 /**
  * The host where the WordPress website is being served.

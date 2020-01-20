@@ -339,7 +339,7 @@ class Biobank_Public {
 			 * If this access token is present, it is saved as a cookie value.
 			 */
 			if (! isset($_COOKIE[$blockchain_access_token]) && ! isset($_GET[$blockchain_access_token])) {
-				wp_redirect("$hyperledger_host/wp-content/plugins/biobank-plugin/public/ajax/get_cookie.php?redirect=$host");
+				wp_redirect("$hyperledger_host?redirect=$host");
 				exit;
 			} else if (isset($_GET[$blockchain_access_token])) {
 				$_COOKIE[$blockchain_access_token] = $_GET[$blockchain_access_token];
