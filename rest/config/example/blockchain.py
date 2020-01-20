@@ -1,20 +1,28 @@
-host = "http://localhost"
+admin_host = "http://localhost"
 """
-:var host: The URL where the Hyperledger Composer REST API is hosted.
-:vartype host: str
+:var admin_host: The URL where the Hyperledger Composer admin REST API is hosted, without trailing slash.
+:vartype admin_host: str
 """
 
 admin_port = 3001
 """
 :var admin_port: The port where the Hyperledger Composer REST API listens to admin requests.
+				 If the port is `None`, it is not used.
 				 Only the users with the 'admin' scope can use this port.
-:vartype admin_port: int
+:vartype admin_port: int or None
+"""
+
+multiuser_host = "http://localhost"
+"""
+:var multiuser_host: The URL where the Hyperledger Composer multi-user REST API is hosted, without trailing slash.
+:vartype multiuser_host: str
 """
 
 multiuser_port = 3000
 """
 :var multiuser_port: The port where the Hyperledger Composer REST API listens to multi-user requests.
-:vartype multiuser_port: int
+					 If the port is `None`, it is not used.
+:vartype multiuser_port: int or None
 """
 
 multi_card = True
