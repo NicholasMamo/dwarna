@@ -159,6 +159,17 @@ class Biobank_Public {
 	}
 
 	/**
+	 * When the user logs out, remove the Hyperledger Composer cookie.
+	 *
+	 * @since	1.0.0
+	 * @access	public
+	 */
+	public function clear_access_token() {
+		require(plugin_dir_path(__FILE__) . "../includes/globals.php");
+		setcookie($blockchain_access_token, null, -1);
+	}
+
+	/**
 	 * Register the shortcodes that appear in the public-facing side of the site.
 	 *
 	 * @since    1.0.0
