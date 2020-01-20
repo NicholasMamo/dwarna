@@ -132,6 +132,12 @@ $client_secret = "xyz";
 $blockchain_access_token = "access_token";
 
 /**
+ * The host where the Hyperledger Composer REST APIs are being served.
+ * This is used to retrieve the access token if need be.
+ */
+$hyperledger_host = "http://localhost";
+
+/**
  * The authorization URL for the Hyperledger Composer REST API.
  */
 $auth_url = "http://localhost:3000/auth/local-wordpress";
