@@ -138,6 +138,11 @@ $blockchain_access_token = "access_token";
 $hyperledger_host = "http://localhost";
 
 /**
+ * The host where the WordPress website is being served.
+ */
+$host = "http://localhost";
+
+/**
  * The authorization URL for the Hyperledger Composer REST API.
  */
 $auth_url = "http://localhost:3000/auth/local-wordpress";
