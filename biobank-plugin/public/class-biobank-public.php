@@ -338,11 +338,13 @@ class Biobank_Public {
 			 * The page should redirect to the same page (the homepage), with the access token as a GET parameter.
 			 * If this access token is present, it is saved as a cookie value.
 			 */
-			if (! isset($_COOKIE[$blockchain_access_token]) && ! isset($_GET[$blockchain_access_token])) {
-				wp_redirect("$hyperledger_host?redirect=$host");
-				exit;
-			} else if (isset($_GET[$blockchain_access_token])) {
-				$_COOKIE[$blockchain_access_token] = $_GET[$blockchain_access_token];
+			if (isset($_SESSION["authorized"])) {
+				if (! isset($_COOKIE[$blockchain_access_token]) && ! isset($_GET[$blockchain_access_token])) {
+					wp_redirect("$hyperledger_host?redirect=$host");
+					exit;
+				} else if (isset($_GET[$blockchain_access_token])) {
+					$_COOKIE[$blockchain_access_token] = $_GET[$blockchain_access_token];
+				}
 			}
 		} else if (!\is_user_logged_in()) {
 			unset($_SESSION["authorized"]);
