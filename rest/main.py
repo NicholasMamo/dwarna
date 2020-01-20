@@ -95,8 +95,9 @@ def start_auth_server(port, token_expiry, connection, oauth_connection):
 		The routes and their handler are also passed on as arguments.
 		"""
 		blockchain_handler = hyperledger.HyperledgerAPI(
-			blockchain.host,
+			blockchain.admin_host,
 			blockchain.admin_port,
+			blockchain.multiuser_host,
 			blockchain.multiuser_port,
 			connection
 		)
