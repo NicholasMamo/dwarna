@@ -43,32 +43,37 @@ class HyperledgerAPI(BlockchainAPI):
 	At the same time, an access token is generated for them.
 	This access token allows access to this API.
 
-	:ivar _host: The hostname where the Hyperledger Composer REST API is running.
-	:vartype _host: str
+	:ivar _admin_host: The hostname where the Hyperledger Composer admin REST API is running.
+	:vartype _admin_host: str
 	:ivar _default_admin_port: The default port where admin requests are made.
-	:vartype _default_admin_port: int
+	:vartype _default_admin_port: int or None
+	:ivar _multiuser_host: The hostname where the Hyperledger Composer multi-user REST API is running.
+	:vartype _multiuser_host: str
 	:ivar _default_multiuser_port: The default port where multi-user requests are made.
-	:vartype _default_multiuser_port: int
+	:vartype _default_multiuser_port: int or None
 	:ivar _connector: The connector that is used to access the data store.
 	:vartype _connector: :class:`connection.connection.Connection`
 	"""
 
-	def __init__(self, host, default_admin_port, default_multiuser_port, connector):
+	def __init__(self, admin_host, default_admin_port, multiuser_host, default_multiuser_port, connector):
 		"""
 		Instantiate the Hyperledger API handler with the URLs it should use.
 
-		:param host: The hostname where the Hyperledger Composer REST API is running.
+		:param admin_host: The hostname where the Hyperledger Composer admin REST API is running.
 		:type host: str
 		:param default_admin_port: The default port where admin requests are made.
-		:type default_admin_port: int
+		:type default_admin_port: int or None
+		:param multiuser_host: The hostname where the Hyperledger Composer multi-user REST API is running.
+		:type host: str
 		:param default_multiuser_port: The default port where multi-user requests are made.
 		:type default_multiuser_port: int
 		:param connector: The connector that is used to access the data store.
 		:type connector: :class:`connection.connection.Connection`
 		"""
 
-		self._host = host
+		self._admin_host = admin_host
 		self._default_admin_port = default_admin_port
+		self._multiuser_host = multiuser_host
 		self._default_multiuser_port = default_multiuser_port
 		self._connector = connector
 
@@ -299,7 +304,10 @@ class HyperledgerAPI(BlockchainAPI):
 		"""
 
 		port = self._default_admin_port if port is None else port
-		endpoint = f"{self._host}:{port}/api/system/identities/issue"
+		if port is not None:
+			endpoint = f"{self._admin_host}:{port}/api/system/identities/issue"
+		else:
+			endpoint = f"{self._admin_host}/api/system/identities/issue"
 
 		response = requests.post(endpoint, data={
 			"participant": f"org.consent.model.ResearchParticipant#{username}",
@@ -328,7 +336,11 @@ class HyperledgerAPI(BlockchainAPI):
 		"""
 
 		port = self._default_admin_port if port is None else port
-		endpoint = f"{self._host}:{port}/api/system/identities/"
+		if port is not None:
+			endpoint = f"{self._admin_host}:{port}/api/system/identities/"
+		else:
+			endpoint = f"{self._admin_host}:{port}/api/system/identities/"
+
 		response = requests.get(endpoint)
 		identities = json.loads(response.content)
 		identities = {
@@ -357,7 +369,10 @@ class HyperledgerAPI(BlockchainAPI):
 		"""
 
 		port = self._default_admin_port if port is None else port
-		endpoint = f"{self._host}:{port}/api/org.consent.model.ResearchParticipant"
+		if port is not None:
+			endpoint = f"{self._admin_host}:{port}/api/org.consent.model.ResearchParticipant"
+		else:
+			endpoint = f"{self._admin_host}/api/org.consent.model.ResearchParticipant"
 
 		response = requests.post(endpoint, data={
 			"$class": "org.consent.model.ResearchParticipant",
@@ -438,7 +453,10 @@ class HyperledgerAPI(BlockchainAPI):
 		"""
 
 		port = self._default_admin_port if port is None else port
-		endpoint = f"{self._host}:{port}/api/org.consent.model.Study"
+		if port is not None:
+			endpoint = f"{self._admin_host}:{port}/api/org.consent.model.Study"
+		else:
+			endpoint = f"{self._admin_host}/api/org.consent.model.Study"
 
 		response = requests.post(endpoint, data={
 			"$class": "org.consent.model.Study",
@@ -476,7 +494,10 @@ class HyperledgerAPI(BlockchainAPI):
 		"""
 
 		port = self._default_multiuser_port if port is None else port
-		endpoint = f"{self._host}:{port}/api/org.consent.model.Consent"
+		if port is not None:
+			endpoint = f"{self._multiuser_host}:{port}/api/org.consent.model.Consent"
+		else:
+			endpoint = f"{self._multiuser_host}/api/org.consent.model.Consent"
 
 		timestamp = time.time()
 		base_id = str(timestamp) + str(study_id) + str(address)
@@ -520,7 +541,12 @@ class HyperledgerAPI(BlockchainAPI):
 			"username": f"resource:org.consent.model.ResearchParticipant#{address}"
 		}
 		param_string = urllib.parse.urlencode(params)
-		endpoint = f"{self._host}:{port}/api/queries/has_consent?{param_string}"
+
+		if port is not None:
+			endpoint = f"{self._multiuser_host}:{port}/api/queries/has_consent?{param_string}"
+		else:
+			endpoint = f"{self._multiuser_host}/api/queries/has_consent?{param_string}"
+
 		response = requests.get(endpoint, headers={
 			"X-Access-Token": access_token
 		})
@@ -562,7 +588,12 @@ class HyperledgerAPI(BlockchainAPI):
 			"study_id": f"resource:org.consent.model.Study#{study_id}"
 		}
 		param_string = urllib.parse.urlencode(params)
-		endpoint = f"{self._host}:{port}/api/queries/get_study_consents?{param_string}"
+
+		if port is not None:
+			endpoint = f"{self._admin_host}:{port}/api/queries/get_study_consents?{param_string}"
+		else:
+			endpoint = f"{self._admin_host}/api/queries/get_study_consents?{param_string}"
+
 		response = requests.get(endpoint, headers={ })
 
 		"""
@@ -600,6 +631,11 @@ class HyperledgerAPI(BlockchainAPI):
 		:raises: :class:`biobank.handlers.blockchain.api.hyperledger.hyperledger_exceptions.UnauthorizedDataAccessException`
 		"""
 
+		params = {
+			"study_id": f"resource:org.consent.model.Study#{study_id}"
+		}
+		param_string = urllib.parse.urlencode(params)
+
 		"""
 		If no port is given, assign the port according to the user privileges.
 		If a port is given and it is the admin port, check for user privileges.
@@ -607,15 +643,23 @@ class HyperledgerAPI(BlockchainAPI):
 		"""
 		from config import routes
 		if port is None:
-			port = self._default_admin_port if token is not None and routes.admin_scope in token.scopes else self._default_multiuser_port
+			if token is not None and routes.admin_scope in token.scopes:
+				port = self._default_admin_port
+
+				if port is not None:
+					endpoint = f"{self._admin_host}:{port}/api/queries/get_study_consents?{param_string}"
+				else:
+					endpoint = f"{self._admin_host}/api/queries/get_study_consents?{param_string}"
+			else:
+				port = self._default_multiuser_port
+
+				if port is not None:
+					endpoint = f"{self._multiuser_host}:{port}/api/queries/get_study_consents?{param_string}"
+				else:
+					endpoint = f"{self._multiuser_host}/api/queries/get_study_consents?{param_string}"
 		elif int(port) == self._default_admin_port and routes.admin_scope not in token.scopes:
 			raise hyperledger_exceptions.UnauthorizedDataAccessException()
 
-		params = {
-			"study_id": f"resource:org.consent.model.Study#{study_id}"
-		}
-		param_string = urllib.parse.urlencode(params)
-		endpoint = f"{self._host}:{port}/api/queries/get_study_consents?{param_string}"
 		response = requests.get(endpoint, headers={ })
 
 		"""
@@ -683,7 +727,12 @@ class HyperledgerAPI(BlockchainAPI):
 			"username": f"resource:org.consent.model.ResearchParticipant#{address}"
 		}
 		param_string = urllib.parse.urlencode(params)
-		endpoint = f"{self._host}:{port}/api/queries/get_consent_trail?{param_string}"
+
+		if port is not None:
+			endpoint = f"{self._multiuser_host}:{port}/api/queries/get_consent_trail?{param_string}"
+		else:
+			endpoint = f"{self._multiuser_host}/api/queries/get_consent_trail?{param_string}"
+
 		response = requests.get(endpoint, headers={
 			"X-Access-Token": access_token
 		})
