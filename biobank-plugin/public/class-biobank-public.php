@@ -167,6 +167,7 @@ class Biobank_Public {
 	public function clear_access_token() {
 		require(plugin_dir_path(__FILE__) . "../includes/globals.php");
 		setcookie($blockchain_access_token, null, -1);
+		unset($_COOKIE[$blockchain_access_token]);
 	}
 
 	/**
