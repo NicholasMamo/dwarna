@@ -500,15 +500,17 @@ class Biobank_Admin {
 	 * @param PHPMailer The PHPMailer object.
 	 */
 	function send_smtp_email( $phpmailer ) {
+		include(plugin_dir_path(__FILE__) . "../includes/globals.php");
+
 		$phpmailer->isSMTP();
-		$phpmailer->Host       = SMTP_HOST;
-		$phpmailer->SMTPAuth   = SMTP_AUTH;
-		$phpmailer->Port       = SMTP_PORT;
-		$phpmailer->Username   = SMTP_USER;
-		$phpmailer->Password   = SMTP_PASS;
+		$phpmailer->Host = SMTP_HOST;
+		$phpmailer->SMTPAuth = SMTP_AUTH;
+		$phpmailer->Port = SMTP_PORT;
+		$phpmailer->Username = SMTP_USER;
+		$phpmailer->Password = SMTP_PASS;
 		$phpmailer->SMTPSecure = SMTP_SECURE;
-		$phpmailer->From       = SMTP_FROM;
-		$phpmailer->FromName   = SMTP_NAME;
+		$phpmailer->From = SMTP_FROM;
+		$phpmailer->FromName = SMTP_NAME;
 	}
 
 	/**
