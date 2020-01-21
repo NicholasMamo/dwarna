@@ -102,13 +102,8 @@ class ParticipantFormHandler extends UserFormHandler {
  							$body = ob_get_contents();
  							ob_end_clean();
 
-							require(plugin_dir_path(__FILE__) . "../../includes/globals.php");
-							$nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
-							$cipherEmail = sodium_crypto_secretbox($user_data['user_email'], $nonce, $encryptionKey);
-							$encodedEmail = base64_encode($nonce . $cipherEmail);
-
 							$sent = wp_mail(
-								$encodedEmail, "Welcome to Dwarna!",
+								$input['email'], "Welcome to Dwarna!",
 								$body, array( "Content-type: text/html" )
 							);
 
@@ -192,6 +187,7 @@ class ParticipantFormHandler extends UserFormHandler {
 								"user_login" => $input["username"],
 								"user_email" => $input["email"]
 							);
+							$user_id = wp_insert_user($user_data);
 
 							/*
 							 * Only update the password if it is not empty
@@ -205,13 +201,8 @@ class ParticipantFormHandler extends UserFormHandler {
 								$body = ob_get_contents();
 								ob_end_clean();
 
-								require(plugin_dir_path(__FILE__) . "../../includes/globals.php");
-								$nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
-								$cipherEmail = sodium_crypto_secretbox($user_data['user_email'], $nonce, $encryptionKey);
-								$encodedEmail = base64_encode($nonce . $cipherEmail);
-
 								$sent = wp_mail(
-									$encodedEmail, "Your new Dwarna password",
+									$input['email'], "Your new Dwarna password",
 									$body, array( "Content-type: text/html")
 								);
 
@@ -220,7 +211,6 @@ class ParticipantFormHandler extends UserFormHandler {
 								}
 							}
 
-							$user_id = wp_insert_user($user_data);
 							/*
 							 * Hash the email address to use it as a reverse index.
 							 */
