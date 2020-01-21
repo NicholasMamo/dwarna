@@ -456,25 +456,27 @@ class Biobank_Public {
 	 * @access	public
 	 */
 	public function encrypt_email_for_lost_password() {
-		$username = $_POST['user_login'];
-		/*
-		 * Only proceed if the 'username' is actually an email address.
-		 */
-		if (is_email($username)) {
+		if (isset($_POST['user_login'])) {
+			$username = $_POST['user_login'];
 			/*
-			 * If there is already a user associated with the given email address, proceed normally.
+			 * Only proceed if the 'username' is actually an email address.
 			 */
-			if (get_user_by("email", $username)) {
-				return;
-			}
+			if (is_email($username)) {
+				/*
+				 * If there is already a user associated with the given email address, proceed normally.
+				 */
+				if (get_user_by("email", $username)) {
+					return;
+				}
 
-			/*
-			 * Otherwise, hash the email address and check if any user has the same hashed email address.
-			 * If there exists one, get that user and replace the input with the proper username.
-			 */
-			$users = get_users(array('meta_key' => 'hashed_email', 'meta_value' => hash('sha256', $username)));
-			if (count($users)) {
-				$_POST['user_login'] = $users[0]->data->user_login;
+				/*
+				 * Otherwise, hash the email address and check if any user has the same hashed email address.
+				 * If there exists one, get that user and replace the input with the proper username.
+				 */
+				$users = get_users(array('meta_key' => 'hashed_email', 'meta_value' => hash('sha256', $username)));
+				if (count($users)) {
+					$_POST['user_login'] = $users[0]->data->user_login;
+				}
 			}
 		}
 	}
