@@ -482,6 +482,34 @@ class Biobank_Public {
 	}
 
 	/**
+	 * After the user changes their password, send them an email confirming the change.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @param WP_User $user     The user who changed their password.
+	 */
+	public function after_password_reset($user) {
+		$email = $user->data->user_email;
+
+		/*
+		 * If the user's email address does not look like an email address, try to decrypt it.
+		 */
+		if (! is_email($email)) {
+			require(plugin_dir_path(__FILE__) . "../includes/globals.php");
+			$decoded = base64_decode($user->data->user_email);
+			$cipherNonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
+			$cipherText = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
+			$email = sodium_crypto_secretbox_open($cipherText, $cipherNonce, $encryptionKey);
+		}
+
+		$sent = wp_mail(
+			$email, "Password changed!",
+			"This is to confirm that your password has been changed.", array( "Content-type: text/html" )
+		);
+		return true;
+	}
+
+	/**
 	 * Get the blockchain solution's access token.
 	 * It is assumed that this access token is stored in a cookie.
 	 *
