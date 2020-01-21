@@ -212,6 +212,7 @@ class Biobank {
 		$this->loader->add_action( 'wp_mail', $plugin_admin, 'before_email' );
 
 		$this->loader->add_action( 'phpmailer_init', $plugin_admin, 'send_smtp_email' );
+		$this->loader->add_action( 'wp_mail_failed', $plugin_admin, 'on_mail_error' );
 
 	}
 

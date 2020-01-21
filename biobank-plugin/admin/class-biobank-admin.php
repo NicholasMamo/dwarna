@@ -513,6 +513,11 @@ class Biobank_Admin {
 		$phpmailer->FromName = SMTP_NAME;
 	}
 
+	function on_mail_error( $wp_error ) {
+		var_dump($wp_error);
+		exit;
+	}
+
 	/**
 	 * Refresh the page, prettifying the URL.
 	 * In the redirection, the GET parameters are stored in the session.
