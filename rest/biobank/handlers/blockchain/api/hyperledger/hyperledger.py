@@ -659,6 +659,11 @@ class HyperledgerAPI(BlockchainAPI):
 					endpoint = f"{self._multiuser_host}/api/queries/get_study_consents?{param_string}"
 		elif int(port) == self._default_admin_port and routes.admin_scope not in token.scopes:
 			raise hyperledger_exceptions.UnauthorizedDataAccessException()
+		else:
+			if int(port) == self._default_admin_port:
+				endpoint = f"{self._admin_host}:{port}/api/queries/get_study_consents?{param_string}"
+			else:
+				endpoint = f"{self._multiuser_host}:{port}/api/queries/get_study_consents?{param_string}"
 
 		response = requests.get(endpoint, headers={ })
 
