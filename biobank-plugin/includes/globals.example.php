@@ -199,4 +199,9 @@ if (!defined('SMTP_FROM')) define('SMTP_FROM', 'xyz@gmail.com'); // SMTP From em
 if (!defined('SMTP_NAME')) define('SMTP_NAME', 'Dwarna'); // SMTP From name
 if (!defined('SMTP_DEBUG')) define('SMTP_DEBUG', 0); // for debugging purposes only set to 1 or 2
 
+/**
+ * An option to disable administrator notifications whenever a user resets their password.
+ */
+if (!defined('RESET_PASSWORD_NOTIFICATION')) define('RESET_PASSWORD_NOTIFICATION', false);
+
 ?>
