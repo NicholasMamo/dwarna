@@ -85,6 +85,7 @@ class Biobank {
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 
+		$this->set_password_change_notification();
 	}
 
 	/**
@@ -242,6 +243,23 @@ class Biobank {
 		$this->loader->add_filter( 'wp_get_nav_menu_items', $plugin_public, 'set_menu_visibility', 10, 3 );
 		$this->loader->add_filter('http_api_curl', $this, 'set_curl_timeout', 10, 3);
 
+	}
+
+	/**
+	 * If the password change notification (to the administrator) is disabled, override the function.
+	 * When override, the function disables the notification.
+	 * If the notification is enabled, nothing changes.
+	 *
+	 * @since	1.0.0
+	 * @access	private
+	 */
+	private function set_password_change_notification() {
+		include(plugin_dir_path(__FILE__) . "globals.php");
+		if (! RESET_PASSWORD_NOTIFICATION && ! function_exists( 'wp_password_change_notification' ) ) {
+			function wp_password_change_notification( $user ) {
+				return;
+			}
+		}
 	}
 
 	/**
