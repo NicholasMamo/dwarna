@@ -469,7 +469,7 @@ class Biobank_Admin {
 	public function before_email($args) {
 		$user = get_user_by("email", $args['to']);
 
-		if (in_array("participant", $user->roles)) {
+		if ($user && is_array($user->roles) && in_array("participant", $user->roles)) {
 			/*
 			 * Only decrypt the email address of research partners.
 			 */
