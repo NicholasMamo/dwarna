@@ -467,29 +467,33 @@ class Biobank_Admin {
 	 * @param	string	args	The email's data.
 	 */
 	public function before_email($args) {
-		$user = get_user_by("email", $args['to']);
-
-		if ($user && is_array($user->roles) && in_array("participant", $user->roles)) {
-			/*
-			 * Only decrypt the email address of research partners.
-			 */
-			require(plugin_dir_path(__FILE__) . "../includes/globals.php");
-			$decoded = base64_decode($user->data->user_email);
-			$cipherNonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
-			$cipherText = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
-			$email = sodium_crypto_secretbox_open($cipherText, $cipherNonce, $encryptionKey);
-
-			$new_wp_mail = array(
-				'to'          => $email,
-				'subject'     => $args['subject'],
-				'message'     => $args['message'],
-				'headers'     => $args['headers'],
-				'attachments' => $args['attachments'],
-			);
-
-			return $new_wp_mail;
-		} else {
+		$email = $args['to'];
+		if (is_email($email)) {
 			return $args;
+		} else {
+			$user = get_user_by("email", $email);			
+			if ($user && is_array($user->roles) && in_array("participant", $user->roles)) {
+				/*
+				* Only decrypt the email address of research partners.
+				*/
+				require(plugin_dir_path(__FILE__) . "../includes/globals.php");
+				$decoded = base64_decode($user->data->user_email);
+				$cipherNonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
+				$cipherText = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
+				$email = sodium_crypto_secretbox_open($cipherText, $cipherNonce, $encryptionKey);
+
+				$new_wp_mail = array(
+					'to'          => $email,
+					'subject'     => $args['subject'],
+					'message'     => $args['message'],
+					'headers'     => $args['headers'],
+					'attachments' => $args['attachments'],
+				);
+
+				return $new_wp_mail;
+			} else {
+				return $args;
+			}
 		}
 	}
 
