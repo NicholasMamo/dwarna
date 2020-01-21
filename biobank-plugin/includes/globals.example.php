@@ -189,14 +189,14 @@ $base_path = "";
 /**
  * SMTP settings
  */
-define('SMTP_HOST', 'smtp.gmail.com'); // The hostname of the mail server
-define('SMTP_PORT', '587'); // SMTP port number - likely to be 25, 465 or 587
-define('SMTP_SECURE', 'tls'); // Encryption system to use - ssl or tls
-define('SMTP_AUTH', true); // Use SMTP authentication (true|false)
-define('SMTP_USER', 'xyz@gmail.com'); // Username to use for SMTP authentication
-define('SMTP_PASS', 'xxxxxxxxxxxxxxxx'); // Password to use for SMTP authentication
-define('SMTP_FROM', 'xyz@gmail.com'); // SMTP From email address
-define('SMTP_NAME', 'Dwarna'); // SMTP From name
-define('SMTP_DEBUG', 0); // for debugging purposes only set to 1 or 2
+if (!defined('SMTP_HOST')) define('SMTP_HOST', 'smtp.gmail.com'); // The hostname of the mail server
+if (!defined('SMTP_PORT')) define('SMTP_PORT', '587'); // SMTP port number - likely to be 25, 465 or 587
+if (!defined('SMTP_SECURE')) define('SMTP_SECURE', 'tls'); // Encryption system to use - ssl or tls
+if (!defined('SMTP_AUTH')) define('SMTP_AUTH', true); // Use SMTP authentication (true|false)
+if (!defined('SMTP_USER')) define('SMTP_USER', 'xyz@gmail.com'); // Username to use for SMTP authentication
+if (!defined('SMTP_PASS')) define('SMTP_PASS', 'xxxxxxxxxxxxxxxx'); // Password to use for SMTP authentication
+if (!defined('SMTP_FROM')) define('SMTP_FROM', 'xyz@gmail.com'); // SMTP From email address
+if (!defined('SMTP_NAME')) define('SMTP_NAME', 'Dwarna'); // SMTP From name
+if (!defined('SMTP_DEBUG')) define('SMTP_DEBUG', 0); // for debugging purposes only set to 1 or 2
 
 ?>
