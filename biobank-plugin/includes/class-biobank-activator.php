@@ -27,7 +27,7 @@ class Biobank_Activator {
      * The full list of capabilities afforded by the biobank plugin.
 	 * This list is given both to the biobanker, and to the administrator.
      *
-     * @since    1.0.0
+     * @since	1.0.0
 	 * @access   protected
 	 * @var      array		$biobanker_capabilities    The full list of capabilities afforded by the biobank plugin to biobankers and administrators.
      */
@@ -36,7 +36,7 @@ class Biobank_Activator {
     /**
      * The permissions given to researchers by the biobank plugin.
      *
-     * @since    1.0.0
+     * @since	1.0.0
 	 * @access   protected
 	 * @var      array		$biobanker_capabilities    The full list of capabilities afforded by the biobank plugin to researchers.
      */
@@ -45,7 +45,7 @@ class Biobank_Activator {
     /**
      * The permissions given to participants by the biobank plugin.
      *
-     * @since    1.0.0
+     * @since	1.0.0
 	 * @access   protected
 	 * @var      array		$biobanker_capabilities    The full list of capabilities afforded by the biobank plugin to participants.
      */
@@ -55,7 +55,7 @@ class Biobank_Activator {
      * The list of pages created by the biobank plugin.
 	 * These pages are made up of WordPress information and permissions.
      *
-     * @since    1.0.0
+     * @since	1.0.0
 	 * @access   protected
 	 * @var      array		$pages    The list of pages that are created by the biobank plugin.
      */
@@ -68,7 +68,7 @@ class Biobank_Activator {
      * @access	private
      */
     private static function initialize() {
-		require_once(plugin_dir_path(__FILE__) . "globals.php");
+		require(plugin_dir_path(__FILE__) . "globals.php");
 		self::$biobanker_capabilities = $biobanker_capabilities;
         self::$researcher_capabilities = $researcher_capabilities;
 		self::$participant_capabilities = $participant_capabilities;
@@ -96,7 +96,7 @@ class Biobank_Activator {
      * Capabilities are created for these users.
      * Biobanker permissions are applied to administrators as well.
      *
-     * @since    1.0.0
+     * @since	1.0.0
      */
     public static function activate() {
         self::initialize();
@@ -131,17 +131,48 @@ class Biobank_Activator {
 			$participant->add_cap($capability, true);
 		}
 
-		/**
+		/*
 		 * Create the frontend pages.
 		 */
 		foreach (self::$pages as $slug => $page) {
 			$post = wp_insert_post($page["wp_info"]);
 		}
 
+		/**
+		 * Register the default options.
+		 */
+		self::register_default_options();
+
 		/*
 		 * Create the OAuth 2.0 table structure in the the database.
 		 */
 		 self::create_oauth_tables();
     }
+
+	/**
+	 * Set the initial settings.
+	 *
+	 * @access	private
+     * @since	1.0.0
+	 */
+	private static function register_default_options() {
+		$plugin_name = 'biobank';
+		register_setting($plugin_name, $plugin_name, array("Biobank_Activator", "load_default_options", $plugin_name));
+	}
+
+	/**
+	 * Load the default plugin options.
+	 * The function does not override any existing settings.
+	 *
+	 * @access	private
+     * @since	1.0.0
+	 * @param	string	$plugin_name The name of the plugin
+	 * @return	array	The array of default plugin options.
+	 */
+	private static function login_default_options($plugin_name) {
+		require(plugin_dir_path(__FILE__) . "globals.php");
+
+		return $default_settings;
+	}
 
 }
