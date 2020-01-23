@@ -672,6 +672,7 @@ class Biobank_Admin {
 	public function options_update() {
 		register_setting("{$this->plugin_name}-rest", "{$this->plugin_name}-rest", array($this, "validate_rest_options"));
 		register_setting("{$this->plugin_name}-oauth", "{$this->plugin_name}-oauth", array($this, "validate_oauth_options"));
+		register_setting("{$this->plugin_name}-composer", "{$this->plugin_name}-composer", array($this, "validate_composer_options"));
 	}
 
 	/**
@@ -709,6 +710,23 @@ class Biobank_Admin {
 		$valid["proxy-from"] = $input["proxy-from"] ?? "";
 		$valid["proxy-to"] = $input["proxy-to"] ?? "";
 		$valid["base-path"] = $input["base-path"] ?? "";
+
+		return $valid;
+	}
+
+	/**
+	 * Validate the Hyperledger Composer options.
+	 *
+	 * @since 1.0.0
+	 * @access	public
+	 * @param	array 		$input		The inputed options.
+	 * @return	array		The array containing the validated inputs.
+	 */
+	public function validate_composer_options($input) {
+		$valid = array();
+
+		$valid["hyperledger-host"] = $input["hyperledger-host"] ?? "";
+		$valid["auth-url"] = $input["auth-url"] ?? "";
 
 		return $valid;
 	}
