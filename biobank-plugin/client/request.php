@@ -261,8 +261,8 @@ class Request {
 				 */
 				$body = array(
 					"grant_type" => "client_credentials",
-					"client_id" => $client_id,
-					"client_secret" => $client_secret,
+					"client_id" => get_option('biobank')['client-id'],
+					"client_secret" => get_option('biobank')['client-secret'],
 					"scope" => implode($requested_scopes, " "),
 					"user_id" => $user->user_login
 				);
