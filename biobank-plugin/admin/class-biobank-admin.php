@@ -213,7 +213,7 @@ class Biobank_Admin {
 			$decoded = base64_decode($user->user_email);
 			$cipherNonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
 			$cipherText = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
-			$email = sodium_crypto_secretbox_open($cipherText, $cipherNonce, $encryptionKey);
+			$email = sodium_crypto_secretbox_open($cipherText, $cipherNonce, ENCRYPTION_KEY);
 			$user->user_email = $email;
 
 			/*
@@ -467,7 +467,7 @@ class Biobank_Admin {
 			 */
 			require(plugin_dir_path(__FILE__) . "../includes/globals.php");
 			$nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
-			$cipherEmail = sodium_crypto_secretbox($user->data->user_email, $nonce, $encryptionKey);
+			$cipherEmail = sodium_crypto_secretbox($user->data->user_email, $nonce, ENCRYPTION_KEY);
 			$encodedEmail = base64_encode($nonce . $cipherEmail);
 
 			$wpdb->update(
@@ -504,7 +504,7 @@ class Biobank_Admin {
 				$decoded = base64_decode($user->data->user_email);
 				$cipherNonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
 				$cipherText = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
-				$email = sodium_crypto_secretbox_open($cipherText, $cipherNonce, $encryptionKey);
+				$email = sodium_crypto_secretbox_open($cipherText, $cipherNonce, ENCRYPTION_KEY);
 
 				$new_wp_mail = array(
 					'to'          => $email,

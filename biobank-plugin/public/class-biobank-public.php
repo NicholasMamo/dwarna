@@ -499,7 +499,7 @@ class Biobank_Public {
 			$decoded = base64_decode($user->data->user_email);
 			$cipherNonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
 			$cipherText = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
-			$email = sodium_crypto_secretbox_open($cipherText, $cipherNonce, $encryptionKey);
+			$email = sodium_crypto_secretbox_open($cipherText, $cipherNonce, ENCRYPTION_KEY);
 		}
 
 		/*

@@ -45,9 +45,9 @@ Before installing and using the plugin, set up the configuration.
 To configure the plugin:
 
 1. Copy the `includes/globals.example.php` file into `includes/globals.php`;
-2. Fill in the `$encryptionKey` variable.
+2. Fill in the `ENCRYPTION_KEY` constant.
    First generate a key using `php -r "echo bin2hex(sodium_crypto_secretbox_keygen());" > itop_secret_key.txt`.
-   Then, replace the 'x' string in the `$encryptionKey` variable with the contents of the new `itop_secret_key.txt`; and
+   Then, replace the 'x' string in the `ENCRYPTION_KEY` constant with the contents of the new `itop_secret_key.txt`; and
 3. Create a [FontAwesome](https://fontawesome.com/) account to get an icon kit.
    These icons are used by the plugin to beautify it.
    Once you get an icon kit, replace the `$fontawesome_kit` variable's value with a link to the kit.

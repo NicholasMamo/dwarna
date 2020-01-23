@@ -156,7 +156,7 @@ $auth_url = "http://localhost:3000/auth/local-wordpress";
  * The key used to encrypt email addresses.
  * The key can be generated using `php -r "echo bin2hex(sodium_crypto_secretbox_keygen());" > itop_secret_key.txt`.
  */
-$encryptionKey = hex2bin("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+if (!defined('ENCRYPTION_KEY')) define('ENCRYPTION_KEY', hex2bin("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"));
 
 /*
  * The FontAwesome kit to use.
