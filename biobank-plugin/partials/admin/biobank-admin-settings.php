@@ -113,4 +113,44 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
         <?php submit_button("Save Changes", "primary", "submit", TRUE); ?>
     </form>
 
+	<h2 class="title">OAuth 2.0</h2>
+	<form class="<?= $this->plugin_name ?>-form" id="oauth-form" method="post" name="oauth-form" action="options.php">
+		<?php settings_fields("{$this->plugin_name}-oauth"); ?>
+		<?php do_settings_sections("{$this->plugin_name}-oauth"); ?>
+
+		<table class="form-table">
+
+			<tr class="form-field">
+				<th scope="row">
+					<label for="<?php echo $this->plugin_name; ?>-proxy-from">Proxy (from)</label>
+				</th>
+				<td>
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[proxy-from]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-proxy-from"
+						   value="<?= $proxy_from ?>" aria-required="true">
+				</td>
+			</tr>
+
+			<tr class="form-field">
+				<th scope="row">
+					<label for="<?php echo $this->plugin_name; ?>-proxy-to">Proxy (to)</label>
+				</th>
+				<td>
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[proxy-to]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-proxy-to"
+						   value="<?= $proxy_to ?>" aria-required="true">
+					<p class="description" id="proxy-description">
+						OAuth 2.0 proxy settings.
+				    	These settings are used by the OAuth 2.0 system (<code>oauth/access_token.php</code> and <code>oauth/auth.php</code>).
+					</p>
+				</td>
+			</tr>
+
+		</table>
+
+		<?php submit_button("Save Changes", "primary", "submit", TRUE); ?>
+	</form>
+
 </div>

@@ -448,6 +448,9 @@ class Biobank_Admin {
 		$client_id = $options["client-id"] ?? "";
 		$client_secret = $options["client-secret"] ?? "";
 
+		$proxy_from = $options["proxy-from"] ?? "";
+		$proxy_to = $options["proxy-to"] ?? "";
+
 		include_once(plugin_dir_path(__FILE__) . "../partials/admin/biobank-admin-settings.php");
 	}
 
@@ -662,6 +665,7 @@ class Biobank_Admin {
 	 */
 	public function options_update() {
 		register_setting($this->plugin_name, $this->plugin_name, array($this, "validate_options"));
+		register_setting("{$this->plugin_name}-oauth", "{$this->plugin_name}-oauth", array($this, "validate_oauth_options"));
 	}
 
 	/**
@@ -681,6 +685,23 @@ class Biobank_Admin {
 		$valid["token-endpoint"] = isset($input["token-endpoint"]) && !empty($input["token-endpoint"]) ? $input["token-endpoint"] : "token";
 		$valid["client-id"] = isset($input["client-id"]) && !empty($input["client-id"]) ? $input["client-id"] : "";
 		$valid["client-secret"] = isset($input["client-secret"]) && !empty($input["client-secret"]) ? $input["client-secret"] : "";
+
+		return $valid;
+	}
+
+	/**
+	 * Validate the OAuth 2.0 options.
+	 *
+	 * @since 1.0.0
+	 * @access	public
+	 * @param	array 		$input		The inputed options.
+	 * @return	array		The array containing the validated inputs.
+	 */
+	public function validate_oauth_options($input) {
+		$valid = array();
+
+		$valid["proxy_from"] = $input["proxy_from"] ?? "";
+		$valid["proxy_to"] = $input["proxy_to"] ?? "";
 
 		return $valid;
 	}
