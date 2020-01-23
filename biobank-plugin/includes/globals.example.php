@@ -143,11 +143,6 @@ if (!defined('BLOCKCHAIN_ACCESS_TOKEN')) define('BLOCKCHAIN_ACCESS_TOKEN', "acce
 $hyperledger_host = "http://localhost/wordpress/wp-content/plugins/biobank-plugin/public/ajax/get_cookie.php";
 
 /**
- * The host where the WordPress website is being served.
- */
-$host = "http://localhost";
-
-/**
  * The authorization URL for the Hyperledger Composer REST API.
  */
 $auth_url = "http://localhost:3000/auth/local-wordpress";

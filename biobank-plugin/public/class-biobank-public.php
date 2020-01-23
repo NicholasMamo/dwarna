@@ -352,7 +352,7 @@ class Biobank_Public {
 			 */
 			if (isset($_SESSION["authorized"])) {
 				if (! isset($_COOKIE[BLOCKCHAIN_ACCESS_TOKEN]) && ! isset($_GET[BLOCKCHAIN_ACCESS_TOKEN])) {
-					wp_redirect("$hyperledger_host?redirect=$host");
+					wp_redirect("$hyperledger_host?redirect=" . get_site_url());
 					exit;
 				} else if (isset($_GET[BLOCKCHAIN_ACCESS_TOKEN])) {
 					setcookie(BLOCKCHAIN_ACCESS_TOKEN, $_GET[BLOCKCHAIN_ACCESS_TOKEN]);
