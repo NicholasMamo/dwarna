@@ -142,8 +142,7 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 						   type="text" id="<?php echo $this->plugin_name; ?>-proxy-to"
 						   value="<?= $proxy_to ?>" aria-required="true">
 					<p class="description" id="proxy-description">
-						OAuth 2.0 proxy settings.
-				    	These settings are used by the OAuth 2.0 system (<code>oauth/access_token.php</code> and <code>oauth/auth.php</code>).
+						The OAuth 2.0 proxy settings are used by the OAuth 2.0 system (<code>oauth/access_token.php</code> and <code>oauth/auth.php</code>).
 					</p>
 				</td>
 			</tr>
