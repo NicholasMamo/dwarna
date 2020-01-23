@@ -31,8 +31,8 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 
 	<h2 class="title">REST API</h2>
     <form class="<?= $this->plugin_name ?>-form" id="rest-form" method="post" name="rest-form" action="options.php">
-		<?php settings_fields($this->plugin_name); ?>
-		<?php do_settings_sections($this->plugin_name); ?>
+		<?php settings_fields("{$this->plugin_name}-rest"); ?>
+		<?php do_settings_sections("{$this->plugin_name}-rest"); ?>
 
 		<table class="form-table">
 
@@ -42,7 +42,7 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 				</th>
 				<td>
 					<input autocapitalize="none" autocomplete="off" autocorrect="off"
-						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[scheme]"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>-rest[scheme]"
 						   type="text" id="<?php echo $this->plugin_name; ?>-scheme"
 						   value="<?= $scheme ?>" aria-required="true">
 				</td>
@@ -54,7 +54,7 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 				</th>
 				<td>
 					<input autocapitalize="none" autocomplete="off" autocorrect="off"
-						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[host]"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>-rest[host]"
 						   type="text" id="<?php echo $this->plugin_name; ?>-host"
 						   value="<?= $host ?>" aria-required="true">
 				</td>
@@ -66,7 +66,7 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 				</th>
 				<td>
 					<input autocapitalize="none" autocomplete="off" autocorrect="off"
-						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[port]"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>-rest[port]"
 						   type="text" id="<?php echo $this->plugin_name; ?>-port"
 						   value="<?= $port ?>" aria-required="true">
 				</td>
@@ -78,7 +78,7 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 				</th>
 				<td>
 					<input autocapitalize="none" autocomplete="off" autocorrect="off"
-						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[token-endpoint]"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>-rest[token-endpoint]"
 						   type="text" id="<?php echo $this->plugin_name; ?>-token-endpoint"
 						   value="<?= $token_endpoint ?>" aria-required="true">
 				</td>
@@ -90,7 +90,7 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 				</th>
 				<td>
 					<input autocapitalize="none" autocomplete="off" autocorrect="off"
-						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[client-id]"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>-rest[client-id]"
 						   type="text" id="<?php echo $this->plugin_name; ?>-client-id"
 						   value="<?= $client_id ?>" aria-required="true">
 				</td>
@@ -102,7 +102,7 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 				</th>
 				<td>
 					<input autocapitalize="none" autocomplete="off" autocorrect="off"
-						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[client-secret]"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>-rest[client-secret]"
 						   type="text" id="<?php echo $this->plugin_name; ?>-client-secret"
 						   value="<?= $client_secret ?>" aria-required="true">
 				</td>

@@ -79,7 +79,7 @@ abstract class FormHandler {
 	 * @param	int			$port		The port used to connect to the REST API.
 	 */
 	public function __construct($scheme=NULL, $host=NULL, $port=NULL) {
-		$options = get_option("biobank");
+		$options = get_option("biobank-rest");
 
 		$this->scheme = is_null($scheme) ? $options["scheme"] : $scheme;
 		$this->host = is_null($host) ? $options["host"] : $host;

@@ -249,7 +249,7 @@ class Request {
 			/*
 			 * Only fetch a token if the user is logged in.
 			 */
-			$options = get_option('biobank');
+			$options = get_option('biobank-rest');
 			if (\is_user_logged_in()) {
 				$token_endpoint = $options['token-endpoint'];
 				$url = $this->construct_url($token_endpoint); // create the URL in advance

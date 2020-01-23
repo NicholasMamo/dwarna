@@ -440,7 +440,7 @@ class Biobank_Admin {
 		/*
 		 * Load the options.
 		 */
-		$options = get_option($this->plugin_name);
+		$options = get_option("{$this->plugin_name}-rest");
 		$scheme = $options["scheme"] ?? "http";
 		$host = $options["host"] ?? "localhost";
 		$port = $options["port"] ?? "8080";
@@ -448,6 +448,7 @@ class Biobank_Admin {
 		$client_id = $options["client-id"] ?? "";
 		$client_secret = $options["client-secret"] ?? "";
 
+		$options = get_option("{$this->plugin_name}-oauth");
 		$proxy_from = $options["proxy-from"] ?? "";
 		$proxy_to = $options["proxy-to"] ?? "";
 
@@ -664,7 +665,7 @@ class Biobank_Admin {
 	 * @access public
 	 */
 	public function options_update() {
-		register_setting($this->plugin_name, $this->plugin_name, array($this, "validate_options"));
+		register_setting("{$this->plugin_name}-rest", "{$this->plugin_name}-rest", array($this, "validate_rest_options"));
 		register_setting("{$this->plugin_name}-oauth", "{$this->plugin_name}-oauth", array($this, "validate_oauth_options"));
 	}
 
@@ -676,7 +677,7 @@ class Biobank_Admin {
 	 * @param	array 		$input		The inputed options.
 	 * @return	array		The array containing the validated inputs.
 	 */
-	public function validate_options($input) {
+	public function validate_rest_options($input) {
 		$valid = array();
 
 		$valid["scheme"] = isset($input["scheme"]) && !empty($input["scheme"]) ? $input["scheme"] : "http";

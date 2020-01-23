@@ -159,11 +159,11 @@ class Biobank_Activator {
 		require(plugin_dir_path(__FILE__) . "globals.php");
 
 		$plugin_name = 'biobank';
-		$settings = get_option($plugin_name);
+		$settings = get_option("$plugin_name-rest");
 		foreach ($default_rest_settings as $setting => $default_value) {
-			$settings[$plugin_name][$setting] = $settings[$plugin_name][$setting] ?? $default_value;
+			$settings["$plugin_name-rest"][$setting] = $settings["$plugin_name-rest"][$setting] ?? $default_value;
 		}
-		add_option($plugin_name, $settings[$plugin_name]);
+		add_option("$plugin_name-rest", $settings[$plugin_name]);
 	}
 
 }
