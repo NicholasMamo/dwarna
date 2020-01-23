@@ -21,6 +21,8 @@ require_once("/var/www/html/wordpress/wp-load.php");
 require_once(__DIR__.'/server.php');
 require(plugin_dir_path(__FILE__) . "../includes/globals.php");
 
+$options = get_option('biobank-oauth');
+
 /*
  * Add a trailing slash to the base path if need be.
  */
@@ -29,11 +31,11 @@ if (strlen($base_path) && substr($base_path, -1) != "/") {
 }
 
 $request = OAuth2\Request::createFromGlobals();
-if ($proxy_from) {
+if ($options['proxy-from']) {
 	if ($request->query('redirect_uri')) {
-	        $request->query['redirect_uri'] = str_replace($proxy_from, $proxy_to, $request->query("redirect_uri"));
+	        $request->query['redirect_uri'] = str_replace($options['proxy-from'], $options['proxy-to'], $request->query("redirect_uri"));
 	} else {
-	        $request->request["redirect_uri"] = str_replace($proxy_from, $proxy_to, $request->request("redirect_uri"));
+	        $request->request["redirect_uri"] = str_replace($options['proxy-from'], $options['proxy-to'], $request->request("redirect_uri"));
 	}
 }
 
@@ -50,7 +52,7 @@ if (isset($_GET["redirect_uri"])) {
 	 * The user data is returned to this URL.
 	 */
 	$redirect_uri = $_GET["redirect_uri"];
-	$redirect_uri = str_replace($proxy_from, $proxy_to, $redirect_uri);
+	$redirect_uri = str_replace($options['proxy-from'], $options['proxy-to'], $redirect_uri);
 	$state = $_GET["state"];
 
 	/*

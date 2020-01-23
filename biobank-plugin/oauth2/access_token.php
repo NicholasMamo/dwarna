@@ -20,7 +20,8 @@ require(plugin_dir_path(__FILE__) . "../includes/globals.php");
  * The response contains the access token as a parameter.
  */
 $request = OAuth2\Request::createFromGlobals();
-$request->request["redirect_uri"] = str_replace($proxy_from, $proxy_to, $request->request["redirect_uri"]);
+$options = get_option('biobank-oauth');
+$request->request["redirect_uri"] = str_replace($options['proxy-from'], $options['proxy-to'], $request->request["redirect_uri"]);
 $response = $server->handleTokenRequest($request);
 
 /*
