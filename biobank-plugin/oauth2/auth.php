@@ -27,7 +27,7 @@ $options = get_option('biobank-oauth');
  * Add a trailing slash to the base path if need be.
  */
 if (strlen($options['base-path']) && substr($options['base-path'], -1) != "/") {
-	$options['base-path'] = "$options['base-path']/";
+	$options['base-path'] = "{$options['base-path']}/";
 }
 
 $request = OAuth2\Request::createFromGlobals();
