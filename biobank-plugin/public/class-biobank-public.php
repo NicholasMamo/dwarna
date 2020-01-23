@@ -502,9 +502,17 @@ class Biobank_Public {
 			$email = sodium_crypto_secretbox_open($cipherText, $cipherNonce, $encryptionKey);
 		}
 
+		/*
+		 * Send an email with the login details.
+		 */
+		ob_start();
+		include_once(plugin_dir_path(__FILE__) . "../partials/emails/biobank-email-password-changed.php");
+		$body = ob_get_contents();
+		ob_end_clean();
+
 		$sent = wp_mail(
-			$email, "Password changed!",
-			"This is to confirm that your password has been changed.", array( "Content-type: text/html" )
+			$email, "[Dwarna] Password Changed",
+			$body, array( "Content-type: text/html" )
 		);
 		return true;
 	}
