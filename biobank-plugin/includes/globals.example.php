@@ -118,6 +118,16 @@ $plugin_pages = array(
 	),
 );
 
+/**
+ * The default plugin settings.
+ */
+$default_settings = array(
+	"scheme" => "http",
+	"host" => "localhost",
+	"port" => "7225",
+	"token-endpoint" => "token",
+);
+
 /*
  * The client identifiers.
  */
