@@ -134,7 +134,7 @@ $default_rest_settings = array(
  * The name of the blockchain solution's access token.
  * It is assumed to be stored in a cookie.
  */
-$blockchain_access_token = "access_token";
+if (!defined('BLOCKCHAIN_ACCESS_TOKEN')) define('BLOCKCHAIN_ACCESS_TOKEN', "access_token");
 
 /**
  * The cookie redirect URL.

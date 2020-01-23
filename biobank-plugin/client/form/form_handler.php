@@ -105,7 +105,7 @@ abstract class FormHandler {
 	 */
 	public function get_blockchain_access_token() {
 		require(plugin_dir_path(__FILE__) . "../../includes/globals.php");
-		$access_token = $_COOKIE[$blockchain_access_token];
+		$access_token = $_COOKIE[BLOCKCHAIN_ACCESS_TOKEN];
 		// A Hyperledger Composer access token looks like this:
 		// s:05xpfhY0HIrDzs53FeqgYJ47oP5swGnZLsvHD2aWAwN52trpfPCEViJaTcSQ9LfC.Q1kYwi0cRB9T47G/fN0RzDXyLoh0hb1XDqnKMkkh40A
 		$access_token = substr($access_token, 2, strpos($access_token, '.') - 2);

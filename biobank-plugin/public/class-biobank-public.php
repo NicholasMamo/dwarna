@@ -166,8 +166,8 @@ class Biobank_Public {
 	 */
 	public function clear_access_token() {
 		require(plugin_dir_path(__FILE__) . "../includes/globals.php");
-		setcookie($blockchain_access_token, null, -1);
-		unset($_COOKIE[$blockchain_access_token]);
+		setcookie(BLOCKCHAIN_ACCESS_TOKEN, null, -1);
+		unset($_COOKIE[BLOCKCHAIN_ACCESS_TOKEN]);
 	}
 
 	/**
@@ -351,11 +351,11 @@ class Biobank_Public {
 			 * If this access token is present, it is saved as a cookie value.
 			 */
 			if (isset($_SESSION["authorized"])) {
-				if (! isset($_COOKIE[$blockchain_access_token]) && ! isset($_GET[$blockchain_access_token])) {
+				if (! isset($_COOKIE[BLOCKCHAIN_ACCESS_TOKEN]) && ! isset($_GET[BLOCKCHAIN_ACCESS_TOKEN])) {
 					wp_redirect("$hyperledger_host?redirect=$host");
 					exit;
-				} else if (isset($_GET[$blockchain_access_token])) {
-					setcookie($blockchain_access_token, $_GET[$blockchain_access_token]);
+				} else if (isset($_GET[BLOCKCHAIN_ACCESS_TOKEN])) {
+					setcookie(BLOCKCHAIN_ACCESS_TOKEN, $_GET[BLOCKCHAIN_ACCESS_TOKEN]);
 				}
 			}
 		} else if (!\is_user_logged_in()) {
@@ -525,7 +525,7 @@ class Biobank_Public {
 	 */
 	public function get_blockchain_access_token() {
 		require(plugin_dir_path(__FILE__) . "../includes/globals.php");
-		$access_token = $_COOKIE[$blockchain_access_token];
+		$access_token = $_COOKIE[BLOCKCHAIN_ACCESS_TOKEN];
 		// A Hyperledger Composer access token looks like this:
 		// s:05xpfhY0HIrDzs53FeqgYJ47oP5swGnZLsvHD2aWAwN52trpfPCEViJaTcSQ9LfC.Q1kYwi0cRB9T47G/fN0RzDXyLoh0hb1XDqnKMkkh40A
 		$access_token = substr($access_token, 2, strpos($access_token, '.') - 2);
