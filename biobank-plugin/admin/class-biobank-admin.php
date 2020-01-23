@@ -424,6 +424,27 @@ class Biobank_Admin {
 	 * @since	1.0.0
 	 */
 	public function display_settings_page() {
+		require_once(plugin_dir_path(__FILE__) . "../client/request.php");
+		require_once(plugin_dir_path(__FILE__) . "../client/form/form_handler.php");
+
+		/*
+		 * Get the page's name, and copy the session variables into the query string container.
+		 */
+		$plugin_page = $_GET["page"];
+		$admin_page = "admin.php?page=$plugin_page";
+		$request_handler = new \client\form\GeneralFormHandler(); // used to send GET requests to the backend.
+		if (!$request_handler->ping()) {
+			$error = "Server could not be reached.";
+		}
+
+		/*
+		 * Load the options.
+		 */
+		$options = get_option($this->plugin_name);
+		$scheme = $options["biobank-scheme"] ?? "http";
+		$host = $options["biobank-host"] ?? "localhost";
+		$port = $options["biobank-port"] ?? "8080";
+
 		include_once(plugin_dir_path(__FILE__) . "../partials/admin/biobank-admin-settings.php");
 	}
 
@@ -471,7 +492,7 @@ class Biobank_Admin {
 		if (is_email($email)) {
 			return $args;
 		} else {
-			$user = get_user_by("email", $email);			
+			$user = get_user_by("email", $email);
 			if ($user && is_array($user->roles) && in_array("participant", $user->roles)) {
 				/*
 				* Only decrypt the email address of research partners.

@@ -15,27 +15,6 @@ require_once(plugin_dir_path(__FILE__) . "../ui/buttons.php");
 require_once(plugin_dir_path(__FILE__) . "../ui/fields.php");
 require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 
-require_once(plugin_dir_path(__FILE__) . "../../client/request.php");
-require_once(plugin_dir_path(__FILE__) . "../../client/form/form_handler.php");
-
-/*
- * Get the page's name, and copy the session variables into the query string container.
- */
-$plugin_page = $_GET["page"];
-$admin_page = "admin.php?page=$plugin_page";
-$request_handler = new \client\form\GeneralFormHandler(); // used to send GET requests to the backend.
-if (!$request_handler->ping()) {
-	$error = "Server could not be reached.";
-}
-
-/*
- * Load the options.
- */
-$options = get_option($this->plugin_name);
-$scheme = isset($options["biobank-scheme"]) ? $options["biobank-scheme"] : "http";
-$host = isset($options["biobank-host"]) ? $options["biobank-host"] : "localhost";
-$port = isset($options["biobank-port"]) ? $options["biobank-port"] : "8080";
-
 ?>
 
 <div class="wrap">
@@ -63,7 +42,10 @@ $port = isset($options["biobank-port"]) ? $options["biobank-port"] : "8080";
 					<label for="<?php echo $this->plugin_name; ?>-scheme">Scheme</label>
 				</th>
 				<td>
-					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[scheme]" type="text" id="<?php echo $this->plugin_name; ?>-scheme" value="<?= $scheme ?>" aria-required="true">
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[scheme]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-scheme"
+						   value="<?= $scheme ?>" aria-required="true">
 				</td>
 			</tr>
 
@@ -72,7 +54,10 @@ $port = isset($options["biobank-port"]) ? $options["biobank-port"] : "8080";
 					<label for="<?php echo $this->plugin_name; ?>-host">Host</label>
 				</th>
 				<td>
-					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[host]" type="text" id="<?php echo $this->plugin_name; ?>-host" value="<?= $host ?>" aria-required="true">
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[host]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-host"
+						   value="<?= $host ?>" aria-required="true">
 				</td>
 			</tr>
 
@@ -81,7 +66,10 @@ $port = isset($options["biobank-port"]) ? $options["biobank-port"] : "8080";
 					<label for="<?php echo $this->plugin_name; ?>-port">Port</label>
 				</th>
 				<td>
-					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[port]" type="text" id="<?php echo $this->plugin_name; ?>-port" value="<?= $port ?>" aria-required="true">
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[port]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-port"
+						   value="<?= $port ?>" aria-required="true">
 				</td>
 			</tr>
 
