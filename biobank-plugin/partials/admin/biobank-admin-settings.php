@@ -170,4 +170,49 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 		<?php submit_button("Save Changes", "primary", "submit", TRUE); ?>
 	</form>
 
+	<h2 class="title">Hyperledger Composer</h2>
+	<form class="<?= $this->plugin_name ?>-form" id="composer-form" method="post" name="composer-form" action="options.php">
+		<?php settings_fields("{$this->plugin_name}-composer"); ?>
+		<?php do_settings_sections("{$this->plugin_name}-composer"); ?>
+
+		<table class="form-table">
+
+			<tr class="form-field">
+				<th scope="row">
+					<label for="<?php echo $this->plugin_name; ?>-hyperledger-host">Hyperledger Composer host - WordPress</label>
+				</th>
+				<td>
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>-composer[hyperledger-host]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-hyperledger-host"
+						   value="<?= $hyperledger_host ?>" aria-required="true">
+
+					<p class="description" id="hyperledger-composer-host-description">
+						The path where Hyperledger Composer is being hosted.
+						<strong>This path should be to a WordPress blog</strong> and is used to fetch the Hyperledger Composer access token.
+					</p>
+				</td>
+			</tr>
+
+			<tr class="form-field">
+				<th scope="row">
+					<label for="<?php echo $this->plugin_name; ?>-auth-url">Hyperledger Composer authentication URL</label>
+				</th>
+				<td>
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>-composer[auth-url]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-auth-url"
+						   value="<?= $auth_url ?>" aria-required="true">
+
+					<p class="description" id="hyperledger-composer-authorization-url-description">
+						The authorization URL for the Hyperledger Composer REST API.
+					</p>
+				</td>
+			</tr>
+
+		</table>
+
+		<?php submit_button("Save Changes", "primary", "submit", TRUE); ?>
+	</form>
+
 </div>

@@ -453,6 +453,10 @@ class Biobank_Admin {
 		$proxy_to = $oauth_options["proxy-to"] ?? "";
 		$base_path = $oauth_options["base-path"] ?? "";
 
+		$composer_options = get_option("{$this->plugin_name}-composer");
+		$hyperledger_host = $composer_options["hyperledger-host"] ?? "";
+		$auth_url = $composer_options["auth-url"] ?? "";
+
 		include_once(plugin_dir_path(__FILE__) . "../partials/admin/biobank-admin-settings.php");
 	}
 
