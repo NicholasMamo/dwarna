@@ -167,10 +167,10 @@ $fontawesome_kit = "https://kit.fontawesome.com/xxxxxxxxxx.js";
 /*
  * OAuth 2.0 configuration.
  */
-$oauth_database = "wordpress";
-$oauth_host = "localhost";
-$oauth_username = "root";
-$oauth_password = "root";
+if (!defined('OAUTH_DATABASE')) define('OAUTH_DATABASE', 'wordpress');
+if (!defined('OAUTH_HOST')) define('OAUTH_HOST', 'localhost');
+if (!defined('OAUTH_USERNAME')) define('OAUTH_USERNAME', 'root');
+if (!defined('OAUTH_PASSWORD')) define('OAUTH_PASSWORD', 'root');
 
 /*
  * OAuth 2.0 proxy settings.
