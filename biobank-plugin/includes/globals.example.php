@@ -173,13 +173,6 @@ if (!defined('OAUTH_USERNAME')) define('OAUTH_USERNAME', 'root');
 if (!defined('OAUTH_PASSWORD')) define('OAUTH_PASSWORD', 'root');
 
 /*
- * OAuth 2.0 proxy settings.
- * This is used by the OAuth 2.0 system (`oauth/access_token.php` and `oauth/auth.php`).
- */
-$proxy_from = "";
-$proxy_to = "";
-
-/*
  * The base path to the website.
  * For example, if the URL to this WordPress website is example.com the base path is an empty string.
  * If the URL is example.com/wordpress, then the basepath is "wordpress".
