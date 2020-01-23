@@ -249,8 +249,9 @@ class Request {
 			/*
 			 * Only fetch a token if the user is logged in.
 			 */
+			$options = get_option('biobank');
 			if (\is_user_logged_in()) {
-				$token_endpoint = get_option('biobank')['token-endpoint'];
+				$token_endpoint = $options['token-endpoint'];
 				$url = $this->construct_url($token_endpoint); // create the URL in advance
 				$user = wp_get_current_user();
 				$role = $user->roles[0];
@@ -261,8 +262,8 @@ class Request {
 				 */
 				$body = array(
 					"grant_type" => "client_credentials",
-					"client_id" => get_option('biobank')['client-id'],
-					"client_secret" => get_option('biobank')['client-secret'],
+					"client_id" => $options['client-id'],
+					"client_secret" => $options['client-secret'],
 					"scope" => implode($requested_scopes, " "),
 					"user_id" => $user->user_login
 				);

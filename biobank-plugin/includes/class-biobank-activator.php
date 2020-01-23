@@ -157,7 +157,7 @@ class Biobank_Activator {
 	 */
 	private static function register_default_options() {
 		$plugin_name = 'biobank';
-		register_setting($plugin_name, $plugin_name, array("Biobank_Activator", "load_default_options", $plugin_name));
+		register_setting($plugin_name, $plugin_name, array(Biobank_Activator::class, "load_default_options"));
 	}
 
 	/**
@@ -166,13 +166,11 @@ class Biobank_Activator {
 	 *
 	 * @access	private
      * @since	1.0.0
-	 * @param	string	$plugin_name The name of the plugin
 	 * @return	array	The array of default plugin options.
 	 */
-	private static function login_default_options($plugin_name) {
+	private static function load_default_options() {
 		require(plugin_dir_path(__FILE__) . "globals.php");
-
-		return $default_settings;
+		return $default_rest_settings;
 	}
 
 }

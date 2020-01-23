@@ -121,13 +121,13 @@ $plugin_pages = array(
 /**
  * The default plugin settings.
  */
-$default_settings = array(
+$default_rest_settings = array(
 	"scheme" => "http",
 	"host" => "localhost",
 	"port" => "7225",
 	"token-endpoint" => "token",
-	"client_id" => "",
-	"client_secret" => "",
+	"client-id" => "",
+	"client-secret" => "",
 );
 
 /*
