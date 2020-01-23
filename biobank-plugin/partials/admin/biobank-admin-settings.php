@@ -126,7 +126,7 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 				</th>
 				<td>
 					<input autocapitalize="none" autocomplete="off" autocorrect="off"
-						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[proxy-from]"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>-oauth[proxy-from]"
 						   type="text" id="<?php echo $this->plugin_name; ?>-proxy-from"
 						   value="<?= $proxy_from ?>" aria-required="true">
 				</td>
@@ -138,7 +138,7 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 				</th>
 				<td>
 					<input autocapitalize="none" autocomplete="off" autocorrect="off"
-						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[proxy-to]"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>-oauth[proxy-to]"
 						   type="text" id="<?php echo $this->plugin_name; ?>-proxy-to"
 						   value="<?= $proxy_to ?>" aria-required="true">
 					<p class="description" id="proxy-description">

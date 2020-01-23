@@ -701,8 +701,8 @@ class Biobank_Admin {
 	public function validate_oauth_options($input) {
 		$valid = array();
 
-		$valid["proxy_from"] = $input["proxy_from"] ?? "";
-		$valid["proxy_to"] = $input["proxy_to"] ?? "";
+		$valid["proxy-from"] = $input["proxy-from"] ?? "";
+		$valid["proxy-to"] = $input["proxy-to"] ?? "";
 
 		return $valid;
 	}
