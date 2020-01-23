@@ -135,8 +135,7 @@ class ConsentFormHandler extends StudyHandler {
 				/*
 				 * Then, redirect them to authorization endpoint.
 				 */
-				include(plugin_dir_path(__FILE__) . "../../includes/globals.php");
-				wp_redirect($auth_url);
+				wp_redirect(get_option('biobank-composer')['auth-url']);
 				exit;
 			}
 		}

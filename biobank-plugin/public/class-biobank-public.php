@@ -341,7 +341,7 @@ class Biobank_Public {
 			if (isset($_GET["authorized"]) && $_GET["authorized"]) {
 				$_SESSION["authorized"] = true;
 			} else if (!isset($_SESSION["authorized"]) && !isset($_GET["redirect_uri"])) {
-				wp_redirect($auth_url);
+				wp_redirect(get_option('biobank-composer')['auth-url']);
 				exit;
 			}
 
