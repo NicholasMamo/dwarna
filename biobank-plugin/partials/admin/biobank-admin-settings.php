@@ -29,11 +29,11 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 		}
 	?>
 
-	<h2 class="title">REST API</h2>
-
     <form class="<?= $this->plugin_name ?>-form" id="connection_form" method="post" name="connection_form" action="options.php">
 		<?php settings_fields($this->plugin_name); ?>
 		<?php do_settings_sections($this->plugin_name); ?>
+
+		<h2 class="title">REST API</h2>
 
 		<table class="form-table">
 
