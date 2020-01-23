@@ -85,6 +85,30 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 				</td>
 			</tr>
 
+			<tr class="form-field">
+				<th scope="row">
+					<label for="<?php echo $this->plugin_name; ?>-client-id">Client ID</label>
+				</th>
+				<td>
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[client-id]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-client-id"
+						   value="<?= $client_id ?>" aria-required="true">
+				</td>
+			</tr>
+
+			<tr class="form-field">
+				<th scope="row">
+					<label for="<?php echo $this->plugin_name; ?>-client-secret">Client secret</label>
+				</th>
+				<td>
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[client-secret]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-client-secret"
+						   value="<?= $client_secret ?>" aria-required="true">
+				</td>
+			</tr>
+
 		</table>
 
         <?php submit_button("Save Changes", "primary", "submit", TRUE); ?>

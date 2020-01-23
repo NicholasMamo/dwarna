@@ -126,14 +126,9 @@ $default_settings = array(
 	"host" => "localhost",
 	"port" => "7225",
 	"token-endpoint" => "token",
+	"client_id" => "",
+	"client_secret" => "",
 );
-
-/*
- * The client identifiers.
- */
-
-$client_id = "abc";
-$client_secret = "xyz";
 
 /*
  * The name of the blockchain solution's access token.

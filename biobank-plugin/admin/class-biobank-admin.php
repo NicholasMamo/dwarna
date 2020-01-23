@@ -445,6 +445,8 @@ class Biobank_Admin {
 		$host = $options["host"] ?? "localhost";
 		$port = $options["port"] ?? "8080";
 		$token_endpoint = $options["token-endpoint"] ?? "token";
+		$client_id = $options["client-id"] ?? "";
+		$client_secret = $options["client-secret"] ?? "";
 
 		include_once(plugin_dir_path(__FILE__) . "../partials/admin/biobank-admin-settings.php");
 	}
@@ -677,6 +679,8 @@ class Biobank_Admin {
 		$valid["host"] = isset($input["host"]) && !empty($input["host"]) ? $input["host"] : "localhost";
 		$valid["port"] = isset($input["port"]) && !empty($input["port"]) ? $input["port"] : "8080";
 		$valid["token-endpoint"] = isset($input["token-endpoint"]) && !empty($input["token-endpoint"]) ? $input["token-endpoint"] : "token";
+		$valid["client-id"] = isset($input["client-id"]) && !empty($input["client-id"]) ? $input["client-id"] : "";
+		$valid["client-secret"] = isset($input["client-secret"]) && !empty($input["client-secret"]) ? $input["client-secret"] : "";
 
 		return $valid;
 	}
