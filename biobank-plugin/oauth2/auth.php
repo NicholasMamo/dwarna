@@ -26,8 +26,8 @@ $options = get_option('biobank-oauth');
 /*
  * Add a trailing slash to the base path if need be.
  */
-if (strlen($base_path) && substr($base_path, -1) != "/") {
-	$base_path = "$base_path/";
+if (strlen($options['base-path']) && substr($options['base-path'], -1) != "/") {
+	$options['base-path'] = "$options['base-path']/";
 }
 
 $request = OAuth2\Request::createFromGlobals();
@@ -66,7 +66,7 @@ if (isset($_GET["redirect_uri"])) {
 		 * Redirect with instructions to return here after execution.
 		 */
 		$redirect = urlencode("http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
-		header("Location: http://$_SERVER[HTTP_HOST]/" . $base_path . "wp-login.php?redirect_to=$redirect");
+		header("Location: http://$_SERVER[HTTP_HOST]/" . $options['base-path'] . "wp-login.php?redirect_to=$redirect");
 		exit; // Ensure that no more code is executed from this point onwards.
 	}
 
