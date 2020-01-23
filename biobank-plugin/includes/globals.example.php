@@ -172,13 +172,6 @@ if (!defined('OAUTH_HOST')) define('OAUTH_HOST', 'localhost');
 if (!defined('OAUTH_USERNAME')) define('OAUTH_USERNAME', 'root');
 if (!defined('OAUTH_PASSWORD')) define('OAUTH_PASSWORD', 'root');
 
-/*
- * The base path to the website.
- * For example, if the URL to this WordPress website is example.com the base path is an empty string.
- * If the URL is example.com/wordpress, then the basepath is "wordpress".
- */
-$base_path = "";
-
 /**
  * SMTP settings
  */
