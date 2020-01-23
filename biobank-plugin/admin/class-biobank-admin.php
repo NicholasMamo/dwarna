@@ -444,6 +444,7 @@ class Biobank_Admin {
 		$scheme = $options["biobank-scheme"] ?? "http";
 		$host = $options["biobank-host"] ?? "localhost";
 		$port = $options["biobank-port"] ?? "8080";
+		$token_endpoint = $options["biobank-token-endpoint"] ?? "token";
 
 		include_once(plugin_dir_path(__FILE__) . "../partials/admin/biobank-admin-settings.php");
 	}
@@ -675,6 +676,7 @@ class Biobank_Admin {
 		$valid[$this->plugin_name . "-scheme"] = isset($input["scheme"]) && !empty($input["scheme"]) ? $input["scheme"] : "http";
 		$valid[$this->plugin_name . "-host"] = isset($input["host"]) && !empty($input["host"]) ? $input["host"] : "localhost";
 		$valid[$this->plugin_name . "-port"] = isset($input["port"]) && !empty($input["port"]) ? $input["port"] : "8080";
+		$valid[$this->plugin_name . "-token-endpoint"] = isset($input["token-endpoint"]) && !empty($input["token-endpoint"]) ? $input["token-endpoint"] : "token";
 
 		return $valid;
 	}

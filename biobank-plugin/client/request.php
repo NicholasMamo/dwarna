@@ -250,6 +250,7 @@ class Request {
 			 * Only fetch a token if the user is logged in.
 			 */
 			if (\is_user_logged_in()) {
+				$token_endpoint = get_option('biobank')['biobank-token-endpoint'];
 				$url = $this->construct_url($token_endpoint); // create the URL in advance
 				$user = wp_get_current_user();
 				$role = $user->roles[0];
