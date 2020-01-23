@@ -170,6 +170,17 @@ class Biobank_Activator {
 			}
 		}
 		add_option("$plugin_name-rest", $rest_settings["$plugin_name-rest"]);
+
+		$composer_settings = get_option("$plugin_name-composer");
+		if (! is_array($composer_settings)) {
+			$composer_settings = is_array($composer_settings) ? $composer_settings : array();
+			$composer_settings["$plugin_name-composer"] = $default_composer_settings;
+		} else {
+			foreach ($default_composer_settings as $setting => $default_value) {
+				$composer_settings["$plugin_name-composer"][$setting] = $composer_settings["$plugin_name-composer"][$setting] ?? $default_value;
+			}
+		}
+		add_option("$plugin_name-composer", $composer_settings["$plugin_name-composer"]);
 	}
 
 }
