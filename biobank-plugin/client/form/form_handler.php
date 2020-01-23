@@ -81,9 +81,9 @@ abstract class FormHandler {
 	public function __construct($scheme=NULL, $host=NULL, $port=NULL) {
 		$options = get_option("biobank");
 
-		$this->scheme = is_null($scheme) ? $options["biobank-scheme"] : $scheme;
-		$this->host = is_null($host) ? $options["biobank-host"] : $host;
-		$this->port = is_null($port) ? $options["biobank-port"] : $port;
+		$this->scheme = is_null($scheme) ? $options["scheme"] : $scheme;
+		$this->host = is_null($host) ? $options["host"] : $host;
+		$this->port = is_null($port) ? $options["port"] : $port;
 	}
 
 	/**
