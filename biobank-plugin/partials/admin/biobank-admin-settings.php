@@ -157,7 +157,7 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 						   type="text" id="<?php echo $this->plugin_name; ?>-base-path"
 						   value="<?= $base_path ?>" aria-required="true">
 
-					<p class="description" id="proxy-description">
+					<p class="description" id="base-path-description">
 						The base path to the website.
 						If the URL to this WordPress website is <code>example.com</code> the base path is an empty string.
 						If the URL is <code>example.com/wordpress</code>, then the base path is <code>wordpress</code>.

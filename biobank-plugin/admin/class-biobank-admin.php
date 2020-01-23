@@ -440,18 +440,18 @@ class Biobank_Admin {
 		/*
 		 * Load the options.
 		 */
-		$options = get_option("{$this->plugin_name}-rest");
-		$scheme = $options["scheme"] ?? "http";
-		$host = $options["host"] ?? "localhost";
-		$port = $options["port"] ?? "8080";
-		$token_endpoint = $options["token-endpoint"] ?? "token";
-		$client_id = $options["client-id"] ?? "";
-		$client_secret = $options["client-secret"] ?? "";
+		$rest_options = get_option("{$this->plugin_name}-rest");
+		$scheme = $rest_options["scheme"] ?? "http";
+		$host = $rest_options["host"] ?? "localhost";
+		$port = $rest_options["port"] ?? "8080";
+		$token_endpoint = $rest_options["token-endpoint"] ?? "token";
+		$client_id = $rest_options["client-id"] ?? "";
+		$client_secret = $rest_options["client-secret"] ?? "";
 
-		$options = get_option("{$this->plugin_name}-oauth");
-		$proxy_from = $options["proxy-from"] ?? "";
-		$proxy_to = $options["proxy-to"] ?? "";
-		$base_path = $options["base-path"] ?? "";
+		$oauth_options = get_option("{$this->plugin_name}-oauth");
+		$proxy_from = $oauth_options["proxy-from"] ?? "";
+		$proxy_to = $oauth_options["proxy-to"] ?? "";
+		$base_path = $oauth_options["base-path"] ?? "";
 
 		include_once(plugin_dir_path(__FILE__) . "../partials/admin/biobank-admin-settings.php");
 	}
