@@ -161,8 +161,13 @@ class Biobank_Activator {
 		$plugin_name = 'biobank';
 
 		$rest_settings = get_option("$plugin_name-rest");
-		foreach ($default_rest_settings as $setting => $default_value) {
-			$rest_settings["$plugin_name-rest"][$setting] = $rest_settings["$plugin_name-rest"][$setting] ?? $default_value;
+		if (! is_array($rest_settings)) {
+			$rest_settings = is_array($rest_settings) ? $rest_settings : array();
+			$rest_settings["$plugin_name-rest"] = $default_rest_settings;
+		} else {
+			foreach ($default_rest_settings as $setting => $default_value) {
+				$rest_settings["$plugin_name-rest"][$setting] = $rest_settings["$plugin_name-rest"][$setting] ?? $default_value;
+			}
 		}
 		add_option("$plugin_name-rest", $rest_settings["$plugin_name-rest"]);
 	}
