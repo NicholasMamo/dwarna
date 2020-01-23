@@ -148,11 +148,6 @@ $host = "http://localhost";
 $auth_url = "http://localhost:3000/auth/local-wordpress";
 
 /*
- * The endpoint to which requests for access tokens should be made.
- */
-$token_endpoint = "token";
-
-/*
  * The key used to encrypt email addresses.
  * The key can be generated using `php -r "echo bin2hex(sodium_crypto_secretbox_keygen());" > itop_secret_key.txt`.
  */
