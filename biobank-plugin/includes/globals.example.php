@@ -119,7 +119,7 @@ $plugin_pages = array(
 );
 
 /**
- * The default plugin settings.
+ * The default REST API settings.
  */
 $default_rest_settings = array(
 	"scheme" => "http",
@@ -130,22 +130,19 @@ $default_rest_settings = array(
 	"client-secret" => "",
 );
 
+/**
+ * The default Hyperledger Composer settings.
+ */
+$default_composer_settings = array(
+	"hyperledger-host" => "http://localhost/wordpress/wp-content/plugins/biobank-plugin/public/ajax/get_cookie.php",
+	"auth-url" => "http://localhost:3000/auth/local-wordpress",
+);
+
 /*
  * The name of the blockchain solution's access token.
  * It is assumed to be stored in a cookie.
  */
 if (!defined('BLOCKCHAIN_ACCESS_TOKEN')) define('BLOCKCHAIN_ACCESS_TOKEN', "access_token");
-
-/**
- * The cookie redirect URL.
- * This URL is used to fetch the access token cookie.
- */
-$hyperledger_host = "http://localhost/wordpress/wp-content/plugins/biobank-plugin/public/ajax/get_cookie.php";
-
-/**
- * The authorization URL for the Hyperledger Composer REST API.
- */
-$auth_url = "http://localhost:3000/auth/local-wordpress";
 
 /*
  * The key used to encrypt email addresses.
