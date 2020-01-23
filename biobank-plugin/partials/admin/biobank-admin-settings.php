@@ -126,7 +126,7 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 				</th>
 				<td>
 					<input autocapitalize="none" autocomplete="off" autocorrect="off"
-						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>-oauth[proxy-from]"
+						   autofill="false" name="<?php echo $this->plugin_name; ?>-oauth[proxy-from]"
 						   type="text" id="<?php echo $this->plugin_name; ?>-proxy-from"
 						   value="<?= $proxy_from ?>" aria-required="true">
 				</td>
@@ -138,11 +138,29 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 				</th>
 				<td>
 					<input autocapitalize="none" autocomplete="off" autocorrect="off"
-						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>-oauth[proxy-to]"
+						   autofill="false" name="<?php echo $this->plugin_name; ?>-oauth[proxy-to]"
 						   type="text" id="<?php echo $this->plugin_name; ?>-proxy-to"
 						   value="<?= $proxy_to ?>" aria-required="true">
 					<p class="description" id="proxy-description">
 						The OAuth 2.0 proxy settings are used by the OAuth 2.0 system (<code>oauth/access_token.php</code> and <code>oauth/auth.php</code>).
+					</p>
+				</td>
+			</tr>
+
+			<tr class="form-field">
+				<th scope="row">
+					<label for="<?php echo $this->plugin_name; ?>-base-path">WordPress base path</label>
+				</th>
+				<td>
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>-oauth[base-path]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-base-path"
+						   value="<?= $base_path ?>" aria-required="true">
+
+					<p class="description" id="proxy-description">
+						The base path to the website.
+						If the URL to this WordPress website is <code>example.com</code> the base path is an empty string.
+						If the URL is <code>example.com/wordpress</code>, then the base path is <code>wordpress</code>.
 					</p>
 				</td>
 			</tr>

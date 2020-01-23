@@ -451,6 +451,7 @@ class Biobank_Admin {
 		$options = get_option("{$this->plugin_name}-oauth");
 		$proxy_from = $options["proxy-from"] ?? "";
 		$proxy_to = $options["proxy-to"] ?? "";
+		$base_path = $options["base-path"] ?? "";
 
 		include_once(plugin_dir_path(__FILE__) . "../partials/admin/biobank-admin-settings.php");
 	}
@@ -703,6 +704,7 @@ class Biobank_Admin {
 
 		$valid["proxy-from"] = $input["proxy-from"] ?? "";
 		$valid["proxy-to"] = $input["proxy-to"] ?? "";
+		$valid["base-path"] = $input["base-path"] ?? "";
 
 		return $valid;
 	}
