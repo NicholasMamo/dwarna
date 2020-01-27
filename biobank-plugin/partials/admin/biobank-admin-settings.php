@@ -183,7 +183,7 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 				</th>
 				<td>
 					<input autocapitalize="none" autocomplete="off" autocorrect="off"
-						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>-composer[hyperledger-host]"
+						   autofill="false" name="<?php echo $this->plugin_name; ?>-composer[hyperledger-host]"
 						   type="text" id="<?php echo $this->plugin_name; ?>-hyperledger-host"
 						   value="<?= $hyperledger_host ?>" aria-required="true">
 
@@ -200,7 +200,7 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 				</th>
 				<td>
 					<input autocapitalize="none" autocomplete="off" autocorrect="off"
-						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>-composer[auth-url]"
+						   autofill="false" name="<?php echo $this->plugin_name; ?>-composer[auth-url]"
 						   type="text" id="<?php echo $this->plugin_name; ?>-auth-url"
 						   value="<?= $auth_url ?>" aria-required="true">
 
