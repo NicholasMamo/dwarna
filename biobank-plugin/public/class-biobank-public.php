@@ -156,6 +156,7 @@ class Biobank_Public {
 	 */
 	public function clear_session() {
 		unset($_SESSION['study_id']);
+		unset($_SESSION['authorized']);
 	}
 
 	/**
@@ -166,7 +167,7 @@ class Biobank_Public {
 	 */
 	public function clear_access_token() {
 		require(plugin_dir_path(__FILE__) . "../includes/globals.php");
-		setcookie(BLOCKCHAIN_ACCESS_TOKEN, null, -1);
+		setcookie(BLOCKCHAIN_ACCESS_TOKEN, null, -1, '/');
 		unset($_COOKIE[BLOCKCHAIN_ACCESS_TOKEN]);
 	}
 
