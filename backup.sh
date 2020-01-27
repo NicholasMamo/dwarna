@@ -66,7 +66,11 @@ backup_wordpress() {
 # Update the the ownership of the backup files.
 # With the wrong ownership, some backup files would not be copied with `scp`.
 change_ownership() {
-	user=$SUDO_USER
+	if [ $SUDO_USER ]; then
+		user=$SUDO_USER
+	else
+		user=$USER
+	fi
 	chown -R $user:$user backup/$1/
 }
 
