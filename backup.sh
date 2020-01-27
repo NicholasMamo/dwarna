@@ -63,6 +63,13 @@ backup_wordpress() {
 	mysqldump -u $username -p $database > backup/$1/wordpress/wordpress.sql
 }
 
+# Update the the ownership of the backup files.
+# With the wrong ownership, some backup files would not be copied with `scp`.
+change_ownership() {
+	user=$SUDO_USER
+	chown -R $user:$user backup/$1/
+}
+
 args() {
 	options=$(getopt --options h --long blockchain --long rest --long plugin --long postgresql --long wordpress -- "$@")
 	[ $? -eq 0 ] || {
@@ -113,3 +120,4 @@ args() {
 }
 
 args $0 "$@"
+change_ownership $backup
