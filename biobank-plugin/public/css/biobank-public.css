@@ -42,6 +42,10 @@
 	padding: 2rem;
 }
 
+.biobank-hidden {
+	display: none;
+}
+
 #biobank-consent-trail {
 	max-height: 30vh;
 	overflow: auto;

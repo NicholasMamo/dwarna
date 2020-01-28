@@ -17,6 +17,27 @@ $refresh = (isset($_GET["return"]) && $_GET["return"] == "update_consent");
 			   type='hidden' value=''>
 	</form>
 
+	<div id='<?= $this->plugin_name ?>-alerts'>
+		<p id='<?= $this->plugin_name ?>-get-temporary-card'
+		   class='<?= $this->plugin_name ?>-alert <?= $this->plugin_name ?>-hidden'>
+			Creating a new blockchain identity
+		</p>
+		<p id='<?= $this->plugin_name ?>-get-credentials-card'
+		   class='<?= $this->plugin_name ?>-alert <?= $this->plugin_name ?>-hidden'>
+			Getting existing blockchain identity
+		</p>
+
+		<p id='<?= $this->plugin_name ?>-import-card'
+		   class='<?= $this->plugin_name ?>-alert <?= $this->plugin_name ?>-hidden'>
+			Importing blockchain identity
+		</p>
+
+		<p id='<?= $this->plugin_name ?>-save-card'
+		   class='<?= $this->plugin_name ?>-alert <?= $this->plugin_name ?>-hidden'>
+			Saving blockchain identity
+		</p>
+	</div>
+
 	<ul>
 	<?php foreach ($active_studies->data as $study) {?>
 		<li><a href='#' onclick='getCard(this, "<?= $study->study->study_id ?>"); return false;'><?= $study->study->name ?></a></li>
