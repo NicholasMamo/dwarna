@@ -36,6 +36,11 @@ $refresh = (isset($_GET["return"]) && $_GET["return"] == "update_consent");
 		   class='<?= $this->plugin_name ?>-alert <?= $this->plugin_name ?>-hidden'>
 			Saving blockchain identity
 		</p>
+
+		<p id='<?= $this->plugin_name ?>-redirect'
+		   class='<?= $this->plugin_name ?>-alert <?= $this->plugin_name ?>-hidden'>
+			Redirecting
+		</p>
 	</div>
 
 	<ul>
