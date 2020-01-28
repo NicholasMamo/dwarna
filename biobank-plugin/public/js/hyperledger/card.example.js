@@ -28,6 +28,11 @@ const ajax_base_path = `${host}/wordpress/wp-content/plugins/biobank-plugin/publ
 const hyperledger_host = `${window.location.protocol}//${window.location.hostname}:3000`;
 
 /**
+ * The biobank plugin name, used in element IDs.
+ */
+const plugin_name = 'biobank';
+
+/**
  * A boolean that indicates whether the page is preparing to navigate.
  * If it is, further clicks to visit study pages are disabled.
  */
