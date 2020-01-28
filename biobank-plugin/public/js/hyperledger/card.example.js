@@ -147,7 +147,8 @@ function getCard(element, study_id) {
 	 */
 	if (! navigating) {
 		navigating = true;
-		console.log(`Getting card for study ${study_id}`);
+		jQuery(`#${plugin_name}-alerts .${plugin_name}-alert`).addClass(`${plugin_name}-hidden`);
+		jQuery(`${plugin_name}-get-card`).removeClass(`${plugin_name}-hidden`);
 		jQuery.get(`${ajax_base_path}get_username.php`).then(function(response) {
 			/*
 			* First get the user's username.
@@ -186,17 +187,26 @@ function loadCard(study_id) {
 		 * If the user has a credential card, load it.
 		 * Otherwise, import the temporary card.
 		 */
-		console.log(`Getting ${response ? 'credentials' : 'temporary'} card`);
+		if (response) {
+			jQuery(`#${plugin_name}-alerts .${plugin_name}-alert`).addClass(`${plugin_name}-hidden`);
+			jQuery(`#${plugin_name}-get-credentials-card`).removeClass(`${plugin_name}-hidden`);
+		} else {
+			jQuery(`#${plugin_name}-alerts .${plugin_name}-alert`).addClass(`${plugin_name}-hidden`);
+			jQuery(`#${plugin_name}-get-temporary-card`).removeClass(`${plugin_name}-hidden`);
+		}
 		downloadCard(!response, study_id).then((card) => {
-			console.log('Card fetched');
+			jQuery(`#${plugin_name}-alerts .${plugin_name}-alert`).addClass(`${plugin_name}-hidden`);
+			jQuery(`#${plugin_name}-import-card`).removeClass(`${plugin_name}-hidden`);
 			return importCard(card);
 		}).then((response) => {
-			console.log("Card imported")
 			return ping();
 		}).then((response) => {
-			console.log("System pinged");
+			jQuery(`#${plugin_name}-alerts .${plugin_name}-alert`).addClass(`${plugin_name}-hidden`);
+			jQuery(`#${plugin_name}-save-card`).removeClass(`${plugin_name}-hidden`);
 			exportCard(access_token, study_id).then((card) => {
 				getAddress(card).then((address) => {
+					jQuery(`#${plugin_name}-alerts .${plugin_name}-alert`).addClass(`${plugin_name}-hidden`);
+					jQuery(`#${plugin_name}-redirect`).removeClass(`${plugin_name}-hidden`);
 					jQuery(`#biobank-study-${study_id}-address`).val(address);
 					saveCard(card, address).then((address) => {
 						jQuery('#biobank-study').val(study_id);
@@ -355,8 +365,6 @@ function getAddress(card) {
  * @return {object} The card promise response.
  */
 function saveCard(card, address) {
-	console.log(`Saving card of ${address}`);
-
 	var card = new Blob([card], {type: "application/octet-stream"});
 
 	const file = new File(
@@ -383,7 +391,6 @@ function saveCard(card, address) {
  * @return	{object} The ping promise response.
  */
 function ping() {
-	console.log("Pinging card");
 	var access_token = decodeURIComponent(getCookie("access_token"));
 	access_token = access_token.substring(2, access_token.indexOf("."));
 	return jQuery.ajax({
