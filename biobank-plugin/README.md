@@ -60,18 +60,34 @@ To configure the OAuth 2.0 server:
 
 1. Generate a client ID and secret by running `php -f oauth2/generate_credentials.php`;
 2. Copy the client ID and secret into the `fabric/start_network.sh` script's `clientID` and `clientSecret` fields; and
-3. Run the SQL instructions available in `oauth2/install.sql` in the WordPress database that you are using.
-   The last line allows you to create the client using the generated client ID and secret.
-   Update the client ID and secret.
-   Also update the URL to be the same as the callback URL in the `fabric/start_network.sh` script.
+3. Run the last SQL instruction available in `oauth2/install.sql` in the WordPress database that you are using.
+   This last line allows you to create the client using the generated client ID and secret.
+   Before running, update the client ID and secret, as well as the URL to be the same as the callback URL in the `fabric/start_network.sh` script.
+   All the other commands are run upon activation.
 4. Update `includes/global.php`'s Oauth 2.0 configuration to point to this database.
-   If you are using a proxy to connect to the Hyperledger Composer multi-user REST API, update the proxy settings.
+
+After activating the plugin, you may need to complete some other configuration options.
+The configuration can be accessed from the _Biobank_ menu.
+This menu is created automatically upon activation, and includes a _Settings_ page.
+From this page, you can update the configuration for the REST API, the Hyperledger Composer connection and other details:
+
+1. If need be, update the hosting details of the REST API.
+   You will need to input the client ID and secret.
+   You can retrieve these from the `rest/oauth.py` file after following the [REST API installation instructions](https://github.com/NicholasMamo/dwarna/tree/master/rest).
+2. If you are using a proxy to connect to the Hyperledger Composer multi-user REST API, update the proxy settings.
    For example, if you are using `/fabric` as a proxy to port `:3000`, set `proxy_from` to `:3000` and `proxy_to` to `/fabric`.
    This proxy is used as string replacement in `oauth/auth.php` and `oauth/access_token.php`.
-   Thus, it may be necessary to make the path more specific.
-5. Set the base path of the website for the OAuth 2.0 procedure in `includes/global.php`.
+   It may be necessary to make the path more specific.
+3. Set the base path of the WordPress website for the OAuth 2.0 procedure.
    If you are serving the WordPress blog from _example.com_, leave this empty.
    If you are serving the blog from _example.com/wordpress_, then the base path should be `wordpress`.
+4. Fill in the path to the `get_cookie.php` script.
+   This file is served using WordPress and is located at `biobank-plugin/public/ajax/get_cookie.php`.
+   This needs to be updated especially when Hyperledger Composer and the actual WordPress blog are served on different servers.
+   If they are separate, you would need to update the URL to link to this script on the Hyperledger Composer server.
+5. Fill in the authentication URL to where the Hyperledger Composer multi-user REST API is being served.
+   This URL should match the one set in the `fabric/start_network.sh` script as `authPath`.
+   Nevertheless, the server host should be updated if the Hyperledger Composer multi-user REST API is being served from a different server than the WordPress blog.
 
 ### Activating
 
