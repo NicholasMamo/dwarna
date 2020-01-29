@@ -116,6 +116,7 @@ class Biobank_Public {
 	 * @access	public
 	 */
 	public function init() {
+		include(plugin_dir_path(__FILE__) . "../includes/globals.php");
 		$this->is_authorized();
 
 		/*
@@ -131,7 +132,14 @@ class Biobank_Public {
 		if ($action) {
 			switch ($action) {
 				case 'consent':
-					// (new \client\form\ConsentFormHandler())->save_consent();
+					if (! isset($_GET[BLOCKCHAIN_ACCESS_TOKEN]) && ! strpos($_SERVER['REQUEST_URI'], 'get_cookie.php')) {
+						wp_redirect(get_option('biobank-composer')['hyperledger-host'] .
+									"?redirect=" . urlencode($_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]));
+						exit;
+					} else {
+						setcookie(BLOCKCHAIN_ACCESS_TOKEN, $_GET[BLOCKCHAIN_ACCESS_TOKEN], 0, '/');
+						$_COOKIE[BLOCKCHAIN_ACCESS_TOKEN] = $_GET[BLOCKCHAIN_ACCESS_TOKEN];
+					}
 					break;
 			}
 		}
