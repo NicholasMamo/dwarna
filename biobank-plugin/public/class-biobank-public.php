@@ -353,10 +353,10 @@ class Biobank_Public {
 			 */
 			if (isset($_SESSION["authorized"])) {
 				if (! isset($_COOKIE[BLOCKCHAIN_ACCESS_TOKEN]) && ! isset($_GET[BLOCKCHAIN_ACCESS_TOKEN])) {
-					wp_redirect(get_option('biobank-composer')['hyperledger-host'] . "?redirect=" . get_site_url());
+					wp_redirect(get_option('biobank-composer')['hyperledger-host'] . "?redirect=" . urlencode(get_site_url()));
 					exit;
 				} else if (isset($_GET[BLOCKCHAIN_ACCESS_TOKEN])) {
-					setcookie(BLOCKCHAIN_ACCESS_TOKEN, $_GET[BLOCKCHAIN_ACCESS_TOKEN]);
+					setcookie(BLOCKCHAIN_ACCESS_TOKEN, $_GET[BLOCKCHAIN_ACCESS_TOKEN], 0, '/');
 				}
 			}
 		} else if (!\is_user_logged_in()) {
