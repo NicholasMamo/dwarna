@@ -6,7 +6,11 @@ include(plugin_dir_path(__FILE__) . "../../includes/globals.php");
 if (isset($_GET["redirect"])) {
 	$redirect = $_GET["redirect"];
 	$cookie = $_COOKIE[BLOCKCHAIN_ACCESS_TOKEN];
-	header("Location: $redirect?" . BLOCKCHAIN_ACCESS_TOKEN ."=$cookie");
+	if (strpos($redirect, '?')) {
+		header("Location: $redirect&" . BLOCKCHAIN_ACCESS_TOKEN ."=$cookie");
+	} else {
+		header("Location: $redirect?" . BLOCKCHAIN_ACCESS_TOKEN ."=$cookie");
+	}
 }
 
 ?>
