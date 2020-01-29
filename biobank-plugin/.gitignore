@@ -2,4 +2,4 @@
 
 includes/globals.php
 
-public/js/hyperledger/card.js
+public/js/hyperledger/config.js
