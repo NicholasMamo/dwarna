@@ -229,6 +229,7 @@ class Biobank_Public {
 			if ($role == "participant") {
 				if (isset($_SESSION['study_id']) &&
 					isset($_GET['action']) && $_GET['action'] == 'consent') {
+					wp_enqueue_script( $this->plugin_name . "-hyperledger-config", plugin_dir_url( __FILE__ ) . 'js/hyperledger/config.js', array( 'jquery' ), $this->version, false );
 					wp_enqueue_script( $this->plugin_name . "-hyperledger-card", plugin_dir_url( __FILE__ ) . 'js/hyperledger/card.js', array( 'jquery' ), $this->version, false );
 
 					$consent_handler = new \client\form\ConsentFormHandler();
@@ -275,6 +276,7 @@ class Biobank_Public {
 			$user = wp_get_current_user();
 			$role = $user->roles[0];
 			if ($role == "participant") {
+				wp_enqueue_script( $this->plugin_name . "-hyperledger-config", plugin_dir_url( __FILE__ ) . 'js/hyperledger/config.js', array( 'jquery' ), $this->version, false );
 				wp_enqueue_script( $this->plugin_name . "-hyperledger-card", plugin_dir_url( __FILE__ ) . 'js/hyperledger/card.js', array( 'jquery' ), $this->version, false );
 
 				$consent_handler = new \client\form\ConsentFormHandler();
