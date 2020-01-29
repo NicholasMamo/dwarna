@@ -64,7 +64,9 @@ To configure the OAuth 2.0 server:
    This last line allows you to create the client using the generated client ID and secret.
    Before running, update the client ID and secret, as well as the URL to be the same as the callback URL in the `fabric/start_network.sh` script.
    All the other commands are run upon activation.
-4. Update `includes/global.php`'s Oauth 2.0 configuration to point to this database.
+4. Update `includes/global.php`'s OAuth 2.0 configuration to point to this database.
+5. Update `includes/global.php`'s SMTP details.
+   These settings are used to send emails related to the plugin.
 
 After activating the plugin, you may need to complete some other configuration options.
 The configuration can be accessed from the _Biobank_ menu.
