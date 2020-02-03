@@ -23,6 +23,7 @@ $researcher_capabilities = array(
 $participant_capabilities = array(
     "biobank_view_profile",
 	"biobank_update_consent", "biobank_view_consent",
+	"biobank_remove_participant",
 );
 
 /*
