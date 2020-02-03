@@ -418,7 +418,7 @@ function getCookie(name) {
 }
 
 /**
-* Get the value of the cookie having the given name.
+* Set the value of the cookie having the given name.
 * Based on https://stackoverflow.com/a/24103596/1771724
 *
 * @param	{string} name - The name of the cookie whose value to set.
