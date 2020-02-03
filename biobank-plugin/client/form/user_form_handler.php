@@ -243,7 +243,7 @@ class ParticipantFormHandler extends UserFormHandler {
 			/*
 			 * For security purposes, ensure that the user can indeed create participants
 			 */
-			if (current_user_can("biobank_create_participant") && isset($_POST["biobank"])) {
+			if (current_user_can("biobank_remove_participant") && isset($_POST["biobank"])) {
 				$input = $_POST["biobank"];
 
 				/*
