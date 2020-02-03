@@ -438,7 +438,7 @@ class Biobank_Admin {
 		}
 
 		/*
-		 * Load the options.
+		 * Load the REST API options.
 		 */
 		$rest_options = get_option("{$this->plugin_name}-rest");
 		$scheme = $rest_options["scheme"] ?? "http";
@@ -448,14 +448,26 @@ class Biobank_Admin {
 		$client_id = $rest_options["client-id"] ?? "";
 		$client_secret = $rest_options["client-secret"] ?? "";
 
+		/*
+		 * Load the OAuth 2.0 options.
+		 */
 		$oauth_options = get_option("{$this->plugin_name}-oauth");
 		$proxy_from = $oauth_options["proxy-from"] ?? "";
 		$proxy_to = $oauth_options["proxy-to"] ?? "";
 		$base_path = $oauth_options["base-path"] ?? "";
 
+		/*
+		 * Load the Hyperledger Composer options.
+		 */
 		$composer_options = get_option("{$this->plugin_name}-composer");
 		$hyperledger_host = $composer_options["hyperledger-host"] ?? "";
 		$auth_url = $composer_options["auth-url"] ?? "";
+
+		/*
+		 * Load the other options.
+		 */
+		$other_options = get_option("{$this->plugin_name}-other");
+		$fontawesome_kit = $other_options["fontawesome-kit"] ?? "";
 
 		include_once(plugin_dir_path(__FILE__) . "../partials/admin/biobank-admin-settings.php");
 	}
