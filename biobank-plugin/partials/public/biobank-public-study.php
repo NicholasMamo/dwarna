@@ -7,7 +7,7 @@ if (isset($error) && ! empty($error)) {
 <?php
 } else if (isset($_GET['return']) && $_GET['return'] = 'update_consent') {
 ?>
-<div class="error">
+<div class="<?= $this->plugin_name ?>-alert">
 	Consent will be confirmed soon
 </div>
 <?php
