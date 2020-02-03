@@ -116,6 +116,18 @@ $plugin_pages = array(
 		"menu_visibility" => array( ),
 		"public" => true,
 	),
+	"biobank-erasure" => array(
+		"wp_info" => array(
+			"post_title" => "Erase My Data",
+			"post_content" => "<!-- wp:shortcode -->[biobank-erasure]<!-- /wp:shortcode -->",
+			"post_name" => "biobank-erasure",
+			"post_status" => "publish",
+			"post_author" => 1,
+			"post_type" => "page",
+		),
+		"menu_visibility" => array( 'participant' ),
+		"public" => true,
+	),
 );
 
 /**
