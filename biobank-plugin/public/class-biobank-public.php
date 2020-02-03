@@ -191,6 +191,7 @@ class Biobank_Public {
 		add_shortcode("biobank-trail", array($this, "display_consent_trail"));
 		add_shortcode("biobank-subscription", array($this, "display_subscription_form"));
 		add_shortcode("biobank-recruitment", array($this, "display_recruitment_form"));
+		add_shortcode("biobank-erasure", array($this, "display_erasure_form"));
 	}
 
 	/**
@@ -317,6 +318,7 @@ class Biobank_Public {
 			}
 		}
 
+		// TODO: Redirect to the homepage otherwise
 	}
 
 	/**
@@ -327,6 +329,22 @@ class Biobank_Public {
 	 */
 	public function display_recruitment_form() {
 		include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-recruitment.php");
+	}
+
+	/**
+	 * Show the form that allows research partners to erase all their data
+	 *
+	 * @since    1.0.0
+	 * @access	public
+	 */
+	public function display_erasure_form() {
+		if (\is_user_logged_in()) {
+			$user = wp_get_current_user();
+			$role = $user->roles[0];
+			if ($role == "participant") {
+				include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-erasure.php");
+			}
+		}
 	}
 
 	/**
