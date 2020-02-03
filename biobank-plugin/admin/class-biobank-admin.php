@@ -414,6 +414,7 @@ class Biobank_Admin {
 		}
 
 		wp_enqueue_script( $this->plugin_name . "-email", plugin_dir_url( __FILE__ ) . 'js/biobank-email.js', array( 'jquery' ), $this->version, false );
+		$fontawesome_kit = get_option("{$this->plugin_name}-other")["fontawesome-kit"];
 		wp_enqueue_script( $this->plugin_name . "-fontawesome", $fontawesome_kit, array( 'jquery' ), $this->version, false );
 		include_once(plugin_dir_path(__FILE__) . "../partials/admin/biobank-admin-emails.php");
 	}
