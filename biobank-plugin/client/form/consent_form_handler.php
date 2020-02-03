@@ -144,6 +144,7 @@ class ConsentFormHandler extends StudyHandler {
 		 * If something goes wrong, redirect back with an error.
 		 */
 		$error = urlencode($error);
+		// TODO: Update all URLs of this form.
 		wp_redirect(get_site_url() . "/index.php/biobank-consent?biobank_error=$error&return=" . __FUNCTION__);
 		exit;
 	}

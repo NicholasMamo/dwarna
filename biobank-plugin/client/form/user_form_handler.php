@@ -296,6 +296,82 @@ class ParticipantFormHandler extends UserFormHandler {
 	}
 
 	/**
+	 * Validate the given participant and try to erase them from the biobank's backend.
+	 *
+	 * @since	1.0.0
+	 */
+	public function erase_participant() {
+		$error = "";
+		$endpoint = "participant"; // the REST API's endpoint
+
+		if(isset($_POST["erasure_nonce"]) && wp_verify_nonce($_POST["erasure_nonce"], "erasure_form")) {
+			/*
+			 * For security purposes, ensure that the user can indeed remove themselves.
+			 */
+			if (current_user_can("biobank_remove_participant")) {
+				$user = wp_get_current_user();
+				$username = $user->data->user_login;
+
+				/*
+				 * Perform validation
+				 */
+				$valid_username = $this->validate_username($username);
+
+				/*
+				 * Ensure that everything checks out
+				 */
+				$validation_check = $this->validate(array(
+					$valid_username,
+				));
+
+				if (! $validation_check->is_successful()) {
+					$error = (string) $validation_check;
+				} else {
+					/*
+					 * Create a request and fetch the response
+					 */
+					$request = new \client\Request($this->scheme, $this->host, $this->port);
+					$request->add_parameter("username", $username);
+
+					/*
+					 * Process the response
+					 */
+					$response = $request->send_post_request($endpoint, "DELETE");
+					if (! is_wp_error($response)) {
+						$body = json_decode($response["body"]);
+						$error = isset($body->error) ? $body->error : "";
+
+						if (empty($error)) {
+							$id = $user->data->ID;
+							$status = wp_delete_user($id);
+							$error = $status ? "" : "WordPress could not delete the participant";
+						}
+					} else {
+						/*
+						 * If a connection could not be established
+						 */
+						$error = "WordPress could not reach the backend";
+					}
+				}
+			}
+		}
+
+		/*
+		 * If something goes wrong, redirect back with an error.
+		 * Otherwise, log the user out and redirect them to the homepage.
+		 */
+		if ($error) {
+			$error = urlencode($error);
+			wp_redirect(get_site_url() . "/index.php/" . $plugin_pages['biobank-erasure']['wp_info']['post_name'] . "?abiobank_error=$error&return=" . __FUNCTION__);
+			exit;
+		} else {
+			wp_logout();
+			$error = urlencode($error);
+			wp_redirect(get_site_url());
+		}
+	}
+
+	/**
 	 * Check whether the currently-logged in user has a temporary card.
 	 *
 	 * @since	1.0.0
