@@ -23,7 +23,7 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 
 <form class="<?= $this->plugin_name ?>-form" id="erasure-form"
 	  method="post" name="erasure_form" action=<?php echo esc_url(admin_url("admin-post.php")); ?>>
-	<input type="hidden" name="action" value="erasure">
+	<input type="hidden" name="action" value="erase_participant">
 	<?php wp_nonce_field("erasure_form", "erasure_nonce"); ?>
 
 	<input type = "submit" class = "btn btn-primary float-left" value="I want to erase my data" />

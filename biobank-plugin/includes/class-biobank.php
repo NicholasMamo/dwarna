@@ -184,6 +184,7 @@ class Biobank {
 		$this->loader->add_action( 'admin_post_create_participant', $participant_form_handler, 'create_participant' );
 		$this->loader->add_action( 'admin_post_update_participant', $participant_form_handler, 'update_participant' );
 		$this->loader->add_action( 'admin_post_remove_participant', $participant_form_handler, 'remove_participant' );
+		$this->loader->add_action( 'admin_post_erase_participant', $participant_form_handler, 'erase_participant' );
 
 		/*
 		 * Researcher forms
