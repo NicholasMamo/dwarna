@@ -343,6 +343,24 @@ class ParticipantFormHandler extends UserFormHandler {
 
 						if (empty($error)) {
 							$id = $user->data->ID;
+
+							/*
+							 * Send an email to the research partner and to the administration about the data erasure request.
+							 */
+							ob_start();
+  							include_once(plugin_dir_path(__FILE__) . "../../partials/emails/biobank-email-erase-research-partner.php");
+  							$body = ob_get_contents();
+  							ob_end_clean();
+							require(plugin_dir_path(__FILE__) . "../../includes/globals.php");
+ 							$sent = wp_mail(
+ 								[ $user->data->user_email, SMTP_FROM ], "Erasure request",
+ 								$body, array( "Content-type: text/html" )
+ 							);
+
+							if (! $sent) {
+								$error = isset($error) ? $error : "Email could not be sent";
+							}
+
 							$status = wp_delete_user($id);
 							$error = $status ? "" : "WordPress could not delete the participant";
 						}
@@ -361,6 +379,7 @@ class ParticipantFormHandler extends UserFormHandler {
 		 * Otherwise, log the user out and redirect them to the homepage.
 		 */
 		if ($error) {
+			require(plugin_dir_path(__FILE__) . "../../includes/globals.php");
 			$error = urlencode($error);
 			wp_redirect(get_site_url() . "/index.php/" . $plugin_pages['biobank-erasure']['wp_info']['post_name'] . "?abiobank_error=$error&return=" . __FUNCTION__);
 			exit;
