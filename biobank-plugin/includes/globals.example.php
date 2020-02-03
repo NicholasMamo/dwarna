@@ -101,7 +101,7 @@ $plugin_pages = array(
 			"post_author" => 1,
 			"post_type" => "page",
 		),
-		"menu_visibility" => array( ),
+		"menu_visibility" => array( 'participant' ),
 		"public" => false,
 	),
 	"biobank-recruitment" => array(
