@@ -388,14 +388,15 @@ class Biobank_Public {
 	 * @since	1.0.0
 	 * @access	public
 	 * @param	array	$items	The menu items.
+	 * @param	object	$menu	The menu that is being loaded.
 	 * @param	array	$args	Any other arguments.
 	 * @return	array	The filtered menu items.
 	 */
-	public function set_menu_visibility($items, $args) {
+	public function set_menu_visibility($items, $menu, $args) {
 		include(plugin_dir_path(__FILE__) . "../includes/globals.php");
 
 		/*
-		 * If this is an administrator page, load all menu items normally.
+		 * If this is an administration page, load all menu items normally.
 		 * This fixes an issue whereby the menu items do not appear in the _Appearance -> Menus_ settings page in the administrator dashboard.
 		 */
 		if (is_admin()) {
