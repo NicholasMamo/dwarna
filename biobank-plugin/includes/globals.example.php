@@ -53,6 +53,7 @@ $scopes = array(
 		"view_study", "view_consent",
 	),
 	"participant" => array(
+		"remove_participant",
 		"view_study",
 		"update_consent", "view_consent",
 		"change_card",
