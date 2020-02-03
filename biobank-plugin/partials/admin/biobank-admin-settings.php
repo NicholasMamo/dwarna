@@ -215,4 +215,34 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 		<?php submit_button("Save Changes", "primary", "submit", TRUE); ?>
 	</form>
 
+	<h2 class="title">Other</h2>
+	<form class="<?= $this->plugin_name ?>-form" id="other-form" method="post" name="other-form" action="options.php">
+		<?php settings_fields("{$this->plugin_name}-other"); ?>
+		<?php do_settings_sections("{$this->plugin_name}-other"); ?>
+
+		<table class="form-table">
+
+			<tr class="form-field">
+				<th scope="row">
+					<label for="<?php echo $this->plugin_name; ?>-fontawesome-kit">FontAwesome kit URL</label>
+				</th>
+				<td>
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" name="<?php echo $this->plugin_name; ?>-other[fontawesome-kit]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-fontawesome-kit"
+						   value="<?= $fontawesome_kit ?>" aria-required="true">
+
+					<p class="description" id="fontawesome-kit-description">
+						FontAwesome kits are used by the plugin to draw symbols.
+						The URL looks something like <code>https://kit.fontawesome.com/xxxxxxxxxx.js</code>.
+						You can obtain a kit by registering at <a href="https://fontawesome.com" target="_blank">fontawesome.com</a>.
+					</p>
+				</td>
+			</tr>
+
+		</table>
+
+		<?php submit_button("Save Changes", "primary", "submit", TRUE); ?>
+	</form>
+
 </div>
