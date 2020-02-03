@@ -257,9 +257,16 @@ class Biobank_Public {
 					 */
 					$study = (new \client\form\StudyFormHandler())->get_study($_SESSION['study_id']);
 					include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-study.php");
+					return;
 				}
 			}
 		}
+
+		/*
+		 * If the function fails in some way, redirect to the homepage.
+		 */
+		wp_redirect(get_site_url());
+		exit;
 	}
 
 	/**
@@ -295,8 +302,15 @@ class Biobank_Public {
 				}
 
 				include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-consent.php");
+				return;
 			}
 		}
+
+		/*
+		 * If the function fails in some way, redirect to the homepage.
+		 */
+		wp_redirect(get_site_url());
+		exit;
 	}
 
 	/**
@@ -315,10 +329,15 @@ class Biobank_Public {
 				$subscriptions->data = (object) $subscriptions->data;
 
 				include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-subscription.php");
+				return;
 			}
 		}
 
-		// TODO: Redirect to the homepage otherwise
+		/*
+		 * If the function fails in some way, redirect to the homepage.
+		 */
+		wp_redirect(get_site_url());
+		exit;
 	}
 
 	/**
@@ -343,8 +362,15 @@ class Biobank_Public {
 			$role = $user->roles[0];
 			if ($role == "participant") {
 				include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-erasure.php");
+				return;
 			}
 		}
+
+		/*
+		 * If the function fails in some way, redirect to the homepage.
+		 */
+		wp_redirect(get_site_url());
+		exit;
 	}
 
 	/**
