@@ -128,7 +128,7 @@ $plugin_pages = array(
 			"post_type" => "page",
 		),
 		"menu_visibility" => array( 'participant' ),
-		"public" => true,
+		"public" => false,
 	),
 );
 

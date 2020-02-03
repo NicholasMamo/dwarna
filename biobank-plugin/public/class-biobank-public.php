@@ -441,7 +441,7 @@ class Biobank_Public {
 						unset($items[$id]);
 					}
 				} else if (! $plugin_pages[$slug]["public"]) {
-						unset($items[$id]);
+					unset($items[$id]);
 				}
 			}
 		}
