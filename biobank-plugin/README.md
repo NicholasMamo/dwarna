@@ -48,10 +48,7 @@ To configure the plugin:
 2. Fill in the `ENCRYPTION_KEY` constant.
    First generate a key using `php -r "echo bin2hex(sodium_crypto_secretbox_keygen());" > itop_secret_key.txt`.
    Then, replace the 'x' string in the `ENCRYPTION_KEY` constant with the contents of the new `itop_secret_key.txt`; and
-3. Create a [FontAwesome](https://fontawesome.com/) account to get an icon kit.
-   These icons are used by the plugin to beautify it.
-   Once you get an icon kit, replace the `$fontawesome_kit` variable's value with a link to the kit.
-4. Copy the `public/js/hyperledger/config.example.js` file into `public/js/hyperledger/config.js`.
+3. Copy the `public/js/hyperledger/config.example.js` file into `public/js/hyperledger/config.js`.
    Update the variables as need be to point to the Hyperledger Composer multi-user REST API endpoint.
 
 To authenticate users against Hyperledger Composer, the plugin uses OAuth 2.0 (separate from the REST API).
@@ -90,6 +87,9 @@ From this page, you can update the configuration for the REST API, the Hyperledg
 5. Fill in the authentication URL to where the Hyperledger Composer multi-user REST API is being served.
    This URL should match the one set in the `fabric/start_network.sh` script as `authPath`.
    Nevertheless, the server host should be updated if the Hyperledger Composer multi-user REST API is being served from a different server than the WordPress blog.
+6. Create a [FontAwesome](https://fontawesome.com/) account to get an icon kit.
+   These icons are used by the plugin to beautify it.
+   Once you get an icon kit, replace the FontAwesome kit URL with a link to the newly-created kit.
 
 ### Activating
 
