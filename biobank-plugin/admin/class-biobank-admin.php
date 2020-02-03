@@ -685,6 +685,7 @@ class Biobank_Admin {
 		register_setting("{$this->plugin_name}-rest", "{$this->plugin_name}-rest", array($this, "validate_rest_options"));
 		register_setting("{$this->plugin_name}-oauth", "{$this->plugin_name}-oauth", array($this, "validate_oauth_options"));
 		register_setting("{$this->plugin_name}-composer", "{$this->plugin_name}-composer", array($this, "validate_composer_options"));
+		register_setting("{$this->plugin_name}-other", "{$this->plugin_name}-other", array($this, "validate_other_options"));
 	}
 
 	/**
@@ -739,6 +740,22 @@ class Biobank_Admin {
 
 		$valid["hyperledger-host"] = $input["hyperledger-host"] ?? "";
 		$valid["auth-url"] = $input["auth-url"] ?? "";
+
+		return $valid;
+	}
+
+	/**
+	 * Validate the other miscellaneous options.
+	 *
+	 * @since 1.0.0
+	 * @access	public
+	 * @param	array 		$input		The inputed options.
+	 * @return	array		The array containing the validated inputs.
+	 */
+	public function validate_other_options($input) {
+		$valid = array();
+
+		$valid["fontawesome-kit"] = $input["fontawesome-kit"] ?? "";
 
 		return $valid;
 	}
