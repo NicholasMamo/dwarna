@@ -299,7 +299,7 @@ class Biobank_Public {
 	}
 
 	/**
-	 * Show the form that allows research partners to unsubscribe from receiving biobank-related emails.
+	 * Show the form that allows research partners to unsubscribe from or re-subscribe to receiving biobank-related emails.
 	 *
 	 * @since    1.0.0
 	 * @access	public
@@ -316,6 +316,7 @@ class Biobank_Public {
 				include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-subscription.php");
 			}
 		}
+
 	}
 
 	/**
