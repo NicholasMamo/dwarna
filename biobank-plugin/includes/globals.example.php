@@ -165,12 +165,6 @@ if (!defined('BLOCKCHAIN_ACCESS_TOKEN')) define('BLOCKCHAIN_ACCESS_TOKEN', "acce
 if (!defined('ENCRYPTION_KEY')) define('ENCRYPTION_KEY', hex2bin("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"));
 
 /*
- * The FontAwesome kit to use.
- * A kit can be downloaded from FontAwesome after registering: https://fontawesome.com/
- */
-$fontawesome_kit = "https://kit.fontawesome.com/xxxxxxxxxx.js";
-
-/*
  * OAuth 2.0 configuration.
  */
 if (!defined('OAUTH_DATABASE')) define('OAUTH_DATABASE', 'wordpress');
