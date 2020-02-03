@@ -203,16 +203,17 @@ class ConsentFormHandler extends StudyHandler {
 			}
 		}
 
+		require(plugin_dir_path(__FILE__) . "../../includes/globals.php");
 		/*
 		 * If something goes wrong, redirect back with an error.
 		 */
 		if (isset($study['study_id'])) {
 			$error = urlencode($error);
-			wp_redirect(get_site_url() . "/index.php/biobank-study?action=consent&study={$study['study_id']}&biobank_error=$error&return=" . __FUNCTION__);
+			wp_redirect(get_site_url() . "/index.php/" . $plugin_pages['biobank-study']['wp_info']['post_name'] . "?action=consent&study={$study['study_id']}&biobank_error=$error&return=" . __FUNCTION__);
 			exit;
 		} else {
 			$error = urlencode($error);
-			wp_redirect(get_site_url() . "/index.php/biobank-consent?action=consent&study={$study['study_id']}&biobank_error=$error&return=" . __FUNCTION__);
+			wp_redirect(get_site_url() . "/index.php/" . $plugin_pages['biobank-consent']['wp_info']['post_name'] . "?biobank_error=$error&return=" . __FUNCTION__);
 			exit;
 		}
 	}
