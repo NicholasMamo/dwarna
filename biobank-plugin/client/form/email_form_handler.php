@@ -183,7 +183,7 @@ class EmailFormHandler extends FormHandler {
 		$error = urlencode($error);
 
 		require(plugin_dir_path(__FILE__) . "../../includes/globals.php");
-		wp_redirect(home_url($plugin_pages['biobank-subscription']['wp_info']['post_name']) . "?redirect=update&biobank_error=$error");
+		wp_redirect(get_site_url() . "/index.php/" . $plugin_pages['biobank-subscription']['wp_info']['post_name'] . "?redirect=update&biobank_error=$error");
 		exit;
 	}
 
