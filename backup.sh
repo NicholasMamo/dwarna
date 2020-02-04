@@ -102,6 +102,9 @@ args() {
 		-h)
 			usage
 			;;
+		-o)
+			let len_options--
+			;;
         --blockchain)
 			backup_fabric $backup
             ;;
@@ -137,5 +140,6 @@ args() {
 }
 
 backup="$( create_dir $* )"
+echo -e "${HIGHLIGHT}Backing up to $backup${DEFAULT}"
 args $0 "$@"
 change_ownership $backup
