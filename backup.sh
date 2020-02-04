@@ -136,5 +136,6 @@ args() {
 	fi
 }
 
+backup="$( create_dir $* )"
 args $0 "$@"
 change_ownership $backup
