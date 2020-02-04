@@ -61,7 +61,11 @@ To take a backup:
     chmod +x backup.sh
     ./backup.sh
 
-The backups are created in the `backups/` directory.
+By default, the backups are created in the `backups/` directory.
+YOu can change the destination by using the `-o` argument:
+
+	./backup.sh -o other/folder
+
 Backups are separated into folders according to the date when they were taken.
 These directories have the format `yyyymmdd`.
 Each backup is further separated into folders:
