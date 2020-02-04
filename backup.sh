@@ -6,42 +6,55 @@ cd "$parent_path"
 
 source variables.sh
 
-backup=$( date +%Y%m%d )
-mkdir -p backup/$backup
+# Create the backup's output directory.
+create_dir() {
+	output='backup'
+	for ((i=0; i<$#; i++)); do
+		if [ "${!i}" = '-o' ]; then
+			let "value=$i+1"
+			output=${!value}
+			break
+		fi
+	done
+
+	backup=$( date +%Y%m%d )
+	mkdir -p $output/$backup
+	echo "$output/$backup"
+}
 
 usage() {
-	echo -e "${HIGHLIGHT}Usage: $0 [-h] [--blockchain] [--rest] [--plugin] [--postgresql] [--wordpress]${DEFAULT}";
+	echo -e "${HIGHLIGHT}Usage: $0 [-o backup/] [-h] [--blockchain] [--rest] [--plugin] [--postgresql] [--wordpress]${DEFAULT}";
 }
 
 # The Hyperledger Fabric backup copies the admin card and the actual data.
 backup_fabric() {
 	echo -e "${HIGHLIGHT}Backing up Hyperledger Fabric files${DEFAULT}"
-	mkdir -p backup/$1/fabric/dwarna-blockchain
-	cp fabric/dwarna-blockchain/admin@dwarna-blockchain.card backup/$1/fabric/dwarna-blockchain
+	mkdir -p $1/fabric/dwarna-blockchain
+	cp fabric/dwarna-blockchain/admin@dwarna-blockchain.card $1/fabric/dwarna-blockchain
 
-	mkdir -p backup/$1/fabric/fabric-scripts/hlfv12/composer
-	cp -r fabric/fabric-scripts/hlfv12/composer/backup_* backup/$1/fabric/fabric-scripts/hlfv12/composer
+	mkdir -p $1/fabric/fabric-scripts/hlfv12/composer
+	cp -r fabric/fabric-scripts/hlfv12/composer/backup_* $1/fabric/fabric-scripts/hlfv12/composer
 }
 
 # The REST API backup copies the configuration, including the encryption keys.
 backup_rest() {
 	echo -e "${HIGHLIGHT}Backing up REST API files${DEFAULT}"
-	mkdir -p backup/$1/rest/config
-	cp rest/config/*.py backup/$1/rest/config
+	mkdir -p $1/rest/config
+	cp rest/config/*.py $1/rest/config
 }
 
 # The WordPress plugin backup copies the configuration, including the encryption key.
 backup_plugin() {
 	echo -e "${HIGHLIGHT}Backing up WordPress plugin files${DEFAULT}"
-	mkdir -p backup/$1/biobank-plugin/includes
-	cp biobank-plugin/includes/globals.php backup/$1/biobank-plugin/includes/globals.php
+	mkdir -p $1/biobank-plugin/includes
+	cp biobank-plugin/includes/globals.php $1/biobank-plugin/includes/globals.php
 }
 
 # The PostgreSQL backup creates a CSV file of each Dwarna table.
 backup_postgresql() {
 	echo -e "${HIGHLIGHT}Backing up PostgreSQL database${DEFAULT}"
-	mkdir -p backup/$1/postgresql/
-	chown postgres backup/$1/postgresql/
+	mkdir -p $1/postgresql/
+	chown postgres $1/postgresql/
 
 	read -p 'Enter database [biobank]: ' database
 	database=${database:-biobank}
@@ -49,18 +62,18 @@ backup_postgresql() {
 	tables=( users researchers participants participant_identities participant_subscriptions biobankers studies studies_researchers emails email_recipients )
 	for table in "${tables[@]}"
 	do
-		su -c "psql -U postgres -d $database -c \"COPY ${table} TO '${parent_path}/backup/$1/postgresql/${table}.csv' DELIMITER ',' CSV HEADER;\"" postgres
+		su -c "psql -U postgres -d $database -c \"COPY ${table} TO '${parent_path}/$1/postgresql/${table}.csv' DELIMITER ',' CSV HEADER;\"" postgres
 	done
 }
 
 # The WordPress backup creates a CSV file of each WordPress table.
 backup_wordpress() {
 	echo -e "${HIGHLIGHT}Backing up WordPress database${DEFAULT}"
-	mkdir -p backup/$1/wordpress/
+	mkdir -p $1/wordpress/
 	read -p 'Enter database [wordpress]: ' database
 	database=${database:-wordpress}
 	read -p 'Enter username: ' username
-	mysqldump -u $username -p $database > backup/$1/wordpress/wordpress.sql
+	mysqldump -u $username -p $database > $1/wordpress/wordpress.sql
 }
 
 # Update the the ownership of the backup files.
@@ -71,11 +84,11 @@ change_ownership() {
 	else
 		user=$USER
 	fi
-	chown -R $user:$user backup/$1/
+	chown -R $user:$user $1/
 }
 
 args() {
-	options=$(getopt --options h --long blockchain --long rest --long plugin --long postgresql --long wordpress -- "$@")
+	options=$(getopt --options oh --long blockchain --long rest --long plugin --long postgresql --long wordpress -- "$@")
 	[ $? -eq 0 ] || {
 		echo "Unknown option provided"
 		usage
