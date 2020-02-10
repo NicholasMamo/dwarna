@@ -114,7 +114,7 @@ change_ownership() {
 	else
 		user=$USER
 	fi
-	chown -R $user:$user $1/
+	chown -R $user:$user $1
 }
 
 # Zip the backup file to make it easier to store.
