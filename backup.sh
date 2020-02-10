@@ -119,8 +119,9 @@ change_ownership() {
 
 # Zip the backup file to make it easier to store.
 zip() {
-	echo -e "${HIGHLIGHT}Creating archive $1.tar.gz${DEFAULT}"
 	tar -zcf "$1.tar.gz" $1
+	echo "$1.tar.gz"
+	return
 }
 
 args() {
