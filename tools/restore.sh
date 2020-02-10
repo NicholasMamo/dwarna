@@ -72,6 +72,7 @@ restore_wordpress() {
 	mysql -u $username -p $database < $1/wordpress/wordpress.sql
 }
 
+# Restore the backup.
 args() {
 	options=$(getopt --options h --long blockchain --long rest --long plugin --long postgresql --long wordpress -- "$@")
 	[ $? -eq 0 ] || {
@@ -126,7 +127,8 @@ then
 	shift
 	path="$1"
 	if is_zip $path; then
-		unzip $path
+		echo -e "${HIGHLIGHT}Extracting archive $1${DEFAULT}"
+		path="$( unzip $path )"
 	fi
 else
 	echo "Expected path option"
@@ -134,4 +136,4 @@ else
 	exit 1
 fi
 
-args "$@"
+args $path "$@"
