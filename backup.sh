@@ -32,11 +32,12 @@ has_param() {
 	# Iterate over all the given parameters.
 	for ((i=1; i<=$#; i++)); do
 		if [ "${!i}" = $param ]; then
-			echo "1"
+			true
 			return
 		fi
 	done
-	echo "0"
+	false
+	return
 }
 
 usage() {
@@ -171,6 +172,6 @@ change_ownership $backup
 
 # Create an archive of the backup folder if the `z` parameter is given.
 zip=$(has_param '-z' $*)
-if [[ $zip = '1' ]]; then
+if has_param '-z' $*; then
 	zip $backup
 fi
