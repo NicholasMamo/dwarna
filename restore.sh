@@ -11,6 +11,11 @@ function usage() {
 	echo -e "       -p path    The path of the backup to restore, for example 'backup/20191217'";
 }
 
+# Unzip the tar file before restoring the backup.
+unzip() {
+	tar -zxvf $1
+}
+
 # Restore Hyperledger Fabric's admin card and the actual data.
 restore_fabric() {
 	echo -e "${HIGHLIGHT}Restoring Hyperledger Fabric files${DEFAULT}"
