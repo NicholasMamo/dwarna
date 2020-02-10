@@ -60,17 +60,6 @@ restore_wordpress() {
 }
 
 args() {
-	shift
-	if [ "$1" == "-p" ]
-	then
-		shift
-		path="$1"
-	else
-		echo "Expected path option"
-		usage
-		exit 1
-	fi
-
 	options=$(getopt --options h --long blockchain --long rest --long plugin --long postgresql --long wordpress -- "$@")
 	[ $? -eq 0 ] || {
 		echo "Unknown option provided"
@@ -119,4 +108,14 @@ args() {
 	fi
 }
 
-args $0 "$@"
+if [ "$1" == "-p" ]
+then
+	shift
+	path="$1"
+else
+	echo "Expected path option"
+	usage
+	exit 1
+fi
+
+args "$@"
