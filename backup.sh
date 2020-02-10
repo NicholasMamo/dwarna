@@ -87,6 +87,11 @@ change_ownership() {
 	chown -R $user:$user $1/
 }
 
+# Zip the backup file to make it easier to store.
+zip() {
+	tar -zcf "$1.tar.gz" $1
+}
+
 args() {
 	options=$(getopt --options oh --long blockchain --long rest --long plugin --long postgresql --long wordpress -- "$@")
 	[ $? -eq 0 ] || {
@@ -143,3 +148,4 @@ backup="$( create_dir $* )"
 echo -e "${HIGHLIGHT}Backing up to $backup${DEFAULT}"
 args $0 "$@"
 change_ownership $backup
+zip $backup
