@@ -9,13 +9,10 @@ source variables.sh
 # Create the backup's output directory.
 create_dir() {
 	output='backup'
-	for ((i=0; i<$#; i++)); do
-		if [ "${!i}" = '-o' ]; then
-			let "value=$i+1"
-			output=${!value}
-			break
-		fi
-	done
+
+	if has_param '-o' $*; then
+		output=$(get_param '-o' $*)
+	fi
 
 	backup=$( date +%Y%m%d )
 	mkdir -p $output/$backup
@@ -38,6 +35,21 @@ has_param() {
 	done
 	false
 	return
+}
+
+# Get the value of the given parameter.
+# The function expects first the parameter to look for. Then, it expects the rest of the parameters.
+get_param() {
+	param=$1
+	shift
+
+	for ((i=0; i<$#; i++)); do
+		if [ "${!i}" = $param ]; then
+			let position="i+1"
+			echo ${!position}
+			return
+		fi
+	done
 }
 
 usage() {
