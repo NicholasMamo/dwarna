@@ -62,9 +62,10 @@ To take a backup:
     ./backup.sh
 
 By default, the backups are created in the `backups/` directory.
-YOu can change the destination by using the `-o` argument:
+You can change the destination by using the `-o` argument.
+If the `-z` argument is given, an archive is created from the backup.
 
-	./backup.sh -o other/folder
+	./backup.sh -o other/folder -z
 
 Backups are separated into folders according to the date when they were taken.
 These directories have the format `yyyymmdd`.
@@ -91,6 +92,7 @@ To restore a backup, run the `restore.sh` script:
     ./restore.sh -p backup/yyyymmdd
 
 The script automatically restores the backup stored in the folder named `backup/yyyymmdd`.
+If an archive is given instead, the script automatically extracts it.
 By default, the restoration copies back all of this data.
 You can specify which data to restore by passing on the following arguments:
 
