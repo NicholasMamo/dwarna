@@ -11,6 +11,17 @@ function usage() {
 	echo -e "       -p path    The path of the backup to restore, for example 'backup/20191217'";
 }
 
+# Check if the provided path is a zip file.
+is_zip() {
+	if [ ${1:(-7)} = '.tar.gz' ]; then
+		true
+		return
+	fi
+
+	false
+	return
+}
+
 # Unzip the tar file before restoring the backup.
 unzip() {
 	tar -zxvf $1
