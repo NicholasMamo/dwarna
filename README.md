@@ -55,17 +55,17 @@ To run it:
 
 ### Backups
 
-Dwarna's `backup.sh` script takes a backup of all the files that are necessary to restore all data.
+Dwarna's `tools/backup.sh` script takes a backup of all the files that are necessary to restore all data.
 To take a backup:
 
-    chmod +x backup.sh
-    ./backup.sh
+    chmod +x tools/backup.sh
+    ./tools/backup.sh
 
 By default, the backups are created in the `backups/` directory.
 You can change the destination by using the `-o` argument.
 If the `-z` argument is given, an archive is created from the backup.
 
-	./backup.sh -o other/folder -z
+	./tools/backup.sh -o other/folder -z
 
 Backups are separated into folders according to the date when they were taken.
 These directories have the format `yyyymmdd`.
@@ -86,10 +86,10 @@ You can specify which data to back up by passing on the following arguments:
 * `--postgresql` - Back up only the PostgreSQL data; and
 * `--wordpress` - Back up only the WordPress MySQL data
 
-To restore a backup, run the `restore.sh` script:
+To restore a backup, run the `tools/restore.sh` script:
 
-    chmod +x restore.sh
-    ./restore.sh -p backup/yyyymmdd
+    chmod +x tools/restore.sh
+    ./tools/restore.sh -p backup/yyyymmdd
 
 The script automatically restores the backup stored in the folder named `backup/yyyymmdd`.
 If an archive is given instead, the script automatically extracts it.
