@@ -24,8 +24,9 @@ is_zip() {
 
 # Unzip the tar file before restoring the backup.
 unzip() {
-	echo -e "${HIGHLIGHT}Extracting archive $1${DEFAULT}"
 	tar -zxf $1
+	echo ${1:0:(-7)}
+	return
 }
 
 # Restore Hyperledger Fabric's admin card and the actual data.
