@@ -22,6 +22,23 @@ create_dir() {
 	echo "$output/$backup"
 }
 
+# Check whether the given parameter is given.
+# The function expects first the parameter to look for. Then, it expects the rest of the parameters.
+has_param() {
+	# Consume the parameter to look for.
+	param=$1
+	shift
+
+	# Iterate over all the given parameters.
+	for ((i=1; i<=$#; i++)); do
+		if [ "${!i}" = $param ]; then
+			echo "1"
+			return
+		fi
+	done
+	echo "0"
+}
+
 usage() {
 	echo -e "${HIGHLIGHT}Usage: $0 [-o backup/] [-h] [--blockchain] [--rest] [--plugin] [--postgresql] [--wordpress]${DEFAULT}";
 }
@@ -93,7 +110,7 @@ zip() {
 }
 
 args() {
-	options=$(getopt --options oh --long blockchain --long rest --long plugin --long postgresql --long wordpress -- "$@")
+	options=$(getopt --options hoz --long blockchain --long rest --long plugin --long postgresql --long wordpress -- "$@")
 	[ $? -eq 0 ] || {
 		echo "Unknown option provided"
 		usage
@@ -108,6 +125,9 @@ args() {
 			usage
 			;;
 		-o)
+			let len_options--
+			;;
+		-z)
 			let len_options--
 			;;
         --blockchain)
@@ -148,4 +168,9 @@ backup="$( create_dir $* )"
 echo -e "${HIGHLIGHT}Backing up to $backup${DEFAULT}"
 args $0 "$@"
 change_ownership $backup
-zip $backup
+
+# Create an archive of the backup folder if the `z` parameter is given.
+zip=$(has_param '-z' $*)
+if [[ $zip = '1' ]]; then
+	zip $backup
+fi
