@@ -187,5 +187,7 @@ change_ownership $backup
 # Create an archive of the backup folder if the `z` parameter is given.
 zip=$(has_param '-z' $*)
 if has_param '-z' $*; then
-	zip $backup
+	echo -e "${HIGHLIGHT}Creating archive $backup.tar.gz${DEFAULT}"
+	archive="$( zip $backup )"
+	change_ownership $archive
 fi
