@@ -24,7 +24,8 @@ is_zip() {
 
 # Unzip the tar file before restoring the backup.
 unzip() {
-	tar -zxvf $1
+	echo -e "${HIGHLIGHT}Extracting archive $1${DEFAULT}"
+	tar -zxf $1
 }
 
 # Restore Hyperledger Fabric's admin card and the actual data.
@@ -123,6 +124,9 @@ if [ "$1" == "-p" ]
 then
 	shift
 	path="$1"
+	if is_zip $path; then
+		unzip $path
+	fi
 else
 	echo "Expected path option"
 	usage
