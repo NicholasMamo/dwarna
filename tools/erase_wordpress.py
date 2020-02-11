@@ -28,6 +28,44 @@ def setup_args():
 	args = parser.parse_args()
 	return args
 
+def get_table_structure(path, table):
+	"""
+	Extract the table structure from the given file.
+
+	:param path: The path to the SQL file.
+	:type path: str
+	:param table: The table whose structure to extract.
+	:type table: str
+
+	:return: A list of lines making up the table structure.
+	:rtype: list
+	"""
+
+	lines = []
+
+	found = False # whether the table has been found
+	with open(path, 'r') as f:
+		for line in f:
+			"""
+			Table structures always start the same, so look for the SQL function.
+			"""
+			if line.startswith(f"CREATE TABLE `{table}`"):
+				found = True
+
+			"""
+			Stop reading when the first break after the table structure is found.
+			"""
+			if found and line.startswith('--'):
+				break
+
+			"""
+			If the table structure has been found, add it to the list of lines.
+			"""
+			if found:
+				lines.append(line)
+
+	return lines
+
 def erase(path, pseudonym):
 	"""
 	Erase the research partner having the given pseudonym from the backup in the given path.
