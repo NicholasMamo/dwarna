@@ -2,9 +2,7 @@
 
 # Go to the script's parent directory.
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-cd "$parent_path/.."
-
-source variables.sh
+source $parent_path/../variables.sh
 
 function usage() {
 	echo -e "Usage: sh $0 -p path [-h] [pseudonym]...";
