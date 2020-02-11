@@ -70,6 +70,23 @@ def erase(path, pseudonym):
 	if not os.path.isdir(dir):
 		raise OSError("No PostgreSQL backup found")
 
+	for file, column in COLUMNS.items():
+		file = os.path.join(dir, file)
+		with open(file, "r") as fin, open(f"{file}.tmp", "w") as fout:
+			header = fin.readline()
+			index = get_column_index(column, header)
+			fout.write(header)
+			for line in fin:
+				data = line.split(',')
+				if data[index] != pseudonym:
+					fout.write(line)
+
+		"""
+		Remove the original file and replace it wit the new one.
+		"""
+		os.remove(file)
+		os.rename(f"{file}.tmp", file)
+
 if __name__ == "__main__":
 	args = setup_args()
 	path = args.path[0]
