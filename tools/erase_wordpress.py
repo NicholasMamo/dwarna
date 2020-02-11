@@ -66,6 +66,35 @@ def get_table_structure(path, table):
 
 	return lines
 
+def get_column_index(lines, column):
+	"""
+	Get the index of the given column in the given table structure.
+
+	:param lines: The table structure lines where to look for the column.
+	:type lines: str
+	:param column: The column to look for.
+	:type column: str
+
+	:return: The index of the column name in the table structure.
+	:rtype: int
+	"""
+
+	i = 0
+
+	line_pattern = re.compile('\\s+`')
+	column_pattern = re.compile('`(.+?)`')
+	for line in lines:
+		"""
+		Check whether the line starts with a few spaces and a column name.
+		"""
+		if line_pattern.match(line) and line_pattern.match(line).start() == 0:
+			name = column_pattern.findall(line)[0]
+			if name == column:
+				return i
+
+			i += 1
+	return False
+
 def erase(path, pseudonym):
 	"""
 	Erase the research partner having the given pseudonym from the backup in the given path.
