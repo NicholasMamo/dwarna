@@ -86,7 +86,7 @@ def get_table_data(path, table):
 			Table structures always start the same and occupy one line.
 			"""
 			if line.startswith(f"INSERT INTO `{table}`"):
-				data_pattern = re.compile("(\\(.+?\\))")
+				data_pattern = re.compile("(\\(.+?\\))[,;]")
 				data = data_pattern.findall(line)
 				data = [ tuple.replace("'", '') for tuple in data]
 				data = [ tuple.replace("(", '') for tuple in data]
