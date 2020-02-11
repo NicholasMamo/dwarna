@@ -102,6 +102,14 @@ You can specify which data to restore by passing on the following arguments:
 * `--postgresql` - Restore only the PostgreSQL data; and
 * `--wordpress` - Restore only the WordPress MySQL data
 
+### Data erasure
+
+The 'tools/erase.sh' script can be used to erase research partner data from backups, including archives.
+The script takes in a path to the directory where backups are stored, and a list of research partner pseudonyms to erase:
+
+	chmod +x tools/restore.sh
+	./tools/erase.sh -p backup p2320 p2321
+
 ## Running the tests
 
 To run the unit tests, use the `tests.sh` script:
