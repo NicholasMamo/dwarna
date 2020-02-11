@@ -8,6 +8,16 @@ import argparse
 import os
 import sys
 
+COLUMNS = {
+	"participant_identities.csv": "participant_id",
+	"participant_subscriptions.csv": "participant_id",
+	"participants.csv": "user_id",
+}
+"""
+:var COLUMNS: The columns where to look for pseudonyms in each file.
+:vartype COLUMNS: dict
+"""
+
 def setup_args():
 	"""
 	Set up and get the list of command-line arguments.
