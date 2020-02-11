@@ -60,5 +60,15 @@ for D in $path/*; do
 		if [ -d "$D/postgresql" ]; then
         	$parent_path/erase_postgresql.py -p $D -e $@
 		fi
+	elif is_zip $D; then # if it is an archive, extract it, erase the data and re-create the archive
+		echo -e "${HIGHLIGHT}Erasing $@ from archive $D${DEFAULT}"
+		D="$( unzip $D )"
+		if [ -d "$D/wordpress" ]; then
+        	$parent_path/erase_wordpress.py -p $D -e $@
+		fi
+		if [ -d "$D/postgresql" ]; then
+        	$parent_path/erase_postgresql.py -p $D -e $@
+		fi
+		archive="$( zip $D )"
     fi
 done
