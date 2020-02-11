@@ -88,7 +88,6 @@ def get_table_data(path, table):
 			if line.startswith(f"INSERT INTO `{table}`"):
 				data_pattern = re.compile("(\\(.+?\\))[,;]")
 				data = data_pattern.findall(line)
-				data = [ tuple.replace("'", '') for tuple in data]
 				data = [ tuple.replace("(", '') for tuple in data]
 				data = [ tuple.replace(")", '') for tuple in data]
 				data = [ tuple.split(',') for tuple in data]
@@ -146,7 +145,7 @@ def get_user_id(path, pseudonym):
 	user_login_index = get_column_index(structure, 'user_login')
 
 	for tuple in data:
-		if tuple[user_login_index] == pseudonym:
+		if tuple[user_login_index].replace("'", '') == pseudonym:
 			return int(tuple[id_index])
 
 	return -1
