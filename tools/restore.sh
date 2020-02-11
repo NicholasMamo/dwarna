@@ -57,7 +57,7 @@ restore_postgresql() {
 	tables=( users researchers participants participant_identities participant_subscriptions biobankers studies studies_researchers emails email_recipients )
 	for table in "${tables[@]}"
 	do
-		su -c "psql -U postgres -d $database -c \"COPY $table FROM '$parent_path/$1/postgresql/$table.csv' DELIMITER ',' CSV HEADER;\"" postgres
+		su -c "psql -U postgres -d $database -c \"COPY $table FROM '$( pwd )/$1/postgresql/$table.csv' DELIMITER ',' CSV HEADER;\"" postgres
 	done
 }
 
