@@ -171,6 +171,52 @@ def erase(path, pseudonym):
 	dir = os.path.join(path, 'wordpress')
 	if not os.path.isdir(dir):
 		raise OSError("No WordPress backup found")
+	file = os.path.join(dir, 'wordpress.sql')
+
+	"""
+	Get the user's ID on WordPress.
+	"""
+	id = get_user_id(file, pseudonym)
+	if id < 0:
+		return
+
+	table_name_pattern = re.compile("INSERT INTO `(.+?)`")
+	with open(file, "r") as fin, open(f"{file}.tmp", "w") as fout:
+		for line in fin:
+			"""
+			If the line may contain data that may be removed, process the line.
+			Otherwise, save the line unchanged.
+			"""
+			if line.startswith('INSERT INTO'):
+				table = table_name_pattern.findall(line)[0]
+				if table in TABLES:
+					structure = get_table_structure(file, table)
+					data = get_table_data(file, table)
+					id_index = get_column_index(structure, 'user_id')
+
+					"""
+					Skip the tuples that
+					"""
+					tuples = [] # the retained tuples
+					for tuple in data:
+						if int(tuple[id_index]) != id:
+							tuples.append(tuple)
+
+					"""
+					Re-create and save the query.
+					"""
+					data = [ f"({','.join(tuple)})" for tuple in tuples ]
+					query = f"INSERT INTO `{table}` VALUES {','.join(data)}\n"
+					fout.write(query)
+					continue
+
+			fout.write(line)
+
+		"""
+		Remove the original file and replace it with the new one.
+		"""
+		os.remove(file)
+		os.rename(f"{file}.tmp", file)
 
 if __name__ == "__main__":
 	args = setup_args()
