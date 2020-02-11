@@ -16,6 +16,11 @@ if [ "$1" == "-p" ]
 then
 	shift
 	path="$1"
+
+	# Remove the trailing slash from the path if given.
+	if [ ${path:(-1)} = '/' ]; then
+		path=${path:0:(-1)}
+	fi
 	shift
 else
 	echo "Expected path option"
