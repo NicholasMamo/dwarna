@@ -7,6 +7,7 @@ tests/cards
 config/blockchain.py
 config/db.py
 config/email.py
+config/erasure.py
 config/oauth.py
 
 # documentation
