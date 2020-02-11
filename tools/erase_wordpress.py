@@ -125,6 +125,32 @@ def get_column_index(lines, column):
 			i += 1
 	return False
 
+def get_user_id(path, pseudonym):
+	"""
+	Get the user ID for the user having the given pseudonym.
+	The function looks in the `wp_users` table.
+
+	:param path: The path to the SQL file.
+	:type path: str
+	:param pseudonym: The pseudonym of the research partner to remove.
+	:type pseudonym: str
+
+	:return: The user ID for the user having the given pseudonym.
+			 If the user ID is not found, -1 is returned.
+	:rtype: int
+	"""
+
+	structure = get_table_structure(path, 'wp_users')
+	data = get_table_data(path, 'wp_users')
+	id_index = get_column_index(structure, 'ID')
+	user_login_index = get_column_index(structure, 'user_login')
+
+	for tuple in data:
+		if tuple[user_login_index] == pseudonym:
+			return tuple[id_index]
+
+	return -1
+
 def erase(path, pseudonym):
 	"""
 	Erase the research partner having the given pseudonym from the backup in the given path.
