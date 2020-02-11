@@ -72,20 +72,21 @@ def erase(path, pseudonym):
 
 	for file, column in COLUMNS.items():
 		file = os.path.join(dir, file)
-		with open(file, "r") as fin, open(f"{file}.tmp", "w") as fout:
-			header = fin.readline()
-			index = get_column_index(column, header)
-			fout.write(header)
-			for line in fin:
-				data = line.split(',')
-				if data[index] != pseudonym:
-					fout.write(line)
+		if os.path.isfile(file):
+			with open(file, "r") as fin, open(f"{file}.tmp", "w") as fout:
+				header = fin.readline()
+				index = get_column_index(column, header)
+				fout.write(header)
+				for line in fin:
+					data = line.split(',')
+					if data[index] != pseudonym:
+						fout.write(line)
 
-		"""
-		Remove the original file and replace it with the new one.
-		"""
-		os.remove(file)
-		os.rename(f"{file}.tmp", file)
+			"""
+			Remove the original file and replace it with the new one.
+			"""
+			os.remove(file)
+			os.rename(f"{file}.tmp", file)
 
 if __name__ == "__main__":
 	args = setup_args()
