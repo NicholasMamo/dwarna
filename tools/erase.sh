@@ -10,6 +10,31 @@ function usage() {
 	echo -e "       The last arguments are taken to be pseudonyms";
 }
 
+# Check if the provided path is a zip file.
+is_zip() {
+	if [ ${1:(-7)} = '.tar.gz' ]; then
+		true
+		return
+	fi
+
+	false
+	return
+}
+
+# Unzip the given tar file.
+unzip() {
+	tar -zxf $1
+	echo ${1:0:(-7)}
+	return
+}
+
+# Zip the backup file to make it easier to store.
+zip() {
+	tar -zcf "$1.tar.gz" $1
+	echo "$1.tar.gz"
+	return
+}
+
 if [ "$1" == "-p" ]
 then
 	shift
