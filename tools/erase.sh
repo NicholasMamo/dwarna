@@ -12,3 +12,14 @@ function usage() {
 	echo -e "       The last arguments are taken to be pseudonyms";
 }
 
+if [ "$1" == "-p" ]
+then
+	shift
+	path="$1"
+	shift
+else
+	echo "Expected path option"
+	usage
+	exit 1
+fi
+
