@@ -194,7 +194,7 @@ class ParticipantFormHandler extends UserFormHandler {
 							 * If the password is updated, email it to the user.
 							 */
 							if ($input["password"] != "") {
-								$user_data["user_pass"] = wp_hash_password($input["password"]);
+								wp_set_password($input["password"], $id);
 
 								ob_start();
 								include_once(plugin_dir_path(__FILE__) . "../../partials/emails/biobank-email-update-research-partner.php");
@@ -752,7 +752,7 @@ class ResearcherFormHandler extends UserFormHandler {
 					 * If the password is updated, email it to the user.
 					 */
 					if ($input["password"] != "") {
-						$user_data["user_pass"] = wp_hash_password($input["password"]);
+						wp_set_password($input["password"], $id);
 
 						ob_start();
 						include_once(plugin_dir_path(__FILE__) . "../../partials/emails/biobank-email-update-researcher.php");
