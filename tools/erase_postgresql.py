@@ -38,6 +38,22 @@ def setup_args():
 	args = parser.parse_args()
 	return args
 
+def get_column_index(column, header):
+	"""
+	Get the index of the given column in the header line.
+
+	:param column: The column name to look for.
+	:type column: str
+	:param header: The header line.
+	:type header: str
+
+	:return: The index of the column name in the header line.
+	:rtype: int
+	"""
+
+	column_names = header.split(',')
+	return column_names.index(column)
+
 def erase(path, pseudonym):
 	"""
 	Erase the research partner having the given pseudonym from the backup in the given path.
