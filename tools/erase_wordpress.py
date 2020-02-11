@@ -45,7 +45,7 @@ def get_table_structure(path, table):
 	:type table: str
 
 	:return: A list of lines making up the table structure.
-	:rtype: list
+	:rtype: list of str
 	"""
 
 	lines = []
