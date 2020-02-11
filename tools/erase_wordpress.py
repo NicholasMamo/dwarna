@@ -147,7 +147,7 @@ def get_user_id(path, pseudonym):
 
 	for tuple in data:
 		if tuple[user_login_index] == pseudonym:
-			return tuple[id_index]
+			return int(tuple[id_index])
 
 	return -1
 
