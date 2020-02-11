@@ -28,5 +28,25 @@ def setup_args():
 	args = parser.parse_args()
 	return args
 
+def erase(path, pseudonym):
+	"""
+	Erase the research partner having the given pseudonym from the backup in the given path.
+
+	:param path: The path to the backup directory.
+	:type path: str
+	:param pseudonym: The pseudonym of the research partner to remove.
+	:type pseudonym: str
+
+	:raises OSError: If there is no PostgreSQL backup in the given path.
+	"""
+
+	dir = os.path.join(path, 'wordpress')
+	if not os.path.isdir(dir):
+		raise OSError("No WordPress backup found")
+
 if __name__ == "__main__":
 	args = setup_args()
+	path = args.path[0]
+
+	for pseudonym in args.erase:
+		erase(path, pseudonym)
