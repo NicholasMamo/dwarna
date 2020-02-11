@@ -82,7 +82,7 @@ def erase(path, pseudonym):
 					fout.write(line)
 
 		"""
-		Remove the original file and replace it wit the new one.
+		Remove the original file and replace it with the new one.
 		"""
 		os.remove(file)
 		os.rename(f"{file}.tmp", file)
