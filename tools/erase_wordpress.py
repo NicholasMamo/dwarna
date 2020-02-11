@@ -6,6 +6,7 @@ A function to go through the WordPress data file and erase a list of research pa
 
 import argparse
 import os
+import re
 import sys
 
 def setup_args():
@@ -65,6 +66,35 @@ def get_table_structure(path, table):
 				lines.append(line)
 
 	return lines
+
+def get_table_data(path, table):
+	"""
+	Extract the table data from the given file.
+
+	:param path: The path to the SQL file.
+	:type path: str
+	:param table: The table whose data to extract.
+	:type table: str
+
+	:return: The data tuple inserted into the table.
+	:rtype: list of list of str
+	"""
+
+	with open(path, 'r') as f:
+		for line in f:
+			"""
+			Table structures always start the same and occupy one line.
+			"""
+			if line.startswith(f"INSERT INTO `{table}`"):
+				data_pattern = re.compile("(\\(.+?\\))")
+				data = data_pattern.findall(line)
+				data = [ tuple.replace("'", '') for tuple in data]
+				data = [ tuple.replace("(", '') for tuple in data]
+				data = [ tuple.replace(")", '') for tuple in data]
+				data = [ tuple.split(',') for tuple in data]
+				return data
+
+	return [ ]
 
 def get_column_index(lines, column):
 	"""
