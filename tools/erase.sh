@@ -28,3 +28,14 @@ else
 	exit 1
 fi
 
+for D in $path/*; do
+    if [ -d "${D}" ]; then # if it is a folder, erase normally
+		echo -e "${HIGHLIGHT}Erasing $@ from $D${DEFAULT}"
+		if [ -d "$D/wordpress" ]; then
+        	$parent_path/erase_wordpress.py -p $D -e $@
+		fi
+		if [ -d "$D/postgresql" ]; then
+        	$parent_path/erase_postgresql.py -p $D -e $@
+		fi
+    fi
+done
