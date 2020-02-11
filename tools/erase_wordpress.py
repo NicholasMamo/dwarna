@@ -145,7 +145,7 @@ def get_user_id(path, pseudonym):
 	user_login_index = get_column_index(structure, 'user_login')
 
 	for tuple in data:
-		if tuple[user_login_index].replace("'", '') == pseudonym:
+		if tuple[user_login_index] == f"'{pseudonym}'":
 			return int(tuple[id_index])
 
 	return -1
