@@ -70,5 +70,6 @@ for D in $path/*; do
         	$parent_path/erase_postgresql.py -p $D -e $@
 		fi
 		archive="$( zip $D )"
+		rm -r $D
     fi
 done
