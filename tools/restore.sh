@@ -127,11 +127,13 @@ then
 	if is_zip $path; then
 		echo -e "${HIGHLIGHT}Extracting archive $1${DEFAULT}"
 		path="$( unzip $path )"
+		args $path "$@"
+		rm -r $path
+	else
+		args $path "$@"
 	fi
 else
 	echo "Expected path option"
 	usage
 	exit 1
 fi
-
-args $path "$@"
