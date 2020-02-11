@@ -9,6 +9,12 @@ import os
 import re
 import sys
 
+TABLES = [ 'wp_usermeta', 'wp_users' ]
+"""
+:var TABLES: The tables that need cleaning.
+:vartype TABLES: list of str
+"""
+
 def setup_args():
 	"""
 	Set up and get the list of command-line arguments.
