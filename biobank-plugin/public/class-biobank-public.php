@@ -352,7 +352,12 @@ class Biobank_Public {
 	 * @access	public
 	 */
 	public function display_recruitment_form() {
-		include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-recruitment.php");
+		if (! \is_user_logged_in() && ! is_admin()) {
+			include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-recruitment.php");
+		} else {
+			wp_redirect(get_site_url());
+			exit;
+		}
 	}
 
 	/**
