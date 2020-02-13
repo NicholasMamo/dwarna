@@ -33,3 +33,11 @@ multi_card = True
 				 Later, the same identity would be used over and over again.
 :vartype multi_card: bool
 """
+
+verify = True if admin_host.lower().startswith('https') or multiuser_host.lower().startswith('https') else False
+"""
+:var verify: A boolean indicating whether requests to the blockchain should verify the certificate.
+			 By default, HTTPS requests verify the certificate.
+			 The only case when HTTPS requests do not need to be verified is when they use self-signed certificates.
+:vartype verify: bool
+"""
