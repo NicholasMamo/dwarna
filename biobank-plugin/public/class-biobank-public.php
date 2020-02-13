@@ -204,7 +204,7 @@ class Biobank_Public {
 		/*
 		 * This view should only be displayed if the user is logged in and they are a participant.
 		 */
-		if (\is_user_logged_in()) {
+		if (\is_user_logged_in() && ! is_admin()) {
 			$user = wp_get_current_user();
 			$role = $user->roles[0];
 			if ($role == "participant") {
@@ -223,7 +223,7 @@ class Biobank_Public {
 		/*
 		 * This view should only be displayed if the user is logged in, they are a participant and there is a study stored in the session.
 		 */
-		if (\is_user_logged_in()) {
+		if (\is_user_logged_in() && ! is_admin()) {
 			$user = wp_get_current_user();
 			$role = $user->roles[0];
 			if ($role == "participant") {
@@ -281,7 +281,7 @@ class Biobank_Public {
 		/*
 		 * This view should only be displayed if the user is logged in and they are a participant.
 		 */
-		if (\is_user_logged_in()) {
+		if (\is_user_logged_in() && ! is_admin()) {
 			$user = wp_get_current_user();
 			$role = $user->roles[0];
 			if ($role == "participant") {
@@ -323,7 +323,7 @@ class Biobank_Public {
 	 * @access	public
 	 */
 	public function display_subscription_form() {
-		if (\is_user_logged_in()) {
+		if (\is_user_logged_in() && ! is_admin()) {
 			$user = wp_get_current_user();
 			$role = $user->roles[0];
 			if ($role == "participant") {
@@ -367,7 +367,7 @@ class Biobank_Public {
 	 * @access	public
 	 */
 	public function display_erasure_form() {
-		if (\is_user_logged_in()) {
+		if (\is_user_logged_in() && ! is_admin()) {
 			$user = wp_get_current_user();
 			$role = $user->roles[0];
 			if ($role == "participant") {
