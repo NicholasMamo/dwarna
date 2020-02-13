@@ -354,7 +354,9 @@ class Biobank_Public {
 	public function display_recruitment_form() {
 		if (! \is_user_logged_in() && ! is_admin()) {
 			include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-recruitment.php");
-		} else {
+		}
+
+		if (! is_admin()) {
 			wp_redirect(get_site_url());
 			exit;
 		}
