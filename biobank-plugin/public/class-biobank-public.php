@@ -264,8 +264,10 @@ class Biobank_Public {
 		/*
 		 * If the function fails in some way, redirect to the homepage.
 		 */
-		wp_redirect(get_site_url());
-		exit;
+		if (! is_admin()) {
+			wp_redirect(get_site_url());
+			exit;
+		}
 	}
 
 	/**
@@ -308,8 +310,10 @@ class Biobank_Public {
 		/*
 		 * If the function fails in some way, redirect to the homepage.
 		 */
-		wp_redirect(get_site_url());
-		exit;
+		if (! is_admin()) {
+			wp_redirect(get_site_url());
+			exit;
+		}
 	}
 
 	/**
@@ -335,8 +339,10 @@ class Biobank_Public {
 		/*
 		 * If the function fails in some way, redirect to the homepage.
 		 */
-		wp_redirect(get_site_url());
-		exit;
+		if (! is_admin()) {
+			wp_redirect(get_site_url());
+			exit;
+		}
 	}
 
 	/**
@@ -368,8 +374,10 @@ class Biobank_Public {
 		/*
 		 * If the function fails in some way, redirect to the homepage.
 		 */
-		wp_redirect(get_site_url());
-		exit;
+		if (! is_admin()) {
+			wp_redirect(get_site_url());
+			exit;
+		}
 	}
 
 	/**
