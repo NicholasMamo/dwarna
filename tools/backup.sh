@@ -90,7 +90,8 @@ backup_postgresql() {
 	tables=( users researchers participants participant_identities participant_subscriptions biobankers studies studies_researchers emails email_recipients )
 	for table in "${tables[@]}"
 	do
-		su -c "psql -U postgres -d $database -c \"COPY ${table} TO '$( pwd )/$1/postgresql/${table}.csv' DELIMITER ',' CSV HEADER;\"" postgres
+		su -c "psql -U postgres -d $database -c \"COPY ${table} TO '/tmp/${table}.csv' DELIMITER ',' CSV HEADER;\"" postgres
+		cp /tmp/$table.csv $( pwd )/$1/postgresql/
 	done
 }
 
