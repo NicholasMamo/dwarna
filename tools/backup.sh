@@ -4,17 +4,22 @@
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 source $parent_path/../variables.sh
 
-# Create the backup's output directory.
-create_dir() {
+# Get the output directory
+get_output_dir() {
 	output='backup'
-
 	if has_param '-o' $*; then
 		output=$(get_param '-o' $*)
 	fi
+	mkdir -p $output
+	echo $output
+	return
+}
 
+# Create the backup's output directory.
+create_dir() {
 	backup=$( date +%Y%m%d )
-	mkdir -p $output/$backup
-	echo "$output/$backup"
+	mkdir -p $1/$backup
+	echo "$backup"
 }
 
 # Check whether the given parameter is given.
@@ -145,19 +150,19 @@ args() {
 			let len_options--
 			;;
         --blockchain)
-			backup_fabric $backup
+			backup_fabric $output/$backup
             ;;
         --rest)
-			backup_rest $backup
+			backup_rest $output/$backup
             ;;
         --plugin)
-			backup_plugin $backup
+			backup_plugin $output/$backup
             ;;
         --postgresql)
-			backup_postgresql $backup
+			backup_postgresql $output/$backup
             ;;
         --wordpress)
-			backup_wordpress $backup
+			backup_wordpress $output/$backup
             ;;
         --)
             shift
@@ -170,23 +175,25 @@ args() {
 
 	if [ $len_options -eq 0 ]
 	then
-		backup_fabric $backup
-		backup_rest $backup
-		backup_plugin $backup
-		backup_postgresql $backup
-		backup_wordpress $backup
+		backup_fabric $output/$backup
+		backup_rest $output/$backup
+		backup_plugin $output/$backup
+		backup_postgresql $output/$backup
+		backup_wordpress $output/$backup
 	fi
 }
 
-backup="$( create_dir $* )"
-echo -e "${HIGHLIGHT}Backing up to $backup${DEFAULT}"
+output="$( get_output_dir $* )"
+backup="$( create_dir $output )"
+echo -e "${HIGHLIGHT}Backing up to $output/$backup${DEFAULT}"
 args $0 "$@"
-change_ownership $backup
+change_ownership $output/$backup
 
 # Create an archive of the backup folder if the `z` parameter is given.
 zip=$(has_param '-z' $*)
 if has_param '-z' $*; then
 	echo -e "${HIGHLIGHT}Creating archive $backup.tar.gz${DEFAULT}"
+	cd $output
 	archive="$( zip $backup )"
 	change_ownership $archive
 	rm -r $backup
