@@ -189,4 +189,5 @@ if has_param '-z' $*; then
 	echo -e "${HIGHLIGHT}Creating archive $backup.tar.gz${DEFAULT}"
 	archive="$( zip $backup )"
 	change_ownership $archive
+	rm -r $backup
 fi
