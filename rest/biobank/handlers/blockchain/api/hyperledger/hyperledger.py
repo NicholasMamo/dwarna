@@ -315,7 +315,7 @@ class HyperledgerAPI(BlockchainAPI):
 			"options": {},
 		}, headers={
 			"responseType": "blob"
-		})
+		}, verify=blockchain.verify)
 		return response
 
 	def _revoke_identity(self, username, port=None, *args, **kwargs):
@@ -341,14 +341,14 @@ class HyperledgerAPI(BlockchainAPI):
 		else:
 			endpoint = f"{self._admin_host}:{port}/api/system/identities/"
 
-		response = requests.get(endpoint)
+		response = requests.get(endpoint, verify=blockchain.verify)
 		identities = json.loads(response.content)
 		identities = {
 			identity["name"]: identity["identityId"] for identity in identities
 		}
 
 		endpoint = f"{self._host}:{port}/api/system/identities/{identities[username]}/revoke"
-		response = requests.post(endpoint)
+		response = requests.post(endpoint, verify=blockchain.verify)
 		return response
 
 	def _create_participant(self, username, port=None, *args, **kwargs):
@@ -377,7 +377,7 @@ class HyperledgerAPI(BlockchainAPI):
 		response = requests.post(endpoint, data={
 			"$class": "org.consent.model.ResearchParticipant",
 			"participantID": username,
-		})
+		}, verify=blockchain.verify)
 		return response.content
 
 	def _card_exists(self, username, temp, study_id=None, *args, **kwargs):
@@ -461,7 +461,7 @@ class HyperledgerAPI(BlockchainAPI):
 		response = requests.post(endpoint, data={
 			"$class": "org.consent.model.Study",
 			"studyID": study_id,
-		})
+		}, verify=blockchain.verify)
 		body = response.json()
 		if 'error' in body:
 			if 'already exists' in body['error']['message']:
@@ -511,7 +511,7 @@ class HyperledgerAPI(BlockchainAPI):
 			"study": f"org.consent.model.Study#{study_id}"
 		}, headers={
 			"X-Access-Token": access_token
-		})
+		}, verify=blockchain.verify)
 
 		return response.content
 
@@ -549,7 +549,7 @@ class HyperledgerAPI(BlockchainAPI):
 
 		response = requests.get(endpoint, headers={
 			"X-Access-Token": access_token
-		})
+		}, verify=blockchain.verify)
 		consent_changes = json.loads(response.content)
 		return consent_changes[0]["status"] if len(consent_changes) > 0 else False
 
@@ -594,7 +594,7 @@ class HyperledgerAPI(BlockchainAPI):
 		else:
 			endpoint = f"{self._admin_host}/api/queries/get_study_consents?{param_string}"
 
-		response = requests.get(endpoint, headers={ })
+		response = requests.get(endpoint, headers={ }, verify=blockchain.verify)
 
 		"""
 		Sort the consent changes in descending order of timestamp to be certain of their validity.
@@ -665,7 +665,7 @@ class HyperledgerAPI(BlockchainAPI):
 			else:
 				endpoint = f"{self._multiuser_host}:{port}/api/queries/get_study_consents?{param_string}"
 
-		response = requests.get(endpoint, headers={ })
+		response = requests.get(endpoint, headers={ }, verify=blockchain.verify)
 
 		"""
 		Check whether the user could access the endpoint.
@@ -740,7 +740,7 @@ class HyperledgerAPI(BlockchainAPI):
 
 		response = requests.get(endpoint, headers={
 			"X-Access-Token": access_token
-		})
+		}, verify=blockchain.verify)
 		consent_changes = json.loads(response.content)
 		consent_changes = {
 			consent["timestamp"]: consent["status"] for consent in consent_changes
