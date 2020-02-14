@@ -5,14 +5,22 @@ The route handler to handle participant-related requests.
 import json
 import os
 import psycopg2
+import subprocess
 import sys
 import threading
 import traceback
+
+path = sys.path[0]
+path = os.path.join(path, "../../")
+if path not in sys.path:
+	sys.path.insert(1, path)
 
 from oauth2.web import Response
 
 from .exceptions import general_exceptions, study_exceptions, user_exceptions
 from .handler import UserHandler
+
+from config import erasure
 
 class ParticipantHandler(UserHandler):
 	"""
@@ -191,6 +199,15 @@ class ParticipantHandler(UserHandler):
 					user_id = '%s' AND
 					role = 'PARTICIPANT';""" % (username),
 			])
+
+			"""
+			Remove the participant from the backups.
+			"""
+			if erasure.script and erasure.backups:
+				bashCommand = f"cd {erasure.backups} && {erasure.script} -p . {username}"
+				print(f"Running: {bashCommand}", file=sys.stderr)
+				process = subprocess.call(bashCommand, shell=True, stdout=subprocess.PIPE)
+
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
 			response.body = json.dumps({ })
