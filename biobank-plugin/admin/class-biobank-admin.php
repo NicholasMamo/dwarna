@@ -563,8 +563,18 @@ class Biobank_Admin {
 		$phpmailer->FromName = SMTP_NAME;
 	}
 
+	/**
+	 * When an SMTP error occurs, write it to the error log and redirect back with an error.
+	 *
+	 * @param WP_Error	$wp_error	The WP error object.
+	 */
 	function on_mail_error( $wp_error ) {
-		var_dump($wp_error);
+		foreach ($wp_error->errors as $errors) {
+			foreach ($errors as $error) {
+				error_log($error);
+			}
+		}
+		error_log('Error Data: ' . json_encode($wp_error->error_data));
 		exit;
 	}
 
