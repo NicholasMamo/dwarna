@@ -584,7 +584,9 @@ class Biobank_Admin {
 			$referer = $_SERVER['HTTP_REFERER'];
 			$error = urlencode($error);
 			$param_string = strpos($referer, '?') ? "$param&biobank_error=$error" : "$param?biobank_error=$error";
-			$referer .= $param_string;
+			if (! strpos($referer, 'biobank_error=')) {
+				$referer .= $param_string;
+			}
 			wp_redirect($referer);
 		} else {
 			wp_redirect(get_site_url() . "?biobank_error=$error");
