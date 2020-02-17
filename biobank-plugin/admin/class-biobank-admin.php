@@ -510,7 +510,7 @@ class Biobank_Admin {
 	 * Before sending an email, decrypt the user's email address if need be.
 	 *
 	 * @since	1.0.0
-	 * @param	string	args	The email's data.
+	 * @param	string	$args	The email's data.
 	 */
 	public function before_email($args) {
 		$email = $args['to'];
@@ -547,7 +547,7 @@ class Biobank_Admin {
 	 * Before sending an email, configure PHPMailer.
 	 *
 	 * @since 1.0.0
-	 * @param PHPMailer The PHPMailer object.
+	 * @param PHPMailer	$phpmailer	The PHPMailer object.
 	 */
 	function send_smtp_email( $phpmailer ) {
 		include(plugin_dir_path(__FILE__) . "../includes/globals.php");
