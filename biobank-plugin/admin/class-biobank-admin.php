@@ -575,6 +575,20 @@ class Biobank_Admin {
 			}
 		}
 		error_log('Error Data: ' . json_encode($wp_error->error_data));
+
+		/*
+		 * If the referer is available, redirect back with the error.
+		 * Otherwise, redirect back to the home page with the error.
+		 */
+		if ($_SERVER['HTTP_REFERER']) {
+			$referer = $_SERVER['HTTP_REFERER'];
+			$error = urlencode($error);
+			$param_string = strpos($referer, '?') ? "$param&biobank_error=$error" : "$param?biobank_error=$error";
+			$referer .= $param_string;
+			wp_redirect($referer);
+		} else {
+			wp_redirect(get_site_url() . "?biobank_error=$error");
+		}
 		exit;
 	}
 
