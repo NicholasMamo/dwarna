@@ -226,7 +226,7 @@ class EmailFormHandler extends FormHandler {
 					$body = ob_get_contents();
 					ob_end_clean();
 					$sent = wp_mail(
-						'nicholas.mamo@um.edu.mt', "New Research Partner: {$input['name']}",
+						SMTP_FROM, "New Research Partner: {$input['name']}",
 						$body, array( "Content-type: text/html" )
 					);
 
