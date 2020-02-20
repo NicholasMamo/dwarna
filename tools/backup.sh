@@ -93,8 +93,12 @@ backup_postgresql() {
 	mkdir -p $1/postgresql/
 	chown postgres $1/postgresql/
 
-	read -p 'Enter database [biobank]: ' database
-	database=${database:-biobank}
+	if [ ! $psqldb ]; then
+		read -p 'Enter database [biobank]: ' database
+		database=${database:-biobank}
+	else
+		database=$psqldb
+	fi
 
 	tables=( users researchers participants participant_identities participant_subscriptions biobankers studies studies_researchers emails email_recipients )
 	for table in "${tables[@]}"
