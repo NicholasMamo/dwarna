@@ -204,7 +204,7 @@ class ParticipantHandler(UserHandler):
 			Remove the participant from the backups.
 			"""
 			if erasure.script and erasure.backups:
-				bashCommand = f"cd {erasure.backups} && {erasure.script} -p . {username}"
+				bashCommand = f"{erasure.script} -p {erasure.backups} {username}"
 				print(f"Running: {bashCommand}", file=sys.stderr)
 				process = subprocess.call(bashCommand, shell=True, stdout=subprocess.PIPE)
 
