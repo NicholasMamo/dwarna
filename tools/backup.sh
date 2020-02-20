@@ -4,6 +4,10 @@
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 source $parent_path/../variables.sh
 
+if [ -f $parent_path/cred.conf ]; then
+	. $parent_path/cred.conf
+fi
+
 # Get the output directory
 get_output_dir() {
 	output='backup'
