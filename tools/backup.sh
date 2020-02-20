@@ -112,10 +112,25 @@ backup_postgresql() {
 backup_wordpress() {
 	echo -e "${HIGHLIGHT}Backing up WordPress database${DEFAULT}"
 	mkdir -p $1/wordpress/
-	read -p 'Enter database [wordpress]: ' database
-	database=${database:-wordpress}
-	read -p 'Enter username: ' username
-	mysqldump -u $username -p $database > $1/wordpress/wordpress.sql
+	if [ ! $wpdb ]; then
+		read -p 'Enter database [wordpress]: ' database
+		database=${database:-wordpress}
+	else
+		database=$wpdb
+	fi
+
+	if [ ! $wpuser ]; then
+		read -p 'Enter username: ' username
+	else
+		username=$wpuser
+	fi
+
+	if [ $wppass ]; then
+		mysqldump -u $username -p$wppass $database > $1/wordpress/wordpress.sql
+	else
+		mysqldump -u $username -p $database > $1/wordpress/wordpress.sql
+	fi
+
 }
 
 # Update the the ownership of the backup files.
