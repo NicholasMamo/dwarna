@@ -28,6 +28,7 @@ The files in the `config` directory should be the following:
 - `email.py`      -	The email configuration, including SMTP details;
 - `erasure.py`    -	The erasure configuration.
 					If the values are not empty, when a research partner is removed, they are also removed from the backups.
+					Note that the backup folder and all its files need to belong to the `www-data` group.
 - `oauth.py`      -	The OAuth 2.0 configuration.
  					This includes the lifetime of access tokens and a list of scopes, extracted automatically from the routes.
 					The client ID and secret have to be generated anew; and
