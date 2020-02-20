@@ -110,6 +110,8 @@ The script takes in a path to the directory where backups are stored, and a list
 	chmod +x tools/restore.sh
 	./tools/erase.sh -p backup p2320 p2321
 
+See [REST API README.md](https://github.com/NicholasMamo/dwarna/tree/master/rest) for instructions to erase research partners from backups on deletion.
+
 ## Running the tests
 
 To run the unit tests, use the `tests.sh` script:
