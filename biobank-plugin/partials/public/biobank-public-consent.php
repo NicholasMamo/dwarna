@@ -18,6 +18,12 @@ $refresh = (isset($_GET["return"]) && $_GET["return"] == "update_consent");
 	</form>
 
 	<div id='<?= $this->plugin_name ?>-alerts'>
+		<noscript>
+			<p id='<?= $this->plugin_name ?>-no-javascript'
+			   class='<?= $this->plugin_name ?>-alert'>
+				You need a browser that supports JavaScript to use Dwarna!
+			</p>
+		</noscript>
 		<p id='<?= $this->plugin_name ?>-get-temporary-card'
 		   class='<?= $this->plugin_name ?>-alert <?= $this->plugin_name ?>-hidden'>
 			Creating a new blockchain identity

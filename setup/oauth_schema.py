@@ -4,6 +4,7 @@ Create the database that stores access tokens.
 Implementation based on https://github.com/wndhydrnt/python-oauth2/blob/v1/oauth2/store/dbapi/mysql.py.
 """
 
+import argparse
 import os
 from os.path import expanduser
 
@@ -211,5 +212,22 @@ def create_schema(database):
 	except Exception as e:
 		print(e)
 
+def setup_args():
+	"""
+	Set up and get the list of command-line arguments.
+
+	Accepted arguments:
+		- -d --database	The database where to create the schema.
+
+	:return: The command-line arguments.
+	:rtype: list
+	"""
+
+	parser = argparse.ArgumentParser(description="Create the database schema.")
+	parser.add_argument("-d", "--database", help="<Required> The database where to create the schema.", required=True)
+	args = parser.parse_args()
+	return args
+
 if __name__ == "__main__":
-	create_schema(DEFAULT_DATABASE)
+	args = setup_args()
+	create_schema(args.database)

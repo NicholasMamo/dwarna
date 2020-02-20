@@ -9,9 +9,14 @@ source variables.sh
 
 echo -e "${HIGHLIGHT}Installing Schema${DEFAULT}"
 cd setup
-./minimal_schema.py
+read -p 'Enter database to install the schema [biobank]: ' database
+database=${database:-biobank}
+./minimal_schema.py -d $database
+
 echo -e "${HIGHLIGHT}Installing OAuth 2.0 Schema${DEFAULT}"
-./oauth_schema.py
+read -p 'Enter database to install the OAuth schema [biobank_oauth]: ' database
+database=${database:-biobank_oauth}
+./oauth_schema.py -d $database
 cd ..
 
 # Install Hyperledger Fabric first.
