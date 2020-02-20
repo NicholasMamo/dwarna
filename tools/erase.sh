@@ -51,7 +51,8 @@ else
 	exit 1
 fi
 
-for D in $path/*; do
+cd $path
+for D in *; do
     if [ -d "${D}" ]; then # if it is a folder, erase normally
 		echo -e "${HIGHLIGHT}Erasing $@ from $D${DEFAULT}"
 		if [ -d "$D/wordpress" ]; then
