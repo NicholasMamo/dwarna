@@ -642,28 +642,12 @@ class HyperledgerAPI(BlockchainAPI):
 		If the user does not have access to the port, revert to the multi-user port.
 		"""
 		from config import routes
-		if port is None:
-			if token is not None and routes.admin_scope in token.scopes:
-				port = self._default_admin_port
+		port = self._default_admin_port
 
-				if port is not None:
-					endpoint = f"{self._admin_host}:{port}/api/queries/get_study_consents?{param_string}"
-				else:
-					endpoint = f"{self._admin_host}/api/queries/get_study_consents?{param_string}"
-			else:
-				port = self._default_multiuser_port
-
-				if port is not None:
-					endpoint = f"{self._multiuser_host}:{port}/api/queries/get_study_consents?{param_string}"
-				else:
-					endpoint = f"{self._multiuser_host}/api/queries/get_study_consents?{param_string}"
-		elif int(port) == self._default_admin_port and routes.admin_scope not in token.scopes:
-			raise hyperledger_exceptions.UnauthorizedDataAccessException()
+		if port is not None:
+			endpoint = f"{self._admin_host}:{port}/api/queries/get_study_consents?{param_string}"
 		else:
-			if int(port) == self._default_admin_port:
-				endpoint = f"{self._admin_host}:{port}/api/queries/get_study_consents?{param_string}"
-			else:
-				endpoint = f"{self._multiuser_host}:{port}/api/queries/get_study_consents?{param_string}"
+			endpoint = f"{self._admin_host}/api/queries/get_study_consents?{param_string}"
 
 		response = requests.get(endpoint, headers={ }, verify=blockchain.verify)
 
