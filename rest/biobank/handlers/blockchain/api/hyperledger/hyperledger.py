@@ -534,7 +534,7 @@ class HyperledgerAPI(BlockchainAPI):
 		:rtype: bool
 		"""
 
-		port = self._default_multiuser_port if port is None else port
+		port = self._default_admin_port if port is None else port
 
 		params = {
 			"study_id": f"resource:org.consent.model.Study#{study_id}",
@@ -543,9 +543,9 @@ class HyperledgerAPI(BlockchainAPI):
 		param_string = urllib.parse.urlencode(params)
 
 		if port is not None:
-			endpoint = f"{self._multiuser_host}:{port}/api/queries/has_consent?{param_string}"
+			endpoint = f"{self._admin_host}:{port}/api/queries/has_consent?{param_string}"
 		else:
-			endpoint = f"{self._multiuser_host}/api/queries/has_consent?{param_string}"
+			endpoint = f"{self._admin_host}/api/queries/has_consent?{param_string}"
 
 		response = requests.get(endpoint, headers={
 			"X-Access-Token": access_token
