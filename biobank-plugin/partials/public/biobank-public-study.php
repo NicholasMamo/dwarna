@@ -43,7 +43,7 @@ if (isset($error) && ! empty($error)) {
    </label>
    <input id = '<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>-consenting'
    		  name = '<?= $this->plugin_name ?>[study][consenting]'
-		  class = 'study-consent' type = 'checkbox' hidden>
+		  class = 'study-consenting <?= $this->plugin_name ?>-hidden' type = 'checkbox'>
 
 	<input name='<?= $this->plugin_name ?>[study][study_id]'
 		   type='hidden' value='<?= $study->study->study_id ?>'>
