@@ -29,17 +29,21 @@ if (isset($error) && ! empty($error)) {
 
 	<label class='checkbox-container'
 		   for="<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>">
-		   <span id='<?= $this->plugin_name ?>-consented'>
+		   <span id='<?= $this->plugin_name ?>-consented' hidden>
 			   I no longer wish to participate in this study
 		   </span>
-		   <span id='<?= $this->plugin_name ?>-not-consented'>
+		   <span id='<?= $this->plugin_name ?>-not-consented' hidden>
 			   I agree that my sample at the biobank can be used for this study
 		   </span>
+
 	   <input id = '<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>'
 	   		  name = '<?= $this->plugin_name ?>[study][consent]'
 			  class = 'study-consent' type = 'checkbox'>
 	   <span class='checkbox'></span>
    </label>
+   <input id = '<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>-consenting'
+   		  name = '<?= $this->plugin_name ?>[study][consenting]'
+		  class = 'study-consent' type = 'checkbox' hidden>
 
 	<input name='<?= $this->plugin_name ?>[study][study_id]'
 		   type='hidden' value='<?= $study->study->study_id ?>'>
