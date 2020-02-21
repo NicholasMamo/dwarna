@@ -51,11 +51,17 @@ jQuery('.study-consent').length && jQuery('.study-consent').ready(() => {
 								jQuery(`#biobank-study-${study_id}`).prop('checked', true);
 								jQuery('form').find('input[type="submit"]')
 											  .attr('disabled', null);
+								jQuery('#biobank-consented').show();
+			  					jQuery('#biobank-not-consented').hide();
 							} else {
 								jQuery('#biobank-quiz').show();
+								jQuery('#biobank-consented').hide();
+								jQuery('#biobank-not-consented').show();
 							}
 						} else {
 							jQuery('#biobank-quiz').show();
+							jQuery('#biobank-consented').hide();
+							jQuery('#biobank-not-consented').show();
 						}
 
 						/*
@@ -89,9 +95,12 @@ jQuery('.study-consent').length && jQuery('.study-consent').ready(() => {
 									jQuery('form').find('input[type="submit"]')
 												  .attr('disabled', null);
 									jQuery('#biobank-quiz').hide();
+									jQuery('#biobank-not-consented').hide();
+									jQuery('#biobank-consented').show();
 								} else {
 									jQuery(`#biobank-study-${study_id}`).prop('checked', false);
-									jQuery('#biobank-quiz').show();
+									jQuery('#biobank-consented').hide();
+									jQuery('#biobank-not-consented').show();
 								}
 								break;
 							}
