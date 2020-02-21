@@ -48,7 +48,6 @@ jQuery('.study-consent').length && jQuery('.study-consent').ready(() => {
 							 * Otherwise, show the quiz and leave the submit button disabled.
 							 */
 							if (consent) {
-								jQuery(`#biobank-study-${study_id}`).prop('checked', true);
 								jQuery('form').find('input[type="submit"]')
 											  .attr('disabled', null);
 								jQuery('#biobank-consented').show();
@@ -91,14 +90,12 @@ jQuery('.study-consent').length && jQuery('.study-consent').ready(() => {
 								 * Otherwise, show the quiz and leave the submit button disabled.
 								 */
 								if (consent) {
-									jQuery(`#biobank-study-${study_id}`).prop('checked', true);
 									jQuery('form').find('input[type="submit"]')
 												  .attr('disabled', null);
 									jQuery('#biobank-quiz').hide();
 									jQuery('#biobank-not-consented').hide();
 									jQuery('#biobank-consented').show();
 								} else {
-									jQuery(`#biobank-study-${study_id}`).prop('checked', false);
 									jQuery('#biobank-consented').hide();
 									jQuery('#biobank-not-consented').show();
 								}
