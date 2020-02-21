@@ -5,6 +5,11 @@
 		"explanation":	"The sample may be used in this study"
 	},
 	{
+		"question": 	"Is the original consent form which I had signed at the biobank still valid?",
+		"answer": 		"yes",
+		"explanation":	"The original consent form remains valid: this form only allows your sample to be used in another study"
+	},
+	{
 		"question": 	"Is it possible to withdraw my consent at any time?",
 		"answer": 		"yes",
 		"explanation":	"Yes, you can withdraw your consent whenever you want"
@@ -13,10 +18,5 @@
 		"question": 	"Will my identity be kept private?",
 		"answer": 		"yes",
 		"explanation":	"Data kept at the biobank and on Dwarna is kept private and confidential"
-	},
-	{
-		"question": 	"Is the original consent form which I had signed at the biobank still valid?",
-		"answer": 		"yes",
-		"explanation":	"The original consent form remains valid: this form only allows your sample to be used in another study"
 	}
 ]

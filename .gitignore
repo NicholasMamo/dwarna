@@ -7,3 +7,7 @@ __pycache__/
 # virtual environments
 
 venv
+
+# credentials for automated backups
+
+tools/cred.conf

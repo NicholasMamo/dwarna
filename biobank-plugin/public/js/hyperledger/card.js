@@ -48,14 +48,22 @@ jQuery('.study-consent').length && jQuery('.study-consent').ready(() => {
 							 * Otherwise, show the quiz and leave the submit button disabled.
 							 */
 							if (consent) {
-								jQuery(`#biobank-study-${study_id}`).prop('checked', true);
 								jQuery('form').find('input[type="submit"]')
 											  .attr('disabled', null);
+								jQuery('#biobank-consented').show();
+			  					jQuery('#biobank-not-consented').hide();
+								jQuery(`#biobank-study-${study_id}-consenting`).prop('checked', false);
 							} else {
 								jQuery('#biobank-quiz').show();
+								jQuery('#biobank-consented').hide();
+								jQuery('#biobank-not-consented').show();
+								jQuery(`#biobank-study-${study_id}-consenting`).prop('checked', true);
 							}
 						} else {
 							jQuery('#biobank-quiz').show();
+							jQuery('#biobank-consented').hide();
+							jQuery('#biobank-not-consented').show();
+							jQuery(`#biobank-study-${study_id}-consenting`).prop('checked', true);
 						}
 
 						/*
@@ -85,13 +93,17 @@ jQuery('.study-consent').length && jQuery('.study-consent').ready(() => {
 								 * Otherwise, show the quiz and leave the submit button disabled.
 								 */
 								if (consent) {
-									jQuery(`#biobank-study-${study_id}`).prop('checked', true);
 									jQuery('form').find('input[type="submit"]')
 												  .attr('disabled', null);
 									jQuery('#biobank-quiz').hide();
+									jQuery('#biobank-not-consented').hide();
+									jQuery('#biobank-consented').show();
+									jQuery(`#biobank-study-${study_id}-consenting`).prop('checked', false);
 								} else {
-									jQuery(`#biobank-study-${study_id}`).prop('checked', false);
 									jQuery('#biobank-quiz').show();
+									jQuery('#biobank-consented').hide();
+									jQuery('#biobank-not-consented').show();
+									jQuery(`#biobank-study-${study_id}-consenting`).prop('checked', true);
 								}
 								break;
 							}

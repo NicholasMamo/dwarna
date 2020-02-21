@@ -86,6 +86,9 @@ You can specify which data to back up by passing on the following arguments:
 * `--postgresql` - Back up only the PostgreSQL data; and
 * `--wordpress` - Back up only the WordPress MySQL data
 
+To automate backups, copy the `tools/cred.example.conf` file and fill it in.
+The `backup.sh` script automatically reads the credentials from it.
+
 To restore a backup, run the `tools/restore.sh` script:
 
     chmod +x tools/restore.sh
