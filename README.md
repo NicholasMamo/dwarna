@@ -115,6 +115,13 @@ The script takes in a path to the directory where backups are stored, and a list
 
 See [REST API README.md](https://github.com/NicholasMamo/dwarna/tree/master/rest) for instructions to erase research partners from backups on deletion.
 
+## CRON
+
+CRON files are available in the `cron` directory.
+The scripts are made to be callable directly and automatically log to a file.
+Note that the scripts still need to be updated with the correct paths.
+Some directories and files need to be created in advance with the correct permissions.
+
 ## Running the tests
 
 To run the unit tests, use the `tests.sh` script:
