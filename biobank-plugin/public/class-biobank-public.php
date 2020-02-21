@@ -304,10 +304,11 @@ class Biobank_Public {
 				$consented_studies = array_map(function ($study) { return $study->study; },
 											   $consented_studies->data);
 
-				$non_consented_studies = array_filter((array) $active_studies->data,
+				$non_consented_studies = array_map(function ($study) { return $study->study; },
+												   (array) $active_studies->data);
+				$non_consented_studies = array_filter($non_consented_studies,
 													  function ($study) use ($consented_study_ids) {
-														  $study = (object) $study;
-														  return ! in_array($study->study->study_id, $consented_study_ids);
+														  return ! in_array($study->study_id, $consented_study_ids);
 													  });
 
 				include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-consent.php");
