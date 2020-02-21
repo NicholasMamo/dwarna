@@ -291,16 +291,8 @@ class Biobank_Public {
 				$consent_handler = new \client\form\ConsentFormHandler();
 				$active_studies = $consent_handler->get_active_studies();
 				$error = "";
-				$error = isset($active_studies->error) && ! empty($active_studies->error) ? $active_studies->error : $error;
 
-				/*
-				 * Extract a list of studies that are active.
-				 * These will later be used to separate consented studies from non-consented ones.
-				 */
-				$all_studies = array();
-				foreach ($active_studies->data as $study) {
-					array_push($all_studies, $study->study->study_id);
-				}
+				$error = isset($active_studies->error) && ! empty($active_studies->error) ? $active_studies->error : $error;
 
 				include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-consent.php");
 				return;
