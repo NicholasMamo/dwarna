@@ -25,6 +25,8 @@ if (isset($error) && ! empty($error)) {
 	<p class="biobank-homepage"><a href="<?= $study->study->homepage ?>" target="_blank">Read more</a></p>
 	<?php include_once(plugin_dir_path(__FILE__) . '/components/biobank-study-quiz.php') ?>
 
+	<h2>Consent Update</h2>
+
 	<label class='checkbox-container'
 		   for="<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>">Participate
 	   <input id = '<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>'
