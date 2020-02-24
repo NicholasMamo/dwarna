@@ -557,7 +557,14 @@ class Biobank_Admin {
 		$phpmailer->SMTPAuth = SMTP_AUTH;
 		$phpmailer->Port = SMTP_PORT;
 		$phpmailer->Username = SMTP_USER;
-		$phpmailer->Password = SMTP_PASS;
+
+		/*
+		 * Only add the password if authorization is required.
+		 */
+		if (SMTP_AUTH) {
+			$phpmailer->Password = SMTP_PASS;
+		}
+
 		$phpmailer->SMTPSecure = SMTP_SECURE;
 		$phpmailer->From = SMTP_FROM;
 		$phpmailer->FromName = SMTP_NAME;
