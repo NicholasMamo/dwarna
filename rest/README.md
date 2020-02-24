@@ -23,13 +23,16 @@ The files in the `config` directory should be the following:
 
 - `blockchain.py` - Information about where the Hyperledger Fabric blockchain is served.
 					This includes the ports where the multi-user and administration endpoints of Hyperledger Composer's REST API should be served;
-- `db.py` - 		The configuration file with information such as which databases should be used.
+- `db.py`         -	The configuration file with information such as which databases should be used.
 					An encryption secret is used to encrypt sensitive personal information;
-- `email.py` - 		The email configuration, including SMTP details;
-- `oauth.py` - 		The OAuth 2.0 configuration.
+- `email.py`      -	The email configuration, including SMTP details;
+- `erasure.py`    -	The erasure configuration.
+					If the values are not empty, when a research partner is removed, they are also removed from the backups.
+					Note that the backup folder and all its files need to belong to the `www-data` group.
+- `oauth.py`      -	The OAuth 2.0 configuration.
  					This includes the lifetime of access tokens and a list of scopes, extracted automatically from the routes.
 					The client ID and secret have to be generated anew; and
-- `routes.py` - 	The routes served by the REST API, each linked with a handler function.
+- `routes.py`     -	The routes served by the REST API, each linked with a handler function.
 
 ### Starting
 

@@ -168,6 +168,7 @@ class ConsentFormHandler extends StudyHandler {
 				$error = '';
 				$give_endpoint = "give_consent";
 				$withdraw_endpoint = "withdraw_consent";
+				$consenting = isset($study['consenting']) && $study['consenting'] == 'on';
 
 				/*
 				 * Create a new request with the study and user information.
@@ -178,7 +179,7 @@ class ConsentFormHandler extends StudyHandler {
 				$request->add_parameter("address", $input['address']);
 				$request->add_parameter("access_token", $this->get_blockchain_access_token());
 
-				$consent = $study['consent'] == 'on';
+				$consent = $consenting && $study['consent'] == 'on';
 
 				/*
 				 * There are two routes to consent.

@@ -4,6 +4,10 @@
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 source $parent_path/../variables.sh
 
+if [ -f $parent_path/cred.conf ]; then
+	. $parent_path/cred.conf
+fi
+
 # Get the output directory
 get_output_dir() {
 	output='backup'
@@ -89,8 +93,12 @@ backup_postgresql() {
 	mkdir -p $1/postgresql/
 	chown postgres $1/postgresql/
 
-	read -p 'Enter database [biobank]: ' database
-	database=${database:-biobank}
+	if [ ! $psqldb ]; then
+		read -p 'Enter database [biobank]: ' database
+		database=${database:-biobank}
+	else
+		database=$psqldb
+	fi
 
 	tables=( users researchers participants participant_identities participant_subscriptions biobankers studies studies_researchers emails email_recipients )
 	for table in "${tables[@]}"
@@ -104,10 +112,25 @@ backup_postgresql() {
 backup_wordpress() {
 	echo -e "${HIGHLIGHT}Backing up WordPress database${DEFAULT}"
 	mkdir -p $1/wordpress/
-	read -p 'Enter database [wordpress]: ' database
-	database=${database:-wordpress}
-	read -p 'Enter username: ' username
-	mysqldump -u $username -p $database > $1/wordpress/wordpress.sql
+	if [ ! $wpdb ]; then
+		read -p 'Enter database [wordpress]: ' database
+		database=${database:-wordpress}
+	else
+		database=$wpdb
+	fi
+
+	if [ ! $wpuser ]; then
+		read -p 'Enter username: ' username
+	else
+		username=$wpuser
+	fi
+
+	if [ $wppass ]; then
+		mysqldump -u $username -p$wppass $database > $1/wordpress/wordpress.sql
+	else
+		mysqldump -u $username -p $database > $1/wordpress/wordpress.sql
+	fi
+
 }
 
 # Update the the ownership of the backup files.

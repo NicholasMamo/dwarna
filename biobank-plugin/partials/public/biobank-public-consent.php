@@ -49,9 +49,21 @@ $refresh = (isset($_GET["return"]) && $_GET["return"] == "update_consent");
 		</p>
 	</div>
 
-	<ul>
-	<?php foreach ($active_studies->data as $study) {?>
-		<li><a href='#' onclick='getCard(this, "<?= $study->study->study_id ?>"); return false;'><?= $study->study->name ?></a></li>
-	<?php } ?>
-	</ul>
+	<?php if (count($consented_studies)): ?>
+		<h2>Consented Studies</h2>
+		<ul>
+		<?php foreach ($consented_studies as $study) { ?>
+			<li><a href='#' onclick='getCard(this, "<?= $study->study_id ?>"); return false;'><?= $study->name ?></a></li>
+		<?php } ?>
+		</ul>
+	<?php endif ?>
+
+	<?php if (count($non_consented_studies)): ?>
+		<h2>Other Studies</h2>
+		<ul>
+		<?php foreach ($non_consented_studies as $study) { ?>
+			<li><a href='#' onclick='getCard(this, "<?= $study->study_id ?>"); return false;'><?= $study->name ?></a></li>
+		<?php } ?>
+		</ul>
+	<?php endif ?>
 </div>

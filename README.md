@@ -86,6 +86,9 @@ You can specify which data to back up by passing on the following arguments:
 * `--postgresql` - Back up only the PostgreSQL data; and
 * `--wordpress` - Back up only the WordPress MySQL data
 
+To automate backups, copy the `tools/cred.example.conf` file and fill it in.
+The `backup.sh` script automatically reads the credentials from it.
+
 To restore a backup, run the `tools/restore.sh` script:
 
     chmod +x tools/restore.sh
@@ -109,6 +112,15 @@ The script takes in a path to the directory where backups are stored, and a list
 
 	chmod +x tools/restore.sh
 	./tools/erase.sh -p backup p2320 p2321
+
+See [REST API README.md](https://github.com/NicholasMamo/dwarna/tree/master/rest) for instructions to erase research partners from backups on deletion.
+
+## CRON
+
+CRON files are available in the `cron` directory.
+The scripts are made to be callable directly and automatically log to a file.
+Note that the scripts still need to be updated with the correct paths.
+Some directories and files need to be created in advance with the correct permissions.
 
 ## Running the tests
 

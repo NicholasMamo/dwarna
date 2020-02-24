@@ -51,7 +51,7 @@ def get_table_structure(path, table):
 	lines = []
 
 	found = False # whether the table has been found
-	with open(path, 'r') as f:
+	with open(path, 'r', encoding="utf-8") as f:
 		for line in f:
 			"""
 			Table structures always start the same, so look for the SQL function.
@@ -86,7 +86,7 @@ def get_table_data(path, table):
 	:rtype: list of list of str
 	"""
 
-	with open(path, 'r') as f:
+	with open(path, 'r', encoding="utf-8") as f:
 		for line in f:
 			"""
 			Table structures always start the same and occupy one line.
@@ -181,7 +181,7 @@ def erase(path, pseudonym):
 		return
 
 	table_name_pattern = re.compile("INSERT INTO `(.+?)`")
-	with open(file, "r") as fin, open(f"{file}.tmp", "w") as fout:
+	with open(file, "r", encoding="utf-8") as fin, open(f"{file}.tmp", "w", encoding="utf-8") as fout:
 		for line in fin:
 			"""
 			If the line may contain data that may be removed, process the line.
