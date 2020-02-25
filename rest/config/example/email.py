@@ -12,8 +12,9 @@ smtp_port = 587
 
 smtp_secure = 'tls'
 """
-:var smtp_tls: The SMTP security protocol.
-:vartype smtp_tls: str
+:var smtp_secure: The SMTP security protocol.
+				  If it is empty or `None`, no encryption is specified.
+:vartype smtp_secure: str or None
 """
 
 smtp_auth = True
