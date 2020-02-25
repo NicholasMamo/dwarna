@@ -566,7 +566,13 @@ class Biobank_Admin {
 			$phpmailer->Password = SMTP_PASS;
 		}
 
-		$phpmailer->SMTPSecure = SMTP_SECURE;
+		/*
+		 * Only add security encryption it is enabled.
+		 */
+		if (SMTP_SECURE) {
+			$phpmailer->SMTPSecure = SMTP_SECURE;
+		}
+
 		$phpmailer->From = SMTP_FROM;
 		$phpmailer->FromName = SMTP_NAME;
 	}
