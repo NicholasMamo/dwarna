@@ -365,14 +365,13 @@ class EmailHandler(PostgreSQLRouteHandler):
 				"""
 
 				if not simulated:
+					smtpserver = smtplib.SMTP(smtp.smtp_host, smtp.smtp_port)
 					if smtp.smtp_secure == 'tls':
-						smtpserver = smtplib.SMTP(smtp.smtp_host, smtp.smtp_port)
 						smtpserver.set_debuglevel(0)
 						smtpserver.ehlo()
 						smtpserver.starttls()
 						smtpserver.ehlo()
 					elif smtp.smtp_secure == 'ssl':
-						smtpserver = smtplib.SMTP_SSL(smtp.smtp_host, smtp.smtp_port)
 						smtpserver.set_debuglevel(0)
 						smtpserver.ehlo()
 
