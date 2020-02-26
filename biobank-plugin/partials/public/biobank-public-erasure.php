@@ -26,5 +26,12 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 	<input type="hidden" name="action" value="erase_participant">
 	<?php wp_nonce_field("erasure_form", "erasure_nonce"); ?>
 
+	<p>
+		When you ask that your data is removed, you automatically withdraw consent to continue participating in all research studies.
+		All of your data is also erased from the Dwarna web portal and instructions will be forwarded to the Malta Biobank to destroy your biospecimen.
+		Erasing your data is irrevocable.
+		To start participating in research again, you would have to sign up as a new research partner.
+	</p>
+
 	<input type = "submit" class = "btn btn-primary float-left" value="I want to erase my data" />
 </form>
