@@ -12,32 +12,37 @@ jQuery('#biobank-quiz input[type="radio"]').change((event) => {
 		question.addClass('incorrect');
 	}
 
-	enableForm(question.closest('form'));
+	var form = question.closest('form')
+	if (submittable(form)) {
+		form.find('input[type="submit"]')
+			.attr('disabled', null);
+	} else {
+		form.find('input[type="submit"]')
+			.attr('disabled', 'true');
+	}
 });
 
-/*
+/**
  * Disable the submit button if there are any incorrect questions.
  * The form should also be disabled if there are unanswered questions.
  * The form is enabled first, and then disabled if need be.
  *
  * @param {object}	form - The form DOM element.
  */
-function enableForm(form) {
-	form.find('input[type="submit"]')
-		.attr('disabled', null);
-
+function submittable(form) {
+	var submittable = true;
 	/*
 	 * Check if there are any wrong questions.
 	 */
-	jQuery('.biobank-question').each((index, question) => {
+	form.find('.biobank-question').each((index, question) => {
 		question = jQuery(question);
 		if (question.hasClass('incorrect') ||
 			! jQuery(question).find('input:checked').length) {
-			question.closest('form')
-					.find('input[type="submit"]')
-					.attr('disabled', true);
+			submittable = false;
 		}
 	});
+
+	return submittable;
 }
 
 /**
