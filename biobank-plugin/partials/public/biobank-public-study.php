@@ -51,7 +51,7 @@ if (isset($error) && ! empty($error)) {
 		   name='<?= $this->plugin_name ?>[address]'
 		   type='hidden' value=''>
 
-	<input type = "submit" class = "btn btn-primary float-left" disabled />
+	<input type = "submit" class = "btn btn-primary float-left" />
 </form>
 
 <h2>Consent trail</h2>
