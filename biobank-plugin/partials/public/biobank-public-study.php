@@ -27,6 +27,11 @@ if (isset($error) && ! empty($error)) {
 
 	<h2>Consent Update</h2>
 
+	<div class="<?= $this->plugin_name ?>-alert <?= $this->plugin_name ?>-quiz-alert
+				<?= $this->plugin_name ?>-hidden">
+		Please fill in the quiz above before continuing.
+	</div>
+
 	<label class='checkbox-container'
 		   for="<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>">
 		   <span id='<?= $this->plugin_name ?>-consented' hidden>
