@@ -37,6 +37,17 @@ function submittable(form) {
 }
 
 /**
+ * When the research partner submits the form, show an error message if the quiz is not filled or incorrect.
+ */
+jQuery('form.biobank-form').submit((e) => {
+	var form = jQuery(e.currentTarget).closest('form');
+	if (! submittable(form)) {
+		e.preventDefault();
+		form.find('.biobank-quiz-alert').removeClass('biobank-hidden')
+	}
+});
+
+/**
  * Check whether the question in the given element is correct.
  *
  * @param {object}		question - The question DOM element.
