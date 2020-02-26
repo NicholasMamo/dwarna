@@ -11,15 +11,6 @@ jQuery('#biobank-quiz input[type="radio"]').change((event) => {
 	} else {
 		question.addClass('incorrect');
 	}
-
-	var form = question.closest('form')
-	if (submittable(form)) {
-		form.find('input[type="submit"]')
-			.attr('disabled', null);
-	} else {
-		form.find('input[type="submit"]')
-			.attr('disabled', 'true');
-	}
 });
 
 /**
