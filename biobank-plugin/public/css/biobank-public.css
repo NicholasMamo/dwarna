@@ -15,9 +15,43 @@
     font-family: "Noto Sans", sans-serif;
 }
 
+.biobank-form input[type="submit"]:hover {
+	background-color: white;
+    border-color: #29bacc !important;
+	color: #29bacc !important;
+}
+
+.biobank-form input[type="submit"]:active,
+.biobank-form input[type="submit"]:focus,
 .biobank-form input[type="submit"] {
-    display: block;
-    margin: 0 auto;
+    background: #29bacc;
+    border-color: #29bacc;
+    border-radius: 10px;
+    border-style: solid;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    color: white;
+    cursor: pointer;
+    display: inline-block;
+    font-style: normal;
+    font-weight: 600;
+    font-family: "Source Sans Pro",sans-serif;
+    font-size: 18px;
+    line-height: 1.7em;
+    margin: 30px 0 0 0;
+    min-width: 145px;
+    max-width: 230px;
+    outline: 0;
+    overflow: hidden;
+    padding: 9px 35px;
+    position: relative;
+    text-align: center;
+    -webkit-transition: color .2s ease-out,background-color .2s ease-out,border-color .2s ease-out,background-position .3s ease,opacity .2s ease-out;
+    -moz-transition: color .2s ease-out,background-color .2s ease-out,border-color .2s ease-out,background-position .3s ease,opacity .2s ease-out;
+    transition: color .2s ease-out,background-color .2s ease-out,border-color .2s ease-out,background-position .3s ease,opacity .2s ease-out;
+    vertical-align: middle;
+    width: 250px;
 }
 
 .biobank-form table,
