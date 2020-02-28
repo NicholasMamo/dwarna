@@ -25,13 +25,15 @@ function submittable(form) {
 	/*
 	 * Check if there are any wrong questions.
 	 */
-	form.find('.biobank-question').each((index, question) => {
-		question = jQuery(question);
-		if (question.hasClass('incorrect') ||
-			! jQuery(question).find('input:checked').length) {
-			submittable = false;
-		}
-	});
+	if (jQuery('.study-consenting').attr('checked')) {
+		form.find('.biobank-question').each((index, question) => {
+			question = jQuery(question);
+			if (question.hasClass('incorrect') ||
+				! jQuery(question).find('input:checked').length) {
+				submittable = false;
+			}
+		});
+	}
 
 	return submittable;
 }
