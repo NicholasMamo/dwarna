@@ -105,7 +105,8 @@
 .checkbox,
 .radio {
 	background-color: white;
-	border: 3px solid #29bacc !important;
+	box-sizing: border-box;
+	border: 3px solid #29bacc;
 	height: 25px;
 	left: 0;
 	position: absolute;
