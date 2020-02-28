@@ -177,13 +177,20 @@
 }
 
 .checkbox:after {
+	border: solid white;
+    border-width: 0 3px 3px 0;
 	color: white;
-	content: "✓";
+	content: "";
 	display: none;
 	font-weight: 900;
-	font-size: 0.75em;
-	margin-top: -2px;
-	text-align: center;
+	height: 9px;
+	left: 5px;
+	position: absolute;
+	top: 2px;
+	-webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+	width: 5px;
 }
 
 .checkbox-container input:checked ~ .checkbox:after,
