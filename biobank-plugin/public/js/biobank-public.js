@@ -36,4 +36,5 @@
  */
 jQuery('#study-name') && jQuery('#study-name').ready(() => {
 	jQuery('h1').text(jQuery('#study-name').val());
+	jQuery('title').text(jQuery('#study-name').val());
 })
