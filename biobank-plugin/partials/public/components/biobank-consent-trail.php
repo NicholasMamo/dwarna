@@ -1,5 +1,5 @@
-<h2>Consent trail</h2>
 <div id='<?= $this->plugin_name ?>-consent-trail'>
+	<h2>Consent trail</h2>
 	<div class='<?= $this->plugin_name ?>-wrapper'>
 		<?php foreach ($timeline as $timestamp => $changes) { ?>
 		<div class='<?= $this->plugin_name ?>-node'>
