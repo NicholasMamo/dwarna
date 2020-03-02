@@ -42,7 +42,11 @@ require_once(plugin_dir_path(__FILE__) . "../../client/request.php");
 					<label for="<?php echo $this->plugin_name; ?>-study_id">ID <span class="description">(required)</span></label>
 				</th>
 				<td>
-					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[study_id]" type="text" id="<?php echo $this->plugin_name; ?>-study_id" value="<?= $action != "create" ? $study_id : "" ?>" aria-required="true" <?= $action != "create" ? "readonly" : "" ?>>
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[study_id]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-study_id"
+						   value="<?= $action != "create" ? $study_id : "" ?>"
+						   aria-required="true" <?= $action != "create" ? "readonly" : "" ?>>
 					<?= $action != "create" ? "<span class = 'description'>Study IDs cannot be changed.</span>" : "" ?>
 				</td>
 			</tr>
@@ -52,7 +56,10 @@ require_once(plugin_dir_path(__FILE__) . "../../client/request.php");
 					<label for="<?php echo $this->plugin_name; ?>-name">Name <span class="description">(required)</span></label>
 				</th>
 				<td>
-					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[name]" type="text" id="<?php echo $this->plugin_name; ?>-name" value="<?= $action != "create" ? $study->name : "" ?>" aria-required="true" >
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[name]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-name"
+						   value="<?= $action != "create" ? htmlspecialchars($study->name) : "" ?>" aria-required="true" >
 				</td>
 			</tr>
 
@@ -61,7 +68,10 @@ require_once(plugin_dir_path(__FILE__) . "../../client/request.php");
 					<label for="<?php echo $this->plugin_name; ?>-description">Description <span class="description">(required)</span></label>
 				</th>
 				<td>
-					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[description]" type="text" id="<?php echo $this->plugin_name; ?>-description" value="<?= $action != "create" ? $study->description : "" ?>" aria-required="true" >
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[description]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-description"
+						   value="<?= $action != "create" ? htmlspecialchars($study->description) : "" ?>" aria-required="true" >
 				</td>
 			</tr>
 
@@ -70,7 +80,10 @@ require_once(plugin_dir_path(__FILE__) . "../../client/request.php");
 					<label for="<?php echo $this->plugin_name; ?>-homepage">Homepage <span class="description">(required)</span></label>
 				</th>
 				<td>
-					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[homepage]" type="text" id="<?php echo $this->plugin_name; ?>-homepage" value="<?= $action != "create" ? $study->homepage : "" ?>" aria-required="true" >
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[homepage]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-homepage"
+						   value="<?= $action != "create" ? $study->homepage : "" ?>" aria-required="true" >
 				</td>
 			</tr>
 
