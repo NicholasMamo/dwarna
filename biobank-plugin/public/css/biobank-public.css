@@ -146,22 +146,29 @@
 }
 
 #biobank-consent-trail .biobank-node .biobank-consent-change {
-	background-color: white;
 	display: table-cell;
+	font-size: 0.85em;
 	position: relative;
 	text-align: right;
 	vertical-align: middle;
 	width: 61.8%;
 }
 
-#biobank-consent-trail .biobank-node .biobank-consent-change::after {
+#biobank-consent-trail .biobank-node .biobank-consent-change::before {
 	content: '';
 	border-bottom: 1px solid #999;
 	display: block;
 	height: 50%;
+	opacity: 0.6;
 	position: absolute;
 	top: 0;
 	width: 100%;
+	z-index: -1;
+}
+
+#biobank-consent-trail .biobank-node .biobank-consent-change span {
+	background-color: white;
+	padding: 0 0.5em;
 }
 
 #biobank-quiz {
