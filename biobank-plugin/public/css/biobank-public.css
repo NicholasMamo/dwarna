@@ -25,6 +25,14 @@
 
 }
 
+@media only screen and (max-width: 480px) {
+
+	#biobank-consent-trail .biobank-datetime {
+		width: 15%;
+	}
+
+}
+
 .biobank-consent .biobank-description {
     margin-bottom: 0.5em;
 }
