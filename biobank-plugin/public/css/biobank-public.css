@@ -128,9 +128,9 @@
 
 #biobank-consent-trail .biobank-node .biobank-datetime {
 	display: table-cell;
-	margin: 0.25em 0;
+	padding: 0.75em 0;
 	text-align: center;
-	width: 38.2%;
+	max-width: 38.2%;
 }
 
 #biobank-consent-trail .biobank-node .biobank-date {
@@ -151,7 +151,7 @@
 	position: relative;
 	text-align: right;
 	vertical-align: middle;
-	width: 61.8%;
+	width: 100%;
 }
 
 #biobank-consent-trail .biobank-node .biobank-consent-change::before {
