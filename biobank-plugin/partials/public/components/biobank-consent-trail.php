@@ -3,7 +3,7 @@
 
 	<ul>
 	<?php
-	foreach ($timeline as $timestamp => $changes) {
+	foreach (array_reverse($timeline) as $timestamp => $changes) {
 	?>
 		<li><?= DateTime::createFromFormat("U", $timestamp)->format("jS M Y \a\\t H:i") ?>
 			<ul>
