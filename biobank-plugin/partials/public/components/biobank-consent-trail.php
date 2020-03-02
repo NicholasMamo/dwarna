@@ -1,6 +1,5 @@
+<h2>Consent trail</h2>
 <div id='biobank-consent-trail'>
-	<h2>Consent trail</h2>
-
 	<?php foreach ($timeline as $timestamp => $changes) { ?>
 	<div class='<?= $this->plugin_name ?>-node'>
 		<div class='<?= $this->plugin_name ?>-datetime'>
