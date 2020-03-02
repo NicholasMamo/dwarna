@@ -213,11 +213,13 @@
 }
 
 #biobank-quiz .biobank-question .biobank-quiz-question-explanation {
+	font-size: 0.9em;
+	font-weight: 600;
 	display: none;
 }
 
 #biobank-quiz .biobank-question.incorrect .biobank-quiz-question-explanation {
-	display: initial;
+	display: block;
 }
 
 /*
