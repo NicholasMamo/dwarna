@@ -1,4 +1,6 @@
 <div id='biobank-consent-trail'>
+	<h2>Consent trail</h2>
+
 	<ul>
 	<?php
 	foreach ($timeline as $timestamp => $changes) {

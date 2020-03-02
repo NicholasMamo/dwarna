@@ -59,6 +59,4 @@ if (isset($error) && ! empty($error)) {
 	<input type = "submit" class = "btn btn-primary float-left" />
 </form>
 
-<h2>Consent trail</h2>
-
 <?php include_once(plugin_dir_path(__FILE__) . '/components/biobank-consent-trail.php') ?>
