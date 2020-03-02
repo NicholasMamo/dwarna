@@ -493,7 +493,7 @@ class Biobank_Admin {
 			$encodedEmail = base64_encode($nonce . $cipherEmail);
 
 			$wpdb->update(
-				'dw_users',
+				"{$wpdb->prefix}users",
 				array(
 					'user_email' => $encodedEmail
 				),
