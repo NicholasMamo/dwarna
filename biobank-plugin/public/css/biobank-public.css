@@ -13,7 +13,8 @@
     #biobank-consent-trail {
     	float: right;
     	width: 38.2%;
-    	max-height: 61.8vh;
+    	height: 61.8vh;
+    	overflow: auto;
     }
 
 }
@@ -118,8 +119,10 @@
 }
 
 #biobank-consent-trail {
+}
+
+#biobank-consent-trail .biobank-wrapper {
 	display: table;
-	overflow: auto;
 }
 
 #biobank-consent-trail .biobank-node {
