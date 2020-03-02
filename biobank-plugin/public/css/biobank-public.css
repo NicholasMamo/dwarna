@@ -15,18 +15,12 @@
     	width: 38.2%;
     }
 
-    #biobank-consent-trail .biobank-wrapper {
-    	height: 61.8vh;
-    	overflow: auto;
-    	width: 100%;
-    }
-
 }
 
 @media only screen and (max-width: 1023px) {
 
-    #biobank-consent-trail {
-		max-height: 30vh;
+	#biobank-consent-trail .biobank-datetime {
+		width: 10%;
 	}
 
 }
@@ -123,6 +117,13 @@
 }
 
 #biobank-consent-trail {
+	margin: 2em 0 0 0;
+}
+
+#biobank-consent-trail .biobank-wrapper {
+	height: 61.8vh;
+	overflow: auto;
+	width: 100%;
 }
 
 #biobank-consent-trail .biobank-table {
