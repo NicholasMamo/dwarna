@@ -118,7 +118,50 @@
 }
 
 #biobank-consent-trail {
+	display: table;
 	overflow: auto;
+}
+
+#biobank-consent-trail .biobank-node {
+	display: table-row;
+}
+
+#biobank-consent-trail .biobank-node .biobank-datetime {
+	display: table-cell;
+	margin: 0.25em 0;
+	text-align: center;
+	width: 38.2%;
+}
+
+#biobank-consent-trail .biobank-node .biobank-date {
+	font-size: 0.8em;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+#biobank-consent-trail .biobank-node .biobank-time {
+	font-size: 0.85em;
+	font-weight: 400;
+	line-height: 1;
+}
+
+#biobank-consent-trail .biobank-node .biobank-consent-change {
+	background-color: white;
+	display: table-cell;
+	position: relative;
+	text-align: right;
+	vertical-align: middle;
+	width: 61.8%;
+}
+
+#biobank-consent-trail .biobank-node .biobank-consent-change::after {
+	content: '';
+	border-bottom: 1px solid #999;
+	display: block;
+	height: 50%;
+	position: absolute;
+	top: 0;
+	width: 100%;
 }
 
 #biobank-quiz {
