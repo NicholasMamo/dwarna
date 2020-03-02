@@ -64,6 +64,8 @@ class ParticipantFormHandler extends UserFormHandler {
 				if (! $validation_check->is_successful()) {
 					$error = (string) $validation_check;
 				} else {
+					$input = $this->sanitize_user($input);
+
 					/*
 					 * Create a request and fetch the response
 					 */
@@ -161,6 +163,8 @@ class ParticipantFormHandler extends UserFormHandler {
 				if (! $validation_check->is_successful()) {
 					$error = (string) $validation_check;
 				} else {
+					$input = $this->sanitize_user($input);
+
 					/*
 					 * Create a request and fetch the response
 					 */
@@ -633,6 +637,8 @@ class ResearcherFormHandler extends UserFormHandler {
 				if (! $validation_check->is_successful()) {
 					$error = (string) $validation_check;
 				} else {
+					$input = $this->sanitize_user($input);
+
 					/*
 					 * Create a request and fetch the response
 					 */
@@ -732,6 +738,8 @@ class ResearcherFormHandler extends UserFormHandler {
 				if (! $validation_check->is_successful()) {
 					$error = (string) $validation_check;
 				} else {
+					$input = $this->sanitize_user($input);
+					
 					/*
 					 * Get the user's ID since this is an update operation.
 					 * Then, include this ID in the user data.

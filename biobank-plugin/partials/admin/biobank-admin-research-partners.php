@@ -39,7 +39,11 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 					<label for="<?php echo $this->plugin_name; ?>-username">Username <span class="description">(required)</span></label>
 				</th>
 				<td>
-					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[username]" type="text" id="<?php echo $this->plugin_name; ?>-username" value="<?= $action != "create" ? $username : "" ?>" aria-required="true" <?= $action != "create" ? "readonly" : "" ?>>
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[username]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-username"
+						   value="<?= $action != "create" ? $username : "" ?>"
+						   aria-required="true" <?= $action != "create" ? "readonly" : "" ?>>
 					<?= $action != "create" ? "<span class = 'description'>Usernames cannot be changed.</span>" : "" ?>
 				</td>
 			</tr>
@@ -49,7 +53,10 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 					<label for="<?php echo $this->plugin_name; ?>-email">Email <span class="description">(required)</span></label>
 				</th>
 				<td>
-					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[email]" type="text" id="<?php echo $this->plugin_name; ?>-email" value="<?= $action != "create" ? $user->data->user_email : "" ?>" aria-required="true">
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[email]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-email"
+						   value="<?= $action != "create" ? $user->data->user_email : "" ?>" aria-required="true">
 				</td>
 			</tr>
 
@@ -63,7 +70,10 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 					<button type="button" class="button wp-generate-pw hide-if-no-js" onclick="show_password()">Generate Password</button>
 					<div class="wp-pwd hide-if-js" style="display: none;">
 						<span class="password-input-wrapper">
-							<input type="password" name="<?php echo $this->plugin_name; ?>[password]" id="pass1" class="regular-text" value="" autocomplete="off" data-pw="<?php echo esc_attr(wp_generate_password(12, false, false)); ?>" aria-describedby="pass-strength-result" disabled="">
+							<input type="password" name="<?php echo $this->plugin_name; ?>[password]"
+								   id="pass1" class="regular-text" value="" autocomplete="off"
+								   data-pw="<?php echo esc_attr(wp_generate_password(12, false, false)); ?>"
+								   aria-describedby="pass-strength-result" disabled="">
 						</span>
 						<button type="button" class="button wp-hide-pw hide-if-no-js" data-toggle="0" aria-label="Hide password">
 							<span class="dashicons dashicons-hidden"></span>
@@ -82,7 +92,10 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 					<label for="<?php echo $this->plugin_name; ?>-first_name">First Name</label>
 				</th>
 				<td>
-					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[first_name]" type="text" id="<?php echo $this->plugin_name; ?>-first_name" value="<?= $action != "create" ? $user->data->first_name : "" ?>">
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[first_name]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-first_name"
+						   value="<?= $action != "create" ? htmlspecialchars($user->data->first_name) : "" ?>">
 				</td>
 			</tr>
 
@@ -91,7 +104,10 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 					<label for="<?php echo $this->plugin_name; ?>-last_name">Last Name</label>
 				</th>
 				<td>
-					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[last_name]" type="text" id="<?php echo $this->plugin_name; ?>-last_name" value="<?= $action != "create" ? $user->data->last_name : "" ?>">
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[last_name]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-last_name"
+						   value="<?= $action != "create" ? htmlspecialchars($user->data->last_name) : "" ?>">
 				</td>
 			</tr>
 
