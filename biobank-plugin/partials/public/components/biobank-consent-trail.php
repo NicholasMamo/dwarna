@@ -10,7 +10,7 @@
 		<?php foreach ((array) $changes as $study_id => $consent) { ?>
 				<?php if ($study_id == $study->study->study_id) { ?>
 				<div class='<?= $this->plugin_name ?>-consent-change'>
-					You <?= $consent == 1 ? "gave" : "withdrew" ?> consent
+					<span>You <?= $consent == 1 ? "gave" : "withdrew" ?> consent</span>
 				</div>
 				<?php } ?>
 		<?php } ?>
