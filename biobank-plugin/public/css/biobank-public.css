@@ -92,6 +92,12 @@
 	color: #B2000D;
 }
 
+.biobank-homepage {
+	font-size: 0.7em;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
 .biobank-alert {
 	background-color: #29bacc !important;
 	border-radius: 10px;
