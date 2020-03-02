@@ -3,6 +3,29 @@
  * included in this file.
  */
 
+@media only screen and (min-width: 1024px) {
+
+    form[id^=consent-form] {
+    	display: inline-block;
+    	width: 61.2%;
+    }
+
+    #biobank-consent-trail {
+    	float: right;
+    	width: 38.2%;
+    	max-height: 61.8vh;
+    }
+
+}
+
+@media only screen and (max-width: 1023px) {
+
+    #biobank-consent-trail {
+		max-height: 30vh;
+	}
+
+}
+
 .biobank-consent .biobank-description {
     margin-bottom: 0.5em;
 }
@@ -89,7 +112,6 @@
 }
 
 #biobank-consent-trail {
-	max-height: 30vh;
 	overflow: auto;
 }
 
