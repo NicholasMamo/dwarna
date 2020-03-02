@@ -242,7 +242,7 @@ class Biobank_Public {
 					$error = isset($trail->error) && ! empty($trail->error) ? $trail->error : $error;
 					$studies = (array) $trail->studies;
 					$timeline = (array) $trail->timeline;
-					ksort($timeline);
+					krsort($timeline);
 
 					/*
 					 * Load the quiz.
