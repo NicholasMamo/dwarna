@@ -9,9 +9,11 @@
 		</div>
 		<?php foreach ((array) $changes as $study_id => $consent) { ?>
 				<?php if ($study_id == $study->study->study_id) { ?>
-				<div class='<?= $this->plugin_name ?>-consent-change'><?= $consent == 1 ? "You gave consent" : "You withdrew consent" ?></div>
+				<div class='<?= $this->plugin_name ?>-consent-change'>
+					You <?= $consent == 1 ? "gave" : "withdrew" ?> consent
+				</div>
 				<?php } ?>
 		<?php } ?>
-		<?php } ?>
 	</div>
+	<?php } ?>
 </div>
