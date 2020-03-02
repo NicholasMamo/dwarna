@@ -368,6 +368,8 @@ class StudyFormHandler extends StudyHandler {
 		if (! preg_match('/https?:\/\//', $study['homepage'])) {
 			$study['homepage'] = "https://{$study['homepage']}";
 		}
+		$study['name'] = stripcslashes($study['name']);
+		$study['description'] = stripcslashes($study['description']);
 
 		return $study;
 	}
