@@ -8,8 +8,7 @@
 		<li><?= DateTime::createFromFormat("U", $timestamp)->format("jS M Y \a\\t H:i") ?>
 			<ul>
 		<?php
-			$changes = (array) $changes;
-			foreach ($changes as $study_id => $consent) {
+			foreach ((array) $changes as $study_id => $consent) {
 		?>
 				<?php if ($study_id == $study->study->study_id) { ?>
 				<li>
