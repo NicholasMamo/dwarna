@@ -1,5 +1,5 @@
 <div id='<?= $this->plugin_name ?>-consent-trail'>
-	<h3>Your past consent changes</h3>
+	<h5>Your past consent changes</h5>
 	<div class='<?= $this->plugin_name ?>-wrapper'>
 		<div class='<?= $this->plugin_name ?>-table'>
 			<?php foreach ($timeline as $timestamp => $changes) { ?>
