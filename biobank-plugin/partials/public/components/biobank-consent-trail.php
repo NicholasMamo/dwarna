@@ -4,8 +4,8 @@
 	<?php foreach ($timeline as $timestamp => $changes) { ?>
 	<div class='<?= $this->plugin_name ?>-node'>
 		<div class='<?= $this->plugin_name ?>-datetime'>
-			<span class='<?= $this->plugin_name ?>-date'><?= DateTime::createFromFormat("U", $timestamp)->format("j M Y") ?></span>
-			<span class='<?= $this->plugin_name ?>-time'><?= DateTime::createFromFormat("U", $timestamp)->format("H:i") ?></span>
+			<div class='<?= $this->plugin_name ?>-date'><?= DateTime::createFromFormat("U", $timestamp)->format("j M Y") ?></div>
+			<div class='<?= $this->plugin_name ?>-time'><?= DateTime::createFromFormat("U", $timestamp)->format("H:i") ?></div>
 		</div>
 		<?php foreach ((array) $changes as $study_id => $consent) { ?>
 				<?php if ($study_id == $study->study->study_id) { ?>
