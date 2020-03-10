@@ -33,5 +33,5 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 		To start participating in research again, you would have to sign up as a new research partner.
 	</p>
 
-	<input type = "submit" class = "btn btn-primary float-left" value="I want to erase my data" />
+	<input type = "submit" class = "btn btn-primary float-left" value="Erase my data" />
 </form>

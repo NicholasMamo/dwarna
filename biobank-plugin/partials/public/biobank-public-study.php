@@ -14,15 +14,14 @@ if (isset($error) && ! empty($error)) {
 }
 ?>
 
-<input id='study-name' type='hidden' value='<?= $study->study->name ?>' />
+<input id='study-name' type='hidden' value="<?= htmlspecialchars($study->study->name) ?>" />
 
 <form class="<?= $this->plugin_name ?>-form" id="consent-form-<?= $study->study->study_id ?>"
 	  method="post" name="consent_form" action=<?php echo esc_url(admin_url("admin-post.php")); ?>>
 	<input type="hidden" name="action" value="consent_form">
 	<?php wp_nonce_field("consent_form", "consent_nonce"); ?>
 
-	<p class="biobank-description"><?= $study->study->description ?></p>
-	<p class="biobank-homepage"><a href="<?= $study->study->homepage ?>" target="_blank">Read more</a></p>
+	<p class="biobank-description"><?= $study->study->description ?> <span class="biobank-homepage"><a href="<?= $study->study->homepage ?>" target="_blank">Read more</a></span></p>
 	<?php include_once(plugin_dir_path(__FILE__) . '/components/biobank-study-quiz.php') ?>
 
 	<h2>Consent Update</h2>
@@ -58,7 +57,5 @@ if (isset($error) && ! empty($error)) {
 
 	<input type = "submit" class = "btn btn-primary float-left" />
 </form>
-
-<h2>Consent trail</h2>
 
 <?php include_once(plugin_dir_path(__FILE__) . '/components/biobank-consent-trail.php') ?>

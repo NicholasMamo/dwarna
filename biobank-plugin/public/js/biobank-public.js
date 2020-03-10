@@ -36,4 +36,6 @@
  */
 jQuery('#study-name') && jQuery('#study-name').ready(() => {
 	jQuery('h1').text(jQuery('#study-name').val());
+	var title = jQuery('title').text();
+	jQuery('title').text(title.replace("Study", jQuery('#study-name').val()));
 })

@@ -127,6 +127,15 @@ class Biobank_Public {
 			exit;
 		}
 
+		/*
+		 * If the user is trying to access the consent page but they are not logged in, redirect to the login page.
+		 */
+		$consent_slug = $plugin_pages['biobank-consent']['wp_info']['post_name'];
+		if (strpos($_SERVER['REQUEST_URI'], $consent_slug) && ! strpos($_SERVER['REQUEST_URI'], "wp-login.php") && ! is_user_logged_in()) {
+			wp_redirect(wp_login_url($_SERVER['REQUEST_URI']));
+			exit;
+		}
+
 		$action = $_GET['action'] ?? NULL;
 		if ($action) {
 			switch ($action) {
@@ -242,7 +251,7 @@ class Biobank_Public {
 					$error = isset($trail->error) && ! empty($trail->error) ? $trail->error : $error;
 					$studies = (array) $trail->studies;
 					$timeline = (array) $trail->timeline;
-					ksort($timeline);
+					krsort($timeline);
 
 					/*
 					 * Load the quiz.

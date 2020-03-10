@@ -340,6 +340,21 @@ abstract class UserFormHandler extends FormHandler {
 		return new Status(true);
 	}
 
+	/**
+	 * Sanitize the user.
+	 *
+	 * @since	1.0.0
+	 * @access	protected
+	 * @param	array	$user The user input array.
+	 * @return	array	The array containing the sanitized user.
+	 */
+	protected function sanitize_user($user) {
+		$user['first_name'] = stripcslashes($user['first_name']);
+		$user['last_name'] = stripcslashes($user['last_name']);
+
+		return $user;
+	}
+
 }
 
 /**

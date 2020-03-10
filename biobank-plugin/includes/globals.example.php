@@ -80,7 +80,7 @@ $plugin_pages = array(
 		"menu_visibility" => array(
 			"participant", "administrator",
 		),
-		"public" => false,
+		"public" => true,
 	),
 	"biobank-study" => array(
 		"wp_info" => array(

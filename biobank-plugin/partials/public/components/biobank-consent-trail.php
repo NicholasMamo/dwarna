@@ -1,24 +1,22 @@
-<div id='biobank-consent-trail'>
-	<ul>
-	<?php
-	foreach ($timeline as $timestamp => $changes) {
-	?>
-		<li><?= DateTime::createFromFormat("U", $timestamp)->format("jS M Y \a\\t H:i") ?>
-			<ul>
-		<?php
-			$changes = (array) $changes;
-			foreach ($changes as $study_id => $consent) {
-		?>
-				<?php if ($study_id == $study->study->study_id) { ?>
-				<li>
-					<?= $consent == 1 ? "Give to" : "Withdraw from" ?> <?= $study->study->name ?>
-				</li>
+<div id='<?= $this->plugin_name ?>-consent-trail'>
+	<h5>Your past consent changes</h5>
+	<div class='<?= $this->plugin_name ?>-wrapper'>
+		<div class='<?= $this->plugin_name ?>-table'>
+			<?php foreach ($timeline as $timestamp => $changes) { ?>
+			<div class='<?= $this->plugin_name ?>-node'>
+				<div class='<?= $this->plugin_name ?>-datetime'>
+					<div class='<?= $this->plugin_name ?>-date'><?= DateTime::createFromFormat("U", $timestamp)->format("j M Y") ?></div>
+					<div class='<?= $this->plugin_name ?>-time'><?= DateTime::createFromFormat("U", $timestamp)->format("H:i") ?></div>
+				</div>
+				<?php foreach ((array) $changes as $study_id => $consent) { ?>
+						<?php if ($study_id == $study->study->study_id) { ?>
+						<div class='<?= $this->plugin_name ?>-consent-change'>
+							<span>You <?= $consent == 1 ? "gave" : "withdrew" ?> consent</span>
+						</div>
+						<?php } ?>
 				<?php } ?>
-		<?php
-			}
-		?>
-			</ul>
-		</li>
-	<?php } ?>
-	</ul>
+			</div>
+			<?php } ?>
+		</div>
+	</div>
 </div>

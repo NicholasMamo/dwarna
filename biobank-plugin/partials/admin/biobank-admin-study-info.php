@@ -121,7 +121,10 @@ $pagination = (paginate_links( array(
 					<label for="<?php echo $this->plugin_name; ?>-study_id">ID</label>
 				</th>
 				<td>
-					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[study_id]" type="text" id="<?php echo $this->plugin_name; ?>-study_id" value="<?= isset($study_id) ? $study_id : "" ?>" aria-required="true" readonly >
+					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false"
+						   maxlength="60" name="<?php echo $this->plugin_name; ?>[study_id]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-study_id"
+						   value="<?= isset($study_id) ? $study_id : "" ?>" aria-required="true" readonly >
 				</td>
 			</tr>
 
@@ -130,7 +133,10 @@ $pagination = (paginate_links( array(
 					<label for="<?php echo $this->plugin_name; ?>-name">Name</label>
 				</th>
 				<td>
-					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[name]" type="text" id="<?php echo $this->plugin_name; ?>-name" value="<?= isset($study->name) ? $study->name : "" ?>" aria-required="true" readonly >
+					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false"
+						   maxlength="60" name="<?php echo $this->plugin_name; ?>[name]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-name"
+						   value="<?= isset($study->name) ? $study->name : "" ?>" aria-required="true" readonly >
 				</td>
 			</tr>
 
@@ -139,7 +145,10 @@ $pagination = (paginate_links( array(
 					<label for="<?php echo $this->plugin_name; ?>-description">Description</label>
 				</th>
 				<td>
-					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[description]" type="text" id="<?php echo $this->plugin_name; ?>-description" value="<?= isset($study->description) ? $study->description : "" ?>" aria-required="true" readonly >
+					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false"
+						   maxlength="60" name="<?php echo $this->plugin_name; ?>[description]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-description"
+						   value="<?= isset($study->description) ? $study->description : "" ?>" aria-required="true" readonly >
 				</td>
 			</tr>
 
@@ -148,7 +157,10 @@ $pagination = (paginate_links( array(
 					<label for="<?php echo $this->plugin_name; ?>-homepage">Homepage</label>
 				</th>
 				<td>
-					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[homepage]" type="text" id="<?php echo $this->plugin_name; ?>-homepage" value="<?= isset($study->homepage) ? $study->homepage : "" ?>" aria-required="true" readonly >
+					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false"
+						   maxlength="60" name="<?php echo $this->plugin_name; ?>[homepage]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-homepage"
+						   value="<?= isset($study->homepage) ? $study->homepage : "" ?>" aria-required="true" readonly >
 				</td>
 			</tr>
 
@@ -166,7 +178,10 @@ $pagination = (paginate_links( array(
 					<label for="<?php echo $this->plugin_name; ?>-participants">Participants</label>
 				</th>
 				<td>
-					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[participants]" type="text" id="<?php echo $this->plugin_name; ?>-participants" value="<?= isset($study_participants->data) ? count($study_participants->data) : 0 ?>" aria-required="true" readonly >
+					<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false"
+						   maxlength="60" name="<?php echo $this->plugin_name; ?>[participants]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-participants"
+						   value="<?= isset($study_participants->data) ? count($study_participants->data) : 0 ?>" aria-required="true" readonly >
 				</td>
 			</tr>
 
@@ -201,7 +216,8 @@ $pagination = (paginate_links( array(
 			<div class="<?= $this->plugin_name ?>-float-left"><?= strlen($pagination) > 0 ? "Pages: " . $pagination : "" ?></div>
 			<form class="<?= $this->plugin_name ?>-simple-form <?= $this->plugin_name ?>-float-right" id="search_form" method="get" name="search_form" action="<?= admin_url($admin_page) ?>">
 				<input name="page" type="hidden" value="<?= $plugin_page ?>" />
-				<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false" maxlength="60" name="search" placeholder="Search existing studies..." type="text" value="" aria-required="true"> <?= submit_button("Search", "secondary", $this->plugin_name . "-search") ?>
+				<input autocapitalize="none" autocomplete="off" autocorrect="off" autofill="false"
+					   maxlength="60" name="search" placeholder="Search existing studies..." type="text" value="" aria-required="true"> <?= submit_button("Search", "secondary", $this->plugin_name . "-search") ?>
 			</form>
 		</div>
 

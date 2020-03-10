@@ -3,6 +3,36 @@
  * included in this file.
  */
 
+@media only screen and (min-width: 1024px) {
+
+    form[id^=consent-form] {
+    	display: inline-block;
+    	width: 61.2%;
+    }
+
+    #biobank-consent-trail {
+    	float: right;
+    	width: 38.2%;
+    }
+
+}
+
+@media only screen and (max-width: 1023px) {
+
+	#biobank-consent-trail .biobank-datetime {
+		width: 20%;
+	}
+
+}
+
+@media only screen and (max-width: 480px) {
+
+	#biobank-consent-trail .biobank-datetime {
+		width: 35%;
+	}
+
+}
+
 .biobank-consent .biobank-description {
     margin-bottom: 0.5em;
 }
@@ -15,9 +45,43 @@
     font-family: "Noto Sans", sans-serif;
 }
 
+.biobank-form input[type="submit"]:hover {
+	background-color: white;
+    border-color: #29bacc !important;
+	color: #29bacc !important;
+}
+
+.biobank-form input[type="submit"]:active,
+.biobank-form input[type="submit"]:focus,
 .biobank-form input[type="submit"] {
-    display: block;
-    margin: 0 auto;
+    background: #29bacc;
+    border-color: #29bacc;
+    border-radius: 10px;
+    border-style: solid;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    color: white;
+    cursor: pointer;
+    display: inline-block;
+    font-style: normal;
+    font-weight: 600;
+    font-family: "Source Sans Pro",sans-serif;
+    font-size: 18px;
+    line-height: 1.7em;
+    margin: 30px 0 0 0;
+    min-width: 145px;
+    max-width: 230px;
+    outline: 0;
+    overflow: hidden;
+    padding: 9px 35px;
+    position: relative;
+    text-align: center;
+    -webkit-transition: color .2s ease-out,background-color .2s ease-out,border-color .2s ease-out,background-position .3s ease,opacity .2s ease-out;
+    -moz-transition: color .2s ease-out,background-color .2s ease-out,border-color .2s ease-out,background-position .3s ease,opacity .2s ease-out;
+    transition: color .2s ease-out,background-color .2s ease-out,border-color .2s ease-out,background-position .3s ease,opacity .2s ease-out;
+    vertical-align: middle;
+    width: 250px;
 }
 
 .biobank-form table,
@@ -35,12 +99,25 @@
 	color: #B2000D;
 }
 
+.biobank-homepage {
+	font-size: 0.7em;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
 .biobank-alert {
-	background-color: #cd2653;
+	background-color: #29bacc !important;
+	border-radius: 10px;
 	color: white;
-	font-weight: 400;
-	padding: 2rem;
+    font-weight: 600;
 	margin: 2rem 0;
+	padding: 2rem;
+	text-align: center;
+}
+
+.biobank-alert::selection {
+	background-color: white;
+	color: #29bacc !important;
 }
 
 .biobank-hidden {
@@ -48,8 +125,110 @@
 }
 
 #biobank-consent-trail {
-	max-height: 30vh;
+	margin: 2em 0 0 0;
+}
+
+#biobank-consent-trail .biobank-wrapper {
+	height: 61.8vh;
 	overflow: auto;
+	width: 100%;
+}
+
+#biobank-consent-trail .biobank-table {
+	display: table;
+	width: 100%;
+}
+
+#biobank-consent-trail .biobank-node {
+	display: table-row;
+	width: 100%;
+}
+
+#biobank-consent-trail .biobank-node .biobank-datetime {
+	display: table-cell;
+	padding: 0.75em 0;
+	position: relative;
+	text-align: center;
+}
+
+#biobank-consent-trail .biobank-node:first-child .biobank-datetime:before {
+	height: 50%;
+	top: 50%;
+}
+
+#biobank-consent-trail .biobank-node:last-child .biobank-datetime:before {
+	height: 50%;
+}
+
+#biobank-consent-trail .biobank-node .biobank-datetime:before {
+	background-color: white;
+	content: '';
+	border-right: 1px solid #999;
+	height: 100%;
+	margin-right: 6px;
+	opacity: 0.6;
+	position: absolute;
+	right: -1px;
+	top: 0;
+	z-index: -1;
+}
+
+#biobank-consent-trail .biobank-node .biobank-datetime:after {
+	background-color: white;
+	content: '';
+	border: 1px solid rgba(153, 153, 153, 0.6);
+	border-radius: 50%;
+	height: 10px;
+	margin-right: 6px;
+	position: absolute;
+	right: -6px;
+	width: 10px;
+	top: calc(50% - 6px);
+	z-index: 1;
+}
+
+#biobank-consent-trail .biobank-node .biobank-date,
+#biobank-consent-trail .biobank-node .biobank-time {
+}
+
+#biobank-consent-trail .biobank-node .biobank-date {
+	font-size: 0.7em;
+	font-weight: 600;
+	line-height: 1.15;
+	padding-top: 0.5em;
+	text-transform: uppercase;
+}
+
+#biobank-consent-trail .biobank-node .biobank-time {
+	font-size: 0.75em;
+	font-weight: 400;
+	line-height: 1;
+	padding-bottom: 0.5em;
+}
+
+#biobank-consent-trail .biobank-node .biobank-consent-change {
+	display: table-cell;
+	font-size: 0.85em;
+	position: relative;
+	text-align: right;
+	vertical-align: middle;
+}
+
+#biobank-consent-trail .biobank-node .biobank-consent-change::before {
+	content: '';
+	border-bottom: 1px solid #999;
+	display: block;
+	height: 50%;
+	opacity: 0.6;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	z-index: -2;
+}
+
+#biobank-consent-trail .biobank-node .biobank-consent-change span {
+	background-color: white;
+	padding: 0 0.5em;
 }
 
 #biobank-quiz {
@@ -57,11 +236,13 @@
 }
 
 #biobank-quiz .biobank-question .biobank-quiz-question-explanation {
+	font-size: 0.9em;
+	font-weight: 600;
 	display: none;
 }
 
 #biobank-quiz .biobank-question.incorrect .biobank-quiz-question-explanation {
-	display: initial;
+	display: block;
 }
 
 /*
@@ -83,14 +264,21 @@
 .radio-container {
 	cursor: pointer;
 	display: block;
-	font-size: 22px;
 	margin-bottom: 12px;
-	padding-left: 35px;
 	position: relative;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+}
+
+.checkbox-container {
+	padding-left: 35px;
+}
+
+.radio-container {
+	display: inline-block;
+	margin: 1em 1em;
 }
 
 .checkbox-container input,
@@ -102,10 +290,10 @@
 	width: 0;
 }
 
-.checkbox,
-.radio {
+.checkbox {
 	background-color: white;
-	border: 3px solid #cd2653;
+	box-sizing: border-box;
+	border: 3px solid #29bacc;
 	height: 25px;
 	left: 0;
 	position: absolute;
@@ -114,13 +302,59 @@
 	width: 25px;
 }
 
-.radio {
-	border-radius: 50%;
+.radio-container input ~ .radio {
+	border: 1px solid #edeff1;
+	border-radius: 10px;
+	color: #697d87;
+    display: block;
+	font-size: 18px;
+    font-family: "Gotham-Medium";
+	padding: 6px 40px;
+    text-align: center;
+    width: 60px;
+}
+
+.radio-container input:checked ~ .radio {
+	background-color: #29bacc;
+	color: white;
+}
+
+.radio:before {
+	content: '';
+    position: absolute;
+    top: 50%;
+    transform: translatey(-50%);
+    left: 14px;
+    height: 20px;
+    width: 20px;
+    border: 2px solid #edeff1;
+}
+
+.radio:after {
+	border: solid white;
+    border-width: 0 3px 3px 0;
+	color: white;
+	content: "";
+	display: none;
+	font-weight: 900;
+	height: 9px;
+	left: 22px;
+	position: absolute;
+	top: 11px;
+	-webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+	width: 5px;
+}
+
+.radio-container input:checked ~ .radio:after {
+	display: initial;
 }
 
 .checkbox-container:hover input ~ .checkbox,
 .radio-container:hover input ~ .radio {
-	background-color: #cd2653;
+	background-color: #29bacc !important;
+	color: white;
 }
 
 .radio-container:hover input:checked ~ .radio {
@@ -128,21 +362,24 @@
 }
 
 .checkbox-container input:checked ~ .checkbox {
-	background-color: #cd2653;
-}
-
-.radio-container input:checked ~ .radio {
-	border-width: 7.5px;
+	background-color: #29bacc !important;
 }
 
 .checkbox:after {
+	border: solid white;
+    border-width: 0 3px 3px 0;
 	color: white;
-	content: "✓";
+	content: "";
 	display: none;
 	font-weight: 900;
-	font-size: 0.75em;
-	margin-top: -2px;
-	text-align: center;
+	height: 9px;
+	left: 5px;
+	position: absolute;
+	top: 2px;
+	-webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+	width: 5px;
 }
 
 .checkbox-container input:checked ~ .checkbox:after,
