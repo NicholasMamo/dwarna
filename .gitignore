@@ -10,4 +10,5 @@ venv
 
 # credentials for automated backups
 
+cron/email.conf
 tools/cred.conf
