@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-./tools/backup.sh ./tools/backup.sh -o /mnt/DATA/backups -z
+./tools/backup.sh ./tools/backup.sh --blockchain -o /mnt/DATA/backups -z
 
 # Go to the script's parent directory.
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
