@@ -9,5 +9,5 @@ if [ -f $parent_path/email.conf ]; then
 	. $parent_path/email.conf
 	file=$( date +%Y%m%d )
 	fdate=$( date +%d/%m/%Y )
-	mailx -s "[Automated] Backup $fdate" $to -a "From: $to" -A backup/$file.tar.gz
+	echo "" | mailx -s "[Automated] Backup $fdate" $to -a "From: $to" -A backup/$file.tar.gz
 fi
