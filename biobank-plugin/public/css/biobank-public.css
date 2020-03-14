@@ -19,6 +19,10 @@
 
 @media only screen and (max-width: 1023px) {
 
+    #biobank-consent-trail {
+    	margin: 2em 0 0 0;
+    }
+
 	#biobank-consent-trail .biobank-datetime {
 		width: 20%;
 	}
@@ -122,10 +126,6 @@
 
 .biobank-hidden {
 	display: none !important;
-}
-
-#biobank-consent-trail {
-	margin: 2em 0 0 0;
 }
 
 #biobank-consent-trail .biobank-wrapper {
