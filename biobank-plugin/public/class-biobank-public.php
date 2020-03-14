@@ -622,6 +622,20 @@ class Biobank_Public {
 	}
 
 	/**
+	 * Change the login logo to Dwarna's.
+	 */
+	function change_login_logo() {
+		echo '<style type="text/css">
+			h1 a {
+				background-image: url(' . get_site_url() . '/wp-content/plugins/biobank-plugin/assets/dwarna-logo.png) !important;
+				background-size: cover !important;
+				height: 70px !important;
+				width: 68% !important;
+			}
+		</style>';
+	}
+
+	/**
 	 * Get the slug of the current post or page.
 	 *
 	 * The function constructs the URL without the query.
