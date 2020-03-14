@@ -43,7 +43,7 @@ require_once(plugin_dir_path(__FILE__) . "../../client/request.php");
 				</th>
 				<td>
 					<input autocapitalize="none" autocomplete="off" autocorrect="off"
-						   autofill="false" maxlength="60" name="<?php echo $this->plugin_name; ?>[study_id]"
+						   autofill="false" maxlength="1024" name="<?php echo $this->plugin_name; ?>[study_id]"
 						   type="text" id="<?php echo $this->plugin_name; ?>-study_id"
 						   value="<?= $action != "create" ? $study_id : "" ?>"
 						   aria-required="true" <?= $action != "create" ? "readonly" : "" ?>>
