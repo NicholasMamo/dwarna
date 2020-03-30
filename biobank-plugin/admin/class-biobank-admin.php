@@ -469,6 +469,7 @@ class Biobank_Admin {
 		 */
 		$other_options = get_option("{$this->plugin_name}-other");
 		$fontawesome_kit = $other_options["fontawesome-kit"] ?? "";
+		$login = $other_options["login"] ?? "";
 
 		include_once(plugin_dir_path(__FILE__) . "../partials/admin/biobank-admin-settings.php");
 	}
@@ -797,6 +798,7 @@ class Biobank_Admin {
 		$valid = array();
 
 		$valid["fontawesome-kit"] = $input["fontawesome-kit"] ?? "";
+		$valid["login"] = $input["login"] ?? "";
 
 		return $valid;
 	}
