@@ -130,8 +130,19 @@ class Biobank_Public {
 		/*
 		 * If the user is trying to access the consent page but they are not logged in, redirect to the login page.
 		 */
+		if (isset($_GET['page_id'])){
+			$page = get_post($_GET['page_id']);
+			$slug = $page->post_name;
+		} else {
+			$slug = $_SERVER['REQUEST_URI'];
+		}
+
+		/*
+		 * Compare the slug with the consent page's slug if the user is not already trying to log in or if they are not logged.
+		 */
 		$consent_slug = $plugin_pages['biobank-consent']['wp_info']['post_name'];
-		if (strpos($_SERVER['REQUEST_URI'], $consent_slug) && ! strpos($_SERVER['REQUEST_URI'], "wp-login.php") && ! is_user_logged_in()) {
+		if ((strpos($slug, $consent_slug) || $slug == $consent_slug) &&
+			! strpos($_SERVER['REQUEST_URI'], "wp-login.php") && ! is_user_logged_in()) {
 			wp_redirect(wp_login_url($_SERVER['REQUEST_URI']));
 			exit;
 		}
