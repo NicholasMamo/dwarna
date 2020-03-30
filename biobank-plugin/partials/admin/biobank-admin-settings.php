@@ -240,6 +240,23 @@ require_once(plugin_dir_path(__FILE__) . "../ui/notices.php");
 				</td>
 			</tr>
 
+			<tr class="form-field">
+				<th scope="row">
+					<label for="<?php echo $this->plugin_name; ?>-login">Login URL</label>
+				</th>
+				<td>
+					<input autocapitalize="none" autocomplete="off" autocorrect="off"
+						   autofill="false" name="<?php echo $this->plugin_name; ?>-other[login]"
+						   type="text" id="<?php echo $this->plugin_name; ?>-login"
+						   value="<?= $login ?>" aria-required="true">
+
+					<p class="description" id="login-description">
+						If you are using a different login page than the default (<code>wp-login.php</code>) set its value here.
+						This is the page where unauthorized users are logged-in before they consent.
+					</p>
+				</td>
+			</tr>
+
 		</table>
 
 		<?php submit_button("Save Changes", "primary", "submit", TRUE); ?>
