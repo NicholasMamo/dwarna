@@ -152,6 +152,13 @@ $default_composer_settings = array(
 	"auth-url" => "http://localhost:3000/auth/local-wordpress",
 );
 
+/**
+ * Other default settings.
+ */
+$default_settings = array(
+	"login" => "wp-login.php",
+);
+
 /*
  * The name of the blockchain solution's access token.
  * It is assumed to be stored in a cookie.
