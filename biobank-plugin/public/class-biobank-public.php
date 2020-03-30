@@ -143,7 +143,8 @@ class Biobank_Public {
 		$consent_slug = $plugin_pages['biobank-consent']['wp_info']['post_name'];
 		if ((strpos($slug, $consent_slug) || $slug == $consent_slug) &&
 			! strpos($_SERVER['REQUEST_URI'], "wp-login.php") && ! is_user_logged_in()) {
-			wp_redirect(wp_login_url($_SERVER['REQUEST_URI']));
+			$login_page = get_option("{$this->plugin_name}-other")['login'];
+			wp_redirect(home_url() . "/$login_page");
 			exit;
 		}
 
