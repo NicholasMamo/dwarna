@@ -370,6 +370,23 @@ class StudyFormHandler extends StudyHandler {
 	}
 
 	/**
+	 * Validate the given description.
+	 * This function checks that the description is not empty or made up only of tags.
+	 *
+	 * @since	1.0.0
+	 * @access	protected
+	 * @param	string	$description	The description to validate
+	 * @return	Status	A status object
+	 */
+	protected function validate_description($description) {
+		if ($description == '' || $description == '<p><br></p>') {
+			return new Status(false, "The study description cannot be empty");
+		}
+
+		return new Status(true);
+	}
+
+	/**
 	 * Sanitize the study.
 	 *
 	 * @since	1.0.0
