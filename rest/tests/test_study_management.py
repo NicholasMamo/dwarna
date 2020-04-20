@@ -888,6 +888,74 @@ class StudyManagementTest(BiobankTestCase):
 		self.assertEqual(body["name"], "Diabetes Type I")
 
 	@BiobankTestCase.isolated_test
+	def test_update_study_with_attachment(self):
+		"""
+		Test that when updating a study with an attachment, it is saved.
+		"""
+
+		token = self._get_access_token(["create_study", "update_study", "view_study"])["access_token"]
+		study_id = self._generate_study_name()
+
+		response = self.send_request("POST", "study", {
+			"study_id": study_id,
+			"name": "ALS",
+			"description": "ALS study",
+			"homepage": "http://um.edu.mt",
+		}, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": study_id }, token)
+
+		"""
+		Test normal updating.
+		"""
+
+		response = self.send_request("PUT", "study", {
+			"study_id": study_id,
+			"name": "Diabetes Type I",
+			"description": "Diabetes study",
+			"homepage": "http://um.edu.mt",
+			"attachment": "localhost"
+		}, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("GET", "study", { "study_id": study_id }, token)
+		body = response.json()["study"]
+		self.assertEqual("localhost", body["attachment"])
+
+	@BiobankTestCase.isolated_test
+	def test_update_study_without_attachment(self):
+		"""
+		Test that when updating a study without an attachment, the existing attachment is retained.
+		"""
+
+		token = self._get_access_token(["create_study", "update_study", "view_study"])["access_token"]
+		study_id = self._generate_study_name()
+
+		response = self.send_request("POST", "study", {
+			"study_id": study_id,
+			"name": "ALS",
+			"description": "ALS study",
+			"homepage": "http://um.edu.mt",
+			"attachment": "localhost",
+		}, token)
+		response = self.send_volatile_request("GET", "study", { "study_id": study_id }, token)
+
+		"""
+		Test normal updating.
+		"""
+
+		response = self.send_request("PUT", "study", {
+			"study_id": study_id,
+			"name": "Diabetes Type I",
+			"description": "Diabetes study",
+			"homepage": "http://um.edu.mt",
+		}, token)
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_request("GET", "study", { "study_id": study_id }, token)
+		body = response.json()["study"]
+		self.assertEqual("localhost", body["attachment"])
+
+	@BiobankTestCase.isolated_test
 	def test_update_study_researchers(self):
 		"""
 		Test updating a study's reseachers.
