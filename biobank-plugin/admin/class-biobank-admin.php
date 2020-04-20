@@ -366,6 +366,7 @@ class Biobank_Admin {
 		$plugin_page = $_GET["page"];
 		$admin_page = "admin.php?page=$plugin_page";
 
+		wp_enqueue_script( $this->plugin_name . "-study", plugin_dir_url( __FILE__ ) . 'js/biobank-study.js', array( 'jquery' ), $this->version, false );
 		include_once(plugin_dir_path(__FILE__) . "../partials/admin/biobank-admin-studies.php");
 	}
 
