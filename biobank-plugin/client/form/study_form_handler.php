@@ -243,6 +243,11 @@ class StudyFormHandler extends StudyHandler {
 				$input = $_POST["biobank"];
 				$researchers = isset($input["chosen_researchers"]) ? array_keys($input["chosen_researchers"]) : array();
 				$return = $input["study_id"];
+				if ($_FILES['attachment']) {
+					$attachment = wp_handle_upload($_FILES['attachment'], Array('action' => 'update_study'));
+					$error = isset($attachment['error']) ? $attachment['error'] : $error;
+					$url = $attachment['url'];
+				}
 
 				/*
 				 * Perform validation
@@ -278,6 +283,9 @@ class StudyFormHandler extends StudyHandler {
 					$request->add_parameter("name", $input["name"]);
 					$request->add_parameter("description", $input["description"]);
 					$request->add_parameter("homepage", $input["homepage"]);
+					if (isset($url)) {
+						$request->add_parameter("attachment", $url);
+					}
 					$request->add_parameter("researchers", $researchers);
 					$response = $request->send_post_request($endpoint, "PUT");
 
