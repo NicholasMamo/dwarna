@@ -27,7 +27,7 @@ class StudyHandler(PostgreSQLRouteHandler):
 	The study handler class receives and handles requests that are related to studies.
 	"""
 
-	def create_study(self, study_id, name, description, homepage, researchers=None, *args, **kwargs):
+	def create_study(self, study_id, name, description, homepage, attachment=None, researchers=None, *args, **kwargs):
 		"""
 		Insert a study into the database.
 
@@ -39,6 +39,8 @@ class StudyHandler(PostgreSQLRouteHandler):
 		:type description: str
 		:param homepage: A link to the study's homepage.
 		:type homepage: str
+		:param attachment: The path to the attachment, if there is one.
+		:type: None or str
 		:param researchers: A list of researchers that are participating in the study.
 		:type researchers: list
 
@@ -82,8 +84,8 @@ class StudyHandler(PostgreSQLRouteHandler):
 			self._connector.execute([
 				"""
 				INSERT INTO studies (
-					study_id, name, description, homepage)
-				VALUES ('%s', '%s', '%s', '%s');""" % (study_id, name, description, homepage),
+					study_id, name, description, homepage, attachment)
+				VALUES ('%s', '%s', '%s', '%s', '%s');""" % (study_id, name, description, homepage, attachment or ''),
 			])
 
 			"""

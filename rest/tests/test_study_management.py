@@ -179,6 +179,55 @@ class StudyManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 200)
 
 	@BiobankTestCase.isolated_test
+	def test_create_study_without_attachment(self):
+		"""
+		Test that when creating a study without an attachment, the attachment is left empty.
+		"""
+
+		token = self._get_access_token(["create_study", "view_study"])["access_token"]
+		study_id = self._generate_study_name()
+
+		response = self.send_request("POST", "study", {
+			"study_id": study_id,
+			"name": "ALS",
+			"description": "ALS Study",
+			"homepage": "http://um.edu.mt"
+		}, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_volatile_request("GET", "study", { "study_id": study_id }, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(body["study"]["study_id"], study_id)
+		self.assertEqual('', body['study']['attachment'])
+
+	@BiobankTestCase.isolated_test
+	def test_create_study_with_attachment(self):
+		"""
+		Test that when creating a study without an attachment, the attachment is saved.
+		"""
+
+		token = self._get_access_token(["create_study", "view_study"])["access_token"]
+		study_id = self._generate_study_name()
+
+		response = self.send_request("POST", "study", {
+			"study_id": study_id,
+			"name": "ALS",
+			"description": "ALS Study",
+			"homepage": "http://um.edu.mt",
+			"attachment": "localhost"
+		}, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_volatile_request("GET", "study", { "study_id": study_id }, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(body["study"]["study_id"], study_id)
+		self.assertEqual("localhost", body['study']['attachment'])
+
+	@BiobankTestCase.isolated_test
 	def test_get_study_without_id(self):
 		"""
 		Test getting a study without providing an ID.
