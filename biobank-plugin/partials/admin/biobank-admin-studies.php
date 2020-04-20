@@ -32,7 +32,7 @@ require_once(plugin_dir_path(__FILE__) . "../../client/request.php");
 		$_GET["biobank_error"] = "";
 	?>
 
-    <form class="<?= $this->plugin_name ?>-form" id="study_form" method="post" name="study_form" onsubmit="convert_values()" action=<?php echo esc_url(admin_url("admin-post.php")); ?>>
+    <form class="<?= $this->plugin_name ?>-form" id="<?= $this->plugin_name ?>-study-form" method="post" name="study_form" onsubmit="convert_values()" action=<?php echo esc_url(admin_url("admin-post.php")); ?>>
         <input type="hidden" name="action" value="<?= $action ?>_study">
         <?php wp_nonce_field("study_form", "study_nonce"); ?>
 
