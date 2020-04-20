@@ -177,7 +177,7 @@ def create_schema(database):
 		connection.execute("""CREATE TABLE studies (
 							study_id			VARCHAR(128)		PRIMARY KEY,
 							name				VARCHAR(256),
-							description			VARCHAR(1024),
+							description			TEXT				NOT NULL,
 							homepage			VARCHAR(512)
 		);""")
 		connection.execute("""COMMENT ON COLUMN studies.study_id IS 'The study''s unique identifier';""")
