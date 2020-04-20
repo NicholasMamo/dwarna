@@ -68,10 +68,15 @@ require_once(plugin_dir_path(__FILE__) . "../../client/request.php");
 					<label for="<?php echo $this->plugin_name; ?>-description">Description <span class="description">(required)</span></label>
 				</th>
 				<td>
-					<input autocapitalize="none" autocomplete="off" autocorrect="off"
-						   autofill="false" maxlength="1024" name="<?php echo $this->plugin_name; ?>[description]"
-						   type="text" id="<?php echo $this->plugin_name; ?>-description"
-						   value="<?= $action != "create" ? htmlspecialchars($study->description) : "" ?>" aria-required="true" >
+					<input name="<?= $this->plugin_name; ?>[description]"
+						   type="hidden" id="<?= $this->plugin_name; ?>-description-input" aria-required="true">
+					<?php
+						$settings = array(
+							'textarea_rows' => 5,
+							'media_buttons' => true
+						);
+						wp_editor( $action != 'create' ? $study->description : '', "{$this->plugin_name}-description", $settings);
+					?>
 				</td>
 			</tr>
 
