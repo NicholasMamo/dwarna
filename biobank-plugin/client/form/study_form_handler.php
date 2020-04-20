@@ -181,7 +181,7 @@ class StudyFormHandler extends StudyHandler {
 				 */
 				$valid_id = $this->validate_required_string($input["study_id"], "The study ID cannot be empty");
 				$valid_name = $this->validate_required_string($input["name"], "The study name cannot be empty");
-				$valid_description = $this->validate_required_string($input["description"], "The study description cannot be empty");
+				$valid_description = $this->validate_description($input["description"], "The study description cannot be empty");
 				$valid_homepage = $this->validate_required_string($input["homepage"], "The study homepage cannot be empty");
 
 				/*
@@ -262,7 +262,7 @@ class StudyFormHandler extends StudyHandler {
 				 */
 				$valid_id = $this->validate_required_string($input["study_id"], "The study ID cannot be empty");
 				$valid_name = $this->validate_required_string($input["name"], "The study name cannot be empty");
-				$valid_description = $this->validate_required_string($input["description"], "The study description cannot be empty");
+				$valid_description = $this->validate_description($input["description"], "The study description cannot be empty");
 				$valid_homepage = $this->validate_required_string($input["homepage"], "The study homepage cannot be empty");
 
 				/*
