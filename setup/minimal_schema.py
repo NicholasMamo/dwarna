@@ -178,7 +178,8 @@ def create_schema(database):
 							study_id			VARCHAR(128)		PRIMARY KEY,
 							name				VARCHAR(256),
 							description			TEXT				NOT NULL,
-							homepage			VARCHAR(512)
+							homepage			VARCHAR(512),
+							attachment 			VARCHAR(1024)
 		);""")
 		connection.execute("""COMMENT ON COLUMN studies.study_id IS 'The study''s unique identifier';""")
 		connection.execute("""COMMENT ON COLUMN studies.name IS 'The study''s name';""")
