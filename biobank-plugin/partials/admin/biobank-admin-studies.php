@@ -32,7 +32,9 @@ require_once(plugin_dir_path(__FILE__) . "../../client/request.php");
 		$_GET["biobank_error"] = "";
 	?>
 
-    <form class="<?= $this->plugin_name ?>-form" id="<?= $this->plugin_name ?>-study-form" method="post" name="study_form" onsubmit="convert_values()" action=<?php echo esc_url(admin_url("admin-post.php")); ?>>
+    <form class="<?= $this->plugin_name ?>-form" id="<?= $this->plugin_name ?>-study-form" method="post"
+		  name="study_form" onsubmit="convert_values()" action=<?php echo esc_url(admin_url("admin-post.php")); ?>
+		  enctype="multipart/form-data">
         <input type="hidden" name="action" value="<?= $action ?>_study">
         <?php wp_nonce_field("study_form", "study_nonce"); ?>
 
@@ -77,6 +79,20 @@ require_once(plugin_dir_path(__FILE__) . "../../client/request.php");
 						);
 						wp_editor( $action != 'create' ? $study->description : '', "{$this->plugin_name}-description", $settings);
 					?>
+				</td>
+			</tr>
+
+			<tr class='form-field form-required'>
+				<th scope='row'>
+					<label for="<?php echo $this->plugin_name; ?>-attachment">Attachment</label>
+				</th>
+				<td>
+					<input type='file' id='<?= $this->plugin_name; ?>-attachment' name='attachment'
+						   accept='.pdf'>
+					<p class="description" id="attachment-description">
+						If you want to show an attachment, such as a form with more details about the study, upload a PDF here.
+						Leave this empty if you do not want to change the current attachment.
+					</p>
 				</td>
 			</tr>
 
