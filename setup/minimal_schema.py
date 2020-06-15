@@ -185,6 +185,7 @@ def create_schema(database):
 		connection.execute("""COMMENT ON COLUMN studies.name IS 'The study''s name';""")
 		connection.execute("""COMMENT ON COLUMN studies.description IS 'A description of what the study is about';""")
 		connection.execute("""COMMENT ON COLUMN studies.homepage IS 'A URL from where participants can obtain more information about the study';""")
+		connection.execute("""COMMENT ON COLUMN studies.attachment IS 'A URL to an attachment related to the study, such as a PDF';""")
 
 		"""
 		Create the relation table joining researchers with studies.
