@@ -316,20 +316,39 @@ class Biobank_Public {
 				$error = isset($active_studies->error) && ! empty($active_studies->error) ? $active_studies->error : $error;
 
 				/*
+				 * Non-recruiting studies are displayed apart.
+				 */
+				$non_recruiting_studies = array_filter((array) $active_studies->data,
+													 function ($study) {
+														 return ! $study->study->recruiting;
+													 });
+				$non_recruiting_studies = array_map(function ($study) {
+														return $study->study;
+													}, $non_recruiting_studies);
+				$non_recruiting_study_ids = array_map(function ($study) {
+													  	return $study->study->study_id;
+													}, $non_recruiting_studies);
+				$non_recruiting_study_ids = array_keys($non_recruiting_study_ids);
+
+				/*
 				 * Separate the consented studies.
 				 */
 				$consented_studies = $consent_handler->get_studies_by_participant();
-
 				$consented_study_ids = array_map(function ($study) { return $study->study->study_id; },
 												 $consented_studies->data);
 				$consented_studies = array_map(function ($study) { return $study->study; },
-											   $consented_studies->data);
+											   (array) $consented_studies->data);
+				$consented_studies = array_filter($consented_studies,
+												  function ($study) use ($non_recruiting_study_ids) {
+												  	return ! in_array($study->study_id, $non_recruiting_study_ids);
+												  });
 
 				$non_consented_studies = array_map(function ($study) { return $study->study; },
 												   (array) $active_studies->data);
 				$non_consented_studies = array_filter($non_consented_studies,
-													  function ($study) use ($consented_study_ids) {
-														  return ! in_array($study->study_id, $consented_study_ids);
+													  function ($study) use ($consented_study_ids, $non_recruiting_study_ids) {
+														  return ! in_array($study->study_id, $consented_study_ids) &&
+														  		 ! in_array($study->study_id, $non_recruiting_study_ids);
 													  });
 
 				include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-consent.php");

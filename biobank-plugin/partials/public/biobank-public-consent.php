@@ -66,4 +66,13 @@ $refresh = (isset($_GET["return"]) && $_GET["return"] == "update_consent");
 		<?php } ?>
 		</ul>
 	<?php endif ?>
+
+	<?php if (count($non_recruiting_studies)): ?>
+		<h2>Closed Studies</h2>
+		<ul>
+		<?php foreach ($non_recruiting_studies as $study) { ?>
+			<li><?= $study->name ?></li>
+		<?php } ?>
+		</ul>
+	<?php endif ?>
 </div>
