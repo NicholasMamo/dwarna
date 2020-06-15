@@ -117,6 +117,21 @@ require_once(plugin_dir_path(__FILE__) . "../../client/request.php");
 				</td>
 			</tr>
 
+			<tr class="form-field biobank-form-decremental">
+				<th scope="row">
+					<label for="<?php echo $this->plugin_name; ?>[recruiting]">Recruiting</label>
+				</th>
+				<td>
+					<fieldset>
+						<legend class="screen-reader-text"><span>Recruiting</span></legend><label for="recruiting">
+						<input name="<?= $this->plugin_name ?>[recruiting]" type="checkbox" id="recruiting"
+							   value="<?= $action != "create" ? ($study->recruiting == '1' ? '1' : '0') : 1 ?>"
+							   <?= ($action == "create" || $study->recruiting == '1') ? "checked='checked'" : ''?>
+						>The study is currently recruiting</label>
+					</fieldset>
+				</td>
+			</tr>
+
 		</table>
 
         <?php submit_button($button_labels[$action] . " study", $button_types[$action], "submit", TRUE); ?>
