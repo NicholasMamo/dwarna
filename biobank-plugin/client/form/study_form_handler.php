@@ -210,6 +210,7 @@ class StudyFormHandler extends StudyHandler {
 					$request->add_parameter("name", $input["name"]);
 					$request->add_parameter("description", $input["description"]);
 					$request->add_parameter("homepage", $input["homepage"]);
+					$request->add_parameter("recruiting", isset($input["recruiting"]) ? TRUE : FALSE);
 					if (isset($url)) {
 						$request->add_parameter("attachment", $url);
 					}
