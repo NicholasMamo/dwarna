@@ -112,7 +112,7 @@ class StudyHandler(PostgreSQLRouteHandler):
 
 		return response
 
-	def update_study(self, study_id, name, description, homepage, attachment=None, researchers=None, *args, **kwargs):
+	def update_study(self, study_id, name, description, homepage, recruiting, attachment=None, researchers=None, *args, **kwargs):
 		"""
 		Update an existing study.
 
@@ -124,6 +124,8 @@ class StudyHandler(PostgreSQLRouteHandler):
 		:type description: str
 		:param homepage: A link to the study's homepage.
 		:type homepage: str
+		:param recruiting: A boolean indicating whether the study is recruiting.
+		:type recruiting: bool
 		:param attachment: The path to the attachment, if there is one.
 		:type: None or str
 		:param researchers: A list of researchers that are participating in the study.
@@ -163,9 +165,10 @@ class StudyHandler(PostgreSQLRouteHandler):
 				SET
 					"name" = '%s',
 					"description" = '%s',
-					"homepage" = '%s'
+					"homepage" = '%s',
+					"recruiting" = '%r'
 				WHERE
-					"study_id" = '%s';""" % (name, description, homepage, study_id),
+					"study_id" = '%s';""" % (name, description, homepage, recruiting, study_id),
 			])
 
 			if attachment:
