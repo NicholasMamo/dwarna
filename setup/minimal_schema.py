@@ -179,13 +179,15 @@ def create_schema(database):
 							name				VARCHAR(256),
 							description			TEXT				NOT NULL,
 							homepage			VARCHAR(512),
-							attachment 			VARCHAR(1024)
+							attachment 			VARCHAR(1024),
+							recruiting			BOOLEAN				DEFAULT TRUE
 		);""")
 		connection.execute("""COMMENT ON COLUMN studies.study_id IS 'The study''s unique identifier';""")
 		connection.execute("""COMMENT ON COLUMN studies.name IS 'The study''s name';""")
 		connection.execute("""COMMENT ON COLUMN studies.description IS 'A description of what the study is about';""")
 		connection.execute("""COMMENT ON COLUMN studies.homepage IS 'A URL from where participants can obtain more information about the study';""")
 		connection.execute("""COMMENT ON COLUMN studies.attachment IS 'A URL to an attachment related to the study, such as a PDF';""")
+		connection.execute("""COMMENT ON COLUMN studies.recruiting IS 'A boolean indicating whether the study is recruiting research partners';""")
 
 		"""
 		Create the relation table joining researchers with studies.
