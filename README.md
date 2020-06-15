@@ -34,7 +34,6 @@ Some Python prerequisites are required to run the REST API and the setup scripts
 
 To install Dwarna, use the `install.sh` script:
 
-    chmod +x install.sh
 	./install.sh
 
 The script installs the schema using psycopg2, and Hyperledger Fabric and its dependencies.
@@ -44,13 +43,11 @@ To do this, follow the README files above.
 
 Once you have configured Dwarna, you can start Hyperledger Composer and the REST API using the `start.sh` script:
 
-    chmod +x start.sh
 	./start.sh
 
 The email delivery script is part of the REST API.
 To run it:
 
-    chmod +x deliver.py
     ./rest/deliver.py
 
 ### Backups
@@ -58,7 +55,6 @@ To run it:
 Dwarna's `tools/backup.sh` script takes a backup of all the files that are necessary to restore all data.
 To take a backup:
 
-    chmod +x tools/backup.sh
     ./tools/backup.sh
 
 By default, the backups are created in the `backups/` directory.
@@ -91,7 +87,6 @@ The `backup.sh` script automatically reads the credentials from it.
 
 To restore a backup, run the `tools/restore.sh` script:
 
-    chmod +x tools/restore.sh
     ./tools/restore.sh -p backup/yyyymmdd
 
 The script automatically restores the backup stored in the folder named `backup/yyyymmdd`.
@@ -110,7 +105,6 @@ You can specify which data to restore by passing on the following arguments:
 The 'tools/erase.sh' script can be used to erase research partner data from backups, including archives.
 The script takes in a path to the directory where backups are stored, and a list of research partner pseudonyms to erase:
 
-	chmod +x tools/restore.sh
 	./tools/erase.sh -p backup p2320 p2321
 
 See [REST API README.md](https://github.com/NicholasMamo/dwarna/tree/master/rest) for instructions to erase research partners from backups on deletion.
@@ -126,7 +120,6 @@ Some directories and files need to be created in advance with the correct permis
 
 To run the unit tests, use the `tests.sh` script:
 
-    chmod +x tests.sh
 	./tests.sh
 
 The unit testing ensures the correct functioning of the database schema and the REST API.

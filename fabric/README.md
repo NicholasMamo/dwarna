@@ -16,7 +16,6 @@ Other prerequisites are installed in the `install_network.sh` script.
 
 To install the Dwarna blockchain and related prerequisites, run the `install_network.sh` script:
 
-	chmod +x install_network.sh
 	./install_network.sh
 
 The script first installs NVM and the necessary NPM modules.
@@ -29,7 +28,6 @@ Create `start_network.sh` by copying `start_network.example.sh` and filling in t
 Use the OAuth 2.0 values retrieved by following the process when installing the [WordPress plugin](https://github.com/NicholasMamo/dwarna/tree/master/biobank-plugin).
 Then run the new script normally:
 
-	chmod +x start_network.sh
 	./start_network.sh
 
 The script configures Hyperledger Composer to use the custom-made Passport.js.
@@ -45,7 +43,6 @@ Finally, the script launches Composer Playground.
 
 To recreate the Dwarna blockchain from scratch:
 
-	chmod +x reinstall_network.sh
 	./reinstall_network.sh
 
 The script stops Hyperledger Fabric, tears down all Docker images, downloads them anew and starts up the blockchain again.

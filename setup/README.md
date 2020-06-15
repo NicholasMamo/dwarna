@@ -13,10 +13,8 @@ The other is for Dwarna's own data.
 
 To set up the schema, run the two setup scripts:
 
-    chmod +x minimal_schema.py
 	./minimal_schema.py
 
-	chmod +x oauth_schema.py
 	./oauth_schema.py
 
 The two scripts look for a [`~/.pgpass`](https://www.postgresql.org/docs/current/libpq-pgpass.html) file to connect to PostgreSQL initially.
@@ -35,7 +33,6 @@ The contents should be of the form `hostname:port:database:username:password`.
 
 To run the unit tests, use the `tests.sh` file:
 
-	chmod +x tests.sh
 	./tests.sh
 
 The unit testing ensures the correct functioning of Dwarna's database schema.

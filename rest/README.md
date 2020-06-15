@@ -38,7 +38,6 @@ The files in the `config` directory should be the following:
 
 The REST API can be run using:
 
- 	chmod +x main.py
 	./main.py
 
 Command-line arguments:
@@ -89,7 +88,6 @@ Then, ping the server:
 
 The unit tests can be run using:
 
- 	chmod +x tests.sh
 	./tests.sh
 
 Command-line arguments:
