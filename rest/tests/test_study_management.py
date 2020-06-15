@@ -205,7 +205,7 @@ class StudyManagementTest(BiobankTestCase):
 	@BiobankTestCase.isolated_test
 	def test_create_study_with_attachment(self):
 		"""
-		Test that when creating a study without an attachment, the attachment is saved.
+		Test that when creating a study with an attachment, the attachment is saved.
 		"""
 
 		token = self._get_access_token(["create_study", "view_study"])["access_token"]
@@ -226,6 +226,86 @@ class StudyManagementTest(BiobankTestCase):
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(body["study"]["study_id"], study_id)
 		self.assertEqual("localhost", body['study']['attachment'])
+
+	@BiobankTestCase.isolated_test
+	def test_create_study_without_recruiting(self):
+		"""
+		Test that when creating a study without a recruiting flag, it defaults to True.
+		"""
+
+		token = self._get_access_token(["create_study", "view_study"])["access_token"]
+		study_id = self._generate_study_name()
+
+		response = self.send_request("POST", "study", {
+			"study_id": study_id,
+			"name": "ALS",
+			"description": "ALS Study",
+			"homepage": "http://um.edu.mt",
+			"attachment": "localhost"
+		}, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_volatile_request("GET", "study", { "study_id": study_id }, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(body["study"]["study_id"], study_id)
+		self.assertEqual("localhost", body['study']['attachment'])
+		self.assertTrue(body['study']['recruiting'])
+
+	@BiobankTestCase.isolated_test
+	def test_create_study_with_recruiting_true(self):
+		"""
+		Test that when creating a study with a positive recruiting flag, it is saved as such.
+		"""
+
+		token = self._get_access_token(["create_study", "view_study"])["access_token"]
+		study_id = self._generate_study_name()
+
+		response = self.send_request("POST", "study", {
+			"study_id": study_id,
+			"name": "ALS",
+			"description": "ALS Study",
+			"homepage": "http://um.edu.mt",
+			"attachment": "localhost",
+			"recruiting": True,
+		}, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_volatile_request("GET", "study", { "study_id": study_id }, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(body["study"]["study_id"], study_id)
+		self.assertEqual("localhost", body['study']['attachment'])
+		self.assertTrue(body['study']['recruiting'])
+
+	@BiobankTestCase.isolated_test
+	def test_create_study_with_recruiting_false(self):
+		"""
+		Test that when creating a study with a negative recruiting flag, it is saved as such.
+		"""
+
+		token = self._get_access_token(["create_study", "view_study"])["access_token"]
+		study_id = self._generate_study_name()
+
+		response = self.send_request("POST", "study", {
+			"study_id": study_id,
+			"name": "ALS",
+			"description": "ALS Study",
+			"homepage": "http://um.edu.mt",
+			"attachment": "localhost",
+			"recruiting": False,
+		}, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+
+		response = self.send_volatile_request("GET", "study", { "study_id": study_id }, token)
+		body = response.json()
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(body["study"]["study_id"], study_id)
+		self.assertEqual("localhost", body['study']['attachment'])
+		self.assertFalse(body['study']['recruiting'])
 
 	@BiobankTestCase.isolated_test
 	def test_get_study_without_id(self):
