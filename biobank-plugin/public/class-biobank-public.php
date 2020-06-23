@@ -157,7 +157,7 @@ class Biobank_Public {
 									"?redirect=" . urlencode($_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]));
 						exit;
 					} else {
-						setcookie(BLOCKCHAIN_ACCESS_TOKEN, $_GET[BLOCKCHAIN_ACCESS_TOKEN], 0, '/');
+						setcookie(BLOCKCHAIN_ACCESS_TOKEN, $_GET[BLOCKCHAIN_ACCESS_TOKEN], time() + 3600, '/');
 						$_COOKIE[BLOCKCHAIN_ACCESS_TOKEN] = $_GET[BLOCKCHAIN_ACCESS_TOKEN];
 					}
 					break;
@@ -474,7 +474,7 @@ class Biobank_Public {
 					wp_redirect(get_option('biobank-composer')['hyperledger-host'] . "?redirect=" . urlencode(get_site_url()));
 					exit;
 				} else if (isset($_GET[BLOCKCHAIN_ACCESS_TOKEN])) {
-					setcookie(BLOCKCHAIN_ACCESS_TOKEN, $_GET[BLOCKCHAIN_ACCESS_TOKEN], 0, '/');
+					setcookie(BLOCKCHAIN_ACCESS_TOKEN, $_GET[BLOCKCHAIN_ACCESS_TOKEN], time() + 3600, '/');
 				}
 			}
 		} else if (!\is_user_logged_in()) {
