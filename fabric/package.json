@@ -55,7 +55,7 @@
     "insert_license": false
   },
   "dependencies": {
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "lodash.template": "^4.5.0",
     "minimatch": "^3.0.4"
   }
