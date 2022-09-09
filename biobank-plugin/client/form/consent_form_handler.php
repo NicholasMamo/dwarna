@@ -119,6 +119,7 @@ class ConsentFormHandler extends StudyHandler {
 	 * @access	public
 	 */
 	public function authenticate() {
+		error_log("In authenticate");
 		$error = "";
 		if(isset($_POST["consent_nonce"]) && wp_verify_nonce($_POST["consent_nonce"], "consent_form")) {
 			/*
@@ -135,7 +136,7 @@ class ConsentFormHandler extends StudyHandler {
 				/*
 				 * Then, redirect them to authorization endpoint.
 				 */
-				wp_redirect(get_option('biobank-composer')['auth-url']);
+				wp_redirect(get_site_url() . "/index.php/biobank-study" . "?authorized=true&action=consent");
 				exit;
 			}
 		}
@@ -143,6 +144,7 @@ class ConsentFormHandler extends StudyHandler {
 		/*
 		 * If something goes wrong, redirect back with an error.
 		 */
+		error_log("error in authenticate");
 		require(plugin_dir_path(__FILE__) . "../../includes/globals.php");
 		$error = urlencode($error);
 		wp_redirect(get_site_url() . "/index.php/" . $plugin_pages['biobank-consent']['wp_info']['post_name'] . "?biobank_error=$error&return=" . __FUNCTION__);
@@ -169,18 +171,22 @@ class ConsentFormHandler extends StudyHandler {
 				$give_endpoint = "give_consent";
 				$withdraw_endpoint = "withdraw_consent";
 				$consenting = isset($study['consenting']) && $study['consenting'] == 'on';
-
+				
+				error_log("Consenting");
+				error_log($consenting);
+				
+				error_log("address");
+				error_log($_SESSION['address']);
 				/*
 				 * Create a new request with the study and user information.
 				 */
 				$body = new \stdClass();
 				$request = new \client\Request($this->scheme, $this->host, $this->port);
 				$request->add_parameter("study_id", $study['study_id']);
-				$request->add_parameter("address", $input['address']);
+				$request->add_parameter("address", $_SESSION['address']);
 				$request->add_parameter("access_token", $this->get_blockchain_access_token());
 
 				$consent = $consenting && $study['consent'] == 'on';
-
 				/*
 				 * There are two routes to consent.
 				 * Either the participant gives it, or they withdraw it.
@@ -189,16 +195,22 @@ class ConsentFormHandler extends StudyHandler {
 					$response = $request->send_post_request($give_endpoint);
 					if (! is_wp_error($response)) {
 						$response_body = json_decode($response["body"]);
+						print("Response from giving consent");
+						error_log(print_r($response_body));
 						$error = isset($response_body->error) ? $response_body->error : $error;
 					} else {
+						error_log("Found error when giving consent");
 						$error = "WordPress could not reach the backend";
 					}
 				} else {
 					$response = $request->send_post_request($withdraw_endpoint);
 					if (! is_wp_error($response)) {
 						$response_body = json_decode($response["body"]);
+						print("Response from withdraw consent");
+						error_log(print_r($response_body));
 						$error = isset($response_body->error) ? $response_body->error : $error;
 					} else {
+						error_log("Found error when withdrawing consent");
 						$error = "WordPress could not reach the backend";
 					}
 				}

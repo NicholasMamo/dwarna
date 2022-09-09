@@ -98,6 +98,7 @@ class ConsentHandler(PostgreSQLRouteHandler):
 
 		response = Response()
 
+
 		try:
 			if not self._study_exists(study_id):
 				raise study_exceptions.StudyDoesNotExistException()
@@ -205,8 +206,8 @@ class ConsentHandler(PostgreSQLRouteHandler):
 				SELECT
 					participants.*
 				FROM
-					participant_identities JOIN participants
-						ON participant_identities.participant_id = participants.user_id
+					participant_identities_eth JOIN participants
+						ON participant_identities_eth.participant_id = participants.user_id
 				WHERE
 					address IN ('%s')
 			""" % ("', '".join(addresses)))
@@ -271,7 +272,7 @@ class ConsentHandler(PostgreSQLRouteHandler):
 				SELECT
 					address
 				FROM
-					participant_identities
+					participant_identities_eth
 				WHERE
 					participant_id = '%s'
 			""" % (username))
@@ -287,6 +288,7 @@ class ConsentHandler(PostgreSQLRouteHandler):
 				"""
 				Get a list of addresses associated with the study.
 				"""
+				print("Getting participants of study", str(study_id))
 				study_addresses = self._blockchain_connector.get_study_participants(study_id, *args, **kwargs)
 				address = list(set(study_addresses).intersection(set(addresses)))
 				if not len(address):
@@ -344,7 +346,6 @@ class ConsentHandler(PostgreSQLRouteHandler):
 				raise user_exceptions.ParticipantAddressDoesNotExistException()
 
 			consent = self._blockchain_connector.has_consent(study_id, address, *args, **kwargs)
-
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
 			response.body = json.dumps({ "data": consent })
@@ -352,10 +353,12 @@ class ConsentHandler(PostgreSQLRouteHandler):
 			study_exceptions.StudyDoesNotExistException,
 			user_exceptions.ParticipantAddressDoesNotExistException
 		) as e:
+			print("Error in has_consent", str(e))
 			response.status_code = 500
 			response.add_header("Content-Type", "application/json")
 			response.body = json.dumps({ "error": str(e), "exception": e.__class__.__name__ })
 		except Exception as e:
+			print("Error in has_consent", str(e))
 			response.status_code = 500
 			response.add_header("Content-Type", "application/json")
 			response.body = json.dumps({ "error": "Internal Server Error: %s" % str(e), "exception": e.__class__.__name__ })
@@ -386,6 +389,7 @@ class ConsentHandler(PostgreSQLRouteHandler):
 			username = self._sanitize(username)
 
 			if not self._participant_exists(username):
+				print("Error in get_consent_trail: User does not exist");
 				raise user_exceptions.ParticipantDoesNotExistException()
 
 			"""
@@ -412,7 +416,6 @@ class ConsentHandler(PostgreSQLRouteHandler):
 				Construct the timeline, one timestamp at a time, from the current study.
 				"""
 				consent_trail = self._blockchain_connector.get_consent_trail(study_id, username, *args, **kwargs)
-
 				for (timestamp, consent) in consent_trail.items():
 					timeline[timestamp] = timeline.get(timestamp, {})
 					timeline[timestamp][study_id] = consent
@@ -428,11 +431,13 @@ class ConsentHandler(PostgreSQLRouteHandler):
 		except (
 			user_exceptions.ParticipantDoesNotExistException
 			) as e:
+			print("Error in get_consent_trail: ",str(e));
 			response.status_code = 500
 			response.add_header("Content-Type", "application/json")
 			response.body = json.dumps({ "error": str(e), "exception": e.__class__.__name__ })
 		except Exception as e:
 			response.status_code = 500
+			print("Error in get_consent_trail: ",str(e));
 			response.add_header("Content-Type", "application/json")
 			response.body = json.dumps({ "error": "Internal Server Error: %s" % str(e), "exception": e.__class__.__name__ })
 

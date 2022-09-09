@@ -250,8 +250,8 @@ class Biobank_Public {
 			if ($role == "participant") {
 				if (isset($_SESSION['study_id']) &&
 					isset($_GET['action']) && $_GET['action'] == 'consent') {
-					wp_enqueue_script( $this->plugin_name . "-hyperledger-config", plugin_dir_url( __FILE__ ) . 'js/hyperledger/config.js', array( 'jquery' ), $this->version, false );
-					wp_enqueue_script( $this->plugin_name . "-hyperledger-card", plugin_dir_url( __FILE__ ) . 'js/hyperledger/card.js', array( 'jquery' ), $this->version, false );
+					wp_enqueue_script( $this->plugin_name . "-hyperledger-config", plugin_dir_url( __FILE__ ) . 'js/ethereum/config.js', array( 'jquery' ), $this->version, false );
+					wp_enqueue_script( $this->plugin_name . "-hyperledger-card", plugin_dir_url( __FILE__ ) . 'js/ethereum/card.js', array( 'jquery' ), $this->version, false );
 
 					$consent_handler = new \client\form\ConsentFormHandler();
 					$error = '';
@@ -306,11 +306,14 @@ class Biobank_Public {
 			$user = wp_get_current_user();
 			$role = $user->roles[0];
 			if ($role == "participant") {
-				wp_enqueue_script( $this->plugin_name . "-hyperledger-config", plugin_dir_url( __FILE__ ) . 'js/hyperledger/config.js', array( 'jquery' ), $this->version, false );
-				wp_enqueue_script( $this->plugin_name . "-hyperledger-card", plugin_dir_url( __FILE__ ) . 'js/hyperledger/card.js', array( 'jquery' ), $this->version, false );
+				error_log($this->plugin_name);
+				wp_enqueue_script( $this->plugin_name . "-hyperledger-config", plugin_dir_url( __FILE__ ) . 'js/ethereum/config.js', array( 'jquery' ), $this->version, false );
+				wp_enqueue_script( $this->plugin_name . "-hyperledger-card", plugin_dir_url( __FILE__ ) . 'js/ethereum/card.js', array( 'jquery' ), $this->version, false );
 
 				$consent_handler = new \client\form\ConsentFormHandler();
 				$active_studies = $consent_handler->get_active_studies();
+				error_log("active studies");
+				error_log( print_r( $active_studies, true ) );
 				$error = "";
 
 				$error = isset($active_studies->error) && ! empty($active_studies->error) ? $active_studies->error : $error;
@@ -350,7 +353,6 @@ class Biobank_Public {
 														  return ! in_array($study->study_id, $consented_study_ids) &&
 														  		 ! in_array($study->study_id, $non_recruiting_study_ids);
 													  });
-
 				include_once(plugin_dir_path(__FILE__) . "../partials/public/biobank-public-consent.php");
 				return;
 			}
@@ -460,23 +462,9 @@ class Biobank_Public {
 			if (isset($_GET["authorized"]) && $_GET["authorized"]) {
 				$_SESSION["authorized"] = true;
 			} else if (!isset($_SESSION["authorized"]) && !isset($_GET["redirect_uri"])) {
-				wp_redirect(get_option('biobank-composer')['auth-url']);
-				exit;
+				$_SESSION["authorized"] = true;
 			}
 
-			/*
-			 * If the blockchain access token is not set, redirect to the Hyperledger host to retrieve it.
-			 * The page should redirect to the same page (the homepage), with the access token as a GET parameter.
-			 * If this access token is present, it is saved as a cookie value.
-			 */
-			if (isset($_SESSION["authorized"])) {
-				if (! isset($_COOKIE[BLOCKCHAIN_ACCESS_TOKEN]) && ! isset($_GET[BLOCKCHAIN_ACCESS_TOKEN])) {
-					wp_redirect(get_option('biobank-composer')['hyperledger-host'] . "?redirect=" . urlencode(get_site_url()));
-					exit;
-				} else if (isset($_GET[BLOCKCHAIN_ACCESS_TOKEN])) {
-					setcookie(BLOCKCHAIN_ACCESS_TOKEN, $_GET[BLOCKCHAIN_ACCESS_TOKEN], time() + 3600, '/');
-				}
-			}
 		} else if (!\is_user_logged_in()) {
 			unset($_SESSION["authorized"]);
 		}
