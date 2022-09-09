@@ -54,7 +54,7 @@ restore_postgresql() {
 
 	parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 
-	tables=( users researchers participants participant_identities participant_subscriptions biobankers studies studies_researchers emails email_recipients )
+	tables=( users researchers participants participant_identities participant_identities_eth participant_subscriptions biobankers studies studies_researchers emails email_recipients )
 	for table in "${tables[@]}"
 	do
 		su -c "psql -U postgres -d $database -c \"COPY $table FROM '$( pwd )/$1/postgresql/$table.csv' DELIMITER ',' CSV HEADER;\"" postgres

@@ -84,7 +84,7 @@ Description=Dwarna ETH Chain Service
 Type=simple
 User=dwarna
 Restart=always
-ExecStart=/home/dwarna/geth/geth --port 3000 --networkid 101010 --nodiscover --datadir=/home/dwarna/dwarna-eth-chain/data --maxpeers=1 --http --http.port 8543 --http.addr 0.0.0.0 --http.corsdomain "*" --http.api "eth,net,web3,personal,miner,admin" --rpc.allow-unprotected-txs --allow-insecure-unlock --nat none --metrics --metrics.addr 0.0.0.0
+ExecStart=/home/dwarna/geth/geth --port 3000 --networkid 101010 --nodiscover --datadir=/home/dwarna/dwarna-eth-chain/data --maxpeers=1 --http --http.port 8543 --http.addr 0.0.0.0 --http.corsdomain "*" --http.api "eth,net,web3,personal,miner,admin" --rpc.allow-unprotected-txs --allow-insecure-unlock --nat none --metrics --metrics.addr 0.0.0.0 —password=/home/dwarna/.pwd —unlock=0x2de689df983e7a12389829da436c3e3395635df0 --mine --miner.threads=8
 
 [Install]
 WantedBy=multi-user.target
@@ -131,7 +131,7 @@ scrape_configs:
     - targets: [':9100']
 END
 
-docker run -d --restart always --name prometheus -p 9090:9090 -v /home/dwarna/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus --config.file=/etc/prometheus/prometheus.yml
+docker run -d --restart always --name prometheus -p 9090:9090 --ip=172.17.0.2 -v /home/dwarna/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus --config.file=/etc/prometheus/prometheus.yml
 docker run -d --restart always --name grafana -p 3001:3000 grafana/grafana
 ```
 
@@ -195,7 +195,7 @@ Copy the source .sol files into the folder named contracts
 #go to the migrations directory
 cd /home/node/truffle/migrations
 #create file
-tee -a 2_create_dwarna.json << END
+tee -a 2_create_dwarna.js << END
 var DwarnaData = artifacts.require("./DwarnaData.sol");
 var Dwarna = artifacts.require("./Dwarna.sol");
 module.exports = async(deployer) => {

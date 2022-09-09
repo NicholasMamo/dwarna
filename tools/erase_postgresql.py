@@ -10,6 +10,7 @@ import sys
 
 COLUMNS = {
 	"participant_identities.csv": "participant_id",
+	"participant_identities_eth.csv": "participant_id",
 	"participant_subscriptions.csv": "participant_id",
 	"participants.csv": "user_id",
 }
