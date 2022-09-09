@@ -101,7 +101,7 @@ def start_auth_server(port, token_expiry, connection, oauth_connection):
 			blockchain.multiuser_host,
 			blockchain.multiuser_port,
 			connection,
-			"0xE8C0f531B11Df8CeE19175B6d028d3c3412Af754"
+			"0x5d7be6ee249CaE84fDef611949AD829Ef3E07892"
 		)
 
 		"""
