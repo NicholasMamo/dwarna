@@ -32,6 +32,7 @@ sys.path.insert(0, os.path.join(os.path.abspath(os.path.dirname(__file__))))
 from threads.thread_manager import ThreadManager
 
 from biobank.handlers.blockchain.api.hyperledger import hyperledger
+from biobank.handlers.blockchain.api.ethereum import ethereum
 
 from coauth.grants.grants import CustomClientCredentialsGrant
 from coauth.token_store.postgresql_token_store import PostgresqlAccessTokenStore, PostgresqlAuthCodeStore, PostgresqlClientStore
@@ -94,12 +95,13 @@ def start_auth_server(port, token_expiry, connection, oauth_connection):
 		The resource server is given the access token store to validate requests.
 		The routes and their handler are also passed on as arguments.
 		"""
-		blockchain_handler = hyperledger.HyperledgerAPI(
+		blockchain_handler = ethereum.EthereumAPI(
 			blockchain.admin_host,
 			blockchain.admin_port,
 			blockchain.multiuser_host,
 			blockchain.multiuser_port,
-			connection
+			connection,
+			"0xE8C0f531B11Df8CeE19175B6d028d3c3412Af754"
 		)
 
 		"""
@@ -116,7 +118,7 @@ def start_auth_server(port, token_expiry, connection, oauth_connection):
 		"""
 		route_handlers = { handler_class: handler_class(connection, blockchain_handler, thread_list)
 							for handler_class in routes.handler_classes }
-		route_handlers[hyperledger.HyperledgerAPI] = blockchain_handler
+		route_handlers[ethereum.EthereumAPI] = blockchain_handler
 
 		resource_provider = ResourceServer(
 			connection=connection,

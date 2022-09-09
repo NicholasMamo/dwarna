@@ -74,8 +74,9 @@ class StudyHandler(PostgreSQLRouteHandler):
 				if not self._researcher_exists(researcher):
 					raise user_exceptions.ResearcherDoesNotExistException()
 
+			print("Creating study on blockchain...")
 			self._blockchain_connector.create_study(study_id)
-
+			print("Created study on blockchain");
 			"""
 			Create the study.
 			"""
@@ -95,6 +96,7 @@ class StudyHandler(PostgreSQLRouteHandler):
 			"""
 			self._link_researchers(study_id, researchers)
 
+
 			response.status_code = 200
 			response.add_header("Content-Type", "application/json")
 			response.body = json.dumps({ })
@@ -102,10 +104,12 @@ class StudyHandler(PostgreSQLRouteHandler):
 				study_exceptions.AttributeExistsException,
 				study_exceptions.StudyExistsException,
 				user_exceptions.ResearcherDoesNotExistException) as e:
+			print("Error when creating study", str(e));
 			response.status_code = 500
 			response.add_header("Content-Type", "application/json")
 			response.body = json.dumps({ "error": str(e), "exception": e.__class__.__name__ })
 		except Exception as e:
+			print("Error when creating study", str(e));
 			response.status_code = 500
 			response.add_header("Content-Type", "application/json")
 			response.body = json.dumps({ "error": "Internal Server Error: %s" % str(e), "exception": e.__class__.__name__ })

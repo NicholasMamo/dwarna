@@ -441,6 +441,52 @@ class ParticipantFormHandler extends UserFormHandler {
 	}
 
 	/**
+	 * Check whether the currently-logged in user has consent.
+	 *
+	 * @since	1.0.0
+	 * @param	int			$study_id	The ID of the study related to the card will be checked.
+	 *
+	 * @return	stdClass	A class that contains the returned boolean in the `data` property.
+	 */
+	public function has_consent($study_id) {
+		$error = "";
+		$endpoint = "has_consent"; // the REST API's endpoint
+
+		/*
+		 * For security purposes, ensure that the user can update their consent.
+		 * If they can update consent, they have a card that they can access.
+		 */
+		//TODO
+		// if (current_user_can("biobank_update_consent")) {
+		if (current_user_can("biobank_view_consent")) {
+			/*
+			 * Create a request and fetch the response
+			 */
+			$user = wp_get_current_user();
+			$request = new \client\Request($this->scheme, $this->host, $this->port);
+			$request->add_parameter("address", $_SESSION["address"]);
+			$request->add_parameter("study_id", $study_id);
+
+			/*
+			 * Process the response
+			 */
+			$response = $request->send_get_request($endpoint);
+			if (! is_wp_error($response)) {
+				$body = $response["body"];
+				$error = isset($body->error) ? $body->error : "";
+				return $body;
+			} else {
+				/*
+				 * If a connection could not be established
+				 */
+				$body = new \stdClass();
+				$body->error = "WordPress could not reach the backend";
+			}
+		}
+		return $body;
+	}
+
+	/**
 	 * Get the currently logged-in user's temporary card.
 	 *
 	 * @since	1.0.0
@@ -473,6 +519,7 @@ class ParticipantFormHandler extends UserFormHandler {
 			$response = $request->send_get_request($endpoint);
 			if (! is_wp_error($response)) {
 				$body = new \stdClass();
+				$_SESSION['address'] = $response["body"];
 				$body->data = $response["body"];
 				$error = isset($body->error) ? $body->error : "";
 				return $body;

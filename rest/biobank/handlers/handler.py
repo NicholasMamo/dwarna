@@ -313,7 +313,7 @@ class PostgreSQLRouteHandler(RouteHandler):
 		row = self._connector.select_one("""
 			SELECT *
 			FROM
-				participant_identities
+				participant_identities_eth
 			WHERE
 				address = '%s'
 			""" % (address)
