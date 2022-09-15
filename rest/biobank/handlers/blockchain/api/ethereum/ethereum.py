@@ -18,7 +18,8 @@ import secrets
 import json
 from . import ethereum_exceptions
 
-with open('biobank/handlers/blockchain/api/ethereum/contract.json') as f:
+cwd = os.path.dirname(os.path.realpath(__file__))
+with open(cwd+'contract.json') as f:
    contract_details = json.load(f)
 
 w3= web3.Web3(web3.HTTPProvider('http://127.0.0.1:8543'))
@@ -82,7 +83,7 @@ class EthereumAPI(BlockchainAPI):
 		self._default_multiuser_port = default_multiuser_port
 		self._connector = connector
 
-		self._private_key = "d2c1bcd72e0151f0bb53aa54f2510ee053e354bc6460c5610f24ea9db71c2ee0"
+		self._private_key = "priv_key"
 		self._contract = w3.eth.contract(address=contract_address, abi=contract_details["abi"])
 		self._account = w3.eth.account.privateKeyToAccount(self._private_key)
 

@@ -135,6 +135,18 @@ docker run -d --restart always --name prometheus -p 9090:9090 --ip=172.17.0.2 -v
 docker run -d --restart always --name grafana -p 3001:3000 grafana/grafana
 ```
 
+### Step 6: Updating Configs
+
+#### A: Update RPC endpoint
+
+1. Go to <b>rest/biobank/handlers/blockchain/api/ethereum/ethereum/.py</b>
+2. Change <b>127.0.0.1</b> to the IP where the node is running
+
+#### B: Set account private key
+
+1. Obtain private key from following the guide named <b>Getting the private key of an account created from geth</b> below
+2. Change <b>priv_key</b> to the your private key
+
 ## Useful Geth commands
 
 ### To start geth
