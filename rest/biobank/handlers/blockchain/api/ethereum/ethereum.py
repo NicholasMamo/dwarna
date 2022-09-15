@@ -162,6 +162,7 @@ class EthereumAPI(BlockchainAPI):
 		:rtype: str
 		"""
 
+		print("Creating participant in blockchain")
 		private_key, address = self._generate_key_pair()
 
 		query = """
@@ -278,6 +279,7 @@ class EthereumAPI(BlockchainAPI):
 		:rtype: :class:`oauth2.web.Response`
 		"""
 
+		print("In Ethereum's get card");
 		response = Response()
 
 		query = """

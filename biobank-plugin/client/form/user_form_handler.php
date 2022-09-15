@@ -41,6 +41,7 @@ class ParticipantFormHandler extends UserFormHandler {
 			 * For security purposes, ensure that the user can indeed create participants
 			 */
 			if (current_user_can("biobank_create_participant") && isset($_POST["biobank"])) {
+				print("Creating participant in ParticipantFormHandler")
 				$input = $_POST["biobank"];
 
 				/*
