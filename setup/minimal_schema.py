@@ -142,8 +142,8 @@ def create_schema(database):
 		"""
 		connection.execute("""CREATE TABLE participant_identities_eth (
 							participant_id		VARCHAR(64)		REFERENCES participants(user_id)	ON DELETE CASCADE,
-							address				VARCHAR(32)		UNIQUE,
-							private_key			VARCHAR(64)
+							address				VARCHAR(42)		UNIQUE,
+							private_key			VARCHAR(66)
 		);""")
 
 		"""
