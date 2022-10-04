@@ -306,14 +306,11 @@ class Biobank_Public {
 			$user = wp_get_current_user();
 			$role = $user->roles[0];
 			if ($role == "participant") {
-				error_log($this->plugin_name);
 				wp_enqueue_script( $this->plugin_name . "-hyperledger-config", plugin_dir_url( __FILE__ ) . 'js/ethereum/config.js', array( 'jquery' ), $this->version, false );
 				wp_enqueue_script( $this->plugin_name . "-hyperledger-card", plugin_dir_url( __FILE__ ) . 'js/ethereum/card.js', array( 'jquery' ), $this->version, false );
 
 				$consent_handler = new \client\form\ConsentFormHandler();
 				$active_studies = $consent_handler->get_active_studies();
-				error_log("active studies");
-				error_log( print_r( $active_studies, true ) );
 				$error = "";
 
 				$error = isset($active_studies->error) && ! empty($active_studies->error) ? $active_studies->error : $error;

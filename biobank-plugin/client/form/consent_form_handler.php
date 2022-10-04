@@ -119,7 +119,6 @@ class ConsentFormHandler extends StudyHandler {
 	 * @access	public
 	 */
 	public function authenticate() {
-		error_log("In authenticate");
 		$error = "";
 		if(isset($_POST["consent_nonce"]) && wp_verify_nonce($_POST["consent_nonce"], "consent_form")) {
 			/*
@@ -172,11 +171,6 @@ class ConsentFormHandler extends StudyHandler {
 				$withdraw_endpoint = "withdraw_consent";
 				$consenting = isset($study['consenting']) && $study['consenting'] == 'on';
 				
-				error_log("Consenting");
-				error_log($consenting);
-				
-				error_log("address");
-				error_log($_SESSION['address']);
 				/*
 				 * Create a new request with the study and user information.
 				 */
@@ -207,7 +201,6 @@ class ConsentFormHandler extends StudyHandler {
 					if (! is_wp_error($response)) {
 						$response_body = json_decode($response["body"]);
 						print("Response from withdraw consent");
-						error_log(print_r($response_body));
 						$error = isset($response_body->error) ? $response_body->error : $error;
 					} else {
 						error_log("Found error when withdrawing consent");
