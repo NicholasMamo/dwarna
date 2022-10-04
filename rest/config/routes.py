@@ -54,7 +54,6 @@ consent_handler_class = ConsentHandler
 :vartype consent_handler_class: :class:`biobank.handler.RouteHandler`
 """
 
-#blockchain_handler_class = hyperledger.HyperledgerAPI
 blockchain_handler_class = ethereum.EthereumAPI
 """
 :var blockchain_handler_class: The handler that receives route parameters and services requests related to blockchain-specific functions.
