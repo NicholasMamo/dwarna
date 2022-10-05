@@ -310,7 +310,7 @@ class ResourceServer(Provider):
 				SELECT
 					participant_id AS username
 				FROM
-					participant_identities
+					participant_identities_eth
 				WHERE
 					address = '%s'
 			""" % (parameters.get('address')))

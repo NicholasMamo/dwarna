@@ -131,6 +131,28 @@ def create_schema(database):
 		connection.execute("""COMMENT ON COLUMN participant_identities.temp_card IS 'The participant''s Hyperledger card, created when their identity is issued; they need to import it into the wallet in order to get a credential-ready version';""")
 		connection.execute("""COMMENT ON COLUMN participant_identities.cred_card IS 'The participant''s credential-ready Hyperledger card, created when the temporary card is imported, pinged and assigned credentials';""")
 
+
+		"""
+		Drop the participants' identities table if it exists.
+		"""
+		connection.execute("""DROP TABLE IF EXISTS participant_identities_eth CASCADE;""")
+		"""
+		Create the table that links participants with their blockchain identities.
+		When a user is deleted, their corresponding participant-specific data should also be removed.
+		"""
+		connection.execute("""CREATE TABLE participant_identities_eth (
+							participant_id		VARCHAR(64)		REFERENCES participants(user_id)	ON DELETE CASCADE,
+							address				VARCHAR(42)		UNIQUE,
+							private_key			VARCHAR(66)
+		);""")
+
+		"""
+		Add comments to describe the columns.
+		"""
+		connection.execute("""COMMENT ON COLUMN participant_identities_eth.participant_id IS 'The participant''s unique identifier, links to the ''participants'' table''s primary key';""")
+		connection.execute("""COMMENT ON COLUMN participant_identities_eth.address IS 'The participant''s address on the Hyperledger Fabric blockchain';""")
+		connection.execute("""COMMENT ON COLUMN participant_identities_eth.private_key IS 'The participant''s credential-ready Hyperledger card, created when the temporary card is imported, pinged and assigned credentials';""")
+
 		"""
 		Drop the participants' subscriptions table if it exists.
 		"""

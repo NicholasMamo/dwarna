@@ -6,10 +6,11 @@ from biobank.handlers.participant_handler import ParticipantHandler
 from biobank.handlers.researcher_handler import ResearcherHandler
 from biobank.handlers.study_handler import StudyHandler
 from biobank.handlers.blockchain.api.hyperledger import hyperledger
+from biobank.handlers.blockchain.api.ethereum import ethereum
 
 from connection.db_connection import PostgreSQLConnection
 
-base_url = "http://localhost"
+base_url = "https://dwarna.mt/wp-content/plugins/biobank-plugin"
 """
 :var base_url: The base URL of the REST API.
 			   This is used when absolute paths are required, for example when sending emails.
@@ -53,7 +54,7 @@ consent_handler_class = ConsentHandler
 :vartype consent_handler_class: :class:`biobank.handler.RouteHandler`
 """
 
-blockchain_handler_class = hyperledger.HyperledgerAPI
+blockchain_handler_class = ethereum.EthereumAPI
 """
 :var blockchain_handler_class: The handler that receives route parameters and services requests related to blockchain-specific functions.
 :vartype blockchain_handler_class: :class:`biobank.blockchain.api.BlockchainAPI`
