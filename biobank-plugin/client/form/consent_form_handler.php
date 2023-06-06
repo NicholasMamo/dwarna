@@ -28,6 +28,15 @@ require_once(plugin_dir_path(__FILE__) . "form_handler.php");
  */
 class ConsentFormHandler extends StudyHandler {
 
+
+	public function consented_to_study($study_id) {
+		$rp_studies = $this->get_studies_by_participant();
+		//error_log(print_r($rp_studies, true));
+		$study_matches = array_filter((array) $rp_studies->data, function($study) use ($study_id) { return $study->study->study_id == $study_id; });
+		error_log(count($study_matches));
+		return (count($study_matches) > 0);
+	}
+
 	/**
 	 * Get a list of active studies.
 	 *

@@ -25,40 +25,77 @@ if (isset($error) && ! empty($error)) {
 	<?php if ($study->study->attachment != ''): ?>
 		<iframe src="<?= $study->study->attachment ?>" width="100%" height="500px"></iframe>
 	<?php endif; ?>
-	<?php include_once(plugin_dir_path(__FILE__) . '/components/biobank-study-quiz.php') ?>
+	
 
-	<h2>Consent Update</h2>
+	<?php 
+		require_once(plugin_dir_path(__FILE__) . "../../client/form/consent_form_handler.php");
+		$consent_handler = new \client\form\ConsentFormHandler();
+		if ($consent_handler->consented_to_study($study->study->study_id)) {
+    ?>
+    
+        <p>I would like researchers to STOP using my banked sample and data for this research study.</p>
+        
+       <input id = '<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>'
+	            name = '<?= $this->plugin_name ?>[study][consent]'
+			    class = 'study-consent' 
+			    type = 'hidden'>
+			    
+       <input id = '<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>-consenting'
+       		  name = '<?= $this->plugin_name ?>[study][consenting]'
+		      class = 'study-consenting <?= $this->plugin_name ?>-hidden' 
+		      type = 'hidden'>
 
-	<div class="<?= $this->plugin_name ?>-alert <?= $this->plugin_name ?>-quiz-alert
-				<?= $this->plugin_name ?>-hidden">
-		Please fill in the quiz above before continuing.
-	</div>
+	    <input name='<?= $this->plugin_name ?>[study][study_id]'
+		       type='hidden' 
+		       value='<?= $study->study->study_id ?>'>
+		       
+	    <input id='<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>-address'
+		       name='<?= $this->plugin_name ?>[address]'
+		       type='hidden' 
+		       value=''>
 
-	<label class='checkbox-container'
-		   for="<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>">
-		   <span id='<?= $this->plugin_name ?>-consented' hidden>
-			   I no longer wish to participate in this study
-		   </span>
-		   <span id='<?= $this->plugin_name ?>-not-consented' hidden>
-			   I agree that my sample at the biobank can be used for this study
-		   </span>
+	    <input type = "submit" class = "btn btn-primary float-left" value="Withdraw" />
+    
+	<?php } else { ?>
+	
+		<?php include_once(plugin_dir_path(__FILE__) . '/components/biobank-study-quiz.php') ?>
 
-	   <input id = '<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>'
-	   		  name = '<?= $this->plugin_name ?>[study][consent]'
-			  class = 'study-consent' type = 'checkbox'>
-	   <span class='checkbox'></span>
-   </label>
-   <input id = '<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>-consenting'
-   		  name = '<?= $this->plugin_name ?>[study][consenting]'
-		  class = 'study-consenting <?= $this->plugin_name ?>-hidden' type = 'checkbox'>
+	    <h2>Consent Update</h2>
+	    <div class="<?= $this->plugin_name ?>-alert <?= $this->plugin_name ?>-quiz-alert
+				    <?= $this->plugin_name ?>-hidden">
+		    Please fill in the quiz above before continuing.
+	    </div>
 
-	<input name='<?= $this->plugin_name ?>[study][study_id]'
-		   type='hidden' value='<?= $study->study->study_id ?>'>
-	<input id='<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>-address'
-		   name='<?= $this->plugin_name ?>[address]'
-		   type='hidden' value=''>
+	    <label class='checkbox-container'
+		       for="<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>">
+		       <span id='<?= $this->plugin_name ?>-consented' hidden>
+			       I no longer wish to participate in this study
+		       </span>
+		       <span id='<?= $this->plugin_name ?>-not-consented' hidden>
+			       I agree that my sample at the biobank can be used for this study
+		       </span>
 
-	<input type = "submit" class = "btn btn-primary float-left" />
+	       <input id = '<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>'
+	       		  name = '<?= $this->plugin_name ?>[study][consent]'
+			      class = 'study-consent' type = 'checkbox'>
+	       <span class='checkbox'></span>
+       </label>
+       <input id = '<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>-consenting'
+       		  name = '<?= $this->plugin_name ?>[study][consenting]'
+		      class = 'study-consenting <?= $this->plugin_name ?>-hidden' type = 'checkbox'>
+
+	    <input name='<?= $this->plugin_name ?>[study][study_id]'
+		       type='hidden' value='<?= $study->study->study_id ?>'>
+	    <input id='<?= $this->plugin_name ?>-study-<?= $study->study->study_id ?>-address'
+		       name='<?= $this->plugin_name ?>[address]'
+		       type='hidden' value=''>
+
+	    <input type = "submit" class = "btn btn-primary float-left" />
+
+	
+	<?php }	?>
+	
 </form>
-
 <?php include_once(plugin_dir_path(__FILE__) . '/components/biobank-consent-trail.php') ?>
+	
+
