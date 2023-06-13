@@ -219,17 +219,28 @@ class ConsentFormHandler extends StudyHandler {
 			}
 		}
 
+		$to = 'contact@dwarna.mt';
+		$subject = 'Change in Dwarna User Consent';
+		$action_user = ($consent) ? "GAVE": "WITHDREW";
+		$message = 'User ' . wp_get_current_user()->user_login . " just " . $action_user . " consent for study ". $study['study_id'];
+		$senderEmail = 'contact@dwarna.mt';
+		$headers = 'From: ' . $senderEmail . "\r\n" . 'Reply-To: ' . $senderEmail . "\r\n" . 'X-Mailer: PHP/' . phpversion();
+
+		$mailSent = mail($to, $subject, $message, $headers);
+
 		require(plugin_dir_path(__FILE__) . "../../includes/globals.php");
+
+		$withdraw = ($consent) ? $give_endpoint : $withdraw_endpoint;
 		/*
 		 * If something goes wrong, redirect back with an error.
 		 */
 		if (isset($study['study_id'])) {
 			$error = urlencode($error);
-			wp_redirect(get_site_url() . "/index.php/" . $plugin_pages['biobank-study']['wp_info']['post_name'] . "?action=consent&study={$study['study_id']}&biobank_error=$error&return=" . __FUNCTION__);
+			wp_redirect(get_site_url() . "/index.php/" . $plugin_pages['biobank-study']['wp_info']['post_name'] . "?action=consent&study={$study['study_id']}&biobank_error=$error&return=" . __FUNCTION__ . "&withdraw=" . $withdraw);
 			exit;
 		} else {
 			$error = urlencode($error);
-			wp_redirect(get_site_url() . "/index.php/" . $plugin_pages['biobank-consent']['wp_info']['post_name'] . "?biobank_error=$error&return=" . __FUNCTION__);
+			wp_redirect(get_site_url() . "/index.php/" . $plugin_pages['biobank-consent']['wp_info']['post_name'] . "?biobank_error=$error&return=" . __FUNCTION__ . "&withdraw=" . $withdraw);
 			exit;
 		}
 	}

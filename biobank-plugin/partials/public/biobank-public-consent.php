@@ -50,7 +50,7 @@ $refresh = (isset($_GET["return"]) && $_GET["return"] == "update_consent");
 	</div>
 
 	<?php if (count($consented_studies)): ?>
-		<h2>Consented Studies</h2>
+		<h2>CONSENTED studies</h2>
 		<ul>
 		<?php foreach ($consented_studies as $study) { ?>
 			<li><a href='#' onclick='getCard(this, "<?= $study->study_id ?>"); return false;'><?= $study->name ?></a></li>
@@ -59,7 +59,7 @@ $refresh = (isset($_GET["return"]) && $_GET["return"] == "update_consent");
 	<?php endif ?>
 
 	<?php if (count($non_consented_studies)): ?>
-		<h2>Other Studies</h2>
+		<h2>OTHER studies you may want to participate in</h2>
 		<ul>
 		<?php foreach ($non_consented_studies as $study) { ?>
 			<li><a href='#' onclick='getCard(this, "<?= $study->study_id ?>"); return false;'><?= $study->name ?></a></li>
