@@ -28,6 +28,15 @@ require_once(plugin_dir_path(__FILE__) . "form_handler.php");
  */
 class ConsentFormHandler extends StudyHandler {
 
+
+	public function consented_to_study($study_id) {
+		$rp_studies = $this->get_studies_by_participant();
+		//error_log(print_r($rp_studies, true));
+		$study_matches = array_filter((array) $rp_studies->data, function($study) use ($study_id) { return $study->study->study_id == $study_id; });
+		error_log(count($study_matches));
+		return (count($study_matches) > 0);
+	}
+
 	/**
 	 * Get a list of active studies.
 	 *
@@ -210,17 +219,28 @@ class ConsentFormHandler extends StudyHandler {
 			}
 		}
 
+		$to = 'contact@dwarna.mt';
+		$subject = 'Change in Dwarna User Consent';
+		$action_user = ($consent) ? "GAVE": "WITHDREW";
+		$message = 'User ' . wp_get_current_user()->user_login . " just " . $action_user . " consent for study ". $study['study_id'];
+		$senderEmail = 'contact@dwarna.mt';
+		$headers = 'From: ' . $senderEmail . "\r\n" . 'Reply-To: ' . $senderEmail . "\r\n" . 'X-Mailer: PHP/' . phpversion();
+
+		$mailSent = mail($to, $subject, $message, $headers);
+
 		require(plugin_dir_path(__FILE__) . "../../includes/globals.php");
+
+		$withdraw = ($consent) ? $give_endpoint : $withdraw_endpoint;
 		/*
 		 * If something goes wrong, redirect back with an error.
 		 */
 		if (isset($study['study_id'])) {
 			$error = urlencode($error);
-			wp_redirect(get_site_url() . "/index.php/" . $plugin_pages['biobank-study']['wp_info']['post_name'] . "?action=consent&study={$study['study_id']}&biobank_error=$error&return=" . __FUNCTION__);
+			wp_redirect(get_site_url() . "/index.php/" . $plugin_pages['biobank-study']['wp_info']['post_name'] . "?action=consent&study={$study['study_id']}&biobank_error=$error&return=" . __FUNCTION__ . "&withdraw=" . $withdraw);
 			exit;
 		} else {
 			$error = urlencode($error);
-			wp_redirect(get_site_url() . "/index.php/" . $plugin_pages['biobank-consent']['wp_info']['post_name'] . "?biobank_error=$error&return=" . __FUNCTION__);
+			wp_redirect(get_site_url() . "/index.php/" . $plugin_pages['biobank-consent']['wp_info']['post_name'] . "?biobank_error=$error&return=" . __FUNCTION__ . "&withdraw=" . $withdraw);
 			exit;
 		}
 	}
